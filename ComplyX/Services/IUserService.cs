@@ -15,6 +15,8 @@ namespace ComplyX.Services
         Task<AuthRequestModel> Authenticate(AuthRequestModel request);
         Task<ManagerBaseResponse<ForgotPasswordVerifyModel>> ForgotPassword([FromBody] ForgotPasswordVerifyModel request);
         Task<ManagerBaseResponse<ResetPasswordRequestModel>> ResetPassword([FromBody] ResetPasswordRequestModel request);
-        Task<IActionResult> ChangePassword([FromBody] ChangePasswordModel model);
+        Task<ManagerBaseResponse<ChangePasswordModel>> ChangePassword([FromBody] ChangePasswordModel model);
+
+        Task<ManagerBaseResponse<bool>> CreateRoleAsync(string  rolename);
     }
 }

@@ -3,6 +3,8 @@ using ComplyX.Models;
 using Microsoft.AspNetCore.Identity;
 using ComplyX.Data.Identity;
 using ComplyX.Data;
+using ComplyX.Controllers;
+using System.Web;
 using System.Security.Claims;
 using BCrypt.Net;
 using Microsoft.AspNetCore.Mvc;
@@ -18,6 +20,9 @@ using System.Security.Cryptography;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Jose.native;
 using System.Web.Providers.Entities;
+using IdentityResultExtensions = ComplyX.Data.Identity.IdentityResultExtensions;
+using Azure.Core;
+using System.Text.RegularExpressions;
 
 namespace ComplyX.BusinessLogic
 {
@@ -27,14 +32,14 @@ namespace ComplyX.BusinessLogic
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly JwtTokenService _tokenService;
         private readonly AppDbContext _context;
- 
+        private readonly RoleManager<IdentityRole> _roleManager;
 
-        public UserClass( AppDbContext context, UserManager<ApplicationUser> userManager, JwtTokenService tokenservice)
+        public UserClass( AppDbContext context, UserManager<ApplicationUser> userManager, JwtTokenService tokenservice, RoleManager<IdentityRole> roleManager)
         {
             _context = context;
             _userManager = userManager;
             _tokenService = tokenservice;
- 
+             _roleManager = roleManager;
         }
 
         public async Task<ManagerBaseResponse<RegisterUser>> Register(RegisterUser RegisterUser)
@@ -455,7 +460,145 @@ namespace ComplyX.BusinessLogic
             }
         }
 
-      
+        public async Task<ManagerBaseResponse<ChangePasswordModel>> ChangePassword([FromBody] ChangePasswordModel model)
+        {
+            if (model == null)
+            {     
+                return (new ManagerBaseResponse<ChangePasswordModel>()
+                {
+                    Result = null,
+                    IsSuccess = false,
+                    Message = "Invalid model data.",
+                    StatusCode = 400
+
+                });
+            }
+
+
+            var user = await _userManager.FindByNameAsync(model.username);
+
+            if (user == null)
+            {
+                return (new ManagerBaseResponse<ChangePasswordModel>()
+                {
+                    Result = null,
+                    IsSuccess = false,
+                    Message = "User not found.",
+                    StatusCode = 401
+
+                });
+            }
+
+            if (!await _userManager.CheckPasswordAsync(user, model.OldPassword))
+            {
+                 
+
+                return (new ManagerBaseResponse<ChangePasswordModel>()
+                {
+                    Result = null,
+                    IsSuccess = false,
+                    Message = "Please enter valid current password.",
+                    StatusCode = 400
+
+                });
+            }
+
+            if (model.OldPassword == model.NewPassword)
+            {
+                return  (new ManagerBaseResponse<ChangePasswordModel>
+                {
+                    Result = null,
+                    Message = "You cannot reuse your old password.",
+                    StatusCode = 400
+                });
+            }
+
+            var result = await _userManager.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
+
+            if (!result.Succeeded)
+            {
+                var message = string.Join(" | ", result.Errors.Select(x => x.Description));
+                return (new ManagerBaseResponse<ChangePasswordModel>
+                {
+                    Result = null,
+                    Message = message,
+                    StatusCode = 400
+                });
+            }
+
+            user.LastPasswordChangeDate = DateTime.UtcNow;
+            await _userManager.UpdateAsync(user);
+            string hashed = BCrypt.Net.BCrypt.HashPassword(model.NewPassword);
+            var usersname = await _context.RegisterUser.FirstOrDefaultAsync(x => x.UserName == model.username);
+             
+            usersname.Password = hashed;
+            
+            _context.Update(usersname);
+            _context.SaveChanges();
+
+            var response = new ChangePasswordModel
+            {
+                NewPassword = model.NewPassword
+            };
+            return (new ManagerBaseResponse<ChangePasswordModel>
+            {
+                Result = response,
+                Message = "Your password has been changed successfully."
+            });
+        }
+
+        public async Task<ManagerBaseResponse<bool>> CreateRoleAsync(string roleName)
+        {
+            // Trim to remove leading/trailing spaces
+            roleName = roleName?.Trim();
+
+            // Check if the role name is empty
+            if (string.IsNullOrWhiteSpace(roleName))
+            {
+                return new ManagerBaseResponse<bool>
+                {
+                    IsSuccess = false,
+                    Result = false,
+                    Message = "Role name cannot be empty or whitespace."
+                };
+            }
+
+            // Validate allowed characters: letters, numbers, underscores, and spaces
+            var isValid = Regex.IsMatch(roleName, @"^[a-zA-Z0-9_ ]+$");
+            if (!isValid)
+            {
+                return new ManagerBaseResponse<bool>
+                {
+                    IsSuccess = false,
+                    Result = false,
+                    Message = "Role name can only include letters, numbers, underscores (_) and spaces."
+                };
+            }
+
+            // Check if the role already exists
+            if (await _roleManager.RoleExistsAsync(roleName))
+            {
+                return new ManagerBaseResponse<bool>
+                {
+                    IsSuccess = false,
+                    Result = false,
+                    Message = "Role already exists."
+                };
+            }
+
+            // Create the role
+            var result = await _roleManager.CreateAsync(new IdentityRole { Name = roleName });
+
+            // Return the response
+            return new ManagerBaseResponse<bool>
+            {
+                IsSuccess = result.Succeeded,
+                Result = result.Succeeded,
+                Message = result.Succeeded
+                    ? "Role created successfully."
+                    : string.Join("; ", result.Errors.Select(e => e.Description))
+            };
+        }
 
     }
 }

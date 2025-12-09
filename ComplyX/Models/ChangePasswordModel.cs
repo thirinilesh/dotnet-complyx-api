@@ -18,5 +18,7 @@ namespace ComplyX.Models
         [Display(Name = "Confirm new password")]
         [Compare("NewPassword", ErrorMessage = "The new password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; } = null!;
+        [Required]
+        public string username { get; set; } = null!;
     }
 }

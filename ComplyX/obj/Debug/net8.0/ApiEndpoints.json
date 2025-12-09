@@ -27,6 +27,22 @@
   },
   {
     "ContainingType": "ComplyX.Controllers.AccountOwnerController",
+    "Method": "RemoveCompanyData",
+    "RelativePath": "AccountOwner/RemoveCompanyData",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "CompanyaId",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ComplyX.Controllers.AccountOwnerController",
     "Method": "RemoveProductOwnerData",
     "RelativePath": "AccountOwner/RemoveProductOwnerData",
     "HttpMethod": "PUT",
@@ -36,6 +52,22 @@
       {
         "Name": "AccountOwnerId",
         "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ComplyX.Controllers.AccountOwnerController",
+    "Method": "SaveCompanyData",
+    "RelativePath": "AccountOwner/SaveCompanyData",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "company",
+        "Type": "ComplyX.Models.Company",
         "IsRequired": true
       }
     ],
@@ -53,6 +85,38 @@
         "Name": "ProductOwners",
         "Type": "ComplyX.Models.ProductOwners",
         "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ComplyX.Controllers.UserController",
+    "Method": "ChangePassword",
+    "RelativePath": "api/User/ChangePassword",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "model",
+        "Type": "ComplyX.Models.ChangePasswordModel",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ComplyX.Controllers.UserController",
+    "Method": "CreateRole",
+    "RelativePath": "api/User/CreateRole",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "roleName",
+        "Type": "System.String",
+        "IsRequired": false
       }
     ],
     "ReturnTypes": []

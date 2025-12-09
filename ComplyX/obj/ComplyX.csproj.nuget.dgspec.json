@@ -56,6 +56,10 @@
               "target": "Package",
               "version": "[4.0.3, )"
             },
+            "EnumerableAsyncProcessor": {
+              "target": "Package",
+              "version": "[3.8.4, )"
+            },
             "FluentValidation": {
               "target": "Package",
               "version": "[8.0.0, )"
@@ -97,6 +101,18 @@
             "System.IdentityModel.Tokens.Jwt": {
               "target": "Package",
               "version": "[8.15.0, )"
+            },
+            "System.Security.Claims": {
+              "target": "Package",
+              "version": "[4.3.0, )"
+            },
+            "System.Security.Principal": {
+              "target": "Package",
+              "version": "[4.3.0, )"
+            },
+            "System.Security.Principal.Windows": {
+              "target": "Package",
+              "version": "[5.0.0, )"
             },
             "jose-jwt": {
               "target": "Package",

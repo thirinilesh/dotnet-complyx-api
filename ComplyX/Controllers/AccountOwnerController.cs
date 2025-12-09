@@ -49,7 +49,6 @@ namespace ComplyX.Controllers
             return Ok(owners);
         }
 
-
         /// <summary>
         /// Save Product Data
         /// </summary>
@@ -66,6 +65,24 @@ namespace ComplyX.Controllers
         public async Task<IActionResult> RemoveProductOwnerData([FromBody] string AccountOwnerId)
         {
             return ResponseResult(await _IProductOwnere.RemoveProductOwnerData(AccountOwnerId));
+        }
+
+        /// <summary>
+        /// Save Company Data
+        /// </summary>
+        [HttpPut("SaveCompanyData")]
+        public async Task<IActionResult> SaveCompanyData([FromBody] Company company)
+        {
+            return ResponseResult(await _IProductOwnere.SaveCompanyData(company));
+        }
+
+        /// <summary>
+        /// Delete Company Data
+        /// </summary>
+        [HttpPut("RemoveCompanyData")]
+        public async Task<IActionResult> RemoveCompanyData([FromBody] string CompanyaId)
+        {
+            return ResponseResult(await _IProductOwnere.RemoveCompanyData(CompanyaId));
         }
     }
 }

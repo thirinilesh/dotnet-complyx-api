@@ -1,6 +1,6 @@
 ﻿using System.Security.Claims;
 
-namespace ComplyX.Data.Identity
+namespace ComplyX.Helper
 {
     public static class IdentityResultExtensions
     {
@@ -25,7 +25,5 @@ namespace ComplyX.Data.Identity
             //TODO: handle this
             return "-1";
         }
-
-       
     }
 }

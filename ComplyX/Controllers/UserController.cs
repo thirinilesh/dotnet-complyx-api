@@ -63,6 +63,24 @@ namespace ComplyX.Controllers
             return ResponseResult(await _IUserService.ResetPassword(request));
         }
 
-       
+        [HttpPost("ChangePassword")]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordModel model)
+        {
+            return ResponseResult(await _IUserService.ChangePassword(model));
+        }
+
+        /// <summary>
+        /// Create a new role.
+        /// </summary>
+        /// <param name="roleName">The name of the role to create.</param>
+        /// <returns>An IActionResult containing the result of the role creation.</returns>
+        [Authorize]
+        [HttpPost("CreateRole")]
+        public async Task<IActionResult> CreateRole(string roleName)
+        {
+            var result = await _IUserService.CreateRoleAsync(roleName);
+            return ResponseResult(result);
+        }
+
     }
 }

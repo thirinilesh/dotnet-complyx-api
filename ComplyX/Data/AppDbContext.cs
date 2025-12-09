@@ -16,11 +16,23 @@ namespace ComplyX.Data
 
         public virtual DbSet<ProductOwners> ProductOwners { get; set; }
         public DbSet<RegisterUser> RegisterUser { get; set; }
-
+        public virtual DbSet<Company> Companies { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<RegisterUser>().HasKey(e =>e.UserName);
+
+
+            modelBuilder.Entity<Company>(entity =>
+            {
+                entity.HasKey( e => e.CompanyID);
+
+                entity.HasOne(d => d.ProductOwners).WithMany(p => p.Companies)
+                    .HasForeignKey(d => d.AccountOwnerId)
+                    .HasConstraintName("FK_Company_ProductOwner");
+            });
         }
+      
+
     }
 }

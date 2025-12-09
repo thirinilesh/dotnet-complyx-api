@@ -61,6 +61,18 @@ namespace ComplyX.BusinessLogic
                     _model.UpdatedBy = ProductOwners.UpdatedBy;
                     _model.UpdatedAt = Util.GetCurrentCSTDateAndTime();
                     _model.CreatedAt = Util.GetCurrentCSTDateAndTime();
+                    _model.SubscriptionPlan = ProductOwners.SubscriptionPlan;
+                    _model.SubscriptionStart = ProductOwners.SubscriptionStart;
+                    _model.SubscriptionExpiry = ProductOwners.SubscriptionExpiry;
+                    _model.MaxCompanies = ProductOwners.MaxCompanies;
+                    _model.MaxStorageMB = ProductOwners.MaxStorageMB;
+                    _model.MaxUsers = ProductOwners.MaxUsers;
+                    _model.AllowCloudBackup = ProductOwners.AllowCloudBackup;
+                    _model.AllowTDSModule = ProductOwners.AllowTDSModule;
+                    _model.AllowGSTModule = ProductOwners.AllowGSTModule;
+                    _model.AllowCLRAModule = ProductOwners.AllowCLRAModule;
+                    _model.AllowPayrollModule = ProductOwners.AllowPayrollModule;
+                    _model.AllowDSCSigning = ProductOwners.AllowDSCSigning;
 
                     _context.Add(_model);
                     _context.SaveChanges();
@@ -88,7 +100,18 @@ namespace ComplyX.BusinessLogic
                     originalTerm.UpdatedBy = ProductOwners.UpdatedBy;
                     originalTerm.UpdatedAt = Util.GetCurrentCSTDateAndTime();
                     originalTerm.IsActive = ProductOwners.IsActive;
-
+                    originalTerm.SubscriptionPlan = ProductOwners.SubscriptionPlan;
+                    originalTerm.SubscriptionStart = ProductOwners.SubscriptionStart;
+                    originalTerm.SubscriptionExpiry = ProductOwners.SubscriptionExpiry;
+                    originalTerm.MaxCompanies = ProductOwners.MaxCompanies;
+                    originalTerm.MaxStorageMB = ProductOwners.MaxStorageMB;
+                    originalTerm.MaxUsers = ProductOwners.MaxUsers;
+                    originalTerm.AllowCloudBackup = ProductOwners.AllowCloudBackup;
+                    originalTerm.AllowTDSModule = ProductOwners.AllowTDSModule;
+                    originalTerm.AllowGSTModule = ProductOwners.AllowGSTModule;
+                    originalTerm.AllowCLRAModule = ProductOwners.AllowCLRAModule;
+                    originalTerm.AllowPayrollModule = ProductOwners.AllowPayrollModule;
+                    originalTerm.AllowDSCSigning = ProductOwners.AllowDSCSigning;
 
                     _context.Update(originalTerm);
                     _context.SaveChanges();
@@ -136,6 +159,120 @@ namespace ComplyX.BusinessLogic
                     Result = true,
                     Message = "Product Data Removed Successfully."      , 
                     };
+
+            }
+            catch (Exception ex)
+            {
+                return new ManagerBaseResponse<bool>
+                {
+                    Result = false,
+                    Message = ex.Message
+                };
+            }
+        }
+
+        public async Task<ManagerBaseResponse<bool>> SaveCompanyData(Company company)
+        {
+            var response = new ManagerBaseResponse<List<Company>>();
+
+            try
+            {
+                var accountid = await _context.ProductOwners.FirstOrDefaultAsync(x => x.AccountOwnerId == company.AccountOwnerId);
+
+                if (accountid == null)
+                {
+                    return new ManagerBaseResponse<bool>
+                    {
+                        Result = false,
+                        Message = "Account Ownere is not found.",
+                    };
+                }
+                else
+                {
+                    if (company.CompanyID == 0)
+                    {
+                        // Insert
+                        Company _model = new Company();
+                        _model.Name = company.Name;
+                        _model.Domain = company.Domain;
+                        _model.ContactEmail = company.ContactEmail;
+                        _model.ContactPhone = company.ContactPhone;
+                        _model.Address = company.Address;
+                        _model.State = company.State;
+                        _model.PAN = company.PAN;
+                        _model.GSTIN = company.GSTIN;
+                        _model.IsActive = company.IsActive;
+                        _model.CreatedAt = Util.GetCurrentCSTDateAndTime();
+                        _model.AccountOwnerId = accountid.AccountOwnerId;
+
+                        _context.Add(_model);
+                        _context.SaveChanges();
+                    }
+                    else
+                    {
+                        // Update
+                        var originalTerm = _context.Companies
+                            .Where(x => x.CompanyID == company.CompanyID)
+                            .FirstOrDefault();
+                        originalTerm.Name = company.Name;
+                        originalTerm.Domain = company.Domain;
+                        originalTerm.ContactEmail = company.ContactEmail;
+                        originalTerm.ContactPhone = company.ContactPhone;
+                        originalTerm.Address = company.Address;
+                        originalTerm.State = company.State;
+                        originalTerm.PAN = company.PAN;
+                        originalTerm.GSTIN = company.GSTIN;
+                        originalTerm.IsActive = company.IsActive;
+                        originalTerm.CreatedAt = Util.GetCurrentCSTDateAndTime();
+                        originalTerm.AccountOwnerId = accountid.AccountOwnerId;
+
+                        _context.Update(originalTerm);
+                        _context.SaveChanges();
+                    }
+                }
+
+                return   new ManagerBaseResponse<bool>
+                {
+                    Result = true,
+                    Message = "Company Details Saved Successfully."
+                };
+            }
+            catch (Exception e)
+            {
+                return  new ManagerBaseResponse<bool>
+                {
+                    Result = false,
+                    Message = e.Message
+                };
+            }
+        }
+
+        public async Task<ManagerBaseResponse<bool>> RemoveCompanyData(string CompanyId)
+        {
+            try
+            {
+                // Get all report detail definitions for the given report name
+                var Company = await _context.Companies.Where(x => x.CompanyID.ToString() == CompanyId).ToListAsync();
+
+                if (string.IsNullOrEmpty(Company.ToString()))
+                {
+                    return new ManagerBaseResponse<bool>
+                    {
+                        Result = false,
+                        Message = "Product Id is not Vaild",
+                    };
+                }
+
+                // Remove all related report details
+                _context.Companies.RemoveRange(Company);
+
+                await _context.SaveChangesAsync();
+
+                return new ManagerBaseResponse<bool>
+                {
+                    Result = true,
+                    Message = "Product Data Removed Successfully.",
+                };
 
             }
             catch (Exception ex)
