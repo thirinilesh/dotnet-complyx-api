@@ -7,11 +7,10 @@ namespace ComplyX.Models
     public class ProductOwners
     {
         [Key]
-        public int AccountOwnerId { get; set; }
+        public int ProductOwnerId { get; set; }
         public string OwnerName { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
         public string Mobile { get; set; } = string.Empty;
-        public string PasswordHash { get; set; } = string.Empty;
         public string OrganizationName { get; set; } = string.Empty;
         public string LegalName { get; set; } = string.Empty;
         public string RegistrationId { get; set; } = string.Empty;
@@ -53,7 +52,7 @@ namespace ComplyX.Models
             RuleFor(x => x.Country);
             RuleFor(x => x.Address);       
             RuleFor(x => x.Email);
-            RuleFor(x => x.AccountOwnerId);
+            RuleFor(x => x.ProductOwnerId);
            
         } 
         private bool BeValidEnum<TEnum>(string value) where TEnum : struct, Enum { return Enum.TryParse<TEnum>(value, true, out _); } }

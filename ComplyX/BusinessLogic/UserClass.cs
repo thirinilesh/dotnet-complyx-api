@@ -39,7 +39,7 @@ namespace ComplyX.BusinessLogic
             _context = context;
             _userManager = userManager;
             _tokenService = tokenservice;
-             _roleManager = roleManager;
+            _roleManager = roleManager;
         }
 
         public async Task<ManagerBaseResponse<RegisterUser>> Register(RegisterUser RegisterUser)
@@ -600,5 +600,71 @@ namespace ComplyX.BusinessLogic
             };
         }
 
+        public async Task<ManagerBaseResponse<bool>> AssignRoleToUser(AssignRoleToUser request)
+        {
+            // Validate request
+            if (string.IsNullOrWhiteSpace(request.UserId) ||
+                request.RoleName == null ||
+                !request.RoleName.Any())
+            {
+                return new ManagerBaseResponse<bool>
+                {
+                    IsSuccess = false,
+                    Result = false,
+                    Message = "UserId and at least one role name must be provided."
+                };
+            }
+            // Check if user exists
+            var user = await _userManager.FindByIdAsync(request.UserId);
+            if (user == null)
+            {
+                return new ManagerBaseResponse<bool>
+                {
+                    IsSuccess = false,
+                    Result = false,
+                    Message = "User not found."
+                };
+            }
+            // Validate roles
+            var invalidRoles = new List<string>();
+            foreach (var roleName in request.RoleName)
+            {
+                if (!await _roleManager.RoleExistsAsync(roleName))
+                {
+                    invalidRoles.Add(roleName);
+                }
+            }
+            if (invalidRoles.Any())
+            {
+                return new ManagerBaseResponse<bool>
+                {
+                    IsSuccess = false,
+                    Result = false,
+                    Message = $"The following roles do not exist: {string.Join(", ", invalidRoles)}"
+                };
+            }
+            // Get existing roles
+            var existingRoles = await _userManager.GetRolesAsync(user);
+            var rolesToAdd = request.RoleName.Except(existingRoles).ToList();
+
+            // Assign roles
+            var result = await _userManager.AddToRolesAsync(user, rolesToAdd);
+
+            if (!result.Succeeded)
+            {
+                return new ManagerBaseResponse<bool>
+                {
+                    IsSuccess = false,
+                    Result = false,
+                    Message = string.Join("; ", result.Errors.Select(e => e.Description))
+                };
+            }
+            return new ManagerBaseResponse<bool>
+            {
+                IsSuccess = true,
+                Result = true,
+                Message = "Roles assigned successfully."
+            };
+        }
     }
 }

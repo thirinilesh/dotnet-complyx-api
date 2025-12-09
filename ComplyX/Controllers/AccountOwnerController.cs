@@ -62,9 +62,9 @@ namespace ComplyX.Controllers
         /// Delete Product Data
         /// </summary>
         [HttpPut("RemoveProductOwnerData")]
-        public async Task<IActionResult> RemoveProductOwnerData([FromBody] string AccountOwnerId)
+        public async Task<IActionResult> RemoveProductOwnerData([FromBody] string ProductOwnerId)
         {
-            return ResponseResult(await _IProductOwnere.RemoveProductOwnerData(AccountOwnerId));
+            return ResponseResult(await _IProductOwnere.RemoveProductOwnerData(ProductOwnerId));
         }
 
         /// <summary>

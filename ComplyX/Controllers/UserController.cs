@@ -78,9 +78,14 @@ namespace ComplyX.Controllers
         [HttpPost("CreateRole")]
         public async Task<IActionResult> CreateRole(string roleName)
         {
-            var result = await _IUserService.CreateRoleAsync(roleName);
-            return ResponseResult(result);
+            return ResponseResult(await _IUserService.CreateRoleAsync(roleName));
         }
 
+        [Authorize]
+        [HttpPost("AssignRolesToUser")]         
+        public async Task<IActionResult> AssignRolesToUser([FromBody] AssignRoleToUser request)
+        {
+            return ResponseResult(await _IUserService.AssignRoleToUser(request));
+        }
     }
 }

@@ -28,7 +28,7 @@ namespace ComplyX.Models
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         public int MaxEmployees { get; set; }
-        public int?  AccountOwnerId { get; set; }
+        public int? ProductOwnerId { get; set; }
         public virtual ProductOwners? ProductOwners { get; set; }
 
     }

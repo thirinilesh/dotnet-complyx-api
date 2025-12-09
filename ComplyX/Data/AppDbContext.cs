@@ -28,7 +28,7 @@ namespace ComplyX.Data
                 entity.HasKey( e => e.CompanyID);
 
                 entity.HasOne(d => d.ProductOwners).WithMany(p => p.Companies)
-                    .HasForeignKey(d => d.AccountOwnerId)
+                    .HasForeignKey(d => d.ProductOwnerId)
                     .HasConstraintName("FK_Company_ProductOwner");
             });
         }

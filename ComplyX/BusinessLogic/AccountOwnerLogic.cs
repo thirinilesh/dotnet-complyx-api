@@ -24,7 +24,7 @@ namespace ComplyX.BusinessLogic
             {
                 return await _context.ProductOwners
                                      .AsNoTracking() 
-                                     .OrderByDescending(x => x.AccountOwnerId)
+                                     .OrderByDescending(x => x.ProductOwnerId)
                                      .ToListAsync();
             }
             catch (Exception ex)
@@ -39,14 +39,13 @@ namespace ComplyX.BusinessLogic
 
             try
             {
-                if (ProductOwners.AccountOwnerId == 0)
+                if (ProductOwners.ProductOwnerId == 0)
                 {
                     // Insert
                     ProductOwners _model = new ProductOwners();
                     _model.OwnerName = ProductOwners.OwnerName;
                     _model.Email = ProductOwners.Email;
                     _model.Mobile = ProductOwners.Mobile;
-                    //_model.PasswordHash = ProductOwners.PasswordHash;
                     _model.OrganizationName = ProductOwners.OrganizationName;
                     _model.LegalName = ProductOwners.LegalName;
                     _model.RegistrationId = ProductOwners.RegistrationId;
@@ -81,12 +80,11 @@ namespace ComplyX.BusinessLogic
                 {
                     // Update
                     var originalTerm = _context.ProductOwners
-                        .Where(x => x.AccountOwnerId == ProductOwners.AccountOwnerId)
+                        .Where(x => x.ProductOwnerId == ProductOwners.ProductOwnerId)
                         .FirstOrDefault();
                     originalTerm.OwnerName = ProductOwners.OwnerName;
                     originalTerm.Email = ProductOwners.Email;
                     originalTerm.Mobile = ProductOwners.Mobile;
-                    //originalTerm.PasswordHash = ProductOwners.PasswordHash;
                     originalTerm.OrganizationName = ProductOwners.OrganizationName;
                     originalTerm.LegalName = ProductOwners.LegalName;
                     originalTerm.RegistrationId = ProductOwners.RegistrationId;
@@ -133,12 +131,12 @@ namespace ComplyX.BusinessLogic
             }
         }
 
-        public async Task<ManagerBaseResponse<bool>> RemoveProductOwnerData(string AccountOwnerId)
+        public async Task<ManagerBaseResponse<bool>> RemoveProductOwnerData(string ProductOwnerId)
         {
             try
             {
                 // Get all report detail definitions for the given report name
-                var product = await _context.ProductOwners.Where(x => x.AccountOwnerId.ToString() == AccountOwnerId).ToListAsync();
+                var product = await _context.ProductOwners.Where(x => x.ProductOwnerId.ToString() == ProductOwnerId).ToListAsync();
 
                 if (string.IsNullOrEmpty(product.ToString()))
                 {
@@ -177,7 +175,7 @@ namespace ComplyX.BusinessLogic
 
             try
             {
-                var accountid = await _context.ProductOwners.FirstOrDefaultAsync(x => x.AccountOwnerId == company.AccountOwnerId);
+                var accountid = await _context.ProductOwners.FirstOrDefaultAsync(x => x.ProductOwnerId == company.ProductOwnerId);
 
                 if (accountid == null)
                 {
@@ -203,7 +201,7 @@ namespace ComplyX.BusinessLogic
                         _model.GSTIN = company.GSTIN;
                         _model.IsActive = company.IsActive;
                         _model.CreatedAt = Util.GetCurrentCSTDateAndTime();
-                        _model.AccountOwnerId = accountid.AccountOwnerId;
+                        _model.ProductOwnerId = accountid.ProductOwnerId;
 
                         _context.Add(_model);
                         _context.SaveChanges();
@@ -224,7 +222,7 @@ namespace ComplyX.BusinessLogic
                         originalTerm.GSTIN = company.GSTIN;
                         originalTerm.IsActive = company.IsActive;
                         originalTerm.CreatedAt = Util.GetCurrentCSTDateAndTime();
-                        originalTerm.AccountOwnerId = accountid.AccountOwnerId;
+                        originalTerm.ProductOwnerId = accountid.ProductOwnerId;
 
                         _context.Update(originalTerm);
                         _context.SaveChanges();
