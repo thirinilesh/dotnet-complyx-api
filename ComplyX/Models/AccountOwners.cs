@@ -39,6 +39,7 @@ namespace ComplyX.Models
         public bool AllowDSCSigning { get; set; }
 
         public virtual ICollection<Company> Companies { get; set; } = new List<Company>();
+        public virtual ICollection<ProductOwnerSubscriptions> ProductOwnerSubscriptions { get; set; } = new List<ProductOwnerSubscriptions>();
         internal FluentValidation.Results.ValidationResult Validate(ProductOwners productOwners)
         {
             throw new NotImplementedException();

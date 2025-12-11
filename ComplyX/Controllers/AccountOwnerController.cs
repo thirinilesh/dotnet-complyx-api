@@ -84,5 +84,41 @@ namespace ComplyX.Controllers
         {
             return ResponseResult(await _IProductOwnere.RemoveCompanyData(CompanyaId));
         }
+
+        /// <summary>
+        /// Get List of Subscription Plans
+        /// </summary>
+        [HttpGet("GetSubscriptionPlans")]
+        public async Task<IActionResult> GetSubscriptionPlans()
+        {
+            return ResponseResult(await _IProductOwnere.GetSubscriptionPlans());
+        }
+
+        /// <summary>
+        /// Subscription Plans 
+        /// </summary>
+        [HttpPost("GetSubscriptionPlanFilter")]
+        public async Task<IActionResult> GetSubscriptionPlanFilter([FromBody] SubscriptionPlansFilterRequest request)
+        {
+            return ResponseResult(await _IProductOwnere.GetSubscriptionPlanFilter(request));
+        }
+
+        /// <summary>
+        /// Save User Subscription Plan Data
+        /// </summary>
+        [HttpPut("SaveUserSubscriptionData")]
+        public async Task<IActionResult> SaveUserSubscriptionData([FromBody] ProductOwnerSubscriptions ProductOwnerSubscriptions)
+        {
+            return ResponseResult(await _IProductOwnere.SaveUserSubscriptionData(ProductOwnerSubscriptions));
+        }
+
+        /// <summary>
+        /// Get List of all user's with Subscription Details
+        /// </summary>
+        [HttpGet("GetUserSubscriptionPlansDetails")]
+        public async Task<IActionResult> GetUserSubscriptionPlansDetails(ProductOwnerSubscriptionDto ProductOwnerSubscriptionDto)
+        {
+            return ResponseResult(await _IProductOwnere.GetUserSubscriptionPlansDetails(ProductOwnerSubscriptionDto));
+        }
     }
 }
