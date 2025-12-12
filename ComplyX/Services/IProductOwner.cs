@@ -14,6 +14,10 @@ namespace ComplyX.Services
         Task<ManagerBaseResponse<bool>> SaveUserSubscriptionData(ProductOwnerSubscriptions ProductOwnerSubscriptions);
         Task<ManagerBaseResponse<List<ProductOwnerSubscriptionDto>>> GetUserSubscriptionPlansDetails(ProductOwnerSubscriptionDto ProductOwnerSubscriptionDto);
         Task<ManagerBaseResponse<List<ProductOwnerSubscriptionDto>>> GetProductOwnerSubscriptionPlansDetails(ProductOwnerSubscriptionDto ProductOwnerSubscriptionDto, int ProductOwnerId);
+        Task<ManagerBaseResponse<bool>> SaveSubcontractorData(Subcontractors Subcontractors);
+        Task<ManagerBaseResponse<bool>> RemoveSubcontractorData(string SubcontractorsID);
+        Task<ManagerBaseResponse<List<SubcontractorsRequest>>> GetSubcontractors(int CompanyID);
+        Task<ManagerBaseResponse<List<SubcontractorsRequest>>> GetProductOwnerSubcontractorsDetails(int ProductOwnerId);
 
     }
 

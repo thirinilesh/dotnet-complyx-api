@@ -545,5 +545,240 @@ namespace ComplyX.BusinessLogic
 
             }
         }
+
+        public async Task<ManagerBaseResponse<bool>> SaveSubcontractorData(Subcontractors Subcontractors)
+        {
+            var response = new ManagerBaseResponse<List<Subcontractors>>();
+
+            try
+            {
+                var accountid = await _context.Companies.FirstOrDefaultAsync(x => x.CompanyID == Subcontractors.CompanyID);
+
+                if (accountid == null)
+                {
+                    return new ManagerBaseResponse<bool>
+                    {
+                        Result = false,
+                        Message = "Company is not found.",
+                    };
+                }
+                else
+                {
+                    if (Subcontractors.SubcontractorID == 0)
+                    {
+                        // Insert
+                        Subcontractors _model = new Subcontractors();
+                        _model.Name = Subcontractors.Name;
+                        _model.ContactEmail = Subcontractors.ContactEmail;
+                        _model.ContactPhone = Subcontractors.ContactPhone;
+                        _model.PAN = Subcontractors.PAN;
+                        _model.GSTIN = Subcontractors.GSTIN;
+                        _model.Address = Subcontractors.Address;
+                        _model.CreatedAt = Util.GetCurrentCSTDateAndTime();
+                        _model.CompanyID = accountid.CompanyID;
+
+                        _context.Add(_model);
+                        _context.SaveChanges();
+                    }
+                    else
+                    {
+                        // Update
+                        var originalTerm = _context.Subcontractors
+                            .Where(x => x.SubcontractorID == Subcontractors.SubcontractorID)
+                            .FirstOrDefault();
+                        originalTerm.Name = Subcontractors.Name;
+                        originalTerm.ContactEmail = Subcontractors.ContactEmail;
+                        originalTerm.ContactPhone = Subcontractors.ContactPhone;
+                        originalTerm.Address = Subcontractors.Address;
+                        originalTerm.PAN = Subcontractors.PAN;
+                        originalTerm.GSTIN = Subcontractors.GSTIN;
+                        originalTerm.CreatedAt = Util.GetCurrentCSTDateAndTime();
+                        originalTerm.CompanyID = accountid.CompanyID;
+
+                        _context.Update(originalTerm);
+                        _context.SaveChanges();
+                    }
+                }
+
+                return new ManagerBaseResponse<bool>
+                {
+                    Result = true,
+                    Message = "Subcontractors Details Saved Successfully."
+                };
+            }
+            catch (Exception e)
+            {
+                return new ManagerBaseResponse<bool>
+                {
+                    Result = false,
+                    Message = e.Message
+                };
+            }
+        }
+
+        public async Task<ManagerBaseResponse<bool>> RemoveSubcontractorData(string SubcontractorsID)
+        {
+            try
+            {
+                // Get all report detail definitions for the given report name
+                var Subcontractors = await _context.Subcontractors.Where(x => x.SubcontractorID.ToString() == SubcontractorsID).ToListAsync();
+
+                if (string.IsNullOrEmpty(Subcontractors.ToString()))
+                {
+                    return new ManagerBaseResponse<bool>
+                    {
+                        Result = false,
+                        Message = "Subcontractors Id is not Vaild",
+                    };
+                }
+
+                // Remove all related report details
+                _context.Subcontractors.RemoveRange(Subcontractors);
+
+                await _context.SaveChangesAsync();
+
+                return new ManagerBaseResponse<bool>
+                {
+                    Result = true,
+                    Message = "Subcontractors Data Removed Successfully.",
+                };
+
+            }
+            catch (Exception ex)
+            {
+                return new ManagerBaseResponse<bool>
+                {
+                    Result = false,
+                    Message = ex.Message
+                };
+            }
+        }
+
+        public async Task<ManagerBaseResponse<List<SubcontractorsRequest>>> GetSubcontractors(int CompanyId)
+        {
+            try
+            {
+                if (CompanyId != 0)
+                {
+                    var result = await (
+                                            from p in _context.Subcontractors
+                                            join s in _context.Companies
+                                                on p.CompanyID equals s.CompanyID
+
+                                            select new SubcontractorsRequest
+                                            {
+                                                SubcontractorID = p.SubcontractorID,
+                                                CompanyID = p.CompanyID,
+                                                CompanyName = s.Name,
+                                                CompanyEmail = s.ContactEmail,
+                                                CompanyPhone = s.ContactPhone,
+                                                Domain = s.Domain,
+                                                Name = p.Name,
+                                                ContactEmail = p.ContactEmail,
+                                                ContactPhone = p.ContactPhone,
+                                                Address = p.Address,
+                                                GSTIN = p.GSTIN,
+                                                PAN = p.PAN,
+                                                CreatedAt = p.CreatedAt
+
+                                            }
+                                        ).Where(t => t.CompanyID == CompanyId).ToListAsync();
+
+                    return new ManagerBaseResponse<List<SubcontractorsRequest>>
+                    {
+                        IsSuccess = true,
+                        Result = result,
+                        Message = "Subscription Plans Fetched Successfully.",
+                    };
+                }
+                else
+                {
+                    return new ManagerBaseResponse<List<SubcontractorsRequest>>
+                    {
+                        IsSuccess = true,
+                        Result = null,
+                        Message = "CompanyID is required.",
+                    };
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return new ManagerBaseResponse<List<SubcontractorsRequest>>
+                {
+                    IsSuccess = false,
+                    Result = null,
+                    Message = ex.Message
+                };
+
+            }
+        }
+
+        public async Task<ManagerBaseResponse<List<SubcontractorsRequest>>> GetProductOwnerSubcontractorsDetails(int ProductOwnerId)
+        {
+            try
+            {
+                if (ProductOwnerId != 0)
+                {
+                    var result = await (
+                                            from p in _context.Subcontractors
+                                            join s in _context.Companies
+                                                on p.CompanyID equals s.CompanyID
+                                            join c in _context.ProductOwners on  s.ProductOwnerId equals c.ProductOwnerId  
+
+                                            select new SubcontractorsRequest
+                                            {
+                                                SubcontractorID = p.SubcontractorID,
+                                                CompanyID = p.CompanyID,
+                                                CompanyName = s.Name,
+                                                CompanyEmail = s.ContactEmail,
+                                                CompanyPhone = s.ContactPhone,
+                                                Domain = s.Domain,
+                                                Name = p.Name,
+                                                ContactEmail = p.ContactEmail,
+                                                ContactPhone = p.ContactPhone,
+                                                Address = p.Address,
+                                                GSTIN = p.GSTIN,
+                                                PAN = p.PAN,
+                                                CreatedAt = p.CreatedAt,
+                                                ProductOwnerId = s.ProductOwnerId,
+                                                OwnerName = c.OwnerName,
+                                                OwnerPhone = c.Mobile,
+                                                OWnerEmail = c.Email,
+                                                OrganizationName = c.OrganizationName
+                                                
+                                            }
+                                        ).Where(t => t.ProductOwnerId == ProductOwnerId).ToListAsync();
+
+                    return new ManagerBaseResponse<List<SubcontractorsRequest>>
+                    {
+                        IsSuccess = true,
+                        Result = result,
+                        Message = "Subscription Plans Fetched Successfully.",
+                    };
+                }
+                else
+                {
+                    return new ManagerBaseResponse<List<SubcontractorsRequest>>
+                    {
+                        IsSuccess = true,
+                        Result = null,
+                        Message = "ProductOwnerId is required.",
+                    };
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return new ManagerBaseResponse<List<SubcontractorsRequest>>
+                {
+                    IsSuccess = false,
+                    Result = null,
+                    Message = ex.Message
+                };
+
+            }
+        }
+
     }
 }

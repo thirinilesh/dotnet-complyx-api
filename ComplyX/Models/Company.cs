@@ -23,13 +23,15 @@ namespace ComplyX.Models
 
         public string PAN { get; set; } = string.Empty;
 
-        public string IsActive { get; set; } = string.Empty;
+        public bool IsActive { get; set; }  
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         public int MaxEmployees { get; set; }
         public int? ProductOwnerId { get; set; }
         public virtual ProductOwners ProductOwners { get; set; }
+
+        public virtual ICollection<Subcontractors>? Subcontractorss { get; set; } = new List<Subcontractors>();
 
     }
 }

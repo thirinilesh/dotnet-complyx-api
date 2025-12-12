@@ -31,12 +31,12 @@ namespace ComplyX.Models
         public int? MaxCompanies { get; set; }
         public int? MaxUsers { get; set; }
         public int? MaxStorageMB { get; set; }
-        public bool AllowCloudBackup { get; set; }
-        public bool AllowGSTModule { get; set; }
-        public bool AllowTDSModule { get; set; }
-        public bool AllowCLRAModule { get; set; }
-        public bool AllowPayrollModule { get; set; }
-        public bool AllowDSCSigning { get; set; }
+        public bool? AllowCloudBackup { get; set; }
+        public bool? AllowGSTModule { get; set; }
+        public bool? AllowTDSModule { get; set; }
+        public bool? AllowCLRAModule { get; set; }
+        public bool? AllowPayrollModule { get; set; }
+        public bool? AllowDSCSigning { get; set; }
 
         public virtual ICollection<Company> Companies { get; set; } = new List<Company>();
         public virtual ICollection<ProductOwnerSubscriptions> ProductOwnerSubscriptionss { get; set; } = new List<ProductOwnerSubscriptions>();

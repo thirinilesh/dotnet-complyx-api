@@ -56,7 +56,7 @@ namespace ComplyX.Controllers
         /// Delete Product Data
         /// </summary>
         [HttpPut("RemoveProductOwnerData")]
-        public async Task<IActionResult> RemoveProductOwnerData([FromBody] string ProductOwnerId)
+        public async Task<IActionResult> RemoveProductOwnerData(string ProductOwnerId)
         {
             return ResponseResult(await _IProductOwnere.RemoveProductOwnerData(ProductOwnerId));
         }
@@ -74,7 +74,7 @@ namespace ComplyX.Controllers
         /// Delete Company Data
         /// </summary>
         [HttpPut("RemoveCompanyData")]
-        public async Task<IActionResult> RemoveCompanyData([FromBody] string CompanyaId)
+        public async Task<IActionResult> RemoveCompanyData(string CompanyaId)
         {
             return ResponseResult(await _IProductOwnere.RemoveCompanyData(CompanyaId));
         }
@@ -123,5 +123,41 @@ namespace ComplyX.Controllers
         {
             return ResponseResult(await _IProductOwnere.GetProductOwnerSubscriptionPlansDetails(ProductOwnerSubscriptionDto, ProductOwnerId));
         }
+
+        /// <summary>
+        /// Save Subcontractor Data
+        /// </summary>
+        [HttpPut("SaveSubcontractorData")]
+        public async Task<IActionResult> SaveSubcontractorData([FromBody] Subcontractors Subcontractors)
+        {
+            return ResponseResult(await _IProductOwnere.SaveSubcontractorData(Subcontractors));
+        }
+
+        /// <summary>
+        /// Delete Subcontractor Data
+        /// </summary>
+        [HttpPut("RemoveSubcontractorData")]
+        public async Task<IActionResult> RemoveSubcontractorData(string SubcontractorsID)
+        {
+            return ResponseResult(await _IProductOwnere.RemoveSubcontractorData(SubcontractorsID));
+        }
+        /// <summary>
+        /// Get List of Subcontractors for CompanyId
+        /// </summary>
+        [HttpPost("GetSubcontractors")]
+        public async Task<IActionResult> GetSubcontractors(int CompanyId)
+        {
+            return ResponseResult(await _IProductOwnere.GetSubcontractors(CompanyId));
+        }
+
+        /// <summary>
+        /// Get List of ProductOwner Subcontractors Details
+        /// </summary>
+        [HttpPost("GetProductOwnerSubcontractorsDetails")]
+        public async Task<IActionResult> GetProductOwnerSubcontractorsDetails(int ProductOwnerId)
+        {
+            return ResponseResult(await _IProductOwnere.GetProductOwnerSubcontractorsDetails(ProductOwnerId));
+        }
+
     }
 }
