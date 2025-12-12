@@ -6,10 +6,12 @@ using Lakshmi.Common.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
-using System.Data.Entity;
+
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Web.Providers.Entities;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using static System.Net.Mime.MediaTypeNames;
 
 
 namespace ComplyX.BusinessLogic
@@ -27,9 +29,10 @@ namespace ComplyX.BusinessLogic
         {
             try
             {
-                return await _context.ProductOwners.AsQueryable()
+                var result = await _context.ProductOwners.AsQueryable()
                                      .OrderByDescending(x => x.ProductOwnerId)
                                      .ToListAsync();
+                return result;
             }
             catch (Exception ex)
             {
@@ -356,26 +359,16 @@ namespace ComplyX.BusinessLogic
                 };
             }
         }
-
         public async Task<ManagerBaseResponse<bool>> SaveUserSubscriptionData(ProductOwnerSubscriptions ProductOwnerSubscriptions)
         {
             var response = new ManagerBaseResponse<List<ProductOwnerSubscriptions>>();
 
             try
             {
-                var accountid = await _context.ProductOwnerSubscriptions.FirstOrDefaultAsync(x => x.PlanId == ProductOwnerSubscriptions.PlanId && x.ProductOwnerId == ProductOwnerSubscriptions.ProductOwnerId);
-
-                if (accountid != null)
-                {
-                    return new ManagerBaseResponse<bool>
-                    {
-                        Result = false,
-                        Message = "Subscription Plans is already exits to current user.",
-                    };
-                }
-                else
-                {
-                    if (ProductOwnerSubscriptions.PlanId == 0)
+                var plan = _context.ProductOwnerSubscriptions.AsQueryable().Where(x => x.ProductOwnerId == ProductOwnerSubscriptions.ProductOwnerId && x.PlanId == ProductOwnerSubscriptions.PlanId); 
+                if(plan == null)               
+                {               
+                    if (ProductOwnerSubscriptions.SubscriptionId == 0)
                     {
                         // Insert
                         ProductOwnerSubscriptions _model = new ProductOwnerSubscriptions();
@@ -386,6 +379,8 @@ namespace ComplyX.BusinessLogic
                         _model.AmountPaid = ProductOwnerSubscriptions.AmountPaid;
                         _model.TransactionId = ProductOwnerSubscriptions.TransactionId;
                         _model.Remarks = ProductOwnerSubscriptions.Remarks;
+                        _model.ProductOwnerId = ProductOwnerSubscriptions.ProductOwnerId;
+                        _model.PlanId = ProductOwnerSubscriptions.PlanId;
 
                         _context.Add(_model);
                         _context.SaveChanges();
@@ -393,8 +388,8 @@ namespace ComplyX.BusinessLogic
                     else
                     {
                         // Update
-                        var originalTerm = _context.ProductOwnerSubscriptions
-                            .Where(x => x.PlanId == ProductOwnerSubscriptions.PlanId &&  x.ProductOwnerId == ProductOwnerSubscriptions.ProductOwnerId)
+                        var originalTerm =  _context.ProductOwnerSubscriptions
+                            .Where(x => x.PlanId == ProductOwnerSubscriptions.PlanId && x.ProductOwnerId == ProductOwnerSubscriptions.ProductOwnerId)
                             .FirstOrDefault();
                         originalTerm.StartDate = ProductOwnerSubscriptions.StartDate;
                         originalTerm.EndDate = ProductOwnerSubscriptions.EndDate;
@@ -403,17 +398,28 @@ namespace ComplyX.BusinessLogic
                         originalTerm.AmountPaid = ProductOwnerSubscriptions.AmountPaid;
                         originalTerm.TransactionId = ProductOwnerSubscriptions.TransactionId;
                         originalTerm.Remarks = ProductOwnerSubscriptions.Remarks;
+                        originalTerm.ProductOwnerId = ProductOwnerSubscriptions.ProductOwnerId;
+                        originalTerm.PlanId = ProductOwnerSubscriptions.PlanId;
 
                         _context.Update(originalTerm);
                         _context.SaveChanges();
                     }
-                }
 
-                return new ManagerBaseResponse<bool>
+                    return new ManagerBaseResponse<bool>
+                    {
+                        Result = true,
+                        Message = "User Subscription Plans Saved Successfully."
+                    };
+
+                }
+                else
                 {
-                    Result = true,
-                    Message = "User Subscription Plans Saved Successfully."
-                };
+                    return new ManagerBaseResponse<bool>
+                    {
+                        Result = true,
+                        Message = "User Subscription Plans already Successfully."
+                    };
+                }
             }
             catch (Exception e)
             {
@@ -424,12 +430,11 @@ namespace ComplyX.BusinessLogic
                 };
             }
         }
-
         public async Task<ManagerBaseResponse<List<ProductOwnerSubscriptionDto>>> GetUserSubscriptionPlansDetails(ProductOwnerSubscriptionDto ProductOwnerSubscriptionDto)
         {
             try
             {
-                //var result = new  ManagerBaseResponse<List<ProductOwnerSubscriptionDto>>();
+                 
                 var  result = await (
                                         from p in _context.ProductOwnerSubscriptions
                                         join s in _context.SubscriptionPlans
@@ -455,7 +460,7 @@ namespace ComplyX.BusinessLogic
                                             OwnerName = o.OwnerName,
                                             Email = o.Email
                                         }
-                                    ).Distinct().ToListAsync();
+                                    ).AsQueryable().ToListAsync();
 
                    return new ManagerBaseResponse<List<ProductOwnerSubscriptionDto>>
                 {
@@ -469,6 +474,68 @@ namespace ComplyX.BusinessLogic
             {
 
 
+                return new ManagerBaseResponse<List<ProductOwnerSubscriptionDto>>
+                {
+                    IsSuccess = false,
+                    Result = null,
+                    Message = ex.Message
+                };
+
+            }
+        }
+        public async Task<ManagerBaseResponse<List<ProductOwnerSubscriptionDto>>> GetProductOwnerSubscriptionPlansDetails(ProductOwnerSubscriptionDto ProductOwnerSubscriptionDto,int ProductOwnerId)
+        {
+            try
+            {
+                if (ProductOwnerId != 0)
+                {
+                    var result = await (
+                                            from p in _context.ProductOwnerSubscriptions
+                                            join s in _context.SubscriptionPlans
+                                                on p.PlanId equals s.PlanId
+
+                                            select new ProductOwnerSubscriptionDto
+                                            {
+                                                ProductOwnerId = p.ProductOwnerId,
+                                                PlanId = p.PlanId,
+                                                StartDate = p.StartDate,
+                                                EndDate = p.EndDate,
+                                                PaymentMode = p.PaymentMode,
+                                                AmountPaid = p.AmountPaid,
+                                                TransactionId = p.TransactionId,
+                                                Remarks = p.Remarks,
+                                                IsTrial = p.IsTrial,
+                                                PlanName = s.PlanName,
+                                                PlanCode = s.PlanCode,
+                                                Description = s.Description,
+                                                PriceMonthly = s.PriceMonthly,
+                                                PriceYearly = s.PriceYearly,
+                                                Email = "",       // Set if you join with ProductOwners
+                                                OwnerName = ""
+
+                                            }
+                                        ).Where(t => t.ProductOwnerId == ProductOwnerId).ToListAsync();
+
+                    return new ManagerBaseResponse<List<ProductOwnerSubscriptionDto>>
+                    {
+                        IsSuccess = true,
+                        Result = result,
+                        Message = "Subscription Plans Fetched Successfully.",
+                    };
+                }
+                else
+                {
+                    return new ManagerBaseResponse<List<ProductOwnerSubscriptionDto>>
+                    {
+                        IsSuccess = true,
+                        Result = null,
+                        Message = "ProductOwnerId is required.",
+                    };
+                }
+
+            }
+            catch (Exception ex)
+            {
                 return new ManagerBaseResponse<List<ProductOwnerSubscriptionDto>>
                 {
                     IsSuccess = false,

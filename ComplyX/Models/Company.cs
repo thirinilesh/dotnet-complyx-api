@@ -29,7 +29,7 @@ namespace ComplyX.Models
 
         public int MaxEmployees { get; set; }
         public int? ProductOwnerId { get; set; }
-        public virtual ProductOwners? ProductOwners { get; set; }
+        public virtual ProductOwners ProductOwners { get; set; }
 
     }
 }

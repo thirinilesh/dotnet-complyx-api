@@ -20,6 +20,7 @@ namespace ComplyX.Data
 
         public virtual DbSet<SubscriptionPlans> SubscriptionPlans { get; set; }
         public virtual DbSet<ProductOwnerSubscriptions> ProductOwnerSubscriptions { get; set; }
+        public virtual DbSet<ProductOwnerSubscriptions> ProductOwnerSubscriptionsDto { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -40,11 +41,11 @@ namespace ComplyX.Data
             {
                 entity.HasKey(e => e.SubscriptionId);
 
-                entity.HasOne(d => d.SubscriptionPlans).WithMany(p => p.ProductOwnerSubscriptions)
+                entity.HasOne(d => d.SubscriptionPlans).WithMany(p => p.ProductOwnerSubscriptionss)
                     .HasForeignKey(d => d.PlanId)
                     .HasConstraintName("FK_ProductOwnerSubscriptions_SubscriptionPlans");
 
-                entity.HasOne(d => d.ProductOwners).WithMany(p => p.ProductOwnerSubscriptions)
+                entity.HasOne(d => d.ProductOwners).WithMany(p => p.ProductOwnerSubscriptionss)
                   .HasForeignKey(d => d.ProductOwnerId)
                   .HasConstraintName("FK_ProductOwnerSubscriptions_ProductOwner");
             });

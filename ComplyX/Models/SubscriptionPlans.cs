@@ -25,7 +25,6 @@ namespace ComplyX.Models
         public bool AllowDSCSigning { get; set; }
         public bool AllowCloudBackup { get; set; }
         public bool IsActive { get; set; }
-
-        public virtual ICollection<ProductOwnerSubscriptions> ProductOwnerSubscriptions { get; set; } = new List<ProductOwnerSubscriptions>();
+        public virtual ICollection<ProductOwnerSubscriptions> ProductOwnerSubscriptionss { get; set; } = new List<ProductOwnerSubscriptions>();
     }
 }

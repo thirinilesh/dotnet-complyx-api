@@ -36,15 +36,9 @@ namespace ComplyX.Controllers
 
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status403Forbidden, Type = typeof(ErrorResponse))]
-        public async Task<ActionResult<IEnumerable<ProductOwners>>> GetAll(ProductOwners ProductOwners)
+        public async Task<ActionResult> GetAll()
         {
-            var validator = new ProductOwnersValidater();
-            ValidationResult validationResult = validator.Validate(ProductOwners);
-            ErrorResponse errorResponse = HandleValidationErrors(validationResult);
-            if (errorResponse != null)
-            {
-                return BadRequest(errorResponse);
-            }
+             
             var owners = await _logic.GetAllAsync();
             return Ok(owners);
         }
@@ -115,10 +109,19 @@ namespace ComplyX.Controllers
         /// <summary>
         /// Get List of all user's with Subscription Details
         /// </summary>
-        [HttpGet("GetUserSubscriptionPlansDetails")]
+        [HttpPost("GetUserSubscriptionPlansDetails")]
         public async Task<IActionResult> GetUserSubscriptionPlansDetails(ProductOwnerSubscriptionDto ProductOwnerSubscriptionDto)
         {
             return ResponseResult(await _IProductOwnere.GetUserSubscriptionPlansDetails(ProductOwnerSubscriptionDto));
+        }
+
+        /// <summary>
+        /// Get List of ProductOwner Subscription Details
+        /// </summary>
+        [HttpPost("GetProductOwnerSubscriptionPlansDetails")]
+        public async Task<IActionResult> GetProductOwnerSubscriptionPlansDetails(ProductOwnerSubscriptionDto ProductOwnerSubscriptionDto, int ProductOwnerId)
+        {
+            return ResponseResult(await _IProductOwnere.GetProductOwnerSubscriptionPlansDetails(ProductOwnerSubscriptionDto, ProductOwnerId));
         }
     }
 }

@@ -10,7 +10,7 @@
         public decimal AmountPaid { get; set; }
         public string TransactionId { get; set; } = string.Empty;
         public string Remarks { get; set; } = string.Empty;
-        public string IsTrial { get; set; } = string.Empty;
+        public bool IsTrial { get; set; } = false;
         public string PlanName { get; set; } = string.Empty;
         public string PlanCode { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
