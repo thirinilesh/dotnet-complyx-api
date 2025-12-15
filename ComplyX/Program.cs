@@ -27,6 +27,7 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
 // Add custom services
 builder.Services.AddScoped<IUserService,UserClass>();
 builder.Services.AddScoped<IProductOwner,AccountOwnerLogic>();
+builder.Services.AddScoped<IEmployeeServices, EmployeeClass>();
 builder.Services.AddScoped<AccountOwnerLogic>();
 builder.Services.AddSingleton<JwtTokenService>();
 

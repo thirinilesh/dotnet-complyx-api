@@ -29,9 +29,11 @@ namespace ComplyX.Models
 
         public int MaxEmployees { get; set; }
         public int? ProductOwnerId { get; set; }
-        public virtual ProductOwners ProductOwners { get; set; }
+        public virtual ProductOwners? ProductOwners { get; set; }
 
         public virtual ICollection<Subcontractors>? Subcontractorss { get; set; } = new List<Subcontractors>();
+
+        public virtual ICollection<Employees>? Employees { get; set; } = new List<Employees>();
 
     }
 }

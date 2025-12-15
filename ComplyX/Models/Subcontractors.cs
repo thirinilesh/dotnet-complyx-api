@@ -17,7 +17,9 @@ namespace ComplyX.Models
         public string PAN { get; set; }
         public DateTime CreatedAt { get; set; }
 
-        public virtual Company Companies { get; set; }
+        public virtual Company? Companies { get; set; }
+
+        public virtual ICollection<Employees>? Employees { get; set; } = new List<Employees>();
 
     }
 }

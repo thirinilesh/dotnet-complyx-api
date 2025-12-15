@@ -1,0 +1,66 @@
+﻿using Azure.Core;
+using ComplyX.BusinessLogic;
+using ComplyX.Data;
+using ComplyX.Helper;
+using ComplyX.Models;
+using ComplyX.Services;
+using FluentValidation.Results;
+using Lakshmi.Aca.Api.Controllers;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc;
+using System.Data.Entity;
+
+namespace ComplyX.Controllers
+{
+    [ApiController]
+    [Route("[controller]")]
+   // [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    public class EmployeesController : BaseController
+    {
+        private readonly IEmployeeServices _IEmployeeServices;
+
+        public EmployeesController(AppDbContext context, IEmployeeServices IEmployeeServices)
+        {
+            _IEmployeeServices = IEmployeeServices;
+        }
+        /// <summary>
+        /// Save Employee Data
+        /// </summary>
+        [HttpPut("SaveEmployeeData")]
+        public async Task<IActionResult> SaveEmployeeData([FromBody] Employees Employees)
+        {
+            return ResponseResult(await _IEmployeeServices.SaveEmployeeData(Employees));
+        }
+
+        /// <summary>
+        /// Delete Employee Data
+        /// </summary>
+        [HttpPut("RemoveEmployeeData")]
+        public async Task<IActionResult> RemoveEmployeeData(string EmployeeID)
+        {
+            return ResponseResult(await _IEmployeeServices.RemoveEmployeeData(EmployeeID));
+        }
+
+        /// <summary>
+        /// Get List for Employee Data by CompanyId
+        /// </summary>
+        [HttpPut("GetEmployeesByCompany")]
+        public async Task<IActionResult> GetEmployeesByCompany(string CompanyID)
+        {
+            return ResponseResult(await _IEmployeeServices.GetEmployeesByCompany(CompanyID));
+        }
+
+        /// <summary>
+        /// Delete Employee Data
+        /// </summary>
+        [HttpPut("GetEmployeesByCompanySubcontractor")]
+        public async Task<IActionResult> GetEmployeesByCompanySubcontractor(string CompanyID, string SubcontractorID)
+        {
+            return ResponseResult(await _IEmployeeServices.GetEmployeesByCompanySubcontractor(CompanyID, SubcontractorID));
+        }
+    }
+}
