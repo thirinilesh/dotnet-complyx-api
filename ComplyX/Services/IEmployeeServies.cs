@@ -9,5 +9,6 @@ namespace ComplyX.Services
         Task<ManagerBaseResponse<bool>> RemoveEmployeeData(string EmployeeID);
         Task<ManagerBaseResponse<List<Employees>>> GetEmployeesByCompany(string CompanyID);
         Task<ManagerBaseResponse<List<Employees>>> GetEmployeesByCompanySubcontractor(string CompanyID, string SubcontractorID);
+        Task<ManagerBaseResponse<List<Employees>>> GetEmployeesByCompanyEmployee(string CompanyID, string EmployeeID);
     }
 }

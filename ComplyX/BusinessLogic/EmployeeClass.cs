@@ -481,5 +481,43 @@ namespace ComplyX.BusinessLogic
                 };
             }
         }
+
+        public async Task<ManagerBaseResponse<List<Employees>>> GetEmployeesByCompanyEmployee(string CompanyID, string EmployeeID)
+        {
+            try
+            {
+                var Employee = await _context.Employees.AsQueryable().Where(x => x.CompanyID.ToString() == CompanyID && x.EmployeeID.ToString() == EmployeeID).ToListAsync();
+
+                if (Employee == null)
+                {
+
+                    return new ManagerBaseResponse<List<Employees>>
+                    {
+                        IsSuccess = false,
+                        Result = null,
+                        Message = "CompanyID and EmployeeID are required.",
+                    };
+                }
+                else
+                {
+                    return new ManagerBaseResponse<List<Employees>>
+                    {
+                        IsSuccess = true,
+                        Result = Employee,
+                        Message = "Employee Details Retrieved Successfully.",
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return new ManagerBaseResponse<List<Employees>>
+                {
+                    IsSuccess = false,
+                    Result = null,
+                    Message = ex.Message
+                };
+            }
+        }
     }
 }

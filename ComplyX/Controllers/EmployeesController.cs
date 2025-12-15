@@ -55,12 +55,20 @@ namespace ComplyX.Controllers
         }
 
         /// <summary>
-        /// Delete Employee Data
+        ///  Get List for Employee Data by CompanyId and SubcontractorID
         /// </summary>
         [HttpPut("GetEmployeesByCompanySubcontractor")]
         public async Task<IActionResult> GetEmployeesByCompanySubcontractor(string CompanyID, string SubcontractorID)
         {
             return ResponseResult(await _IEmployeeServices.GetEmployeesByCompanySubcontractor(CompanyID, SubcontractorID));
+        }
+        /// <summary>
+        ///  Get List for Employee Data by CompanyId and EmployeeID
+        /// </summary>
+        [HttpPut("GetEmployeesByCompanyEmployee")]
+        public async Task<IActionResult> GetEmployeesByCompanyEmployee(string CompanyID, string EmployeeID)
+        {
+            return ResponseResult(await _IEmployeeServices.GetEmployeesByCompanyEmployee(CompanyID, EmployeeID));
         }
     }
 }
