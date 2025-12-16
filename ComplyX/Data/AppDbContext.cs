@@ -23,6 +23,7 @@ namespace ComplyX.Data
         public virtual DbSet<ProductOwnerSubscriptions> ProductOwnerSubscriptionsDto { get; set; }
         public virtual DbSet<Subcontractors> Subcontractors { get; set; }
         public virtual DbSet<Employees> Employees { get; set; }
+        public virtual DbSet<PayrollData> PayrollData { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -71,6 +72,15 @@ namespace ComplyX.Data
                 entity.HasOne(d => d.Subcontractor).WithMany(p => p.Employees)
                    .HasForeignKey(d => d.SubcontractorID)
                    .HasConstraintName("FK_Employee_Subcontractor");
+            });
+
+            modelBuilder.Entity<PayrollData>(entity =>
+            {
+                entity.HasKey(e => e.PayrollID);
+
+                entity.HasOne(d => d.Employees).WithMany(p => p.Payroll)
+                    .HasForeignKey(d => d.EmployeeID)
+                    .HasConstraintName("FK_Payroll_Employee");
             });
         }
       
