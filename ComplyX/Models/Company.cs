@@ -35,5 +35,11 @@ namespace ComplyX.Models
 
         public virtual ICollection<Employees>? Employees { get; set; } = new List<Employees>();
 
+        public virtual ICollection<CompanyEPFO>? CompanyEPFO { get; set; } = new List<CompanyEPFO>();
+
+        public virtual ICollection<EPFOECRFile>? EPFOECRFile { get; set; } = new List<EPFOECRFile>();
+
+        public virtual ICollection<EPFOPeriod>? EPFOPeriods { get; set; } = new List<EPFOPeriod>();
+
     }
 }

@@ -47,6 +47,7 @@ namespace ComplyX.Models
         public virtual Subcontractors? Subcontractor { get; set; }
 
         public virtual ICollection<PayrollData> Payroll { get; set; } = new List<PayrollData>();
+        public virtual ICollection<EmployeeEPFO>? EmployeeEPFO { get; set; } = new List<EmployeeEPFO>();
 
     }
 }

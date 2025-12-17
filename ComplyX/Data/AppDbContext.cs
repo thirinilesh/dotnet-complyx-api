@@ -24,6 +24,13 @@ namespace ComplyX.Data
         public virtual DbSet<Subcontractors> Subcontractors { get; set; }
         public virtual DbSet<Employees> Employees { get; set; }
         public virtual DbSet<PayrollData> PayrollData { get; set; }
+        public virtual DbSet<CompanyEPFO> CompanyEPFO { get; set; }
+        public virtual DbSet<EmployeeEPFO> EmployeeEPFO { get; set; }
+
+        public virtual DbSet<EPFOECRFile> EPFOECRFile { get; set; }
+
+        public virtual DbSet<EPFOPeriod> EPFOPeriod { get; set; }
+ 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -81,6 +88,55 @@ namespace ComplyX.Data
                 entity.HasOne(d => d.Employees).WithMany(p => p.Payroll)
                     .HasForeignKey(d => d.EmployeeID)
                     .HasConstraintName("FK_Payroll_Employee");
+            });
+
+            modelBuilder.Entity<CompanyEPFO>(entity =>
+            {
+                entity.HasKey(e => e.CompanyEPFOId);
+
+                entity.HasOne(d => d.Companies).WithMany(p => p.CompanyEPFO)
+                    .HasForeignKey(d => d.CompanyId)
+                    .HasConstraintName("FK_CompanyEPFO_Company");
+            });
+
+            modelBuilder.Entity<EmployeeEPFO>(entity =>
+            {
+                entity.HasKey(e => e.EmployeeEPFOId);
+
+                entity.HasOne(d => d.Employees).WithMany(p => p.EmployeeEPFO)
+                    .HasForeignKey(d => d.EmployeeID)
+                    .HasConstraintName("FK_EmployeeEPFO_Employee");
+            });
+
+            modelBuilder.Entity<EPFOECRFile>(entity =>
+            {
+                entity.HasKey(e => e.ECRFileId);
+
+                entity.HasOne(d => d.Companies).WithMany(p => p.EPFOECRFile)
+                    .HasForeignKey(d => d.CompanyId)
+                    .HasConstraintName("FK_EPFOECRFile_Company");
+
+                entity.HasOne(d => d.Subcontractorss).WithMany(p => p.EPFOECRFile)
+                    .HasForeignKey(d => d.SubcontractorId)
+                    .HasConstraintName("FK_EPFOECRFile_Subcontractor");
+            });
+
+            modelBuilder.Entity<EPFOPeriod>(entity =>
+            {
+                entity.HasKey(e => e.EPFOPeriodId);
+
+                entity.HasOne(d => d.Companies).WithMany(p => p.EPFOPeriods)
+                    .HasForeignKey(d => d.CompanyID)
+                    .HasConstraintName("FK_EPFOECRFile_Company");
+
+                entity.HasOne(d => d.Subcontractorss).WithMany(p => p.EPFOPeriods)
+                    .HasForeignKey(d => d.SubcontractorId)
+                    .HasConstraintName("FK_EPFOECRFile_Subcontractor");
+
+                entity.HasOne(d => d.CreatedByUser).WithMany(p => p.CreatedEPFOPeriods)
+                   .HasForeignKey(d => d.CreatedByUserId)
+                   .HasPrincipalKey(u => u.Id)
+                   .OnDelete(DeleteBehavior.Restrict);
             });
         }
       
