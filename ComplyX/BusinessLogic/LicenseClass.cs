@@ -204,5 +204,73 @@ namespace ComplyX.BusinessLogic
                 });
             }
         }
+
+        public Task<ManagerBaseResponse<bool>> SaveMachineBindingData(MachineBinding MachineBinding)
+        {
+            var response = new ManagerBaseResponse<List<MachineBinding>>();
+
+            try
+            {
+                var LicenseActive = _context.LicenseActivation.Where(x => x.ActivationId == MachineBinding.LicenseActivationId).FirstOrDefault();
+                if (LicenseActive == null)
+                {
+                    return Task.FromResult(new ManagerBaseResponse<bool>
+                    {
+                        Result = false,
+                        Message = "License Active Data not found."
+                    });
+                }
+                else
+                {
+                    if (MachineBinding.MachineBindingId == 0)
+                    {
+                        // Insert
+                        MachineBinding _model = new MachineBinding();
+                         _model.MachineHash = MachineBinding.MachineHash;
+                        _model.CPUID = MachineBinding.CPUID;
+                        _model.MotherboardSerial = MachineBinding.MotherboardSerial;
+                        _model.MACAddresses = MachineBinding.MACAddresses;
+                        _model.WindowsSID = MachineBinding.WindowsSID;
+                        _model.FirstSeenAt = MachineBinding.FirstSeenAt;
+                        _model.LastSeenAt = MachineBinding.LastSeenAt;
+                        _model.LicenseActivationId = MachineBinding.LicenseActivationId;
+
+                        _context.Add(_model);
+                        _context.SaveChanges();
+                    }
+                    else
+                    {
+                        // Update
+                        var originalTerm = _context.MachineBinding
+                            .Where(x => x.MachineBindingId == MachineBinding.MachineBindingId).FirstOrDefault();
+                        originalTerm.MachineHash = MachineBinding.MachineHash;
+                        originalTerm.CPUID = MachineBinding.CPUID;
+                        originalTerm.MotherboardSerial = MachineBinding.MotherboardSerial ;
+                        originalTerm.MACAddresses = MachineBinding.MACAddresses ;
+                        originalTerm.WindowsSID = MachineBinding.WindowsSID ;
+                        originalTerm.FirstSeenAt = MachineBinding.FirstSeenAt ;
+                        originalTerm.LastSeenAt = MachineBinding.LastSeenAt ;
+                        originalTerm .LicenseActivationId = MachineBinding.LicenseActivationId ;
+
+                        _context.Update(originalTerm);
+                        _context.SaveChanges();
+                    }
+                }
+
+                return Task.FromResult(new ManagerBaseResponse<bool>
+                {
+                    Result = true,
+                    Message = "MachineBindings Data Saved Successfully."
+                });
+            }
+            catch (Exception e)
+            {
+                return Task.FromResult(new ManagerBaseResponse<bool>
+                {
+                    Result = false,
+                    Message = e.Message
+                });
+            }
+        }
     }
 }

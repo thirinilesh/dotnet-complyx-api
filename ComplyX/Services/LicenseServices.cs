@@ -10,5 +10,7 @@ namespace ComplyX.Services
         Task<ManagerBaseResponse<bool>> SaveLicenseKeyActivationData(LicenseActivation LicenseActivation);
 
         Task<ManagerBaseResponse<bool>> SaveLicenseAuditLogsData(LicenseAuditLogs LicenseAuditLogs);
+
+        Task<ManagerBaseResponse<bool>> SaveMachineBindingData(MachineBinding MachineBinding);
     }
 }

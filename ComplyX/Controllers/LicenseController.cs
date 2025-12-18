@@ -21,7 +21,7 @@ namespace ComplyX.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-   // [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class LicenseController : BaseController
     {
         private readonly LicenseServices _LicenseServices;
@@ -55,6 +55,15 @@ namespace ComplyX.Controllers
         public async Task<IActionResult> SaveLicenseAuditLogsData([FromBody] LicenseAuditLogs LicenseAuditLogs)
         {
             return ResponseResult(await _LicenseServices.SaveLicenseAuditLogsData(LicenseAuditLogs));
+        }
+
+        /// <summary>
+        /// Save MachineBinding Data
+        /// </summary>
+        [HttpPut("SaveMachineBindingData")]
+        public async Task<IActionResult> SaveMachineBindingData([FromBody] MachineBinding MachineBinding)
+        {
+            return ResponseResult(await _LicenseServices.SaveMachineBindingData(MachineBinding));
         }
     }
 }

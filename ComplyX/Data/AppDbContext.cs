@@ -32,6 +32,7 @@ namespace ComplyX.Data
         public virtual DbSet<EPFOPeriod> EPFOPeriod { get; set; }
         public virtual DbSet<LicenseKeyMaster> LicenseKeyMaster { get; set; }
         public virtual DbSet<LicenseActivation> LicenseActivation { get; set; }
+        public virtual DbSet<MachineBinding> MachineBinding { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -171,6 +172,17 @@ namespace ComplyX.Data
                 entity.HasOne(d => d.LicenseActivation).WithMany(p => p.LicenseAuditLogs)
                     .HasForeignKey(d => d.ActivationId)
                     .HasConstraintName("FK_LicenseAuditLogs_LicenseActivation");
+            });
+
+            modelBuilder.Entity<MachineBinding>(entity =>
+            {
+                entity.HasKey(e => e.MachineBindingId);
+
+                entity.HasOne(d => d.LicenseActivation).WithMany(p => p.MachineBinding)
+                     .HasForeignKey(d => d.LicenseActivationId)
+                   .HasPrincipalKey(u => u.ActivationId)
+                   .OnDelete(DeleteBehavior.Restrict)
+                    .HasConstraintName("FK_MachineBindingId_LicenseActivation");
             });
         }
       

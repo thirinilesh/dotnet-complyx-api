@@ -15,5 +15,6 @@
 
         public virtual LicenseKeyMaster? LicenseKeyMaster { get; set; }
         public virtual ICollection<LicenseAuditLogs>? LicenseAuditLogs { get; set; } = new List<LicenseAuditLogs>();
+        public virtual ICollection<MachineBinding>? MachineBinding { get; set; } = new List<MachineBinding>();
     }
 }
