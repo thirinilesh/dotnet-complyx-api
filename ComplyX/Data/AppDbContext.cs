@@ -30,7 +30,9 @@ namespace ComplyX.Data
         public virtual DbSet<EPFOECRFile> EPFOECRFile { get; set; }
 
         public virtual DbSet<EPFOPeriod> EPFOPeriod { get; set; }
- 
+        public virtual DbSet<LicenseKeyMaster> LicenseKeyMaster { get; set; }
+        public virtual DbSet<LicenseActivation> LicenseActivation { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -137,6 +139,38 @@ namespace ComplyX.Data
                    .HasForeignKey(d => d.CreatedByUserId)
                    .HasPrincipalKey(u => u.Id)
                    .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<LicenseKeyMaster>(entity =>
+            {
+                entity.HasKey(e => e.LicenseId);
+
+                entity.HasOne(d => d.ProductOwners).WithMany(p => p.LicenseKeyMaster)
+                    .HasForeignKey(d => d.ProductOwnerId)
+                    .HasConstraintName("FK_LicenseKeyMaster_ProductOwners");
+            });
+
+            modelBuilder.Entity<LicenseActivation>(entity =>
+            {
+                entity.HasKey(e => e.ActivationId);
+
+                entity.HasOne(d => d.LicenseKeyMaster).WithMany(p => p.LicenseActivation)
+                    .HasForeignKey(d => d.LicenseId)
+                    .HasConstraintName("FK_LicenseActivation_LicenseKeyMaster");
+            });
+
+
+            modelBuilder.Entity<LicenseAuditLogs>(entity =>
+            {
+                entity.HasKey(e => e.AuditId);
+
+                entity.HasOne(d => d.LicenseKeyMaster).WithMany(p => p.LicenseAuditLogs)
+                    .HasForeignKey(d => d.LicenseId)
+                    .HasConstraintName("FK_LicenseAuditLogs_LicenseKeyMaster");
+
+                entity.HasOne(d => d.LicenseActivation).WithMany(p => p.LicenseAuditLogs)
+                    .HasForeignKey(d => d.ActivationId)
+                    .HasConstraintName("FK_LicenseAuditLogs_LicenseActivation");
             });
         }
       

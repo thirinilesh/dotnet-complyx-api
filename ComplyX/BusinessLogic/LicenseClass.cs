@@ -1,0 +1,208 @@
+﻿using ComplyX.Helper;
+using ComplyX.Models;
+using ComplyX.Data;
+using ComplyX.Services;
+using Lakshmi.Common.Data.Context;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.ComponentModel.Design;
+
+using System.Linq;
+using System.Runtime.InteropServices;
+using System.Web.Providers.Entities;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using static System.Net.Mime.MediaTypeNames;
+using Microsoft.AspNetCore.Identity;
+
+namespace ComplyX.BusinessLogic
+{
+    public class LicenseClass : LicenseServices
+    {
+        private readonly AppDbContext _context;
+
+        public LicenseClass(AppDbContext context)
+        {
+            _context = context;
+           
+        }
+        public Task<ManagerBaseResponse<bool>> SaveLicenseKeyMasterData(LicenseKeyMaster LicenseKeyMaster)
+        {
+            var response = new ManagerBaseResponse<List<LicenseKeyMaster>>();
+
+            try
+            {
+                var ProductOwner = _context.ProductOwners.Where(x => x.ProductOwnerId == LicenseKeyMaster.ProductOwnerId).FirstOrDefault();
+                if (ProductOwner == null)
+                {
+                    return Task.FromResult(new ManagerBaseResponse<bool>
+                    {
+                        Result = false,
+                        Message = "ProductOwner Data not found."
+                    });
+                }
+                else
+                {
+                    if (LicenseKeyMaster.LicenseId == 0)
+                    {
+                        // Insert
+                        LicenseKeyMaster _model = new LicenseKeyMaster();
+                        _model.ProductOwnerId = ProductOwner.ProductOwnerId;
+                        _model.LicenseKey = LicenseKeyMaster.LicenseKey;
+                        _model.PlanType = LicenseKeyMaster.PlanType;
+                        _model.MaxActivations = LicenseKeyMaster.MaxActivations;
+                        _model.StartDate = LicenseKeyMaster.StartDate;
+                        _model.EndDate = LicenseKeyMaster.EndDate;
+                        _model.IsActive = LicenseKeyMaster.IsActive;
+                        _model.CreatedAt = Util.GetCurrentCSTDateAndTime();                     
+
+                        _context.Add(_model);
+                        _context.SaveChanges();
+                    }
+                    else
+                    {
+                        // Update
+                        var originalTerm = _context.LicenseKeyMaster
+                            .Where(x => x.LicenseId == LicenseKeyMaster.LicenseId).FirstOrDefault();
+                        originalTerm.IsActive = LicenseKeyMaster.IsActive;
+                        originalTerm.UpdatedAt = Util.GetCurrentCSTDateAndTime();
+
+                        _context.Update(originalTerm);
+                        _context.SaveChanges();
+                    }
+                }
+
+                return Task.FromResult(new ManagerBaseResponse<bool>
+                {
+                    Result = true,
+                    Message = "LicenseKeyMaster Data Saved Successfully."
+                });
+            }
+            catch (Exception e)
+            {
+                return Task.FromResult(new ManagerBaseResponse<bool>
+                {
+                    Result = false,
+                    Message = e.Message
+                });
+            }
+        }
+
+        public Task<ManagerBaseResponse<bool>> SaveLicenseKeyActivationData(LicenseActivation LicenseActivation)
+        {
+            var response = new ManagerBaseResponse<List<LicenseActivation>>();
+
+            try
+            {
+                var License = _context.LicenseKeyMaster.Where(x => x.LicenseId == LicenseActivation.LicenseId).FirstOrDefault();
+                if (License == null)
+                {
+                    return Task.FromResult(new ManagerBaseResponse<bool>
+                    {
+                        Result = false,
+                        Message = "License Data not found."
+                    });
+                }
+                else
+                {
+                    if (LicenseActivation.ActivationId == 0)
+                    {
+                        // Insert
+                        LicenseActivation _model = new LicenseActivation();
+                        _model.LicenseId = LicenseActivation.LicenseId;
+                        _model.MachineHash = LicenseActivation.MachineHash;
+                        _model.MachineName = LicenseActivation.MachineName;
+                        _model.OsUser = LicenseActivation.OsUser;
+                        _model.ActivatedAt = Util.GetCurrentCSTDateAndTime();
+                        _model.LastVerifiedAt = Util.GetCurrentCSTDateAndTime();
+                        _model.IsRevoked    = LicenseActivation.IsRevoked;
+                        _model.GraceExpiryAt = Util.GetCurrentCSTDateAndTime();
+                        _model.AppVersion = LicenseActivation.AppVersion;
+
+                        _context.Add(_model);
+                        _context.SaveChanges();
+                    }
+                    else
+                    {
+                        // Update
+                        var originalTerm = _context.LicenseActivation
+                            .Where(x => x.ActivationId == LicenseActivation.ActivationId).FirstOrDefault();
+                        originalTerm.LastVerifiedAt = Util.GetCurrentCSTDateAndTime();
+                        originalTerm.IsRevoked = LicenseActivation.IsRevoked;
+                        originalTerm.GraceExpiryAt = Util.GetCurrentCSTDateAndTime();
+                        originalTerm.AppVersion = LicenseActivation.AppVersion;
+
+
+                        _context.Update(originalTerm);
+                        _context.SaveChanges();
+                    }
+                }
+
+                return Task.FromResult(new ManagerBaseResponse<bool>
+                {
+                    Result = true,
+                    Message = "LicenseKey Activation Data Saved Successfully."
+                });
+            }
+            catch (Exception e)
+            {
+                return Task.FromResult(new ManagerBaseResponse<bool>
+                {
+                    Result = false,
+                    Message = e.Message
+                });
+            }
+        }
+
+        public Task<ManagerBaseResponse<bool>> SaveLicenseAuditLogsData(LicenseAuditLogs LicenseAuditLogs)
+        {
+            var response = new ManagerBaseResponse<List<LicenseAuditLogs>>();
+
+            try
+            {
+                var LicenseActive = _context.LicenseActivation.Where(x => x.ActivationId == LicenseAuditLogs.ActivationId && x.LicenseId == LicenseAuditLogs.LicenseId).FirstOrDefault();
+               
+                if (LicenseActive == null)
+                {
+                    return Task.FromResult(new ManagerBaseResponse<bool>
+                    {
+                        Result = false,
+                        Message = "License not active."
+                    });
+                }
+                else
+                {
+                    if (LicenseAuditLogs.AuditId == 0)
+                    {
+                        // Insert
+                        LicenseAuditLogs _model = new LicenseAuditLogs();
+                        _model.LicenseId = LicenseAuditLogs.LicenseId;
+                        _model.ActivationId = LicenseAuditLogs.ActivationId;
+                        _model.EventMessage = LicenseAuditLogs.EventMessage;
+                        _model.EventType    = LicenseAuditLogs.EventType;
+                        _model.LoggedAt = LicenseAuditLogs.LoggedAt;
+                        _model.MachineHash = LicenseAuditLogs.MachineHash;
+                        _model.IPAddress = LicenseAuditLogs.IPAddress;
+
+                        _context.Add(_model);
+                        _context.SaveChanges();
+                    }
+                     
+                }
+
+                return Task.FromResult(new ManagerBaseResponse<bool>
+                {
+                    Result = true,
+                    Message = "License Activation log Saved Successfully."
+                });
+            }
+            catch (Exception e)
+            {
+                return Task.FromResult(new ManagerBaseResponse<bool>
+                {
+                    Result = false,
+                    Message = e.Message
+                });
+            }
+        }
+    }
+}

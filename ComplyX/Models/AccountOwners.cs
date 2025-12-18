@@ -40,6 +40,7 @@ namespace ComplyX.Models
 
         public virtual ICollection<Company> Companies { get; set; } = new List<Company>();
         public virtual ICollection<ProductOwnerSubscriptions> ProductOwnerSubscriptionss { get; set; } = new List<ProductOwnerSubscriptions>();
+        public virtual ICollection<LicenseKeyMaster>? LicenseKeyMaster { get; set; } = new List<LicenseKeyMaster>();
         internal FluentValidation.Results.ValidationResult Validate(ProductOwners productOwners)
         {
             throw new NotImplementedException();
