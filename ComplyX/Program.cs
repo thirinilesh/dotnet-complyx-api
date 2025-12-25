@@ -1,5 +1,6 @@
-﻿using ComplyX.Data;
-using ComplyX.Helper;
+﻿using ComplyX.Shared.Data;
+﻿using ComplyX_Businesss.Models;
+using ComplyX.Shared.Helper;
 using ComplyX.BusinessLogic;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -18,20 +19,21 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
- 
+
 // Add Identity
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders();
 
 // Add custom services
-builder.Services.AddScoped<IUserService,UserClass>();
-builder.Services.AddScoped<IProductOwner,AccountOwnerLogic>();
+builder.Services.AddScoped<IUserService, UserClass>();
+builder.Services.AddScoped<IProductOwner, AccountOwnerLogic>();
 builder.Services.AddScoped<IEmployeeServices, EmployeeClass>();
 builder.Services.AddScoped<IPayrollServices, PayrollClass>();
 builder.Services.AddScoped<ImportServices, ImportClass>();
 builder.Services.AddScoped<EPFOServices, EPFOClass>();
 builder.Services.AddScoped<AccountOwnerLogic>();
+builder.Services.AddScoped<Nest.Filter>();
 builder.Services.AddSingleton<JwtTokenService>();
 
 // Configure JWT

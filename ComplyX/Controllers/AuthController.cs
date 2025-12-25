@@ -1,4 +1,4 @@
-﻿using ComplyX.Models;
+﻿using ComplyX_Businesss.Models;
 using ComplyX.Services;
 using FluentValidation.Results;
 using Lakshmi.Aca.Api.Controllers;
@@ -46,7 +46,7 @@ namespace Lakshmi.Api.Controller
             return Ok(response);
         }
 
-        private ErrorResponse HandleValidationErrors(ValidationResult validationResult)
+        private new ErrorResponse HandleValidationErrors(ValidationResult validationResult)
         {
             throw new NotImplementedException();
         }

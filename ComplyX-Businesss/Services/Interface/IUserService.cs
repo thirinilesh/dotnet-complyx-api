@@ -1,0 +1,21 @@
+﻿using ComplyX.Shared.Helper;
+using ComplyX_Businesss.Models;
+using ComplyX.BusinessLogic;
+using Microsoft.AspNetCore.Mvc;
+
+namespace ComplyX.Services
+{
+    public interface IUserService 
+
+    {
+       
+        Task<ManagerBaseResponse<RegisterUser>> Register(RegisterUser RegisterUser);
+        Task<ManagerBaseResponse<Login>> Login(Login Login);
+        Task<AuthRequestModel> Authenticate(AuthRequestModel request);
+        Task<ManagerBaseResponse<ForgotPasswordVerifyModel>> ForgotPassword([FromBody] ForgotPasswordVerifyModel request);
+        Task<ManagerBaseResponse<ResetPasswordRequestModel>> ResetPassword([FromBody] ResetPasswordRequestModel request);
+        Task<ManagerBaseResponse<ChangePasswordModel>> ChangePassword([FromBody] ChangePasswordModel model);
+        Task<ManagerBaseResponse<bool>> CreateRoleAsync(string  rolename);
+        Task<ManagerBaseResponse<bool>> AssignRoleToUser(AssignRoleToUser request);
+    }
+}

@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Azure.Core;
 using ComplyX.BusinessLogic;
-using ComplyX.Data;
-using ComplyX.Helper;
-using ComplyX.Models;
+using ComplyX.Shared.Data;
+using ComplyX.Shared.Helper;
+using ComplyX_Businesss.Models;
 using ComplyX.Services;
 using FluentValidation.Results;
 using Lakshmi.Aca.Api.Controllers;
@@ -13,11 +13,11 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
-using System.Data.Entity;
 
 using Microsoft.AspNetCore.Mvc;
+using ComplyX.Shared.Data;
 
-namespace ComplyX.Controllers
+namespace ComplyX.Shared.Controllers
 {
     [ApiController]
     [Route("[controller]")]

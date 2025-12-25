@@ -1,13 +1,13 @@
-﻿using ComplyX.Models;
+﻿using ComplyX_Businesss.Models;
 using ComplyX.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
-using ComplyX.Helper;
+using ComplyX.Shared    .Helper;
 using Microsoft.AspNetCore.Identity;
 using ComplyX.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using Lakshmi.Aca.Api.Controllers;
-using ComplyX.Data;
+using ComplyX.Shared.Data;
 using Azure.Core;
 
 namespace ComplyX.Controllers

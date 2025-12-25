@@ -1,8 +1,8 @@
 ﻿using Azure.Core;
 using ComplyX.BusinessLogic;
-using ComplyX.Data;
-using ComplyX.Helper;
-using ComplyX.Models;
+using ComplyX.Shared.Data;
+using ComplyX.Shared.Helper;
+using ComplyX_Businesss.Models;
 using ComplyX.Services;
 using FluentValidation.Results;
 using Lakshmi.Aca.Api.Controllers;
@@ -159,5 +159,199 @@ namespace ComplyX.Controllers
             return ResponseResult(await _IProductOwnere.GetProductOwnerSubcontractorsDetails(ProductOwnerId));
         }
 
+        /// <summary>
+        /// Save Plans Data
+        /// </summary>
+        [HttpPut("SavePlansData")]
+        public async Task<IActionResult> SavePlansData([FromBody] Plans Plans)
+        {
+            return ResponseResult(await _IProductOwnere.SavePlansData(Plans));
+        }
+
+        /// <summary>
+        /// Remove Plans Data
+        /// </summary>
+        [HttpPut("RemovePlansData")]
+        public async Task<IActionResult> RemovePlansData(string PlansID)
+        {
+            return ResponseResult(await _IProductOwnere.RemovePlansData(PlansID));
+        }
+
+        /// <summary>
+        /// All Plans Data
+        /// </summary>
+        [HttpPost("GetAllPlansData")]
+        public async Task<IActionResult> GetAllPlansData()
+        {
+            return ResponseResult(await _IProductOwnere.GetAllPlansData());
+        }
+
+        /// <summary>
+        /// All Plans Data By ID
+        /// </summary>
+        [HttpPost("GetAllPlansDataByID")]
+        public async Task<IActionResult> GetAllPlansDataByID(string PlanID)
+        {
+            return ResponseResult(await _IProductOwnere.GetAllPlansDataByID(PlanID));
+        }
+
+        /// <summary>
+        /// All Plans Data Filter
+        /// </summary>
+        [HttpGet("GetAllPlansDataFilter")]
+        public async Task<IActionResult> GetAllPlansDataFilter([FromQuery]PagedListCriteria PagedListCriteria)
+        {
+            return ResponseResult(await _IProductOwnere.GetAllPlansDataFilter(PagedListCriteria));
+        }
+        /// <summary>
+        /// Save SubscriptionInvoices Data
+        /// </summary>
+        [HttpPut("SaveSubscriptionInvoicesData")]
+        public async Task<IActionResult> SaveSubscriptionInvoicesData([FromBody] SubscriptionInvoices SubscriptionInvoices)
+        {
+            return ResponseResult(await _IProductOwnere.SaveSubscriptionInvoicesData(SubscriptionInvoices));
+        }
+
+        /// <summary>
+        /// Remove SubscriptionInvoices Data
+        /// </summary>
+        [HttpPut("RemoveSubscriptionInvoicesData")]
+        public async Task<IActionResult> RemoveSubscriptionInvoicesData(string InvoiceID)
+        {
+            return ResponseResult(await _IProductOwnere.RemoveSubscriptionInvoicesData(InvoiceID));
+        }
+
+        /// <summary>
+        /// All SubscriptionInvoices Data
+        /// </summary>
+        [HttpPost("GetAllSubscriptionInvoicesData")]
+        public async Task<IActionResult> GetAllSubscriptionInvoicesData()
+        {
+            return ResponseResult(await _IProductOwnere.GetAllSubscriptionInvoicesData());
+        }
+
+        /// <summary>
+        /// All SubscriptionInvoices Data By ID
+        /// </summary>
+        [HttpPost("GetAllSubscriptionInvoicesDataByID")]
+        public async Task<IActionResult> GetAllSubscriptionInvoicesDataByID(string InvoiceID)
+        {
+            return ResponseResult(await _IProductOwnere.GetAllSubscriptionInvoicesDataByID(InvoiceID));
+        }
+        /// <summary>
+        /// All SubscriptionInvoices Data Filter
+        /// </summary>
+        [HttpGet("GetAllSubscriptionInvoicesFilter")]
+        public async Task<IActionResult> GetAllSubscriptionInvoicesFilter([FromQuery] PagedListCriteria PagedListCriteria)
+        {
+            return ResponseResult(await _IProductOwnere.GetAllSubscriptionInvoicesFilter(PagedListCriteria));
+        }
+
+        /// <summary>
+        /// Save SubscriptionPlans Data
+        /// </summary>
+        [HttpPut("SaveSubscriptionPlansData")]
+        public async Task<IActionResult> SaveSubscriptionPlansData([FromBody] SubscriptionPlans subscriptionPlans)
+        {
+            return ResponseResult(await _IProductOwnere.SaveSubscriptionPlansData(subscriptionPlans));
+        }
+
+        /// <summary>
+        /// Remove SubscriptionPlans Data
+        /// </summary>
+        [HttpPut("RemoveSubscriptionPlansData")]
+        public async Task<IActionResult> RemoveSubscriptionPlansData(string PlanID)
+        {
+            return ResponseResult(await _IProductOwnere.RemoveSubscriptionPlansData(PlanID));
+        }
+
+        /// <summary>
+        /// Save Payment Transaction Data
+        /// </summary>
+        [HttpPut("SavePaymentTransactionData")]
+        public async Task<IActionResult> SavePaymentTransactionData([FromBody] PaymentTransactions PaymentTransactions)
+        {
+            return ResponseResult(await _IProductOwnere.SavePaymentTransactionData(PaymentTransactions));
+        }
+
+        /// <summary>
+        /// Remove Payment Transaction Data
+        /// </summary>
+        [HttpPut("RemovePaymentTransactionData")]
+        public async Task<IActionResult> RemovePaymentTransactionData(string TransactionID)
+        {
+            return ResponseResult(await _IProductOwnere.RemovePaymentTransactionData(TransactionID));
+        }
+
+        /// <summary>
+        /// All PaymentTransaction Data
+        /// </summary>
+        [HttpPost("GetAllPaymentTransactionData")]
+        public async Task<IActionResult> GetAllPaymentTransactionData()
+        {
+            return ResponseResult(await _IProductOwnere.GetAllPaymentTransactionData());
+        }
+        /// <summary>
+        /// All PaymentTransaction Data By ID
+        /// </summary>
+        [HttpPost("GetAllPaymentTransactionDataByID")]
+        public async Task<IActionResult> GetAllPaymentTransactionDataByID(string TransactionID)
+        {
+            return ResponseResult(await _IProductOwnere.GetAllPaymentTransactionDataByID(TransactionID));
+        }
+
+        /// <summary>
+        /// All PaymentTransaction Data Filter
+        /// </summary>
+        [HttpGet("GetAllPaymentTransactionFilter")]
+        public async Task<IActionResult> GetAllPaymentTransactionFilter([FromQuery] PagedListCriteria PagedListCriteria)
+        {
+            return ResponseResult(await _IProductOwnere.GetAllPaymentTransactionFilter(PagedListCriteria));
+        }
+        /// <summary>
+        /// Save Customer Payment Data
+        /// </summary>
+        [HttpPut("SaveCustomerPaymentsData")]
+        public async Task<IActionResult> SaveCustomerPaymentsData([FromBody] CustomerPayments CustomerPayments)
+        {
+            return ResponseResult(await _IProductOwnere.SaveCustomerPaymentsData(CustomerPayments));
+        }
+
+
+        /// <summary>
+        /// Remove Cutomer Payment Data
+        /// </summary>
+        [HttpPut("RemoveCustomerPaymentsData")]
+        public async Task<IActionResult> RemoveCustomerPaymentsData(string PaymentID)
+        {
+            return ResponseResult(await _IProductOwnere.RemoveCustomerPaymentsData(PaymentID));
+        }
+
+        /// <summary>
+        /// All Customer Payment Data
+        /// </summary>
+        [HttpPost("GetAllCustomerPaymentsData")]
+        public async Task<IActionResult> GetAllCustomerPaymentsData()
+        {
+            return ResponseResult(await _IProductOwnere.GetAllCustomerPaymentsData());
+        }
+
+        /// <summary>
+        /// All PaymentTransaction Data By ID
+        /// </summary>
+        [HttpPost("GetAllCustomerPaymentDataByID")]
+        public async Task<IActionResult> GetAllCustomerPaymentDataByID(string PaymentID)
+        {
+            return ResponseResult(await _IProductOwnere.GetAllCustomerPaymentDataByID(PaymentID));
+        }
+
+        /// <summary>
+        /// All Customer Payment Data Filter
+        /// </summary>
+        [HttpGet("GetAllCustomerPaymentFilter")]
+        public async Task<IActionResult> GetAllCustomerPaymentFilter([FromQuery] PagedListCriteria PagedListCriteria)
+        {
+            return ResponseResult(await _IProductOwnere.GetAllCustomerPaymentFilter(PagedListCriteria));
+        }
     }
 }
