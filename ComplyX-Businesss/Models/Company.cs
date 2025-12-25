@@ -44,6 +44,6 @@ namespace ComplyX_Businesss.Models
         public virtual ICollection<SubscriptionInvoices>? SubscriptionInvoices { get; set; } = new List<SubscriptionInvoices>();
 
         public virtual ICollection<CustomerPayments>? CustomerPayments { get; set; } = new List<CustomerPayments>();
-
+        public virtual ICollection<Gratuity_Policy>? Gratuity_Policy { get; set; } = new List<Gratuity_Policy>();
     }
 }

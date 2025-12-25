@@ -568,5 +568,211 @@ namespace ComplyX.BusinessLogic
             }
         }
 
+        public async Task<ManagerBaseResponse<bool>> SaveGratuity_PolicyData(Gratuity_Policy Gratuity_Policy)
+        {
+            var response = new ManagerBaseResponse<List<Gratuity_Policy>>();
+
+            try
+            {
+                var Company = await _context.Companies.FirstOrDefaultAsync(x => x.CompanyID == Gratuity_Policy.CompanyID);
+
+                if (Company == null)
+                {
+                    return new ManagerBaseResponse<bool>
+                    {
+                        Result = false,
+                        Message = "Company is not found.",
+                    };
+                }
+                else
+                {
+                    if (Gratuity_Policy.PolicyID == 0)
+                    {
+                        // Insert
+                        Gratuity_Policy _model = new Gratuity_Policy();
+                        _model.CompanyID = Gratuity_Policy.CompanyID;
+                        _model.MinimumServiceYears = Gratuity_Policy.MinimumServiceYears;
+                        _model.Eligible = Gratuity_Policy.Eligible;
+                        _model.CreatedAt = Gratuity_Policy.CreatedAt;
+
+                        _context.Add(_model);
+                        _context.SaveChanges();
+                    }
+                    else
+                    {
+                        // Update
+                        var originalTerm = _context.Gratuity_Policy
+                            .Where(x => x.PolicyID == Gratuity_Policy.PolicyID)
+                                .FirstOrDefault();
+                        originalTerm.CompanyID = Gratuity_Policy.CompanyID;
+                        originalTerm.MaxGratuityAmount = Gratuity_Policy.MaxGratuityAmount;
+                        originalTerm.Eligible = Gratuity_Policy.Eligible;
+                        originalTerm.UpdatedAt = Gratuity_Policy.UpdatedAt;
+
+                        _context.Update(originalTerm);
+                        _context.SaveChanges();
+                    }
+                }
+                return new ManagerBaseResponse<bool>
+                {
+                    Result = true,
+                    Message = "Gratuity Policy Data Saved Successfully."
+                };
+            }
+            catch (Exception e)
+            {
+                return new ManagerBaseResponse<bool>
+                {
+                    Result = false,
+                    Message = e.Message
+                };
+            }
+        }
+        public async Task<ManagerBaseResponse<bool>> RemoveGratuity_PolicyData(string PolicyID)
+        {
+            try
+            {
+                // Get all report detail definitions for the given report name
+                var Gratuity_Policy = await _context.Gratuity_Policy.Where(x => x.PolicyID.ToString() == PolicyID).ToListAsync();
+
+                if (string.IsNullOrEmpty(Gratuity_Policy.ToString()))
+                {
+                    return new ManagerBaseResponse<bool>
+                    {
+                        Result = false,
+                        Message = "Gratuity Policy Id is not Vaild",
+                    };
+                }
+
+                // Remove all related report details
+                _context.Gratuity_Policy.RemoveRange(Gratuity_Policy);
+
+                await _context.SaveChangesAsync();
+
+                return new ManagerBaseResponse<bool>
+                {
+                    Result = true,
+                    Message = "Gratuity Policy Data Removed Successfully.",
+                };
+
+            }
+            catch (Exception ex)
+            {
+                return new ManagerBaseResponse<bool>
+                {
+                    Result = false,
+                    Message = ex.Message
+                };
+            }
+
+        }
+        public async Task<ManagerBaseResponse<bool>> SaveGratuity_TransactionsData(Gratuity_Transactions Gratuity_Transactions)
+        {
+            var response = new ManagerBaseResponse<List<Gratuity_Transactions>>();
+
+            try
+            {
+                var Employee = await _context.Employees.FirstOrDefaultAsync(x => x.EmployeeID == Gratuity_Transactions.EmployeeID);
+
+                if (Employee == null)
+                {
+                    return new ManagerBaseResponse<bool>
+                    {
+                        Result = false,
+                        Message = "Employee is not found.",
+                    };
+                }
+                else
+                {
+                    if (Gratuity_Transactions.GratuityID == 0)
+                    {
+                        // Insert
+                        Gratuity_Transactions _model = new Gratuity_Transactions();
+                        _model.EmployeeID = Employee.EmployeeID;
+                        _model.LastDrawnSalary  =  Gratuity_Transactions.LastDrawnSalary;
+                        _model.YearsOfService = Gratuity_Transactions.YearsOfService;
+                        _model.GratuityAmount = Gratuity_Transactions.GratuityAmount;
+                        _model.PaymentStatus = Gratuity_Transactions.PaymentStatus; 
+                        _model.PaidDate = Gratuity_Transactions.PaidDate;
+                        _model.ApprovedBy = Gratuity_Transactions.ApprovedBy;
+                        _model.CreatedAt = Gratuity_Transactions.CreatedAt;
+
+                        _context.Add(_model);
+                        _context.SaveChanges();
+                    }
+                    else
+                    {
+                        // Update
+                        var originalTerm = _context.Gratuity_Transactions
+                            .Where(x => x.GratuityID == Gratuity_Transactions.GratuityID)
+                                .FirstOrDefault();
+                        originalTerm.EmployeeID = Employee.EmployeeID;
+                        originalTerm.LastDrawnSalary = Gratuity_Transactions.LastDrawnSalary;
+                        originalTerm.YearsOfService = Gratuity_Transactions.YearsOfService;
+                        originalTerm.GratuityAmount = Gratuity_Transactions.GratuityAmount;
+                        originalTerm.PaymentStatus = Gratuity_Transactions.PaymentStatus;
+                        originalTerm.PaidDate = Gratuity_Transactions.PaidDate;
+                        originalTerm.ApprovedBy = Gratuity_Transactions.ApprovedBy;
+                        originalTerm.UpdatedAt = Gratuity_Transactions.UpdatedAt;
+
+                        _context.Update(originalTerm);
+                        _context.SaveChanges();
+                    }
+                }
+                return new ManagerBaseResponse<bool>
+                {
+                    Result = true,
+                    Message = "Gratuity Transactions Data Saved Successfully."
+                };
+            }
+            catch (Exception e)
+            {
+                return new ManagerBaseResponse<bool>
+                {
+                    Result = false,
+                    Message = e.Message
+                };
+            }
+        }
+        public async Task<ManagerBaseResponse<bool>> RemoveGratuity_TransactionsData(string GratuityID)
+        {
+            try
+            {
+                // Get all report detail definitions for the given report name
+                var Gratuity_Transactions = await _context.Gratuity_Transactions.Where(x => x.GratuityID.ToString() == GratuityID).ToListAsync();
+
+                if (string.IsNullOrEmpty(Gratuity_Transactions.ToString()))
+                {
+                    return new ManagerBaseResponse<bool>
+                    {
+                        Result = false,
+                        Message = "Gratuity Transactions Id is not Vaild",
+                    };
+                }
+
+                // Remove all related report details
+                _context.Gratuity_Transactions.RemoveRange(Gratuity_Transactions);
+
+                await _context.SaveChangesAsync();
+
+                return new ManagerBaseResponse<bool>
+                {
+                    Result = true,
+                    Message = "Gratuity Transactions Data Removed Successfully.",
+                };
+
+            }
+            catch (Exception ex)
+            {
+                return new ManagerBaseResponse<bool>
+                {
+                    Result = false,
+                    Message = ex.Message
+                };
+            }
+
+        }
+
+
     }
 }

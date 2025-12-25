@@ -79,5 +79,40 @@ namespace ComplyX.Controllers
         {
             return ResponseResult(await _IEmployeeServices.GetEmployeeDataFilter(PagedListCriteria));
         }
+
+        /// <summary>
+        /// Save Gratuity Policy  Data 
+        /// </summary>
+        [HttpPost("SaveGratuity_PolicyData")]
+        public async Task<IActionResult> SaveGratuity_PolicyData([FromBody] Gratuity_Policy Gratuity_Policy)
+        {
+            return ResponseResult(await _IEmployeeServices.SaveGratuity_PolicyData(Gratuity_Policy));
+        }
+
+        /// <summary>
+        /// Remove Gratuity Policy  Data 
+        /// </summary>
+        [HttpPost("RemoveGratuity_PolicyData")]
+        public async Task<IActionResult> RemoveGratuity_PolicyData(string PolicyID)
+        {
+            return ResponseResult(await _IEmployeeServices.RemoveGratuity_PolicyData(PolicyID));
+        }
+        /// <summary>
+        /// Save Gratuity Policy  Data 
+        /// </summary>
+        [HttpPost("SaveGratuity_TransactionsData")]
+        public async Task<IActionResult> SaveGratuity_TransactionsData([FromBody] Gratuity_Transactions Gratuity_Transactions)
+        {
+            return ResponseResult(await _IEmployeeServices.SaveGratuity_TransactionsData(Gratuity_Transactions));
+        }
+        /// <summary>
+        /// Remove Gratuity Transactions  Data 
+        /// </summary>
+        [HttpPost("RemoveGratuity_TransactionsData")]
+        public async Task<IActionResult> RemoveGratuity_TransactionsData(string GratuityID)
+        {
+            return ResponseResult(await _IEmployeeServices.RemoveGratuity_TransactionsData(GratuityID));
+        }
+
     }
 }

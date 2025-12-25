@@ -40,6 +40,8 @@ namespace ComplyX.Shared.Data
         public virtual DbSet<SubscriptionInvoices> SubscriptionInvoices { get; set; }
         public virtual DbSet<PaymentTransactions> PaymentTransactions { get; set; }
         public virtual DbSet<CustomerPayments> CustomerPayments { get; set; }
+        public virtual DbSet<Gratuity_Policy> Gratuity_Policy { get; set; }
+        public virtual DbSet<Gratuity_Transactions> Gratuity_Transactions { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -224,6 +226,22 @@ namespace ComplyX.Shared.Data
                     .HasForeignKey(d => d.PlanID)
                    .HasConstraintName("FK_CustomerPayments_Plans");
 
+            });
+            modelBuilder.Entity<Gratuity_Policy>(entity =>
+            {
+                entity.HasKey(e => e.PolicyID);
+
+                entity.HasOne(d => d.Company).WithMany(p => p.Gratuity_Policy)
+                     .HasForeignKey(d => d.CompanyID)
+                    .HasConstraintName("FK_Gratuity_Policy_Company");
+            });
+            modelBuilder.Entity<Gratuity_Transactions>(entity =>
+            {
+                entity.HasKey(e => e.GratuityID);
+
+                entity.HasOne(d => d.Employees).WithMany(p => p.Gratuity_Transactions)
+                     .HasForeignKey(d => d.EmployeeID)
+                    .HasConstraintName("FK_Gratuity_Transactions_Employees");
             });
         }
       
