@@ -11,11 +11,16 @@ using static System.Net.Mime.MediaTypeNames;
 using Microsoft.AspNetCore.Identity;
 using ComplyX.Shared.Helper;
 using ComplyX.Shared.Data;
+using ComplyX_Businesss.Helper;
 
 namespace ComplyX.BusinessLogic
 {
     public class EPFOClass  : EPFOServices
     {
+        private readonly Dictionary<string, string> orderByTranslations = new Dictionary<string, string>
+        {
+            { "name", "Name" }
+        };
         private readonly AppDbContext _context;
         private readonly UserManager<ApplicationUser> _usermanager;
 
@@ -84,7 +89,6 @@ namespace ComplyX.BusinessLogic
                 });
             }
         }
-
         public async Task<ManagerBaseResponse<bool>> RemoveCompanyEPFOData(string CompanyEPFOId)
         {
             try
@@ -123,7 +127,47 @@ namespace ComplyX.BusinessLogic
             }
 
         }
+        public async Task<ManagerBaseResponse<IEnumerable<CompanyEPFO>>> GetAllCompanyEPFOFilter(PagedListCriteria PagedListCriteria)
+        {
+            try
+            {
 
+                var query = _context.CompanyEPFO.AsQueryable();
+                var searchText = PagedListCriteria.SearchText?.Trim().ToLower();
+                if (!string.IsNullOrWhiteSpace(searchText))
+                {
+                    query = query.Where(x => x.EstablishmentCode.ToLower().Contains(searchText.ToLower()));
+                }
+
+                query = query.OrderBy(a => a.CompanyEPFOId);
+
+                PageListed<CompanyEPFO> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+
+                return new ManagerBaseResponse<IEnumerable<CompanyEPFO>>
+                {
+                    Result = result.Data,
+                    Message = "CompanyEPFO Data Retrieved Successfully.",
+                    PageDetail = new PageDetailModel()
+                    {
+                        Skip = PagedListCriteria.Skip,
+                        Take = PagedListCriteria.Take,
+                        Count = result.TotalCount,
+                        SearchText = PagedListCriteria.SearchText,
+                        FilterdCount = PagedListCriteria.Filters,
+                    }
+                };
+            }
+            catch (Exception ex)
+            {
+
+                return new ManagerBaseResponse<IEnumerable<CompanyEPFO>>
+                {
+                    IsSuccess = false,
+                    Result = null,
+                    Message = ex.Message
+                };
+            }
+        }
         public Task<ManagerBaseResponse<bool>> SaveEmployeeEPFOData(EmployeeEPFO EmployeeEPFO)
         {
             var response = new ManagerBaseResponse<List<CompanyEPFO>>();
@@ -182,7 +226,6 @@ namespace ComplyX.BusinessLogic
                 });
             }
         }
-
         public async Task<ManagerBaseResponse<bool>> RemoveEmployeeEPFOData(string EmployeeEPFOId)
         {
             try
@@ -221,7 +264,47 @@ namespace ComplyX.BusinessLogic
             }
 
         }
+        public async Task<ManagerBaseResponse<IEnumerable<EmployeeEPFO>>> GetAllEmployeeEPFOFilter(PagedListCriteria PagedListCriteria)
+        {
+            try
+            {
 
+                var query = _context.EmployeeEPFO.AsQueryable();
+                var searchText = PagedListCriteria.SearchText?.Trim().ToLower();
+                if (!string.IsNullOrWhiteSpace(searchText))
+                {
+                    query = query.Where(x => x.PFAccountNumber.ToLower().Contains(searchText.ToLower()));
+                }
+
+                query = query.OrderBy(a => a.EmployeeEPFOId);
+
+                PageListed<EmployeeEPFO> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+
+                return new ManagerBaseResponse<IEnumerable<EmployeeEPFO>>
+                {
+                    Result = result.Data,
+                    Message = "EmployeeEPFO Data Retrieved Successfully.",
+                    PageDetail = new PageDetailModel()
+                    {
+                        Skip = PagedListCriteria.Skip,
+                        Take = PagedListCriteria.Take,
+                        Count = result.TotalCount,
+                        SearchText = PagedListCriteria.SearchText,
+                        FilterdCount = PagedListCriteria.Filters,
+                    }
+                };
+            }
+            catch (Exception ex)
+            {
+
+                return new ManagerBaseResponse<IEnumerable<EmployeeEPFO>>
+                {
+                    IsSuccess = false,
+                    Result = null,
+                    Message = ex.Message
+                };
+            }
+        }
         public Task<ManagerBaseResponse<bool>> SaveEPFOECRData(EPFOECRFile EPFOECRFile)
         {
             var response = new ManagerBaseResponse<List<EPFOECRFile>>();
@@ -290,7 +373,6 @@ namespace ComplyX.BusinessLogic
                 });
             }
         }
-
         public async Task<ManagerBaseResponse<bool>> RemoveEPFOECRData(string ECRFileId)
         {
             try
@@ -329,7 +411,47 @@ namespace ComplyX.BusinessLogic
             }
 
         }
+        public async Task<ManagerBaseResponse<IEnumerable<EPFOECRFile>>> GetEPFOECRDataFilter(PagedListCriteria PagedListCriteria)
+        {
+            try
+            {
 
+                var query = _context.EPFOECRFile.AsQueryable();
+                var searchText = PagedListCriteria.SearchText?.Trim().ToLower();
+                if (!string.IsNullOrWhiteSpace(searchText))
+                {
+                    query = query.Where(x => x.FileName.ToLower().Contains(searchText.ToLower()));
+                }
+
+                query = query.OrderBy(a => a.ECRFileId);
+
+                PageListed<EPFOECRFile> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+
+                return new ManagerBaseResponse<IEnumerable<EPFOECRFile>>
+                {
+                    Result = result.Data,
+                    Message = "EPFO ECRFile Data Retrieved Successfully.",
+                    PageDetail = new PageDetailModel()
+                    {
+                        Skip = PagedListCriteria.Skip,
+                        Take = PagedListCriteria.Take,
+                        Count = result.TotalCount,
+                        SearchText = PagedListCriteria.SearchText,
+                        FilterdCount = PagedListCriteria.Filters,
+                    }
+                };
+            }
+            catch (Exception ex)
+            {
+
+                return new ManagerBaseResponse<IEnumerable<EPFOECRFile>>
+                {
+                    IsSuccess = false,
+                    Result = null,
+                    Message = ex.Message
+                };
+            }
+        }
         public Task<ManagerBaseResponse<bool>> SaveEPFOPeriodData(EPFOPeriod EPFOPeriod , string UserID)
         {
             var response = new ManagerBaseResponse<List<EPFOPeriod>>();
@@ -405,7 +527,6 @@ namespace ComplyX.BusinessLogic
                 });
             }
         }
-
         public async Task<ManagerBaseResponse<bool>> RemoveEPFOPeriodData(string EPFOPeriodId)
         {
             try
@@ -444,45 +565,48 @@ namespace ComplyX.BusinessLogic
             }
 
         }
-
-        Task<ManagerBaseResponse<bool>> EPFOServices.SaveCompanyEPFOData(CompanyEPFO CompanyEPFO)
+        public async Task<ManagerBaseResponse<IEnumerable<EPFOPeriod>>> GetEPFOPeriodDataFilter(PagedListCriteria PagedListCriteria)
         {
-            throw new NotImplementedException();
+            try
+            {
+
+                var query = _context.EPFOPeriod.AsQueryable();
+                var searchText = PagedListCriteria.SearchText?.Trim().ToLower();
+                if (!string.IsNullOrWhiteSpace(searchText))
+                {
+                    query = query.Where(x => x.ECRFilePath.ToLower().Contains(searchText.ToLower()));
+                }
+
+                query = query.OrderBy(a => a.EPFOPeriodId);
+
+                PageListed<EPFOPeriod> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+
+                return new ManagerBaseResponse<IEnumerable<EPFOPeriod>>
+                {
+                    Result = result.Data,
+                    Message = "EPFO Period Data Retrieved Successfully.",
+                    PageDetail = new PageDetailModel()
+                    {
+                        Skip = PagedListCriteria.Skip,
+                        Take = PagedListCriteria.Take,
+                        Count = result.TotalCount,
+                        SearchText = PagedListCriteria.SearchText,
+                        FilterdCount = PagedListCriteria.Filters,
+                    }
+                };
+            }
+            catch (Exception ex)
+            {
+
+                return new ManagerBaseResponse<IEnumerable<EPFOPeriod>>
+                {
+                    IsSuccess = false,
+                    Result = null,
+                    Message = ex.Message
+                };
+            }
         }
 
-        Task<ManagerBaseResponse<bool>> EPFOServices.RemoveCompanyEPFOData(string CompanyEPFOId)
-        {
-            throw new NotImplementedException();
-        }
 
-        Task<ManagerBaseResponse<bool>> EPFOServices.SaveEmployeeEPFOData(EmployeeEPFO EmployeeEPFO)
-        {
-            throw new NotImplementedException();
-        }
-
-        Task<ManagerBaseResponse<bool>> EPFOServices.RemoveEmployeeEPFOData(string EmployeeEPFOId)
-        {
-            throw new NotImplementedException();
-        }
-
-        Task<ManagerBaseResponse<bool>> EPFOServices.SaveEPFOECRData(EPFOECRFile EPFOECRFile)
-        {
-            throw new NotImplementedException();
-        }
-
-        Task<ManagerBaseResponse<bool>> EPFOServices.RemoveEPFOECRData(string ECRFileId)
-        {
-            throw new NotImplementedException();
-        }
-
-        Task<ManagerBaseResponse<bool>> EPFOServices.SaveEPFOPeriodData(EPFOPeriod EPFOPeriod, string UserID)
-        {
-            throw new NotImplementedException();
-        }
-
-        Task<ManagerBaseResponse<bool>> EPFOServices.RemoveEPFOPeriodData(string EPFOPeriodId)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

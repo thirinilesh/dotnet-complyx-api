@@ -12,11 +12,16 @@ using System.Runtime.InteropServices;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using static System.Net.Mime.MediaTypeNames;
 using System.Globalization;
+using ComplyX_Businesss.Helper;
 
 namespace ComplyX.BusinessLogic
 {
     public class PayrollClass : IPayrollServices
     {
+        private readonly Dictionary<string, string> orderByTranslations = new Dictionary<string, string>
+        {
+            { "name", "Name" }
+        };
         private readonly AppDbContext _context;
 
         public PayrollClass(AppDbContext context)
@@ -288,6 +293,48 @@ namespace ComplyX.BusinessLogic
                 };
             }
 
+        }
+
+        public async Task<ManagerBaseResponse<IEnumerable<PayrollData>>> GetPayrollDataFilter(PagedListCriteria PagedListCriteria)
+        {
+            try
+            {
+
+                var query = _context.PayrollData.AsQueryable();
+                var searchText = PagedListCriteria.SearchText?.Trim().ToLower();
+                if (!string.IsNullOrWhiteSpace(searchText))
+                {
+                    query = query.Where(x => x.Month.ToLower().Contains(searchText.ToLower()));
+                }
+
+                query = query.OrderBy(a => a.PayrollID);
+
+                PageListed<PayrollData> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+
+                return new ManagerBaseResponse<IEnumerable<PayrollData>>
+                {
+                    Result = result.Data,
+                    Message = "Payroll Data Retrieved Successfully.",
+                    PageDetail = new PageDetailModel()
+                    {
+                        Skip = PagedListCriteria.Skip,
+                        Take = PagedListCriteria.Take,
+                        Count = result.TotalCount,
+                        SearchText = PagedListCriteria.SearchText,
+                        FilterdCount = PagedListCriteria.Filters,
+                    }
+                };
+            }
+            catch (Exception ex)
+            {
+
+                return new ManagerBaseResponse<IEnumerable<PayrollData>>
+                {
+                    IsSuccess = false,
+                    Result = null,
+                    Message = ex.Message
+                };
+            }
         }
 
     }

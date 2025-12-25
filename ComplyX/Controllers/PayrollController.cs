@@ -74,5 +74,14 @@ namespace ComplyX.Controllers
         {
             return ResponseResult(await _IPayrollServices.EditPayrollDataByCompanyIDEmployeeID(data,CompanyID, EmployeeID,PayrollID));
         }
+
+        /// <summary>
+        /// All Payroll Data Filter
+        /// </summary>
+        [HttpGet("GetPayrollDataFilter")]
+        public async Task<IActionResult> GetPayrollDataFilter([FromQuery] PagedListCriteria PagedListCriteria)
+        {
+            return ResponseResult(await _IPayrollServices.GetPayrollDataFilter(PagedListCriteria));
+        }
     }
 }

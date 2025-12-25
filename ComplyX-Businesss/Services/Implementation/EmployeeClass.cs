@@ -12,11 +12,18 @@ using System.Runtime.InteropServices;
 
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using static System.Net.Mime.MediaTypeNames;
+using ComplyX_Businesss.Helper;
 
 namespace ComplyX.BusinessLogic
 {
     public class EmployeeClass : IEmployeeServices
     {
+
+        private readonly Dictionary<string, string> orderByTranslations = new Dictionary<string, string>
+        {
+            { "name", "Name" }
+        };
+
         private readonly AppDbContext _context;
 
         public EmployeeClass(AppDbContext context)
@@ -519,5 +526,47 @@ namespace ComplyX.BusinessLogic
                 };
             }
         }
+
+        public async Task<ManagerBaseResponse<IEnumerable<Employees>>> GetEmployeeDataFilter(PagedListCriteria PagedListCriteria)
+        {
+            try
+            {
+
+                var query = _context.Employees.AsQueryable();
+                var searchText = PagedListCriteria.SearchText?.Trim().ToLower();
+                if (!string.IsNullOrWhiteSpace(searchText))
+                {
+                    query = query.Where(x => x.FirstName.ToLower().Contains(searchText.ToLower()));
+                }
+
+                query = query.OrderBy(a => a.EmployeeID);
+
+                PageListed<Employees> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+                return new ManagerBaseResponse<IEnumerable<Employees>>
+                {
+                    Result = result.Data,
+                    Message = "Employee Data Retrieved Successfully.",
+                    PageDetail = new PageDetailModel()
+                    {
+                        Skip = PagedListCriteria.Skip,
+                        Take = PagedListCriteria.Take,
+                        Count = result.TotalCount,
+                        SearchText = PagedListCriteria.SearchText,
+                        FilterdCount = PagedListCriteria.Filters
+                    }
+                };
+            }
+            catch (Exception ex)
+            {
+
+                return new ManagerBaseResponse<IEnumerable<Employees>>
+                {
+                    IsSuccess = false,
+                    Result = null,
+                    Message = ex.Message
+                };
+            }
+        }
+
     }
 }

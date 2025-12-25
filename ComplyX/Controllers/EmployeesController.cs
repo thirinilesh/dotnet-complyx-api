@@ -70,5 +70,14 @@ namespace ComplyX.Controllers
         {
             return ResponseResult(await _IEmployeeServices.GetEmployeesByCompanyEmployee(CompanyID, EmployeeID));
         }
+
+        /// <summary>
+        /// Get List of Employee Data Filter
+        /// </summary>
+        [HttpGet("GetEmployeeDataFilter")]
+        public async Task<IActionResult> GetEmployeeDataFilter([FromQuery] PagedListCriteria PagedListCriteria)
+        {
+            return ResponseResult(await _IEmployeeServices.GetEmployeeDataFilter(PagedListCriteria));
+        }
     }
 }

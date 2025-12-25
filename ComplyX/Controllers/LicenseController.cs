@@ -38,7 +38,14 @@ namespace ComplyX.Shared.Controllers
         {
             return ResponseResult(await _LicenseServices.SaveLicenseKeyMasterData(LicenseKeyMaster));
         }
-
+        /// <summary>
+        /// All LicenseKeyMaster Filter
+        /// </summary>
+        [HttpGet("GetLicenseKeyMasterFilter")]
+        public async Task<IActionResult> GetLicenseKeyMasterFilter([FromQuery] PagedListCriteria PagedListCriteria)
+        {
+            return ResponseResult(await _LicenseServices.GetLicenseKeyMasterFilter(PagedListCriteria));
+        }
         /// <summary>
         /// Save License Key Activation Data
         /// </summary>
@@ -46,6 +53,15 @@ namespace ComplyX.Shared.Controllers
         public async Task<IActionResult> SaveLicenseKeyActivationData([FromBody] LicenseActivation LicenseActivation)
         {
             return ResponseResult(await _LicenseServices.SaveLicenseKeyActivationData(LicenseActivation));
+        }
+
+        /// <summary>
+        /// All LicenseActivation Filter
+        /// </summary>
+        [HttpGet("GetLicenseActivationFilter")]
+        public async Task<IActionResult> GetLicenseActivationFilter([FromQuery] PagedListCriteria PagedListCriteria)
+        {
+            return ResponseResult(await _LicenseServices.GetLicenseActivationFilter(PagedListCriteria));
         }
 
         /// <summary>
@@ -58,12 +74,30 @@ namespace ComplyX.Shared.Controllers
         }
 
         /// <summary>
+        /// All License Audit Logs Data Filter
+        /// </summary>
+        [HttpGet("GetLicenseAuditLogsFilter")]
+        public async Task<IActionResult> GetLicenseAuditLogsFilter([FromQuery] PagedListCriteria PagedListCriteria)
+        {
+            return ResponseResult(await _LicenseServices.GetLicenseAuditLogsFilter(PagedListCriteria));
+        }
+
+        /// <summary>
         /// Save MachineBinding Data
         /// </summary>
         [HttpPut("SaveMachineBindingData")]
         public async Task<IActionResult> SaveMachineBindingData([FromBody] MachineBinding MachineBinding)
         {
             return ResponseResult(await _LicenseServices.SaveMachineBindingData(MachineBinding));
+        }
+
+        /// <summary>
+        /// All MachineBinding Filter
+        /// </summary>
+        [HttpGet("GetMachineBindingFilter")]
+        public async Task<IActionResult> GetMachineBindingFilter([FromQuery] PagedListCriteria PagedListCriteria)
+        {
+            return ResponseResult(await _LicenseServices.GetMachineBindingFilter(PagedListCriteria));
         }
     }
 }

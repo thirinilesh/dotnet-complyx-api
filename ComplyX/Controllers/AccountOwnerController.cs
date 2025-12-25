@@ -60,6 +60,14 @@ namespace ComplyX.Controllers
         {
             return ResponseResult(await _IProductOwnere.RemoveProductOwnerData(ProductOwnerId));
         }
+        /// <summary>
+        /// All Product Owner Filter
+        /// </summary>
+        [HttpGet("GetAllProductOwnerFilter")]
+        public async Task<IActionResult> GetAllProductOwnerFilter([FromQuery] PagedListCriteria PagedListCriteria)
+        {
+            return ResponseResult(await _IProductOwnere.GetAllProductOwnerFilter(PagedListCriteria));
+        }
 
         /// <summary>
         /// Save Company Data
@@ -78,7 +86,14 @@ namespace ComplyX.Controllers
         {
             return ResponseResult(await _IProductOwnere.RemoveCompanyData(CompanyaId));
         }
-
+        /// <summary>
+        /// All Company Data Filter
+        /// </summary>
+        [HttpGet("GetAllCompanyDataFilter")]
+        public async Task<IActionResult> GetAllCompanyDataFilter([FromQuery] PagedListCriteria PagedListCriteria)
+        {
+            return ResponseResult(await _IProductOwnere.GetAllCompanyDataFilter(PagedListCriteria));
+        }
         /// <summary>
         /// Get List of Subscription Plans
         /// </summary>
@@ -86,6 +101,14 @@ namespace ComplyX.Controllers
         public async Task<IActionResult> GetSubscriptionPlans()
         {
             return ResponseResult(await _IProductOwnere.GetSubscriptionPlans());
+        }
+        /// <summary>
+        /// Get List of Subscription Plans Filter
+        /// </summary>
+        [HttpGet("GetSubscriptionPlansFilter")]
+        public async Task<IActionResult> GetSubscriptionPlansByFilter([FromQuery] PagedListCriteria PagedListCriteria)
+        {
+            return ResponseResult(await _IProductOwnere.GetSubscriptionPlansByFilter(PagedListCriteria));
         }
 
         /// <summary>
@@ -148,6 +171,15 @@ namespace ComplyX.Controllers
         public async Task<IActionResult> GetSubcontractors(int CompanyId)
         {
             return ResponseResult(await _IProductOwnere.GetSubcontractors(CompanyId));
+        }
+
+        /// <summary>
+        /// Get List of Subcontractors Data Filter
+        /// </summary>
+        [HttpGet("GetSubcontractorsFilter")]
+        public async Task<IActionResult> GetSubcontractorsFilter([FromQuery] PagedListCriteria PagedListCriteria)
+        {
+            return ResponseResult(await _IProductOwnere.GetSubcontractorsFilter(PagedListCriteria));
         }
 
         /// <summary>

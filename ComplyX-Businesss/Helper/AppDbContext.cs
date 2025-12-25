@@ -33,6 +33,7 @@ namespace ComplyX.Shared.Data
         public virtual DbSet<EPFOPeriod> EPFOPeriod { get; set; }
         public virtual DbSet<LicenseKeyMaster> LicenseKeyMaster { get; set; }
         public virtual DbSet<LicenseActivation> LicenseActivation { get; set; }
+        public virtual DbSet<LicenseAuditLogs> LicenseAuditLogs { get; set; }
         public virtual DbSet<MachineBinding> MachineBinding { get; set; }
 
         public virtual DbSet<Plans> Plans { get; set; }

@@ -51,7 +51,6 @@ namespace ComplyX.BusinessLogic
                 throw new Exception("Error fetching account owners", ex);
             }
         }
-
         public Task<ManagerBaseResponse<bool>> SaveProductOwnerData(ProductOwners ProductOwners)
         {
             var response = new ManagerBaseResponse<List<ProductOwners>>();
@@ -186,6 +185,47 @@ namespace ComplyX.BusinessLogic
                 };
             }
         }
+        public async Task<ManagerBaseResponse<IEnumerable<ProductOwners>>> GetAllProductOwnerFilter(PagedListCriteria PagedListCriteria)
+        {
+            try
+            {
+
+                var query = _context.ProductOwners.AsQueryable();
+                var searchText = PagedListCriteria.SearchText?.Trim().ToLower();
+                if (!string.IsNullOrWhiteSpace(searchText))
+                {
+                    query = query.Where(x => x.OwnerName.ToLower().Contains(searchText.ToLower()));
+                }
+
+                query = query.OrderBy(a => a.ProductOwnerId);
+
+                PageListed<ProductOwners> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+
+                return new ManagerBaseResponse<IEnumerable<ProductOwners>>
+                {
+                    Result = result.Data,
+                    Message = "Product Owner Data Retrieved Successfully.",
+                    PageDetail = new PageDetailModel()
+                    {
+                        Skip = PagedListCriteria.Skip,
+                        Take = PagedListCriteria.Take,
+                        Count = result.TotalCount,
+                        SearchText = PagedListCriteria.SearchText,
+                        FilterdCount = PagedListCriteria.Filters,
+                    }
+                };
+            }
+            catch (Exception ex)
+            {
+
+                return new ManagerBaseResponse<IEnumerable<ProductOwners>>
+                {
+                    IsSuccess = false,
+                    Result = null,
+                    Message = ex.Message
+                };
+            }
+        }
         public async Task<ManagerBaseResponse<bool>> SaveCompanyData(Company company)
         {
             var response = new ManagerBaseResponse<List<Company>>();
@@ -298,6 +338,47 @@ namespace ComplyX.BusinessLogic
                 };
             }
         }
+        public async Task<ManagerBaseResponse<IEnumerable<Company>>> GetAllCompanyDataFilter(PagedListCriteria PagedListCriteria)
+        {
+            try
+            {
+
+                var query = _context.Companies.AsQueryable();
+                var searchText = PagedListCriteria.SearchText?.Trim().ToLower();
+                if (!string.IsNullOrWhiteSpace(searchText))
+                {
+                    query = query.Where(x => x.Name.ToLower().Contains(searchText.ToLower()));
+                }
+
+                query = query.OrderBy(a => a.CompanyID);
+
+                PageListed<Company> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+
+                return new ManagerBaseResponse<IEnumerable<Company>>
+                {
+                    Result = result.Data,
+                    Message = "Company Data Retrieved Successfully.",
+                    PageDetail = new PageDetailModel()
+                    {
+                        Skip = PagedListCriteria.Skip,
+                        Take = PagedListCriteria.Take,
+                        Count = result.TotalCount,
+                        SearchText = PagedListCriteria.SearchText,
+                        FilterdCount = PagedListCriteria.Filters,
+                    }
+                };
+            }
+            catch (Exception ex)
+            {
+
+                return new ManagerBaseResponse<IEnumerable<Company>>
+                {
+                    IsSuccess = false,
+                    Result = null,
+                    Message = ex.Message
+                };
+            }
+        }
         public async Task<ManagerBaseResponse<List<SubscriptionPlans>>> GetSubscriptionPlans()
         {
             try
@@ -321,6 +402,47 @@ namespace ComplyX.BusinessLogic
                     Message = ex.Message
                 };
             }            
+        }
+        public async Task<ManagerBaseResponse<IEnumerable<SubscriptionPlans>>> GetSubscriptionPlansByFilter(PagedListCriteria PagedListCriteria)
+        {
+            try
+            {
+
+                var query = _context.SubscriptionPlans.AsQueryable();
+                var searchText = PagedListCriteria.SearchText?.Trim().ToLower();
+                if (!string.IsNullOrWhiteSpace(searchText))
+                {
+                    query = query.Where(x => x.PlanName.ToLower().Contains(searchText.ToLower()));
+                }
+
+                query = query.OrderBy(a => a.PlanId);
+
+                PageListed<SubscriptionPlans> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+
+                return new ManagerBaseResponse<IEnumerable<SubscriptionPlans>>
+                {
+                    Result = result.Data,
+                    Message = "SubscriptionPlans Data Retrieved Successfully.",
+                    PageDetail = new PageDetailModel()
+                    {
+                        Skip = PagedListCriteria.Skip,
+                        Take = PagedListCriteria.Take,
+                        Count = result.TotalCount,
+                        SearchText = PagedListCriteria.SearchText,
+                        FilterdCount = PagedListCriteria.Filters,
+                    }
+                };
+            }
+            catch (Exception ex)
+            {
+
+                return new ManagerBaseResponse<IEnumerable<SubscriptionPlans>>
+                {
+                    IsSuccess = false,
+                    Result = null,
+                    Message = ex.Message
+                };
+            }
         }
         public async Task<ManagerBaseResponse<List<SubscriptionPlans>>> GetSubscriptionPlanFilter(SubscriptionPlansFilterRequest request)
         {
@@ -715,6 +837,47 @@ namespace ComplyX.BusinessLogic
                     Message = ex.Message
                 };
 
+            }
+        }
+        public async Task<ManagerBaseResponse<IEnumerable<Subcontractors>>> GetSubcontractorsFilter(PagedListCriteria PagedListCriteria)
+        {
+            try
+            {
+
+                var query = _context.Subcontractors.AsQueryable();
+                var searchText = PagedListCriteria.SearchText?.Trim().ToLower();
+                if (!string.IsNullOrWhiteSpace(searchText))
+                {
+                    query = query.Where(x => x.Name.ToLower().Contains(searchText.ToLower()));
+                }
+
+                query = query.OrderBy(a => a.SubcontractorID);
+
+                PageListed<Subcontractors> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+
+                return new ManagerBaseResponse<IEnumerable<Subcontractors>>
+                {
+                    Result = result.Data,
+                    Message = "Subcontractors Data Retrieved Successfully.",
+                    PageDetail = new PageDetailModel()
+                    {
+                        Skip = PagedListCriteria.Skip,
+                        Take = PagedListCriteria.Take,
+                        Count = result.TotalCount,
+                        SearchText = PagedListCriteria.SearchText,
+                        FilterdCount = PagedListCriteria.Filters,
+                    }
+                };
+            }
+            catch (Exception ex)
+            {
+
+                return new ManagerBaseResponse<IEnumerable<Subcontractors>>
+                {
+                    IsSuccess = false,
+                    Result = null,
+                    Message = ex.Message
+                };
             }
         }
         public async Task<ManagerBaseResponse<List<SubcontractorsRequest>>> GetProductOwnerSubcontractorsDetails(int ProductOwnerId)

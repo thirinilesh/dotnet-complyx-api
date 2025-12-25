@@ -31,6 +31,7 @@ builder.Services.AddScoped<IProductOwner, AccountOwnerLogic>();
 builder.Services.AddScoped<IEmployeeServices, EmployeeClass>();
 builder.Services.AddScoped<IPayrollServices, PayrollClass>();
 builder.Services.AddScoped<ImportServices, ImportClass>();
+builder.Services.AddScoped<LicenseServices, LicenseClass>();
 builder.Services.AddScoped<EPFOServices, EPFOClass>();
 builder.Services.AddScoped<AccountOwnerLogic>();
 builder.Services.AddScoped<Nest.Filter>();

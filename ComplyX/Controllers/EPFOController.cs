@@ -44,6 +44,14 @@ namespace ComplyX.Controllers
         {
             return ResponseResult(await _EPFOServices.RemoveCompanyEPFOData(CompanyEPFOId));
         }
+        /// <summary>
+        /// All Company EPFO Filter
+        /// </summary>
+        [HttpGet("GetAllCompanyEPFOFilter")]
+        public async Task<IActionResult> GetAllCompanyEPFOFilter([FromQuery] PagedListCriteria PagedListCriteria)
+        {
+            return ResponseResult(await _EPFOServices.GetAllCompanyEPFOFilter(PagedListCriteria));
+        }
 
         /// <summary>
         /// Save Employee EPFO Data
@@ -56,12 +64,21 @@ namespace ComplyX.Controllers
 
 
         /// <summary>
-        /// Delete CompanyEPFO Data
+        /// Delete Employee EPFO Data
         /// </summary>
         [HttpPut("RemoveEmployeeEPFOData")]
         public async Task<IActionResult> RemoveEmployeeEPFOData(string EmployeeEPFOId)
         {
             return ResponseResult(await _EPFOServices.RemoveEmployeeEPFOData(EmployeeEPFOId));
+        }
+
+        /// <summary>
+        /// All Employee EPFO Filter
+        /// </summary>
+        [HttpGet("GetAllEmployeeEPFOFilter")]
+        public async Task<IActionResult> GetAllEmployeeEPFOFilter([FromQuery] PagedListCriteria PagedListCriteria)
+        {
+            return ResponseResult(await _EPFOServices.GetAllEmployeeEPFOFilter(PagedListCriteria));
         }
 
         /// <summary>
@@ -83,6 +100,15 @@ namespace ComplyX.Controllers
             return ResponseResult(await _EPFOServices.RemoveEPFOECRData(ECRFileId));
         }
 
+        /// <summary>
+        /// All EPFO ECR Data Filter
+        /// </summary>
+        [HttpGet("GetEPFOECRDataFilter")]
+        public async Task<IActionResult> GetEPFOECRDataFilter([FromQuery] PagedListCriteria PagedListCriteria)
+        {
+            return ResponseResult(await _EPFOServices.GetEPFOECRDataFilter(PagedListCriteria));
+        }
+
 
         /// <summary>
         /// Save EPFO Period Data
@@ -102,6 +128,13 @@ namespace ComplyX.Controllers
         {
             return ResponseResult(await _EPFOServices.RemoveEPFOPeriodData(EPFOPeriodId));
         }
-
+        /// <summary>
+        /// All EPFO Period Data Filter
+        /// </summary>
+        [HttpGet("GetEPFOPeriodDataFilter")]
+        public async Task<IActionResult> GetEPFOPeriodDataFilter([FromQuery] PagedListCriteria PagedListCriteria)
+        {
+            return ResponseResult(await _EPFOServices.GetEPFOPeriodDataFilter(PagedListCriteria));
+        }
     }
 }

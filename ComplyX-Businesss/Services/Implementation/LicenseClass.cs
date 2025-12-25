@@ -12,11 +12,18 @@ using System.Linq;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using static System.Net.Mime.MediaTypeNames;
 using Microsoft.AspNetCore.Identity;
+using ComplyX_Businesss.Helper;
 
 namespace ComplyX.BusinessLogic
 {
     public class LicenseClass : LicenseServices
     {
+
+        private readonly Dictionary<string, string> orderByTranslations = new Dictionary<string, string>
+        {
+            { "name", "Name" }
+        };
+
         private readonly AppDbContext _context;
 
         public LicenseClass(AppDbContext context)
@@ -85,6 +92,48 @@ namespace ComplyX.BusinessLogic
                 });
             }
         }
+        public async Task<ManagerBaseResponse<IEnumerable<LicenseKeyMaster>>> GetLicenseKeyMasterFilter(PagedListCriteria PagedListCriteria)
+        {
+            try
+            {
+
+                var query = _context.LicenseKeyMaster.AsQueryable();
+                var searchText = PagedListCriteria.SearchText?.Trim().ToLower();
+                if (!string.IsNullOrWhiteSpace(searchText))
+                {
+                    query = query.Where(x => x.PlanType.ToLower().Contains(searchText.ToLower()));
+                }
+
+                query = query.OrderBy(a => a.LicenseId);
+
+                PageListed<LicenseKeyMaster> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+
+                return new ManagerBaseResponse<IEnumerable<LicenseKeyMaster>>
+                {
+                    Result = result.Data,
+                    Message = "LicenseKey Master Data Retrieved Successfully.",
+                    PageDetail = new PageDetailModel()
+                    {
+                        Skip = PagedListCriteria.Skip,
+                        Take = PagedListCriteria.Take,
+                        Count = result.TotalCount,
+                        SearchText = PagedListCriteria.SearchText,
+                        FilterdCount = PagedListCriteria.Filters,
+                    }
+                };
+            }
+            catch (Exception ex)
+            {
+
+                return new ManagerBaseResponse<IEnumerable<LicenseKeyMaster>>
+                {
+                    IsSuccess = false,
+                    Result = null,
+                    Message = ex.Message
+                };
+            }
+        }
+
 
         public Task<ManagerBaseResponse<bool>> SaveLicenseKeyActivationData(LicenseActivation LicenseActivation)
         {
@@ -152,6 +201,49 @@ namespace ComplyX.BusinessLogic
             }
         }
 
+        public async Task<ManagerBaseResponse<IEnumerable<LicenseActivation>>> GetLicenseActivationFilter(PagedListCriteria PagedListCriteria)
+        {
+            try
+            {
+
+                var query = _context.LicenseActivation.AsQueryable();
+                var searchText = PagedListCriteria.SearchText?.Trim().ToLower();
+                if (!string.IsNullOrWhiteSpace(searchText))
+                {
+                    query = query.Where(x => x.MachineName.ToLower().Contains(searchText.ToLower()));
+                }
+
+                query = query.OrderBy(a => a.ActivationId);
+
+                PageListed<LicenseActivation> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+
+                return new ManagerBaseResponse<IEnumerable<LicenseActivation>>
+                {
+                    Result = result.Data,
+                    Message = "License Activation Data Retrieved Successfully.",
+                    PageDetail = new PageDetailModel()
+                    {
+                        Skip = PagedListCriteria.Skip,
+                        Take = PagedListCriteria.Take,
+                        Count = result.TotalCount,
+                        SearchText = PagedListCriteria.SearchText,
+                        FilterdCount = PagedListCriteria.Filters,
+                    }
+                };
+            }
+            catch (Exception ex)
+            {
+
+                return new ManagerBaseResponse<IEnumerable<LicenseActivation>>
+                {
+                    IsSuccess = false,
+                    Result = null,
+                    Message = ex.Message
+                };
+            }
+        }
+
+
         public Task<ManagerBaseResponse<bool>> SaveLicenseAuditLogsData(LicenseAuditLogs LicenseAuditLogs)
         {
             var response = new ManagerBaseResponse<List<LicenseAuditLogs>>();
@@ -203,6 +295,49 @@ namespace ComplyX.BusinessLogic
                 });
             }
         }
+
+        public async Task<ManagerBaseResponse<IEnumerable<LicenseAuditLogs>>> GetLicenseAuditLogsFilter(PagedListCriteria PagedListCriteria)
+        {
+            try
+            {
+
+                var query = _context.LicenseAuditLogs.AsQueryable();
+                var searchText = PagedListCriteria.SearchText?.Trim().ToLower();
+                if (!string.IsNullOrWhiteSpace(searchText))
+                {
+                    query = query.Where(x => x.EventType.ToLower().Contains(searchText.ToLower()));
+                }
+
+                query = query.OrderBy(a => a.AuditId);
+
+                PageListed<LicenseAuditLogs> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+
+                return new ManagerBaseResponse<IEnumerable<LicenseAuditLogs>>
+                {
+                    Result = result.Data,
+                    Message = "License Activation Logs Data Retrieved Successfully.",
+                    PageDetail = new PageDetailModel()
+                    {
+                        Skip = PagedListCriteria.Skip,
+                        Take = PagedListCriteria.Take,
+                        Count = result.TotalCount,
+                        SearchText = PagedListCriteria.SearchText,
+                        FilterdCount = PagedListCriteria.Filters,
+                    }
+                };
+            }
+            catch (Exception ex)
+            {
+
+                return new ManagerBaseResponse<IEnumerable<LicenseAuditLogs>>
+                {
+                    IsSuccess = false,
+                    Result = null,
+                    Message = ex.Message
+                };
+            }
+        }
+
 
         public Task<ManagerBaseResponse<bool>> SaveMachineBindingData(MachineBinding MachineBinding)
         {
@@ -271,5 +406,48 @@ namespace ComplyX.BusinessLogic
                 });
             }
         }
+
+        public async Task<ManagerBaseResponse<IEnumerable<MachineBinding>>> GetMachineBindingFilter(PagedListCriteria PagedListCriteria)
+        {
+            try
+            {
+
+                var query = _context.MachineBinding.AsQueryable();
+                var searchText = PagedListCriteria.SearchText?.Trim().ToLower();
+                if (!string.IsNullOrWhiteSpace(searchText))
+                {
+                    query = query.Where(x => x.MachineHash.ToLower().Contains(searchText.ToLower()));
+                }
+
+                query = query.OrderBy(a => a.MachineBindingId);
+
+                PageListed<MachineBinding> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+
+                return new ManagerBaseResponse<IEnumerable<MachineBinding>>
+                {
+                    Result = result.Data,
+                    Message = "MachineBinding Data Retrieved Successfully.",
+                    PageDetail = new PageDetailModel()
+                    {
+                        Skip = PagedListCriteria.Skip,
+                        Take = PagedListCriteria.Take,
+                        Count = result.TotalCount,
+                        SearchText = PagedListCriteria.SearchText,
+                        FilterdCount = PagedListCriteria.Filters,
+                    }
+                };
+            }
+            catch (Exception ex)
+            {
+
+                return new ManagerBaseResponse<IEnumerable<MachineBinding>>
+                {
+                    IsSuccess = false,
+                    Result = null,
+                    Message = ex.Message
+                };
+            }
+        }
+
     }
 }
