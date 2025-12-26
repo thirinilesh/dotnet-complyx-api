@@ -13,6 +13,8 @@ using System.Runtime.InteropServices;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using static System.Net.Mime.MediaTypeNames;
 using ComplyX_Businesss.Helper;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace ComplyX.BusinessLogic
 {
@@ -386,7 +388,6 @@ namespace ComplyX.BusinessLogic
                 });
             }
         }
-
         public async Task<ManagerBaseResponse<bool>> RemoveEmployeeData(string EmployeeID)
         {
             try
@@ -425,7 +426,6 @@ namespace ComplyX.BusinessLogic
             }
 
         }
-
         public async Task<ManagerBaseResponse<List<Employees>>> GetEmployeesByCompany(string CompanyID)
         {
             try
@@ -450,7 +450,6 @@ namespace ComplyX.BusinessLogic
                 };
             }
         }
-
         public async Task<ManagerBaseResponse<List<Employees>>> GetEmployeesByCompanySubcontractor(string CompanyID, string SubcontractorID)
         {
             try
@@ -488,7 +487,6 @@ namespace ComplyX.BusinessLogic
                 };
             }
         }
-
         public async Task<ManagerBaseResponse<List<Employees>>> GetEmployeesByCompanyEmployee(string CompanyID, string EmployeeID)
         {
             try
@@ -526,7 +524,6 @@ namespace ComplyX.BusinessLogic
                 };
             }
         }
-
         public async Task<ManagerBaseResponse<IEnumerable<Employees>>> GetEmployeeDataFilter(PagedListCriteria PagedListCriteria)
         {
             try
@@ -567,7 +564,6 @@ namespace ComplyX.BusinessLogic
                 };
             }
         }
-
         public async Task<ManagerBaseResponse<bool>> SaveGratuity_PolicyData(Gratuity_Policy Gratuity_Policy)
         {
             var response = new ManagerBaseResponse<List<Gratuity_Policy>>();
@@ -586,12 +582,18 @@ namespace ComplyX.BusinessLogic
                 }
                 else
                 {
-                    if (Gratuity_Policy.PolicyID == 0)
+
+                    if (Gratuity_Policy.PolicyID == Guid.Empty)
                     {
                         // Insert
                         Gratuity_Policy _model = new Gratuity_Policy();
+                         
+                            _model.PolicyID = Guid.NewGuid();
+                       
                         _model.CompanyID = Gratuity_Policy.CompanyID;
                         _model.MinimumServiceYears = Gratuity_Policy.MinimumServiceYears;
+                        _model.Formula = Gratuity_Policy.Formula;
+                        _model.MaxGratuityAmount = Gratuity_Policy.MaxGratuityAmount;
                         _model.Eligible = Gratuity_Policy.Eligible;
                         _model.CreatedAt = Gratuity_Policy.CreatedAt;
 
@@ -605,6 +607,8 @@ namespace ComplyX.BusinessLogic
                             .Where(x => x.PolicyID == Gratuity_Policy.PolicyID)
                                 .FirstOrDefault();
                         originalTerm.CompanyID = Gratuity_Policy.CompanyID;
+                        originalTerm.MinimumServiceYears = Gratuity_Policy.MinimumServiceYears;
+                        originalTerm.Formula = Gratuity_Policy.Formula;
                         originalTerm.MaxGratuityAmount = Gratuity_Policy.MaxGratuityAmount;
                         originalTerm.Eligible = Gratuity_Policy.Eligible;
                         originalTerm.UpdatedAt = Gratuity_Policy.UpdatedAt;
@@ -666,6 +670,70 @@ namespace ComplyX.BusinessLogic
             }
 
         }
+        public async Task<ManagerBaseResponse<List<Gratuity_Policy>>> GetGratuity_Policy(string PolicyID)
+        {
+            try
+            {
+                var Gratuity_Policy = await _context.Gratuity_Policy.AsQueryable().OrderBy(x => x.PolicyID).ToListAsync();
+
+                return new ManagerBaseResponse<List<Gratuity_Policy>>
+                {
+                    IsSuccess = true,
+                    Result = Gratuity_Policy,
+                    Message = "Gratuity Policy Details Retrieved Successfully.",
+                };
+            }
+            catch (Exception ex)
+            {
+
+                return new ManagerBaseResponse<List<Gratuity_Policy>>
+                {
+                    IsSuccess = false,
+                    Result = null,
+                    Message = ex.Message
+                };
+            }
+        }
+        public async Task<ManagerBaseResponse<IEnumerable<Gratuity_Policy>>> GetGratuity_PolicyFilter(PagedListCriteria PagedListCriteria)
+        {
+            try
+            {
+
+                var query = _context.Gratuity_Policy.AsQueryable();
+                var searchText = PagedListCriteria.SearchText?.Trim().ToLower();
+                if (!string.IsNullOrWhiteSpace(searchText))
+                {
+                    query = query.Where(x => x.Formula.ToLower().Contains(searchText.ToLower()));
+                }
+
+                query = query.OrderBy(a => a.PolicyID);
+
+                PageListed<Gratuity_Policy> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+                return new ManagerBaseResponse<IEnumerable<Gratuity_Policy>>
+                {
+                    Result = result.Data,
+                    Message = "Gratuity Policy Data Retrieved Successfully.",
+                    PageDetail = new PageDetailModel()
+                    {
+                        Skip = PagedListCriteria.Skip,
+                        Take = PagedListCriteria.Take,
+                        Count = result.TotalCount,
+                        SearchText = PagedListCriteria.SearchText,
+                        FilterdCount = PagedListCriteria.Filters
+                    }
+                };
+            }
+            catch (Exception ex)
+            {
+
+                return new ManagerBaseResponse<IEnumerable<Gratuity_Policy>>
+                {
+                    IsSuccess = false,
+                    Result = null,
+                    Message = ex.Message
+                };
+            }
+        }
         public async Task<ManagerBaseResponse<bool>> SaveGratuity_TransactionsData(Gratuity_Transactions Gratuity_Transactions)
         {
             var response = new ManagerBaseResponse<List<Gratuity_Transactions>>();
@@ -684,17 +752,18 @@ namespace ComplyX.BusinessLogic
                 }
                 else
                 {
-                    if (Gratuity_Transactions.GratuityID == 0)
+                    if (Gratuity_Transactions.GratuityID == Guid.Empty)
                     {
                         // Insert
                         Gratuity_Transactions _model = new Gratuity_Transactions();
+                        _model.GratuityID = Guid.NewGuid();
                         _model.EmployeeID = Employee.EmployeeID;
                         _model.LastDrawnSalary  =  Gratuity_Transactions.LastDrawnSalary;
                         _model.YearsOfService = Gratuity_Transactions.YearsOfService;
                         _model.GratuityAmount = Gratuity_Transactions.GratuityAmount;
                         _model.PaymentStatus = Gratuity_Transactions.PaymentStatus; 
                         _model.PaidDate = Gratuity_Transactions.PaidDate;
-                        _model.ApprovedBy = Gratuity_Transactions.ApprovedBy;
+                        _model.ApprovedBy = Guid.NewGuid();
                         _model.CreatedAt = Gratuity_Transactions.CreatedAt;
 
                         _context.Add(_model);
@@ -772,7 +841,255 @@ namespace ComplyX.BusinessLogic
             }
 
         }
+        public async Task<ManagerBaseResponse<List<Gratuity_Transactions>>> GetGratuity_Transactions(string GratuityID)
+        {
+            try
+            {
+                var Gratuity_Transactions = await _context.Gratuity_Transactions.AsQueryable().OrderBy(x => x.GratuityID).ToListAsync();
 
+                return new ManagerBaseResponse<List<Gratuity_Transactions>>
+                {
+                    IsSuccess = true,
+                    Result = Gratuity_Transactions,
+                    Message = "Gratuity Transactions Details Retrieved Successfully.",
+                };
+            }
+            catch (Exception ex)
+            {
+
+                return new ManagerBaseResponse<List<Gratuity_Transactions>>
+                {
+                    IsSuccess = false,
+                    Result = null,
+                    Message = ex.Message
+                };
+            }
+        }
+        public async Task<ManagerBaseResponse<IEnumerable<Gratuity_Transactions>>> GetGratuity_TransactionsFilter(PagedListCriteria PagedListCriteria)
+        {
+            try
+            {
+
+                var query = _context.Gratuity_Transactions.AsQueryable();
+                var searchText = PagedListCriteria.SearchText?.Trim().ToLower();
+                if (!string.IsNullOrWhiteSpace(searchText))
+                {
+                    query = query.Where(x => x.PaymentStatus.ToLower().Contains(searchText.ToLower()));
+                }
+
+                query = query.OrderBy(a => a.GratuityID);
+
+                PageListed<Gratuity_Transactions> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+                return new ManagerBaseResponse<IEnumerable<Gratuity_Transactions>>
+                {
+                    Result = result.Data,
+                    Message = "Gratuity Transactions Data Retrieved Successfully.",
+                    PageDetail = new PageDetailModel()
+                    {
+                        Skip = PagedListCriteria.Skip,
+                        Take = PagedListCriteria.Take,
+                        Count = result.TotalCount,
+                        SearchText = PagedListCriteria.SearchText,
+                        FilterdCount = PagedListCriteria.Filters
+                    }
+                };
+            }
+            catch (Exception ex)
+            {
+
+                return new ManagerBaseResponse<IEnumerable<Gratuity_Transactions>>
+                {
+                    IsSuccess = false,
+                    Result = null,
+                    Message = ex.Message
+                };
+            }
+        }
+        public async Task<ManagerBaseResponse<bool>> SaveFnF_CalculationsData(FnF_Calculations FnF_Calculations)
+        {
+            var response = new ManagerBaseResponse<List<FnF_Calculations>>();
+
+            try
+            {
+                var Employee = await _context.Employees.FirstOrDefaultAsync(x => x.EmployeeID == FnF_Calculations.EmployeeID);
+
+                if (Employee == null)
+                {
+                    return new ManagerBaseResponse<bool>
+                    {
+                        Result = false,
+                        Message = "Employee is not found.",
+                    };
+                }
+                else
+                {
+                    if (FnF_Calculations.FnFID == Guid.Empty)
+                    {
+                        // Insert
+                        FnF_Calculations _model = new FnF_Calculations();
+                        _model.FnFID = Guid.NewGuid();
+                        _model.EmployeeID = FnF_Calculations.EmployeeID;
+                        _model.ResignationDate = FnF_Calculations.ResignationDate;
+                        _model.LastWorkingDate = FnF_Calculations.LastWorkingDate;
+                        _model.NoticePeriodServedDays = FnF_Calculations.NoticePeriodServedDays;
+                        _model.SalaryDue = FnF_Calculations.SalaryDue;
+                        _model.LeaveEncashmentAmount    = FnF_Calculations.LeaveEncashmentAmount;
+                        _model.GratuityAmount = FnF_Calculations.GratuityAmount;
+                        _model.Bonus = FnF_Calculations.Bonus;
+                        _model.Deductions = FnF_Calculations.Deductions;
+                        _model.NetPayable = FnF_Calculations.NetPayable;
+                        _model.PaymentStatus = FnF_Calculations.PaymentStatus;
+                        _model.ProcessedBy = Guid.NewGuid();
+                        _model.ProcessedDate    = FnF_Calculations.ProcessedDate;
+                        _model.Remarks = FnF_Calculations.Remarks;
+                        _model.CreatedAt = FnF_Calculations.CreatedAt;
+
+                        _context.Add(_model);
+                        _context.SaveChanges();
+                    }
+                    else
+                    {
+                        // Update
+                        var originalTerm = _context.FnF_Calculations
+                            .Where(x => x.FnFID == FnF_Calculations.FnFID)
+                                .FirstOrDefault();
+                        originalTerm.EmployeeID = FnF_Calculations.EmployeeID;
+                        originalTerm.ResignationDate = FnF_Calculations.ResignationDate;
+                        originalTerm.LastWorkingDate = FnF_Calculations.LastWorkingDate;
+                        originalTerm.NoticePeriodServedDays = FnF_Calculations.NoticePeriodServedDays;
+                        originalTerm.SalaryDue = FnF_Calculations.SalaryDue;
+                        originalTerm.LeaveEncashmentAmount = FnF_Calculations.LeaveEncashmentAmount;
+                        originalTerm.GratuityAmount = FnF_Calculations.GratuityAmount;
+                        originalTerm.Bonus = FnF_Calculations.Bonus;
+                        originalTerm.Deductions = FnF_Calculations.Deductions;
+                        originalTerm.NetPayable = FnF_Calculations.NetPayable;
+                        originalTerm.ProcessedBy = FnF_Calculations.ProcessedBy;
+                        originalTerm.ProcessedDate = FnF_Calculations.ProcessedDate;
+                        originalTerm.PaymentStatus = FnF_Calculations.PaymentStatus;
+                        originalTerm.Remarks = FnF_Calculations.Remarks;
+                        originalTerm.CreatedAt = FnF_Calculations.CreatedAt;
+
+                        _context.Update(originalTerm);
+                        _context.SaveChanges();
+                    }
+                }
+                return new ManagerBaseResponse<bool>
+                {
+                    Result = true,
+                    Message = "FnF Calculations Data Saved Successfully."
+                };
+            }
+            catch (Exception e)
+            {
+                return new ManagerBaseResponse<bool>
+                {
+                    Result = false,
+                    Message = e.Message
+                };
+            }
+        }
+        public async Task<ManagerBaseResponse<bool>> RemoveFnF_CalculationsData(string FnFID)
+        {
+            try
+            {
+                // Get all report detail definitions for the given report name
+                var FnF_Calculations = await _context.FnF_Calculations.Where(x => x.FnFID.ToString() == FnFID).ToListAsync();
+
+                if (string.IsNullOrEmpty(FnF_Calculations.ToString()))
+                {
+                    return new ManagerBaseResponse<bool>
+                    {
+                        Result = false,
+                        Message = "FnF Calculations Id is not Vaild",
+                    };
+                }
+
+                // Remove all related report details
+                _context.FnF_Calculations.RemoveRange(FnF_Calculations);
+
+                await _context.SaveChangesAsync();
+
+                return new ManagerBaseResponse<bool>
+                {
+                    Result = true,
+                    Message = "FnF Calculations Data Removed Successfully.",
+                };
+
+            }
+            catch (Exception ex)
+            {
+                return new ManagerBaseResponse<bool>
+                {
+                    Result = false,
+                    Message = ex.Message
+                };
+            }
+
+        }
+        public async Task<ManagerBaseResponse<List<FnF_Calculations >>> GetFnF_Calculations(string FnFID)
+        {
+            try
+            {
+                var FnF_Calculations = await _context.FnF_Calculations.AsQueryable().OrderBy(x => x.FnFID).ToListAsync();
+
+                return new ManagerBaseResponse<List<FnF_Calculations>>
+                {
+                    IsSuccess = true,
+                    Result = FnF_Calculations,
+                    Message = "FnF Calculations Details Retrieved Successfully.",
+                };
+            }
+            catch (Exception ex)
+            {
+
+                return new ManagerBaseResponse<List<FnF_Calculations>>
+                {
+                    IsSuccess = false,
+                    Result = null,
+                    Message = ex.Message
+                };
+            }
+        }
+        public async Task<ManagerBaseResponse<IEnumerable<FnF_Calculations>>> GetFnF_CalculationsFilter(PagedListCriteria PagedListCriteria)
+        {
+            try
+            {
+
+                var query = _context.FnF_Calculations.AsQueryable();
+                var searchText = PagedListCriteria.SearchText?.Trim().ToLower();
+                if (!string.IsNullOrWhiteSpace(searchText))
+                {
+                    query = query.Where(x => x.PaymentStatus.ToLower().Contains(searchText.ToLower()));
+                }
+
+                query = query.OrderBy(a => a.FnFID);
+
+                PageListed<FnF_Calculations> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+                return new ManagerBaseResponse<IEnumerable<FnF_Calculations>>
+                {
+                    Result = result.Data,
+                    Message = "FnF Calculations Data Retrieved Successfully.",
+                    PageDetail = new PageDetailModel()
+                    {
+                        Skip = PagedListCriteria.Skip,
+                        Take = PagedListCriteria.Take,
+                        Count = result.TotalCount,
+                        SearchText = PagedListCriteria.SearchText,
+                        FilterdCount = PagedListCriteria.Filters
+                    }
+                };
+            }
+            catch (Exception ex)
+            {
+
+                return new ManagerBaseResponse<IEnumerable<FnF_Calculations>>
+                {
+                    IsSuccess = false,
+                    Result = null,
+                    Message = ex.Message
+                };
+            }
+        }
 
     }
 }

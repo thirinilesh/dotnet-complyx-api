@@ -13,7 +13,17 @@ namespace ComplyX.Services
         Task<ManagerBaseResponse<IEnumerable<Employees>>> GetEmployeeDataFilter(PagedListCriteria PagedListCriteria);
         Task<ManagerBaseResponse<bool>> SaveGratuity_PolicyData(Gratuity_Policy Gratuity_Policy);
         Task<ManagerBaseResponse<bool>> RemoveGratuity_PolicyData(string PolicyID);
+        Task<ManagerBaseResponse<List<Gratuity_Policy>>> GetGratuity_Policy(string PolicyID);
+        Task<ManagerBaseResponse<IEnumerable<Gratuity_Policy>>> GetGratuity_PolicyFilter(PagedListCriteria PagedListCriteria);
         Task<ManagerBaseResponse<bool>> SaveGratuity_TransactionsData(Gratuity_Transactions Gratuity_Transactions);
         Task<ManagerBaseResponse<bool>> RemoveGratuity_TransactionsData(string GratuityID);
+        Task<ManagerBaseResponse<List<Gratuity_Transactions>>> GetGratuity_Transactions(string GratuityID);
+        Task<ManagerBaseResponse<IEnumerable<Gratuity_Transactions>>> GetGratuity_TransactionsFilter(PagedListCriteria PagedListCriteria);
+        Task<ManagerBaseResponse<bool>> SaveFnF_CalculationsData(FnF_Calculations FnF_Calculations);
+        Task<ManagerBaseResponse<bool>> RemoveFnF_CalculationsData(string FnFID);
+        Task<ManagerBaseResponse<List<FnF_Calculations>>> GetFnF_Calculations(string FnFID);
+        Task<ManagerBaseResponse<IEnumerable<FnF_Calculations>>> GetFnF_CalculationsFilter(PagedListCriteria PagedListCriteria);
+
+
     }
 }

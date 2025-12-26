@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,7 +9,8 @@ namespace ComplyX_Businesss.Models
 {
     public  class FnF_Calculations
     {
-        public int FnFID { get; set; }
+        [Key]
+        public Guid FnFID { get; set; }
         public  int EmployeeID { get; set; }
         public DateTime? ResignationDate { get; set; }
         public DateTime? LastWorkingDate { get; set; }
@@ -19,7 +21,7 @@ namespace ComplyX_Businesss.Models
         public decimal? Bonus {  get; set; }
         public decimal? Deductions { get; set; }
         public decimal? NetPayable { get; set; }
-        public int? ProcessedBy { get; set; }
+        public Guid? ProcessedBy { get; set; }
         public string? PaymentStatus { get; set; }
         public DateTime? ProcessedDate { get; set; }
         public string? Remarks { get; set; }

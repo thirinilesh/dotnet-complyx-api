@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,7 +9,8 @@ namespace ComplyX_Businesss.Models
 {
     public class Gratuity_Policy
     {
-        public  int  PolicyID { get; set;}
+        [Key]
+        public  Guid  PolicyID { get; set;}
         public int CompanyID { get; set;}
         public int MinimumServiceYears { get; set;}
         public string? Formula { get; set;}

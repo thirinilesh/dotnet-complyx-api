@@ -98,7 +98,26 @@ namespace ComplyX.Controllers
             return ResponseResult(await _IEmployeeServices.RemoveGratuity_PolicyData(PolicyID));
         }
         /// <summary>
-        /// Save Gratuity Policy  Data 
+        /// Get Gratuity Policy Data  
+        /// </summary>
+        [HttpGet("GetGratuity_Policy")]
+        public async Task<IActionResult> GetGratuity_Policy(string PolicyID)
+        {
+            return ResponseResult(await _IEmployeeServices.GetGratuity_Policy(PolicyID));
+        }
+
+        /// <summary>
+        /// Get List of Gratuity Policy Data Filter
+        /// </summary>
+        [HttpGet("GetGratuity_PolicyFilter")]
+        public async Task<IActionResult> GetGratuity_PolicyFilter([FromQuery] PagedListCriteria PagedListCriteria)
+        {
+            return ResponseResult(await _IEmployeeServices.GetGratuity_PolicyFilter(PagedListCriteria));
+        }
+
+
+        /// <summary>
+        /// Save Gratuity Transactions  Data 
         /// </summary>
         [HttpPost("SaveGratuity_TransactionsData")]
         public async Task<IActionResult> SaveGratuity_TransactionsData([FromBody] Gratuity_Transactions Gratuity_Transactions)
@@ -114,5 +133,56 @@ namespace ComplyX.Controllers
             return ResponseResult(await _IEmployeeServices.RemoveGratuity_TransactionsData(GratuityID));
         }
 
+        /// <summary>
+        /// Get Gratuity Transactions Data  
+        /// </summary>
+        [HttpGet("GetGratuity_Transactions")]
+        public async Task<IActionResult> GetGratuity_Transactions(string GratuityID)
+        {
+            return ResponseResult(await _IEmployeeServices.GetGratuity_Transactions(GratuityID));
+        }
+
+        /// <summary>
+        /// Get List of Gratuity Transactions Data Filter
+        /// </summary>
+        [HttpGet("GetGratuity_TransactionsFilter")]
+        public async Task<IActionResult> GetGratuity_TransactionsFilter([FromQuery] PagedListCriteria PagedListCriteria)
+        {
+            return ResponseResult(await _IEmployeeServices.GetGratuity_TransactionsFilter(PagedListCriteria));
+        }
+        /// <summary>
+        /// Save FnF Calculations  Data 
+        /// </summary>
+        [HttpPost("SaveFnF_CalculationsData")]
+        public async Task<IActionResult> SaveFnF_CalculationsData([FromBody] FnF_Calculations FnF_Calculations)
+        {
+            return ResponseResult(await _IEmployeeServices.SaveFnF_CalculationsData(FnF_Calculations));
+        }
+        /// <summary>
+        /// Remove FnF Calculations  Data 
+        /// </summary>
+        [HttpPost("RemoveFnF_CalculationsData")]
+        public async Task<IActionResult> RemoveFnF_CalculationsData(string FnFID)
+        {
+            return ResponseResult(await _IEmployeeServices.RemoveFnF_CalculationsData(FnFID));
+        }
+
+        /// <summary>
+        /// Get FnF Calculations Data  
+        /// </summary>
+        [HttpGet("GetFnF_Calculations")]
+        public async Task<IActionResult> GetFnF_Calculations(string FnFID)
+        {
+            return ResponseResult(await _IEmployeeServices.GetFnF_Calculations(FnFID));
+        }
+
+        /// <summary>
+        /// Get List of FnF Calculations Data Filter
+        /// </summary>
+        [HttpGet("GetFnF_CalculationsFilter")]
+        public async Task<IActionResult> GetFnF_CalculationsFilter([FromQuery] PagedListCriteria PagedListCriteria)
+        {
+            return ResponseResult(await _IEmployeeServices.GetFnF_CalculationsFilter(PagedListCriteria));
+        }
     }
 }

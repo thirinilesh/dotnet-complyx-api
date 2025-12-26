@@ -42,6 +42,7 @@ namespace ComplyX.Shared.Data
         public virtual DbSet<CustomerPayments> CustomerPayments { get; set; }
         public virtual DbSet<Gratuity_Policy> Gratuity_Policy { get; set; }
         public virtual DbSet<Gratuity_Transactions> Gratuity_Transactions { get; set; }
+        public virtual DbSet<FnF_Calculations> FnF_Calculations { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
