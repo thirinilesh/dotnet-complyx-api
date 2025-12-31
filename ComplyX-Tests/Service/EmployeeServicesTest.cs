@@ -1,84 +1,37 @@
 ﻿using AutoMapper;
+using Moq;
 using ComplyX.Shared.Helper;
 using ComplyX_Businesss.Models;
+using ComplyX_Tests.Service;
+using ComplyX_Tests.Repositories.Implementation;
 using ComplyX_Tests.Repositories.Interface;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using NHibernate.Linq;
+using Nest;
 
 namespace ComplyX_Tests.Service
 {
     public class EmployeeService
     {
         private readonly ILogger<EmployeeService> _logger;
-        private readonly IEmployeeRepository _EmployeeRepository;
         private readonly ICompanyRespository _companyRepository;
         private readonly IPartnerApiAuthConfigRepository _partnerApiAuthConfigRepository;
-        private readonly IMapper _mapper;
+        private readonly Mock<IMapper> _mapper;
 
+    
         public EmployeeService(
             ILogger<EmployeeService> logger,
-            IEmployeeRepository companyEmployeeRepository,
             ICompanyRespository companyRepository,
             IPartnerApiAuthConfigRepository partnerApiAuthConfigRepository,
-            IMapper mapper)
+            Mock<IMapper> mapper)
         {
-            _logger = logger;
-            _EmployeeRepository = companyEmployeeRepository;
+            _logger = logger;          
             _companyRepository = companyRepository;
             _partnerApiAuthConfigRepository = partnerApiAuthConfigRepository;
             _mapper = mapper;
         }
 
-        public async Task<PaginatedResponse<Employees>> GetEmployeesAsync(
-            Employees request,
-            string userId)
-        {
-            _logger.LogInformation(
-                "GetEmployeesByCompanyId called for companyId {companyId} by user {userId}",
-                request.EmployeeID,
-                userId
-            );
-
-            // Check if the user has access to the company
-            bool hasAccess = await _partnerApiAuthConfigRepository
-                .CheckUserCompanyAccess(userId, request.EmployeeID);
-            if (!hasAccess)
-            {
-                throw new ApiExceptionForbidden(
-                    $"User {userId} does not have access to company {request.EmployeeID}."
-                );
-            }
-
-            _logger.LogInformation(
-                "GetCompanyByIdAsync called with companyId: {companyId}, userId: {userId}",
-                request.EmployeeID,
-                userId
-            );
-            var company = await _companyRepository
-                .GetCompanyByIdAsync(request.CompanyID)
-                ?? throw new ApiExceptionNotFound(
-                    $"Company with ID {request.CompanyID} not found."
-                );
-
-            _logger.LogInformation(
-                "GetEmployeesAsync called with companyId: {companyId}, status: {status}",
-                request.CompanyID,
-                request.ActiveStatus
-            );
-            var employees = await _EmployeeRepository.GetEmployeesAsync(request);
-
-            _logger.LogInformation(
-                "GetEmployeeCurrentMeasurementInfoAsync called with companyId: {companyId}, monthlyMeasurement: {monthlyMeasurement}",
-                request.EmployeeID,
-                company.IsActive
-            );
-            
-            return employees;
-        }
-
-        internal async Task GetEmployeesAsync(Company request, string userId)
-        {
-            throw new NotImplementedException();
-        }
       }
     /// <summary>
     /// Represents a paginated API response.

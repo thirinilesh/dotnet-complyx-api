@@ -1,10 +1,14 @@
 ﻿using AutoMapper;
 using ComplyX_Businesss.Models;
 using ComplyX.Common.Data.Context;
-using ComplyX.Shared.Data;
+
 using ComplyX_Tests.Repositories.Interface;
 using Microsoft.EntityFrameworkCore;
 using Castle.Core.Resource;
+using Nest;
+using Moq;
+using ComplyX_Tests.Service;
+using System.Linq;
 
 namespace ComplyX_Tests.Repositories.Implementation
 {
@@ -12,58 +16,39 @@ namespace ComplyX_Tests.Repositories.Implementation
     {
 
         private readonly DboContext _dbContext;
-        private readonly IMapper _mapper;
+        private readonly Mock<IMapper> _mapper;
         private readonly AppDbContext _appDbContext;
 
-        public CompanyRespository(DboContext dbContext, IMapper mapper, AppDbContext appDbContext)
+        public CompanyRespository(Mock<IMapper> mapper, AppDbContext appDbContext)
         {
-            _dbContext = dbContext;
-            this._mapper = mapper;
+
+          _mapper = mapper;
             _appDbContext = appDbContext;
         }
 
         public async Task<bool> CompanyExists(int companyId)
         {
-            return await _appDbContext.Companies.AnyAsync(c => c.CompanyID == companyId);
+            return await _appDbContext.Companiess.AnyAsync(c => c.Id == companyId);
         }
 
         public async Task<bool> CompanyExistsByNameAsync(string companyName)
         {
-            return await _appDbContext.Companies.AnyAsync(c => c.Name == companyName);
+            return await  _appDbContext.Companiess.AnyAsync(c => c.Name == companyName);
         }
-        public void AddCompany(Company company) 
-        { 
-            _appDbContext.Companies.Add(company); 
-        }
-        public async Task<Company> GetCompanyByIdForUpdateAsync(int companyId)
+
+        public async Task<int> SaveChangesAsync()
         {
-            return await _appDbContext.Companies
-                .Where(c => c.CompanyID == companyId).FirstOrDefaultAsync();
+            return await _appDbContext.SaveChangesAsync();
         }
-        
-
-        public async Task ActivateCompanyAsync(int companyId, string activatedBy)
+  
+        public async Task<bool> CompanyExistsByNameAsync( string companyName,bool caseSensitive,int excludedCompanyId = 0)
         {
-            var company = await GetCompanyByIdAsync(companyId);
-
-            if (company != null)
-            {
-                company.IsActive = true;
-                company.CreatedAt = DateTime.UtcNow;
-                
-                // EF Core tracks changes automatically, but explicit Update is fine
-                _appDbContext.Companies.Update(company);
-            }
+            return await _appDbContext.Companiess.AnyAsync(c =>
+                (caseSensitive
+                    ? c.Name.Trim() == companyName.Trim()
+                    : c.Name.Trim().ToUpper() == companyName.Trim().ToUpper())
+                && c.Id != excludedCompanyId);
         }
-
-        public async Task<Company> GetCompanyByIdAsync(int companyId)
-        {
-            return await _appDbContext.Companies
-                .Where(c => c.CompanyID == companyId)
-                .FirstOrDefaultAsync();
-        }
-
-         
-
+       
     }
 }

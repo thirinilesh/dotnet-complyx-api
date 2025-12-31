@@ -1,24 +1,16 @@
 ﻿using Castle.Core.Resource;
 using ComplyX_Businesss.Models;
 using ComplyX_Tests.Repositories.Implementation;
+using ComplyX_Tests.Service;
 
 namespace ComplyX_Tests.Repositories.Interface
 {
     public interface ICompanyRespository
     {
-        Task<bool> CompanyExists(int companyId);
- 
-
+        Task<bool> CompanyExists(int companyId); 
         Task<bool> CompanyExistsByNameAsync(string companyName);
-
-        Task<Company> GetCompanyByIdAsync(int companyId);
-
-        void AddCompany(Company company);
-
-        Task<Company> GetCompanyByIdForUpdateAsync(int companyId);
-
-        Task ActivateCompanyAsync(int companyId, string activatedBy);
-
-
+        Task<int> SaveChangesAsync();
+        Task<bool> CompanyExistsByNameAsync(string companyName,bool caseSensitive, int excludedCompanyId = 0);
+      
     }
 }
