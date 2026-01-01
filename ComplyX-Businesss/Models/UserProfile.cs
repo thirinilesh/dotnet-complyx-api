@@ -16,15 +16,13 @@ namespace ComplyX_Businesss.Models
         private readonly List<TypeMapConfiguration> _typeMapConfigs = [];
         public UserProfile()
         {
-            CreateMap<ApplicationUser, UserDto>()            
+            CreateMap<ApplicationUser, UserDto>()
                 .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
                 .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.UserName))
                 .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.Address))
-                .ForMember(dest => dest.Password, opt => opt.MapFrom(src => src.Password))
-                .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
-                .ForMember(dest => dest.GSTIN, opt => opt.MapFrom(src => src.GSTIN))
-                .ForMember(dest => dest.State, opt => opt.MapFrom(src => src.State))
-                .ForMember(dest => dest.PAN, opt => opt.MapFrom(src => src.PAN));
+                 
+                .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email));
+             
         }
       
         public IMappingExpression<TSource, TDestination> CreateMap<TSource, TDestination>() =>

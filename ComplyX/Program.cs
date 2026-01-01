@@ -12,6 +12,8 @@ using System.Text;
 using Jose;
 using ComplyX.Services;
 using ComplyX.Controllers;
+using ComplyX_Businesss.Services.Interface;
+using ComplyX_Businesss.Services.Implementation;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,6 +35,7 @@ builder.Services.AddScoped<IPayrollServices, PayrollClass>();
 builder.Services.AddScoped<ImportServices, ImportClass>();
 builder.Services.AddScoped<LicenseServices, LicenseClass>();
 builder.Services.AddScoped<EPFOServices, EPFOClass>();
+builder.Services.AddScoped<IGSTServices, GSTClass>();
 builder.Services.AddScoped<AccountOwnerLogic>();
 builder.Services.AddScoped<Nest.Filter>();
 builder.Services.AddSingleton<JwtTokenService>();

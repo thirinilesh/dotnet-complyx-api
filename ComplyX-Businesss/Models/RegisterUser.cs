@@ -14,5 +14,6 @@ namespace ComplyX_Businesss.Models
         public string State { get; set; } = string.Empty;
         public string GSTIN { get; set; } = string.Empty;
         public string PAN { get; set; } = string.Empty;
+     
     }
 }

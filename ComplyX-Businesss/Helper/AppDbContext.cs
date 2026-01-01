@@ -43,6 +43,12 @@ namespace ComplyX.Shared.Data
         public virtual DbSet<Gratuity_Policy> Gratuity_Policy { get; set; }
         public virtual DbSet<Gratuity_Transactions> Gratuity_Transactions { get; set; }
         public virtual DbSet<FnF_Calculations> FnF_Calculations { get; set; }
+        public virtual DbSet<GST_HSNSAC> GST_HSNSAC { get; set; }
+        public virtual DbSet<GST_HSN_Mapping> GST_HSN_Mapping { get; set; }
+        public virtual DbSet<GST_InvoiceSeries> GST_InvoiceSeries { get; set; }
+        public virtual DbSet<GST_Purchase> GST_Purchase { get; set; }
+        public virtual DbSet<GST_Returns> GST_Returns { get; set; }
+        public virtual DbSet<GST_Sales> GST_Sales { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -243,6 +249,53 @@ namespace ComplyX.Shared.Data
                 entity.HasOne(d => d.Employees).WithMany(p => p.Gratuity_Transactions)
                      .HasForeignKey(d => d.EmployeeID)
                     .HasConstraintName("FK_Gratuity_Transactions_Employees");
+            });
+
+            modelBuilder.Entity<GST_HSN_Mapping>(entity =>
+            {
+                entity.HasKey(e => e.MappingID);
+
+                entity.HasOne(d => d.Company).WithMany(p => p.GST_HSN_Mappings)
+                     .HasForeignKey(d => d.CompanyID)
+                    .HasConstraintName("FK_GST_HSN_Mapping_Company");
+
+                entity.HasOne(d => d.GST_HSNSAC).WithMany(p => p.GST_HSN_Mappings)
+                    .HasForeignKey(d => d.SACCode)
+                  .HasPrincipalKey(u => u.Code)
+                  .OnDelete(DeleteBehavior.Restrict)
+                   .HasConstraintName("FK_GST_HSN_Mapping_GST_HSNSAC");
+            });
+            modelBuilder.Entity<GST_Purchase>(entity =>
+            {
+                entity.HasKey(e => e.PurchaseID);
+
+                entity.HasOne(d => d.Company).WithMany(p => p.GST_Purchases)
+                     .HasForeignKey(d => d.CompanyID)
+                    .HasConstraintName("FK_GST_Purchase_Company");
+            });
+            modelBuilder.Entity<GST_InvoiceSeries>(entity =>
+            {
+                entity.HasKey(e => e.SeriesID);
+
+                entity.HasOne(d => d.Company).WithMany(p => p.GST_InvoiceSeries)
+                     .HasForeignKey(d => d.CompanyID)
+                    .HasConstraintName("FK_GST_InvoiceSeries_Company");
+            });
+            modelBuilder.Entity<GST_Returns>(entity =>
+            {
+                entity.HasKey(e => e.ReturnID);
+
+                entity.HasOne(d => d.Company).WithMany(p => p.GST_Returns)
+                     .HasForeignKey(d => d.CompanyID)
+                    .HasConstraintName("FK_GST_Returns_Company");
+            });
+            modelBuilder.Entity<GST_Sales>(entity =>
+            {
+                entity.HasKey(e => e.SaleID);
+
+                entity.HasOne(d => d.Company).WithMany(p => p.GST_Sales)
+                     .HasForeignKey(d => d.CompanyID)
+                    .HasConstraintName("FK_GST_Sales_Company");
             });
         }
       

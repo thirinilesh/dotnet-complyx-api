@@ -45,5 +45,11 @@ namespace ComplyX_Businesss.Models
 
         public virtual ICollection<CustomerPayments>? CustomerPayments { get; set; } = new List<CustomerPayments>();
         public virtual ICollection<Gratuity_Policy>? Gratuity_Policy { get; set; } = new List<Gratuity_Policy>();
+        public virtual ICollection<GST_HSN_Mapping>? GST_HSN_Mappings { get; set; } = new List<GST_HSN_Mapping>();
+        public virtual ICollection<GST_InvoiceSeries>? GST_InvoiceSeries { get; set; } = new List<GST_InvoiceSeries>();
+
+        public virtual ICollection<GST_Purchase>? GST_Purchases { get; set; } = new List<GST_Purchase>();
+        public virtual ICollection<GST_Returns>? GST_Returns { get; set; } = new List<GST_Returns>();
+        public virtual ICollection<GST_Sales>? GST_Sales { get; set; } = new List<GST_Sales>();
     }
 }
