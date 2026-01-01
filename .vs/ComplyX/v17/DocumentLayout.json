@@ -1,0 +1,229 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Thirirepos\\dotnet-complyx-api\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{1F3EE2BE-4FF3-4CB2-8985-F67A64CCD9E3}|ComplyX-Businesss\\ComplyX-Businesss.csproj|c:\\thirirepos\\dotnet-complyx-api\\complyx-businesss\\services\\interface\\igstservices.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1F3EE2BE-4FF3-4CB2-8985-F67A64CCD9E3}|ComplyX-Businesss\\ComplyX-Businesss.csproj|solutionrelative:complyx-businesss\\services\\interface\\igstservices.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1F3EE2BE-4FF3-4CB2-8985-F67A64CCD9E3}|ComplyX-Businesss\\ComplyX-Businesss.csproj|c:\\thirirepos\\dotnet-complyx-api\\complyx-businesss\\services\\implementation\\gstclass.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1F3EE2BE-4FF3-4CB2-8985-F67A64CCD9E3}|ComplyX-Businesss\\ComplyX-Businesss.csproj|solutionrelative:complyx-businesss\\services\\implementation\\gstclass.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{14CBF13B-EC9B-4884-A5CC-3C5EEA97A4D6}|ComplyX\\ComplyX.csproj|c:\\thirirepos\\dotnet-complyx-api\\complyx\\controllers\\gstcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{14CBF13B-EC9B-4884-A5CC-3C5EEA97A4D6}|ComplyX\\ComplyX.csproj|solutionrelative:complyx\\controllers\\gstcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1F3EE2BE-4FF3-4CB2-8985-F67A64CCD9E3}|ComplyX-Businesss\\ComplyX-Businesss.csproj|c:\\thirirepos\\dotnet-complyx-api\\complyx-businesss\\services\\implementation\\accountownerlogic.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1F3EE2BE-4FF3-4CB2-8985-F67A64CCD9E3}|ComplyX-Businesss\\ComplyX-Businesss.csproj|solutionrelative:complyx-businesss\\services\\implementation\\accountownerlogic.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{14CBF13B-EC9B-4884-A5CC-3C5EEA97A4D6}|ComplyX\\ComplyX.csproj|c:\\thirirepos\\dotnet-complyx-api\\complyx\\controllers\\licensecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{14CBF13B-EC9B-4884-A5CC-3C5EEA97A4D6}|ComplyX\\ComplyX.csproj|solutionrelative:complyx\\controllers\\licensecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1F3EE2BE-4FF3-4CB2-8985-F67A64CCD9E3}|ComplyX-Businesss\\ComplyX-Businesss.csproj|c:\\thirirepos\\dotnet-complyx-api\\complyx-businesss\\models\\gst_hsn_mapping.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1F3EE2BE-4FF3-4CB2-8985-F67A64CCD9E3}|ComplyX-Businesss\\ComplyX-Businesss.csproj|solutionrelative:complyx-businesss\\models\\gst_hsn_mapping.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1F3EE2BE-4FF3-4CB2-8985-F67A64CCD9E3}|ComplyX-Businesss\\ComplyX-Businesss.csproj|c:\\thirirepos\\dotnet-complyx-api\\complyx-businesss\\helper\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1F3EE2BE-4FF3-4CB2-8985-F67A64CCD9E3}|ComplyX-Businesss\\ComplyX-Businesss.csproj|solutionrelative:complyx-businesss\\helper\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1F3EE2BE-4FF3-4CB2-8985-F67A64CCD9E3}|ComplyX-Businesss\\ComplyX-Businesss.csproj|c:\\thirirepos\\dotnet-complyx-api\\complyx-businesss\\models\\userprofile.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1F3EE2BE-4FF3-4CB2-8985-F67A64CCD9E3}|ComplyX-Businesss\\ComplyX-Businesss.csproj|solutionrelative:complyx-businesss\\models\\userprofile.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1F3EE2BE-4FF3-4CB2-8985-F67A64CCD9E3}|ComplyX-Businesss\\ComplyX-Businesss.csproj|c:\\thirirepos\\dotnet-complyx-api\\complyx-businesss\\helper\\applicationuser.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1F3EE2BE-4FF3-4CB2-8985-F67A64CCD9E3}|ComplyX-Businesss\\ComplyX-Businesss.csproj|solutionrelative:complyx-businesss\\helper\\applicationuser.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1F3EE2BE-4FF3-4CB2-8985-F67A64CCD9E3}|ComplyX-Businesss\\ComplyX-Businesss.csproj|c:\\thirirepos\\dotnet-complyx-api\\complyx-businesss\\models\\gst_sales.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1F3EE2BE-4FF3-4CB2-8985-F67A64CCD9E3}|ComplyX-Businesss\\ComplyX-Businesss.csproj|solutionrelative:complyx-businesss\\models\\gst_sales.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{14CBF13B-EC9B-4884-A5CC-3C5EEA97A4D6}|ComplyX\\ComplyX.csproj|c:\\thirirepos\\dotnet-complyx-api\\complyx\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{14CBF13B-EC9B-4884-A5CC-3C5EEA97A4D6}|ComplyX\\ComplyX.csproj|solutionrelative:complyx\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 10,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:129:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{13b12e3e-c1b4-4539-9371-4fe9a0d523fc}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "LicenseController.cs",
+              "DocumentMoniker": "C:\\Thirirepos\\dotnet-complyx-api\\ComplyX\\Controllers\\LicenseController.cs",
+              "RelativeDocumentMoniker": "ComplyX\\Controllers\\LicenseController.cs",
+              "ToolTip": "C:\\Thirirepos\\dotnet-complyx-api\\ComplyX\\Controllers\\LicenseController.cs",
+              "RelativeToolTip": "ComplyX\\Controllers\\LicenseController.cs",
+              "ViewState": "AgIAADIAAAAAAAAAAAAgwD8AAABTAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-01T08:58:35.646Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "GSTClass.cs",
+              "DocumentMoniker": "C:\\Thirirepos\\dotnet-complyx-api\\ComplyX-Businesss\\Services\\Implementation\\GSTClass.cs",
+              "RelativeDocumentMoniker": "ComplyX-Businesss\\Services\\Implementation\\GSTClass.cs",
+              "ToolTip": "C:\\Thirirepos\\dotnet-complyx-api\\ComplyX-Businesss\\Services\\Implementation\\GSTClass.cs",
+              "RelativeToolTip": "ComplyX-Businesss\\Services\\Implementation\\GSTClass.cs",
+              "ViewState": "AgIAALYCAAAAAAAAAAAqwN4BAABiAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-31T07:33:31.767Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "AppDbContext.cs",
+              "DocumentMoniker": "C:\\Thirirepos\\dotnet-complyx-api\\ComplyX-Businesss\\Helper\\AppDbContext.cs",
+              "RelativeDocumentMoniker": "ComplyX-Businesss\\Helper\\AppDbContext.cs",
+              "ToolTip": "C:\\Thirirepos\\dotnet-complyx-api\\ComplyX-Businesss\\Helper\\AppDbContext.cs",
+              "RelativeToolTip": "ComplyX-Businesss\\Helper\\AppDbContext.cs",
+              "ViewState": "AgIAACwAAAAAAAAAAAAswC4AAAA9AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-31T11:18:15.161Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Thirirepos\\dotnet-complyx-api\\ComplyX\\Program.cs",
+              "RelativeDocumentMoniker": "ComplyX\\Program.cs",
+              "ToolTip": "C:\\Thirirepos\\dotnet-complyx-api\\ComplyX\\Program.cs",
+              "RelativeToolTip": "ComplyX\\Program.cs",
+              "ViewState": "AgIAABQAAAAAAAAAAAAAACUAAAAxAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-01T06:04:58.546Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "UserProfile.cs",
+              "DocumentMoniker": "C:\\Thirirepos\\dotnet-complyx-api\\ComplyX-Businesss\\Models\\UserProfile.cs",
+              "RelativeDocumentMoniker": "ComplyX-Businesss\\Models\\UserProfile.cs",
+              "ToolTip": "C:\\Thirirepos\\dotnet-complyx-api\\ComplyX-Businesss\\Models\\UserProfile.cs",
+              "RelativeToolTip": "ComplyX-Businesss\\Models\\UserProfile.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAABgAAAANAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-01T06:13:31.472Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "GSTController.cs",
+              "DocumentMoniker": "C:\\Thirirepos\\dotnet-complyx-api\\ComplyX\\Controllers\\GSTController.cs",
+              "RelativeDocumentMoniker": "ComplyX\\Controllers\\GSTController.cs",
+              "ToolTip": "C:\\Thirirepos\\dotnet-complyx-api\\ComplyX\\Controllers\\GSTController.cs",
+              "RelativeToolTip": "ComplyX\\Controllers\\GSTController.cs",
+              "ViewState": "AgIAAMYAAAAAAAAAAAAswO8AAABHAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-31T07:32:14.513Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "GST_Sales.cs",
+              "DocumentMoniker": "C:\\Thirirepos\\dotnet-complyx-api\\ComplyX-Businesss\\Models\\GST_Sales.cs",
+              "RelativeDocumentMoniker": "ComplyX-Businesss\\Models\\GST_Sales.cs",
+              "ToolTip": "C:\\Thirirepos\\dotnet-complyx-api\\ComplyX-Businesss\\Models\\GST_Sales.cs",
+              "RelativeToolTip": "ComplyX-Businesss\\Models\\GST_Sales.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAAAgAAAAbAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-31T10:24:31.967Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "IGSTServices.cs",
+              "DocumentMoniker": "C:\\Thirirepos\\dotnet-complyx-api\\ComplyX-Businesss\\Services\\Interface\\IGSTServices.cs",
+              "RelativeDocumentMoniker": "ComplyX-Businesss\\Services\\Interface\\IGSTServices.cs",
+              "ToolTip": "C:\\Thirirepos\\dotnet-complyx-api\\ComplyX-Businesss\\Services\\Interface\\IGSTServices.cs",
+              "RelativeToolTip": "ComplyX-Businesss\\Services\\Interface\\IGSTServices.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAhAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-31T07:33:07.959Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "AccountOwnerLogic.cs",
+              "DocumentMoniker": "C:\\Thirirepos\\dotnet-complyx-api\\ComplyX-Businesss\\Services\\Implementation\\AccountOwnerLogic.cs",
+              "RelativeDocumentMoniker": "ComplyX-Businesss\\Services\\Implementation\\AccountOwnerLogic.cs",
+              "ToolTip": "C:\\Thirirepos\\dotnet-complyx-api\\ComplyX-Businesss\\Services\\Implementation\\AccountOwnerLogic.cs",
+              "RelativeToolTip": "ComplyX-Businesss\\Services\\Implementation\\AccountOwnerLogic.cs",
+              "ViewState": "AgIAAH0BAAAAAAAAAADwv5QBAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-01T09:30:57.98Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "GST_HSN_Mapping.cs",
+              "DocumentMoniker": "C:\\Thirirepos\\dotnet-complyx-api\\ComplyX-Businesss\\Models\\GST_HSN_Mapping.cs",
+              "RelativeDocumentMoniker": "ComplyX-Businesss\\Models\\GST_HSN_Mapping.cs",
+              "ToolTip": "C:\\Thirirepos\\dotnet-complyx-api\\ComplyX-Businesss\\Models\\GST_HSN_Mapping.cs",
+              "RelativeToolTip": "ComplyX-Businesss\\Models\\GST_HSN_Mapping.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAbAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-01T06:08:17.518Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "ApplicationUser.cs",
+              "DocumentMoniker": "C:\\Thirirepos\\dotnet-complyx-api\\ComplyX-Businesss\\Helper\\ApplicationUser.cs",
+              "RelativeDocumentMoniker": "ComplyX-Businesss\\Helper\\ApplicationUser.cs",
+              "ToolTip": "C:\\Thirirepos\\dotnet-complyx-api\\ComplyX-Businesss\\Helper\\ApplicationUser.cs",
+              "RelativeToolTip": "ComplyX-Businesss\\Helper\\ApplicationUser.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAABAAAAAHAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-01T06:13:22.351Z",
+              "EditorCaption": ""
+            }
+          ]
+        },
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": -1,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{004be353-6879-467c-9d1e-9ac23cdf6d49}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -6,16 +6,10 @@
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
-    "Parameters": [
-      {
-        "Name": "ProductOwners",
-        "Type": "ComplyX.Models.ProductOwners",
-        "IsRequired": true
-      }
-    ],
+    "Parameters": [],
     "ReturnTypes": [
       {
-        "Type": "ComplyX.Models.ErrorResponse",
+        "Type": "ComplyX_Businesss.Models.ErrorResponse",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -24,6 +18,533 @@
         "StatusCode": 403
       }
     ]
+  },
+  {
+    "ContainingType": "ComplyX.Controllers.AccountOwnerController",
+    "Method": "GetAllCompanyDataFilter",
+    "RelativePath": "AccountOwner/GetAllCompanyDataFilter",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "Skip",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "Take",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "Count",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "SearchText",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "OrderBy",
+        "Type": "System.Collections.Generic.IList\u00601[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "Filters",
+        "Type": "System.Collections.Generic.IList\u00601[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ComplyX.Controllers.AccountOwnerController",
+    "Method": "GetAllCustomerPaymentDataByID",
+    "RelativePath": "AccountOwner/GetAllCustomerPaymentDataByID",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "PaymentID",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ComplyX.Controllers.AccountOwnerController",
+    "Method": "GetAllCustomerPaymentFilter",
+    "RelativePath": "AccountOwner/GetAllCustomerPaymentFilter",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "Skip",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "Take",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "Count",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "SearchText",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "OrderBy",
+        "Type": "System.Collections.Generic.IList\u00601[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "Filters",
+        "Type": "System.Collections.Generic.IList\u00601[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ComplyX.Controllers.AccountOwnerController",
+    "Method": "GetAllCustomerPaymentsData",
+    "RelativePath": "AccountOwner/GetAllCustomerPaymentsData",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ComplyX.Controllers.AccountOwnerController",
+    "Method": "GetAllPaymentTransactionData",
+    "RelativePath": "AccountOwner/GetAllPaymentTransactionData",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ComplyX.Controllers.AccountOwnerController",
+    "Method": "GetAllPaymentTransactionDataByID",
+    "RelativePath": "AccountOwner/GetAllPaymentTransactionDataByID",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "TransactionID",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ComplyX.Controllers.AccountOwnerController",
+    "Method": "GetAllPaymentTransactionFilter",
+    "RelativePath": "AccountOwner/GetAllPaymentTransactionFilter",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "Skip",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "Take",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "Count",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "SearchText",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "OrderBy",
+        "Type": "System.Collections.Generic.IList\u00601[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "Filters",
+        "Type": "System.Collections.Generic.IList\u00601[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ComplyX.Controllers.AccountOwnerController",
+    "Method": "GetAllPlansData",
+    "RelativePath": "AccountOwner/GetAllPlansData",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ComplyX.Controllers.AccountOwnerController",
+    "Method": "GetAllPlansDataByID",
+    "RelativePath": "AccountOwner/GetAllPlansDataByID",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "PlanID",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ComplyX.Controllers.AccountOwnerController",
+    "Method": "GetAllPlansDataFilter",
+    "RelativePath": "AccountOwner/GetAllPlansDataFilter",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "Skip",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "Take",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "Count",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "SearchText",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "OrderBy",
+        "Type": "System.Collections.Generic.IList\u00601[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "Filters",
+        "Type": "System.Collections.Generic.IList\u00601[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ComplyX.Controllers.AccountOwnerController",
+    "Method": "GetAllProductOwnerFilter",
+    "RelativePath": "AccountOwner/GetAllProductOwnerFilter",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "Skip",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "Take",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "Count",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "SearchText",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "OrderBy",
+        "Type": "System.Collections.Generic.IList\u00601[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "Filters",
+        "Type": "System.Collections.Generic.IList\u00601[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ComplyX.Controllers.AccountOwnerController",
+    "Method": "GetAllSubscriptionInvoicesData",
+    "RelativePath": "AccountOwner/GetAllSubscriptionInvoicesData",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ComplyX.Controllers.AccountOwnerController",
+    "Method": "GetAllSubscriptionInvoicesDataByID",
+    "RelativePath": "AccountOwner/GetAllSubscriptionInvoicesDataByID",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "InvoiceID",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ComplyX.Controllers.AccountOwnerController",
+    "Method": "GetAllSubscriptionInvoicesFilter",
+    "RelativePath": "AccountOwner/GetAllSubscriptionInvoicesFilter",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "Skip",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "Take",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "Count",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "SearchText",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "OrderBy",
+        "Type": "System.Collections.Generic.IList\u00601[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "Filters",
+        "Type": "System.Collections.Generic.IList\u00601[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ComplyX.Controllers.AccountOwnerController",
+    "Method": "GetProductOwnerSubcontractorsDetails",
+    "RelativePath": "AccountOwner/GetProductOwnerSubcontractorsDetails",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "ProductOwnerId",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ComplyX.Controllers.AccountOwnerController",
+    "Method": "GetProductOwnerSubscriptionPlansDetails",
+    "RelativePath": "AccountOwner/GetProductOwnerSubscriptionPlansDetails",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "ProductOwnerSubscriptionDto",
+        "Type": "ComplyX_Businesss.Models.ProductOwnerSubscriptionDto",
+        "IsRequired": true
+      },
+      {
+        "Name": "ProductOwnerId",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ComplyX.Controllers.AccountOwnerController",
+    "Method": "GetSubcontractors",
+    "RelativePath": "AccountOwner/GetSubcontractors",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "CompanyId",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ComplyX.Controllers.AccountOwnerController",
+    "Method": "GetSubcontractorsFilter",
+    "RelativePath": "AccountOwner/GetSubcontractorsFilter",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "Skip",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "Take",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "Count",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "SearchText",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "OrderBy",
+        "Type": "System.Collections.Generic.IList\u00601[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "Filters",
+        "Type": "System.Collections.Generic.IList\u00601[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ComplyX.Controllers.AccountOwnerController",
+    "Method": "GetSubscriptionPlanFilter",
+    "RelativePath": "AccountOwner/GetSubscriptionPlanFilter",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "ComplyX_Businesss.Models.SubscriptionPlansFilterRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ComplyX.Controllers.AccountOwnerController",
+    "Method": "GetSubscriptionPlans",
+    "RelativePath": "AccountOwner/GetSubscriptionPlans",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ComplyX.Controllers.AccountOwnerController",
+    "Method": "GetSubscriptionPlansByFilter",
+    "RelativePath": "AccountOwner/GetSubscriptionPlansFilter",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "Skip",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "Take",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "Count",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "SearchText",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "OrderBy",
+        "Type": "System.Collections.Generic.IList\u00601[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "Filters",
+        "Type": "System.Collections.Generic.IList\u00601[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ComplyX.Controllers.AccountOwnerController",
+    "Method": "GetUserSubscriptionPlansDetails",
+    "RelativePath": "AccountOwner/GetUserSubscriptionPlansDetails",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "ProductOwnerSubscriptionDto",
+        "Type": "ComplyX_Businesss.Models.ProductOwnerSubscriptionDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
   },
   {
     "ContainingType": "ComplyX.Controllers.AccountOwnerController",
@@ -36,7 +557,55 @@
       {
         "Name": "CompanyaId",
         "Type": "System.String",
-        "IsRequired": true
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ComplyX.Controllers.AccountOwnerController",
+    "Method": "RemoveCustomerPaymentsData",
+    "RelativePath": "AccountOwner/RemoveCustomerPaymentsData",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "PaymentID",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ComplyX.Controllers.AccountOwnerController",
+    "Method": "RemovePaymentTransactionData",
+    "RelativePath": "AccountOwner/RemovePaymentTransactionData",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "TransactionID",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ComplyX.Controllers.AccountOwnerController",
+    "Method": "RemovePlansData",
+    "RelativePath": "AccountOwner/RemovePlansData",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "PlansID",
+        "Type": "System.String",
+        "IsRequired": false
       }
     ],
     "ReturnTypes": []
@@ -50,9 +619,57 @@
     "Order": 0,
     "Parameters": [
       {
-        "Name": "AccountOwnerId",
+        "Name": "ProductOwnerId",
         "Type": "System.String",
-        "IsRequired": true
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ComplyX.Controllers.AccountOwnerController",
+    "Method": "RemoveSubcontractorData",
+    "RelativePath": "AccountOwner/RemoveSubcontractorData",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "SubcontractorsID",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ComplyX.Controllers.AccountOwnerController",
+    "Method": "RemoveSubscriptionInvoicesData",
+    "RelativePath": "AccountOwner/RemoveSubscriptionInvoicesData",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "InvoiceID",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ComplyX.Controllers.AccountOwnerController",
+    "Method": "RemoveSubscriptionPlansData",
+    "RelativePath": "AccountOwner/RemoveSubscriptionPlansData",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "PlanID",
+        "Type": "System.String",
+        "IsRequired": false
       }
     ],
     "ReturnTypes": []
@@ -67,7 +684,55 @@
     "Parameters": [
       {
         "Name": "company",
-        "Type": "ComplyX.Models.Company",
+        "Type": "ComplyX_Businesss.Models.Company",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ComplyX.Controllers.AccountOwnerController",
+    "Method": "SaveCustomerPaymentsData",
+    "RelativePath": "AccountOwner/SaveCustomerPaymentsData",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "CustomerPayments",
+        "Type": "ComplyX_Businesss.Models.CustomerPayments",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ComplyX.Controllers.AccountOwnerController",
+    "Method": "SavePaymentTransactionData",
+    "RelativePath": "AccountOwner/SavePaymentTransactionData",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "PaymentTransactions",
+        "Type": "ComplyX_Businesss.Models.PaymentTransactions",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ComplyX.Controllers.AccountOwnerController",
+    "Method": "SavePlansData",
+    "RelativePath": "AccountOwner/SavePlansData",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "Plans",
+        "Type": "ComplyX_Businesss.Models.Plans",
         "IsRequired": true
       }
     ],
@@ -83,7 +748,87 @@
     "Parameters": [
       {
         "Name": "ProductOwners",
-        "Type": "ComplyX.Models.ProductOwners",
+        "Type": "ComplyX_Businesss.Models.ProductOwners",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ComplyX.Controllers.AccountOwnerController",
+    "Method": "SaveSubcontractorData",
+    "RelativePath": "AccountOwner/SaveSubcontractorData",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "Subcontractors",
+        "Type": "ComplyX_Businesss.Models.Subcontractors",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ComplyX.Controllers.AccountOwnerController",
+    "Method": "SaveSubscriptionInvoicesData",
+    "RelativePath": "AccountOwner/SaveSubscriptionInvoicesData",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "SubscriptionInvoices",
+        "Type": "ComplyX_Businesss.Models.SubscriptionInvoices",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ComplyX.Controllers.AccountOwnerController",
+    "Method": "SaveSubscriptionPlansData",
+    "RelativePath": "AccountOwner/SaveSubscriptionPlansData",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "subscriptionPlans",
+        "Type": "ComplyX_Businesss.Models.SubscriptionPlans",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ComplyX.Controllers.AccountOwnerController",
+    "Method": "SaveUserSubscriptionData",
+    "RelativePath": "AccountOwner/SaveUserSubscriptionData",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "ProductOwnerSubscriptions",
+        "Type": "ComplyX_Businesss.Models.ProductOwnerSubscriptions",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ComplyX.Controllers.UserController",
+    "Method": "AssignRolesToUser",
+    "RelativePath": "api/User/AssignRolesToUser",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "ComplyX_Businesss.Models.AssignRoleToUser",
         "IsRequired": true
       }
     ],
@@ -99,7 +844,7 @@
     "Parameters": [
       {
         "Name": "model",
-        "Type": "ComplyX.Models.ChangePasswordModel",
+        "Type": "ComplyX_Businesss.Models.ChangePasswordModel",
         "IsRequired": true
       }
     ],
@@ -131,13 +876,13 @@
     "Parameters": [
       {
         "Name": "request",
-        "Type": "ComplyX.Models.ForgotPasswordVerifyModel",
+        "Type": "ComplyX_Businesss.Models.ForgotPasswordVerifyModel",
         "IsRequired": true
       }
     ],
     "ReturnTypes": [
       {
-        "Type": "ComplyX.Helper.ApiBaseFailResponse\u00601[[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "Type": "ComplyX.Shared.Helper.ApiBaseFailResponse\u00601[[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -157,7 +902,7 @@
     "Parameters": [
       {
         "Name": "dto",
-        "Type": "ComplyX.Models.Login",
+        "Type": "ComplyX_Businesss.Models.Login",
         "IsRequired": true
       }
     ],
@@ -173,7 +918,7 @@
     "Parameters": [
       {
         "Name": "RegisterUser",
-        "Type": "ComplyX.Models.RegisterUser",
+        "Type": "ComplyX_Businesss.Models.RegisterUser",
         "IsRequired": true
       }
     ],
@@ -189,13 +934,13 @@
     "Parameters": [
       {
         "Name": "request",
-        "Type": "ComplyX.Models.ResetPasswordRequestModel",
+        "Type": "ComplyX_Businesss.Models.ResetPasswordRequestModel",
         "IsRequired": true
       }
     ],
     "ReturnTypes": [
       {
-        "Type": "ComplyX.Helper.ApiBaseFailResponse\u00601[[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "Type": "ComplyX.Shared.Helper.ApiBaseFailResponse\u00601[[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -215,7 +960,1274 @@
     "Parameters": [
       {
         "Name": "request",
-        "Type": "ComplyX.Models.AuthRequestModel",
+        "Type": "ComplyX_Businesss.Models.AuthRequestModel",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ComplyX.Controllers.EmployeesController",
+    "Method": "GetEmployeeDataFilter",
+    "RelativePath": "Employees/GetEmployeeDataFilter",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "Skip",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "Take",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "Count",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "SearchText",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "OrderBy",
+        "Type": "System.Collections.Generic.IList\u00601[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "Filters",
+        "Type": "System.Collections.Generic.IList\u00601[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ComplyX.Controllers.EmployeesController",
+    "Method": "GetEmployeesByCompany",
+    "RelativePath": "Employees/GetEmployeesByCompany",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "CompanyID",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ComplyX.Controllers.EmployeesController",
+    "Method": "GetEmployeesByCompanyEmployee",
+    "RelativePath": "Employees/GetEmployeesByCompanyEmployee",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "CompanyID",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "EmployeeID",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ComplyX.Controllers.EmployeesController",
+    "Method": "GetEmployeesByCompanySubcontractor",
+    "RelativePath": "Employees/GetEmployeesByCompanySubcontractor",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "CompanyID",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "SubcontractorID",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ComplyX.Controllers.EmployeesController",
+    "Method": "GetFnF_Calculations",
+    "RelativePath": "Employees/GetFnF_Calculations",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "FnFID",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ComplyX.Controllers.EmployeesController",
+    "Method": "GetFnF_CalculationsFilter",
+    "RelativePath": "Employees/GetFnF_CalculationsFilter",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "Skip",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "Take",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "Count",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "SearchText",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "OrderBy",
+        "Type": "System.Collections.Generic.IList\u00601[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "Filters",
+        "Type": "System.Collections.Generic.IList\u00601[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ComplyX.Controllers.EmployeesController",
+    "Method": "GetGratuity_Policy",
+    "RelativePath": "Employees/GetGratuity_Policy",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "PolicyID",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ComplyX.Controllers.EmployeesController",
+    "Method": "GetGratuity_PolicyFilter",
+    "RelativePath": "Employees/GetGratuity_PolicyFilter",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "Skip",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "Take",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "Count",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "SearchText",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "OrderBy",
+        "Type": "System.Collections.Generic.IList\u00601[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "Filters",
+        "Type": "System.Collections.Generic.IList\u00601[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ComplyX.Controllers.EmployeesController",
+    "Method": "GetGratuity_Transactions",
+    "RelativePath": "Employees/GetGratuity_Transactions",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "GratuityID",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ComplyX.Controllers.EmployeesController",
+    "Method": "GetGratuity_TransactionsFilter",
+    "RelativePath": "Employees/GetGratuity_TransactionsFilter",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "Skip",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "Take",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "Count",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "SearchText",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "OrderBy",
+        "Type": "System.Collections.Generic.IList\u00601[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "Filters",
+        "Type": "System.Collections.Generic.IList\u00601[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ComplyX.Controllers.EmployeesController",
+    "Method": "RemoveEmployeeData",
+    "RelativePath": "Employees/RemoveEmployeeData",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "EmployeeID",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ComplyX.Controllers.EmployeesController",
+    "Method": "RemoveFnF_CalculationsData",
+    "RelativePath": "Employees/RemoveFnF_CalculationsData",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "FnFID",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ComplyX.Controllers.EmployeesController",
+    "Method": "RemoveGratuity_PolicyData",
+    "RelativePath": "Employees/RemoveGratuity_PolicyData",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "PolicyID",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ComplyX.Controllers.EmployeesController",
+    "Method": "RemoveGratuity_TransactionsData",
+    "RelativePath": "Employees/RemoveGratuity_TransactionsData",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "GratuityID",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ComplyX.Controllers.EmployeesController",
+    "Method": "SaveEmployeeData",
+    "RelativePath": "Employees/SaveEmployeeData",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "Employees",
+        "Type": "ComplyX_Businesss.Models.Employees",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ComplyX.Controllers.EmployeesController",
+    "Method": "SaveFnF_CalculationsData",
+    "RelativePath": "Employees/SaveFnF_CalculationsData",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "FnF_Calculations",
+        "Type": "ComplyX_Businesss.Models.FnF_Calculations",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ComplyX.Controllers.EmployeesController",
+    "Method": "SaveGratuity_PolicyData",
+    "RelativePath": "Employees/SaveGratuity_PolicyData",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "Gratuity_Policy",
+        "Type": "ComplyX_Businesss.Models.Gratuity_Policy",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ComplyX.Controllers.EmployeesController",
+    "Method": "SaveGratuity_TransactionsData",
+    "RelativePath": "Employees/SaveGratuity_TransactionsData",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "Gratuity_Transactions",
+        "Type": "ComplyX_Businesss.Models.Gratuity_Transactions",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ComplyX.Controllers.EPFOController",
+    "Method": "GetAllCompanyEPFOFilter",
+    "RelativePath": "EPFO/GetAllCompanyEPFOFilter",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "Skip",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "Take",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "Count",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "SearchText",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "OrderBy",
+        "Type": "System.Collections.Generic.IList\u00601[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "Filters",
+        "Type": "System.Collections.Generic.IList\u00601[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ComplyX.Controllers.EPFOController",
+    "Method": "GetAllEmployeeEPFOFilter",
+    "RelativePath": "EPFO/GetAllEmployeeEPFOFilter",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "Skip",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "Take",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "Count",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "SearchText",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "OrderBy",
+        "Type": "System.Collections.Generic.IList\u00601[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "Filters",
+        "Type": "System.Collections.Generic.IList\u00601[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ComplyX.Controllers.EPFOController",
+    "Method": "GetEPFOECRDataFilter",
+    "RelativePath": "EPFO/GetEPFOECRDataFilter",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "Skip",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "Take",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "Count",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "SearchText",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "OrderBy",
+        "Type": "System.Collections.Generic.IList\u00601[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "Filters",
+        "Type": "System.Collections.Generic.IList\u00601[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ComplyX.Controllers.EPFOController",
+    "Method": "GetEPFOPeriodDataFilter",
+    "RelativePath": "EPFO/GetEPFOPeriodDataFilter",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "Skip",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "Take",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "Count",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "SearchText",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "OrderBy",
+        "Type": "System.Collections.Generic.IList\u00601[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "Filters",
+        "Type": "System.Collections.Generic.IList\u00601[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ComplyX.Controllers.EPFOController",
+    "Method": "RemoveCompanyEPFOData",
+    "RelativePath": "EPFO/RemoveCompanyEPFOData",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "CompanyEPFOId",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ComplyX.Controllers.EPFOController",
+    "Method": "RemoveEmployeeEPFOData",
+    "RelativePath": "EPFO/RemoveEmployeeEPFOData",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "EmployeeEPFOId",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ComplyX.Controllers.EPFOController",
+    "Method": "RemoveEPFOECRData",
+    "RelativePath": "EPFO/RemoveEPFOECRData",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "ECRFileId",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ComplyX.Controllers.EPFOController",
+    "Method": "RemoveEPFOPeriodData",
+    "RelativePath": "EPFO/RemoveEPFOPeriodData",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "EPFOPeriodId",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ComplyX.Controllers.EPFOController",
+    "Method": "SaveCompanyEPFOData",
+    "RelativePath": "EPFO/SaveCompanyEPFOData",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "CompanyEPFO",
+        "Type": "ComplyX_Businesss.Models.CompanyEPFO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ComplyX.Controllers.EPFOController",
+    "Method": "SaveEmployeeEPFOData",
+    "RelativePath": "EPFO/SaveEmployeeEPFOData",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "EmployeeEPFO",
+        "Type": "ComplyX_Businesss.Models.EmployeeEPFO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ComplyX.Controllers.EPFOController",
+    "Method": "SaveEPFOECRData",
+    "RelativePath": "EPFO/SaveEPFOECRData",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "EPFOECRFile",
+        "Type": "ComplyX_Businesss.Models.EPFOECRFile",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ComplyX.Controllers.EPFOController",
+    "Method": "SaveEPFOPeriodData",
+    "RelativePath": "EPFO/SaveEPFOPeriodData",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "EPFOPeriod",
+        "Type": "ComplyX_Businesss.Models.EPFOPeriod",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ComplyX.Controllers.GSTController",
+    "Method": "RemoveGST_HSN_MappingData",
+    "RelativePath": "GST/RemoveGST_HSN_MappingData",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "MappingID",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ComplyX.Controllers.GSTController",
+    "Method": "RemoveGST_HSNSACData",
+    "RelativePath": "GST/RemoveGST_HSNSACData",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "CodeID",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ComplyX.Controllers.GSTController",
+    "Method": "RemoveGST_InvoiceSeriesData",
+    "RelativePath": "GST/RemoveGST_InvoiceSeriesData",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "SeriesID",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ComplyX.Controllers.GSTController",
+    "Method": "RemoveGST_PurchaseData",
+    "RelativePath": "GST/RemoveGST_PurchaseData",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "PurchaseID",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ComplyX.Controllers.GSTController",
+    "Method": "RemoveGST_ReturnsData",
+    "RelativePath": "GST/RemoveGST_ReturnsData",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "ReturnID",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ComplyX.Controllers.GSTController",
+    "Method": "RemoveGST_SalesData",
+    "RelativePath": "GST/RemoveGST_SalesData",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "SaleID",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ComplyX.Controllers.GSTController",
+    "Method": "SaveGST_HSN_MappingData",
+    "RelativePath": "GST/SaveGST_HSN_MappingData",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "GST_HSN_Mapping",
+        "Type": "ComplyX_Businesss.Models.GST_HSN_Mapping",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ComplyX.Controllers.GSTController",
+    "Method": "SaveGST_HSNSACData",
+    "RelativePath": "GST/SaveGST_HSNSACData",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "GST_HSNSAC",
+        "Type": "ComplyX_Businesss.Models.GST_HSNSAC",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ComplyX.Controllers.GSTController",
+    "Method": "SaveGST_InvoiceSeriesData",
+    "RelativePath": "GST/SaveGST_InvoiceSeriesData",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "GST_InvoiceSeries",
+        "Type": "ComplyX_Businesss.Models.GST_InvoiceSeries",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ComplyX.Controllers.GSTController",
+    "Method": "SaveGST_PurchaseData",
+    "RelativePath": "GST/SaveGST_PurchaseData",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "GST_Purchase",
+        "Type": "ComplyX_Businesss.Models.GST_Purchase",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ComplyX.Controllers.GSTController",
+    "Method": "SaveGST_ReturnsData",
+    "RelativePath": "GST/SaveGST_ReturnsData",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "GST_Returns",
+        "Type": "ComplyX_Businesss.Models.GST_Returns",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ComplyX.Controllers.GSTController",
+    "Method": "SaveGST_SalesData",
+    "RelativePath": "GST/SaveGST_SalesData",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "GST_Sales",
+        "Type": "ComplyX_Businesss.Models.GST_Sales",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ComplyX.Controllers.ImportController",
+    "Method": "UploadEmployeeImportFile",
+    "RelativePath": "Import/importemployee",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "file",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ComplyX.Shared.Controllers.LicenseController",
+    "Method": "GetLicenseActivationFilter",
+    "RelativePath": "License/GetLicenseActivationFilter",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "Skip",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "Take",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "Count",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "SearchText",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "OrderBy",
+        "Type": "System.Collections.Generic.IList\u00601[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "Filters",
+        "Type": "System.Collections.Generic.IList\u00601[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ComplyX.Shared.Controllers.LicenseController",
+    "Method": "GetLicenseAuditLogsFilter",
+    "RelativePath": "License/GetLicenseAuditLogsFilter",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "Skip",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "Take",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "Count",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "SearchText",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "OrderBy",
+        "Type": "System.Collections.Generic.IList\u00601[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "Filters",
+        "Type": "System.Collections.Generic.IList\u00601[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ComplyX.Shared.Controllers.LicenseController",
+    "Method": "GetLicenseKeyMasterFilter",
+    "RelativePath": "License/GetLicenseKeyMasterFilter",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "Skip",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "Take",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "Count",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "SearchText",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "OrderBy",
+        "Type": "System.Collections.Generic.IList\u00601[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "Filters",
+        "Type": "System.Collections.Generic.IList\u00601[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ComplyX.Shared.Controllers.LicenseController",
+    "Method": "GetMachineBindingFilter",
+    "RelativePath": "License/GetMachineBindingFilter",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "Skip",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "Take",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "Count",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "SearchText",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "OrderBy",
+        "Type": "System.Collections.Generic.IList\u00601[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "Filters",
+        "Type": "System.Collections.Generic.IList\u00601[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ComplyX.Shared.Controllers.LicenseController",
+    "Method": "SaveLicenseAuditLogsData",
+    "RelativePath": "License/SaveLicenseAuditLogsData",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "LicenseAuditLogs",
+        "Type": "ComplyX_Businesss.Models.LicenseAuditLogs",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ComplyX.Shared.Controllers.LicenseController",
+    "Method": "SaveLicenseKeyActivationData",
+    "RelativePath": "License/SaveLicenseKeyActivationData",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "LicenseActivation",
+        "Type": "ComplyX_Businesss.Models.LicenseActivation",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ComplyX.Shared.Controllers.LicenseController",
+    "Method": "SaveLicenseKeyMasterData",
+    "RelativePath": "License/SaveLicenseKeyMasterData",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "LicenseKeyMaster",
+        "Type": "ComplyX_Businesss.Models.LicenseKeyMaster",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ComplyX.Shared.Controllers.LicenseController",
+    "Method": "SaveMachineBindingData",
+    "RelativePath": "License/SaveMachineBindingData",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "MachineBinding",
+        "Type": "ComplyX_Businesss.Models.MachineBinding",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ComplyX.Controllers.PayrollController",
+    "Method": "EditPayrollDataByCompanyIDEmployeeID",
+    "RelativePath": "Payroll/EditPayrollDataByCompanyIDEmployeeID",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "data",
+        "Type": "ComplyX_Businesss.Models.PayrollData",
+        "IsRequired": true
+      },
+      {
+        "Name": "CompanyID",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "EmployeeID",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "PayrollID",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ComplyX.Controllers.PayrollController",
+    "Method": "GetPayrollDataFilter",
+    "RelativePath": "Payroll/GetPayrollDataFilter",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "Skip",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "Take",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "Count",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "SearchText",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "OrderBy",
+        "Type": "System.Collections.Generic.IList\u00601[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "Filters",
+        "Type": "System.Collections.Generic.IList\u00601[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ComplyX.Controllers.PayrollController",
+    "Method": "RemoveAllPayrollDataByCompanyID",
+    "RelativePath": "Payroll/RemoveAllPayrollDataByCompanyID",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "CompanyID",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ComplyX.Controllers.PayrollController",
+    "Method": "RemovePayrollData",
+    "RelativePath": "Payroll/RemovePayrollData",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "PayrollID",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ComplyX.Controllers.PayrollController",
+    "Method": "RemovePayrollDataByCompanyIDEmployeeID",
+    "RelativePath": "Payroll/RemovePayrollDataByCompanyIDEmployeeID",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "CompanyID",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "EmployeeID",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ComplyX.Controllers.PayrollController",
+    "Method": "SavePayrollData",
+    "RelativePath": "Payroll/SavePayrollData",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "Payroll",
+        "Type": "ComplyX_Businesss.Models.PayrollData",
         "IsRequired": true
       }
     ],

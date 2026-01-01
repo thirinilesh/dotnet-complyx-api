@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ComplyX")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0390b856cfb500419b0a47ea4a23686db50090fc")]
 [assembly: System.Reflection.AssemblyProductAttribute("ComplyX")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ComplyX")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

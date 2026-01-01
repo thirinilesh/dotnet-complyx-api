@@ -1,11 +1,23 @@
 {
   "Version": 1,
-  "Hash": "ySJPb9dNRJ+edZEfnJ81IPZJV6fcgHWrIrE+hlL+ZeQ=",
+  "Hash": "oW5gHbkK2ss8Tq4iBDgUEPEvAaaNz4EQkOhVKilLW8k=",
   "Source": "ComplyX",
   "BasePath": "_content/ComplyX",
   "Mode": "Default",
   "ManifestType": "Build",
-  "ReferencedProjectsConfiguration": [],
+  "ReferencedProjectsConfiguration": [
+    {
+      "Identity": "C:\\Thirirepos\\dotnet-complyx-api\\ComplyX-Businesss\\ComplyX-Businesss.csproj",
+      "Version": 2,
+      "Source": "ComplyX-Businesss",
+      "GetPublishAssetsTargets": "ComputeReferencedStaticWebAssetsPublishManifest;GetCurrentProjectPublishStaticWebAssetItems",
+      "AdditionalPublishProperties": "Configuration=Debug;Platform=AnyCPU",
+      "AdditionalPublishPropertiesToRemove": "WebPublishProfileFile;TargetFramework;RuntimeIdentifier;SelfContained",
+      "GetBuildAssetsTargets": "GetCurrentProjectBuildStaticWebAssetItems",
+      "AdditionalBuildProperties": "Configuration=Debug;Platform=AnyCPU",
+      "AdditionalBuildPropertiesToRemove": "WebPublishProfileFile;TargetFramework;RuntimeIdentifier;SelfContained"
+    }
+  ],
   "DiscoveryPatterns": [],
   "Assets": [
     {
