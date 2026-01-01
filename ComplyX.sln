@@ -1,9 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.13.35931.197 d17.13
+VisualStudioVersion = 17.13.35931.197
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComplyX", "ComplyX\ComplyX.csproj", "{14CBF13B-EC9B-4884-A5CC-3C5EEA97A4D6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComplyX-Businesss", "ComplyX-Businesss\ComplyX-Businesss.csproj", "{231328EF-FE8B-C092-CA6F-7EE8D8DE93ED}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComplyX-Tests", "ComplyX-Tests\ComplyX-Tests.csproj", "{B72E4B8D-7EEB-0185-77D7-5661199C8C90}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +19,14 @@ Global
 		{14CBF13B-EC9B-4884-A5CC-3C5EEA97A4D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{14CBF13B-EC9B-4884-A5CC-3C5EEA97A4D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{14CBF13B-EC9B-4884-A5CC-3C5EEA97A4D6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{231328EF-FE8B-C092-CA6F-7EE8D8DE93ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{231328EF-FE8B-C092-CA6F-7EE8D8DE93ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{231328EF-FE8B-C092-CA6F-7EE8D8DE93ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{231328EF-FE8B-C092-CA6F-7EE8D8DE93ED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B72E4B8D-7EEB-0185-77D7-5661199C8C90}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B72E4B8D-7EEB-0185-77D7-5661199C8C90}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B72E4B8D-7EEB-0185-77D7-5661199C8C90}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B72E4B8D-7EEB-0185-77D7-5661199C8C90}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

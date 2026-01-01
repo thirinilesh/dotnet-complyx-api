@@ -22,6 +22,7 @@ using ComplyX.Shared.Data;
 using ComplyX_Tests.Service;
 using AppDbContext = ComplyX_Tests.Service.AppDbContext;
 using static ComplyX_Tests.Service.ApiExceptionNotFound;
+using ComplyX_Tests.Profile;
 
 namespace ComplyX_Tests.Service
 {
@@ -48,8 +49,7 @@ namespace ComplyX_Tests.Service
             _appcontext = new AppDbContext();
 
 
-            var options = new DbContextOptionsBuilder<AppDbContext>()
-.UseInMemoryDatabase(Guid.NewGuid().ToString())
+            var options = new DbContextOptionsBuilder<AppDbContext>().UseInMemoryDatabase(Guid.NewGuid().ToString())
 .Options;
 
             var _context = new Mock<AppDbContext>(options);
@@ -107,7 +107,7 @@ namespace ComplyX_Tests.Service
                 .Setup(m => m.Map<CreateCompanyResponse>(It.IsAny<Companies>()))
                 .Returns((Companies cust) => new CreateCompanyResponse
                 {
-                    CompanyId = cust.Id,
+                    CompanyId = cust.CompanyId,
                     Name = cust.Name,
                     Address1 = cust.Address1,
                     City = cust.City,

@@ -7,6 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Models\**" />
+    <Content Remove="Models\**" />
+    <EmbeddedResource Remove="Models\**" />
+    <None Remove="Models\**" />
+  </ItemGroup>
+
+  <ItemGroup>
 
 	  <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
     <PackageReference Include="EnumerableAsyncProcessor" Version="3.8.4" />

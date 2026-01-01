@@ -1,7 +1,5 @@
 ﻿using AutoMapper;
 using ComplyX_Businesss.Models;
-using ComplyX.Common.Data.Context;
-
 using ComplyX_Tests.Repositories.Interface;
 using Microsoft.EntityFrameworkCore;
 using Castle.Core.Resource;
@@ -15,7 +13,6 @@ namespace ComplyX_Tests.Repositories.Implementation
     public class CompanyRespository : ICompanyRespository
     {
 
-        private readonly DboContext _dbContext;
         private readonly Mock<IMapper> _mapper;
         private readonly AppDbContext _appDbContext;
 
@@ -28,7 +25,7 @@ namespace ComplyX_Tests.Repositories.Implementation
 
         public async Task<bool> CompanyExists(int companyId)
         {
-            return await _appDbContext.Companiess.AnyAsync(c => c.Id == companyId);
+            return await _appDbContext.Companiess.AnyAsync(c => c.CompanyId == companyId);
         }
 
         public async Task<bool> CompanyExistsByNameAsync(string companyName)
@@ -47,7 +44,7 @@ namespace ComplyX_Tests.Repositories.Implementation
                 (caseSensitive
                     ? c.Name.Trim() == companyName.Trim()
                     : c.Name.Trim().ToUpper() == companyName.Trim().ToUpper())
-                && c.Id != excludedCompanyId);
+                && c.CompanyId != excludedCompanyId);
         }
        
     }
