@@ -17,7 +17,7 @@ namespace ComplyX.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-   // [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class GSTController : BaseController
     {
         private readonly AppDbContext _context;
