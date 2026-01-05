@@ -51,6 +51,11 @@ namespace ComplyX.Shared.Data
         public virtual DbSet<GST_Sales> GST_Sales { get; set; }
         public virtual DbSet<Leave_Encashment_Policy> Leave_Encashment_Policy { get; set; }
         public virtual DbSet<Leave_Encashment_Transactions> Leave_Encashment_Transactions { get; set; }
+
+        public virtual DbSet<EmploymentTypes> EmploymentTypes { get; set; }
+        public virtual DbSet<ExitTypes> ExitTypes { get; set; }
+
+        public virtual DbSet<FilingStatuses> FilingStatuses { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

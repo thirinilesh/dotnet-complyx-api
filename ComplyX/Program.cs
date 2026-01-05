@@ -36,6 +36,7 @@ builder.Services.AddScoped<ImportServices, ImportClass>();
 builder.Services.AddScoped<LicenseServices, LicenseClass>();
 builder.Services.AddScoped<EPFOServices, EPFOClass>();
 builder.Services.AddScoped<IGSTServices, GSTClass>();
+builder.Services.AddScoped<MasterServices, MasterClass>();
 builder.Services.AddScoped<AccountOwnerLogic>();
 builder.Services.AddScoped<Nest.Filter>();
 builder.Services.AddSingleton<JwtTokenService>();
