@@ -12,6 +12,7 @@ namespace ComplyX_Businesss.Models
         [Key]
         public  Guid GratuityID { get; set; }
         public int EmployeeID { get; set; }
+        public int CompanyID { get; set; }
         public decimal? LastDrawnSalary { get; set; }
         public int? YearsOfService { get; set; }
         public decimal? GratuityAmount { get; set; }
@@ -21,5 +22,6 @@ namespace ComplyX_Businesss.Models
         public DateTime? CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
         public virtual Employees? Employees { get; set; }
+        public virtual Company? Company { get; set; }
     }
 }

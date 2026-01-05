@@ -251,6 +251,9 @@ namespace ComplyX.Shared.Data
                 entity.HasOne(d => d.Employees).WithMany(p => p.Gratuity_Transactions)
                      .HasForeignKey(d => d.EmployeeID)
                     .HasConstraintName("FK_Gratuity_Transactions_Employees");
+                entity.HasOne(d => d.Company).WithMany(p => p.Gratuity_Transactions)
+                     .HasForeignKey(d => d.CompanyID)
+                    .HasConstraintName("FK_Gratuity_Transactions_Company");
             });
 
             modelBuilder.Entity<GST_HSN_Mapping>(entity =>
@@ -307,9 +310,17 @@ namespace ComplyX.Shared.Data
                      .HasForeignKey(d => d.CompanyID)
                     .HasConstraintName("FK_Leave_Encashment_Policy_Company");
             });
-             
+            modelBuilder.Entity<FnF_Calculations>(entity =>
+            {
+                entity.HasKey(e => e.FnFID);
+
+                entity.HasOne(d => d.Company).WithMany(p => p.FnF_Calculations)
+                     .HasForeignKey(d => d.CompanyID)
+                    .HasConstraintName("FK_FnF_Calculations_Company");
+            });
+
         }
-      
+
 
     }
 }

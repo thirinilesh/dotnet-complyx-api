@@ -12,6 +12,7 @@ namespace ComplyX_Businesss.Models
         [Key]
         public Guid FnFID { get; set; }
         public  int EmployeeID { get; set; }
+        public int CompanyID { get; set; }
         public DateTime? ResignationDate { get; set; }
         public DateTime? LastWorkingDate { get; set; }
         public int? NoticePeriodServedDays { get; set; }
@@ -27,5 +28,7 @@ namespace ComplyX_Businesss.Models
         public string? Remarks { get; set; }
         public DateTime? CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
+
+        public virtual Company? Company { get; set; }
     }
 }

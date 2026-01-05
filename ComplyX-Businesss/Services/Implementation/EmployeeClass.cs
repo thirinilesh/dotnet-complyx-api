@@ -740,14 +740,14 @@ namespace ComplyX.BusinessLogic
 
             try
             {
-                var Employee = await _context.Employees.FirstOrDefaultAsync(x => x.EmployeeID == Gratuity_Transactions.EmployeeID);
+                var Employee = await _context.Employees.FirstOrDefaultAsync(x => x.EmployeeID == Gratuity_Transactions.EmployeeID && x.CompanyID == Gratuity_Transactions.CompanyID);
 
                 if (Employee == null)
                 {
                     return new ManagerBaseResponse<bool>
                     {
                         Result = false,
-                        Message = "Employee is not found.",
+                        Message = "Employee and Company are not found.",
                     };
                 }
                 else
@@ -758,6 +758,7 @@ namespace ComplyX.BusinessLogic
                         Gratuity_Transactions _model = new Gratuity_Transactions();
                         _model.GratuityID = Guid.NewGuid();
                         _model.EmployeeID = Employee.EmployeeID;
+                        _model.CompanyID = Employee.CompanyID;
                         _model.LastDrawnSalary  =  Gratuity_Transactions.LastDrawnSalary;
                         _model.YearsOfService = Gratuity_Transactions.YearsOfService;
                         _model.GratuityAmount = Gratuity_Transactions.GratuityAmount;
@@ -776,6 +777,7 @@ namespace ComplyX.BusinessLogic
                             .Where(x => x.GratuityID == Gratuity_Transactions.GratuityID)
                                 .FirstOrDefault();
                         originalTerm.EmployeeID = Employee.EmployeeID;
+                        originalTerm.CompanyID = Employee.CompanyID;
                         originalTerm.LastDrawnSalary = Gratuity_Transactions.LastDrawnSalary;
                         originalTerm.YearsOfService = Gratuity_Transactions.YearsOfService;
                         originalTerm.GratuityAmount = Gratuity_Transactions.GratuityAmount;
@@ -911,14 +913,14 @@ namespace ComplyX.BusinessLogic
 
             try
             {
-                var Employee = await _context.Employees.FirstOrDefaultAsync(x => x.EmployeeID == FnF_Calculations.EmployeeID);
+                var Employee = await _context.Employees.FirstOrDefaultAsync(x => x.EmployeeID == FnF_Calculations.EmployeeID && x.CompanyID == FnF_Calculations.CompanyID);
 
                 if (Employee == null)
                 {
                     return new ManagerBaseResponse<bool>
                     {
                         Result = false,
-                        Message = "Employee is not found.",
+                        Message = "Employee and Company are not found.",
                     };
                 }
                 else
@@ -929,6 +931,7 @@ namespace ComplyX.BusinessLogic
                         FnF_Calculations _model = new FnF_Calculations();
                         _model.FnFID = Guid.NewGuid();
                         _model.EmployeeID = FnF_Calculations.EmployeeID;
+                        _model.CompanyID = FnF_Calculations.CompanyID;
                         _model.ResignationDate = FnF_Calculations.ResignationDate;
                         _model.LastWorkingDate = FnF_Calculations.LastWorkingDate;
                         _model.NoticePeriodServedDays = FnF_Calculations.NoticePeriodServedDays;
@@ -954,6 +957,7 @@ namespace ComplyX.BusinessLogic
                             .Where(x => x.FnFID == FnF_Calculations.FnFID)
                                 .FirstOrDefault();
                         originalTerm.EmployeeID = FnF_Calculations.EmployeeID;
+                        originalTerm.CompanyID = FnF_Calculations.CompanyID;
                         originalTerm.ResignationDate = FnF_Calculations.ResignationDate;
                         originalTerm.LastWorkingDate = FnF_Calculations.LastWorkingDate;
                         originalTerm.NoticePeriodServedDays = FnF_Calculations.NoticePeriodServedDays;
@@ -967,7 +971,7 @@ namespace ComplyX.BusinessLogic
                         originalTerm.ProcessedDate = FnF_Calculations.ProcessedDate;
                         originalTerm.PaymentStatus = FnF_Calculations.PaymentStatus;
                         originalTerm.Remarks = FnF_Calculations.Remarks;
-                        originalTerm.CreatedAt = Util.GetCurrentCSTDateAndTime();
+                        originalTerm.UpdatedAt = Util.GetCurrentCSTDateAndTime();
 
                         _context.Update(originalTerm);
                         _context.SaveChanges();
