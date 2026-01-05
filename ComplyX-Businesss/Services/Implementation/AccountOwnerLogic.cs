@@ -1455,8 +1455,8 @@ namespace ComplyX.BusinessLogic
                     _model.Fees =  paymentTransactions.Fees;
                     _model.Status =  paymentTransactions.Status;
                     _model.ResponsePayload =  paymentTransactions.ResponsePayload;
-                    _model.CreatedAt = paymentTransactions.CreatedAt;
-                    
+                    _model.CreatedAt = Util.GetCurrentCSTDateAndTime();
+
                     _context.Add(_model);
                     _context.SaveChanges();
                 }
@@ -1473,7 +1473,7 @@ namespace ComplyX.BusinessLogic
                     originalTerm.Fees = paymentTransactions.Fees;
                     originalTerm.Status = paymentTransactions.Status;
                     originalTerm.ResponsePayload = paymentTransactions.ResponsePayload;
-                    originalTerm.CreatedAt = paymentTransactions.CreatedAt;
+                    originalTerm.CreatedAt = Util.GetCurrentCSTDateAndTime();
 
                     _context.Update(originalTerm);
                     _context.SaveChanges();
@@ -1646,7 +1646,7 @@ namespace ComplyX.BusinessLogic
                         _model.Amount = CustomerPayments.Amount;
                         _model.Currency = CustomerPayments.Currency;
                         _model.Status = CustomerPayments.Status;                       
-                        _model.CreatedAt = CustomerPayments.CreatedAt;
+                        _model.CreatedAt = Util.GetCurrentCSTDateAndTime();
 
                         _context.Add(_model);
                         _context.SaveChanges();
@@ -1663,7 +1663,7 @@ namespace ComplyX.BusinessLogic
                         originalTerm.Amount = CustomerPayments.Amount;
                         originalTerm.Currency = CustomerPayments.Currency;
                         originalTerm.Status = CustomerPayments.Status;
-                        originalTerm.UpdatedAt = CustomerPayments.UpdatedAt;
+                        originalTerm.UpdatedAt = Util.GetCurrentCSTDateAndTime();
 
                         _context.Update(originalTerm);
                         _context.SaveChanges();

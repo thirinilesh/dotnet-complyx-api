@@ -595,7 +595,7 @@ namespace ComplyX.BusinessLogic
                         _model.Formula = Gratuity_Policy.Formula;
                         _model.MaxGratuityAmount = Gratuity_Policy.MaxGratuityAmount;
                         _model.Eligible = Gratuity_Policy.Eligible;
-                        _model.CreatedAt = Gratuity_Policy.CreatedAt;
+                        _model.CreatedAt = Util.GetCurrentCSTDateAndTime();
 
                         _context.Add(_model);
                         _context.SaveChanges();
@@ -611,7 +611,7 @@ namespace ComplyX.BusinessLogic
                         originalTerm.Formula = Gratuity_Policy.Formula;
                         originalTerm.MaxGratuityAmount = Gratuity_Policy.MaxGratuityAmount;
                         originalTerm.Eligible = Gratuity_Policy.Eligible;
-                        originalTerm.UpdatedAt = Gratuity_Policy.UpdatedAt;
+                        originalTerm.UpdatedAt = Util.GetCurrentCSTDateAndTime();
 
                         _context.Update(originalTerm);
                         _context.SaveChanges();
@@ -764,7 +764,7 @@ namespace ComplyX.BusinessLogic
                         _model.PaymentStatus = Gratuity_Transactions.PaymentStatus; 
                         _model.PaidDate = Gratuity_Transactions.PaidDate;
                         _model.ApprovedBy = Guid.NewGuid();
-                        _model.CreatedAt = Gratuity_Transactions.CreatedAt;
+                        _model.CreatedAt = Util.GetCurrentCSTDateAndTime();
 
                         _context.Add(_model);
                         _context.SaveChanges();
@@ -782,7 +782,7 @@ namespace ComplyX.BusinessLogic
                         originalTerm.PaymentStatus = Gratuity_Transactions.PaymentStatus;
                         originalTerm.PaidDate = Gratuity_Transactions.PaidDate;
                         originalTerm.ApprovedBy = Gratuity_Transactions.ApprovedBy;
-                        originalTerm.UpdatedAt = Gratuity_Transactions.UpdatedAt;
+                        originalTerm.UpdatedAt = Util.GetCurrentCSTDateAndTime();
 
                         _context.Update(originalTerm);
                         _context.SaveChanges();
@@ -942,7 +942,7 @@ namespace ComplyX.BusinessLogic
                         _model.ProcessedBy = Guid.NewGuid();
                         _model.ProcessedDate    = FnF_Calculations.ProcessedDate;
                         _model.Remarks = FnF_Calculations.Remarks;
-                        _model.CreatedAt = FnF_Calculations.CreatedAt;
+                        _model.CreatedAt = Util.GetCurrentCSTDateAndTime();
 
                         _context.Add(_model);
                         _context.SaveChanges();
@@ -967,7 +967,7 @@ namespace ComplyX.BusinessLogic
                         originalTerm.ProcessedDate = FnF_Calculations.ProcessedDate;
                         originalTerm.PaymentStatus = FnF_Calculations.PaymentStatus;
                         originalTerm.Remarks = FnF_Calculations.Remarks;
-                        originalTerm.CreatedAt = FnF_Calculations.CreatedAt;
+                        originalTerm.CreatedAt = Util.GetCurrentCSTDateAndTime();
 
                         _context.Update(originalTerm);
                         _context.SaveChanges();

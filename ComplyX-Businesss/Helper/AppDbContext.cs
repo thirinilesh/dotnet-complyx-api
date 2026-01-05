@@ -49,6 +49,8 @@ namespace ComplyX.Shared.Data
         public virtual DbSet<GST_Purchase> GST_Purchase { get; set; }
         public virtual DbSet<GST_Returns> GST_Returns { get; set; }
         public virtual DbSet<GST_Sales> GST_Sales { get; set; }
+        public virtual DbSet<Leave_Encashment_Policy> Leave_Encashment_Policy { get; set; }
+        public virtual DbSet<Leave_Encashment_Transactions> Leave_Encashment_Transactions { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -297,6 +299,15 @@ namespace ComplyX.Shared.Data
                      .HasForeignKey(d => d.CompanyID)
                     .HasConstraintName("FK_GST_Sales_Company");
             });
+            modelBuilder.Entity<Leave_Encashment_Policy>(entity =>
+            {
+                entity.HasKey(e => e.PolicyID);
+
+                entity.HasOne(d => d.Companies).WithMany(p => p.Leave_Encashment_Policy)
+                     .HasForeignKey(d => d.CompanyID)
+                    .HasConstraintName("FK_Leave_Encashment_Policy_Company");
+            });
+             
         }
       
 

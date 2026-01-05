@@ -51,5 +51,6 @@ namespace ComplyX_Businesss.Models
         public virtual ICollection<GST_Purchase>? GST_Purchases { get; set; } = new List<GST_Purchase>();
         public virtual ICollection<GST_Returns>? GST_Returns { get; set; } = new List<GST_Returns>();
         public virtual ICollection<GST_Sales>? GST_Sales { get; set; } = new List<GST_Sales>();
+        public virtual ICollection<Leave_Encashment_Policy>? Leave_Encashment_Policy { get; set; } = new List<Leave_Encashment_Policy>();
     }
 }

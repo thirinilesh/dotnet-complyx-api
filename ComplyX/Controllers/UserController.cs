@@ -26,14 +26,34 @@ namespace ComplyX.Controllers
             _IUserService = IUserService;
             _userManager = userManager;
         }
-
+        /// <summary>
+        /// Registers a new user in the system.
+        /// </summary>
+        /// <param name="RegisterUser">
+        /// The details of the user to be registered, including name, email, password, and any other required fields.
+        /// </param>
+        /// <returns>
+        /// An <see cref="IActionResult"/> indicating the result of the registration operation.
+        /// </returns>
+        /// <response code="200">The user was registered successfully.</response>
+        /// <response code="400">If there is an error during registration, such as validation failures or duplicate email.</response>
 
         [HttpPost("Register")]
         public async Task<IActionResult> Register([FromBody] RegisterUser RegisterUser)
         {
             return ResponseResult(await _IUserService.Register(RegisterUser));
         }
-
+        /// <summary>
+        /// Authenticates a user and returns an access token if the credentials are valid.
+        /// </summary>
+        /// <param name="dto">
+        /// The login details, including username/email and password.
+        /// </param>
+        /// <returns>
+        /// An <see cref="IActionResult"/> containing authentication result and token if successful.
+        /// </returns>
+        /// <response code="200">The user was authenticated successfully and a token is returned.</response>
+        /// <response code="400">If the credentials are invalid or there is an error during authentication.</response>
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] Login dto)
         {
@@ -62,6 +82,17 @@ namespace ComplyX.Controllers
         {
             return ResponseResult(await _IUserService.ResetPassword(request));
         }
+        /// <summary>
+        /// Changes the password for a user.
+        /// </summary>
+        /// <param name="model">
+        /// The details required to change the password, including current password and new password.
+        /// </param>
+        /// <returns>
+        /// An <see cref="IActionResult"/> indicating the result of the password change operation.
+        /// </returns>
+        /// <response code="200">The password was changed successfully.</response>
+        /// <response code="400">If there is an error while changing the password, such as invalid current password or validation failure.</response>
 
         [HttpPost("ChangePassword")]
         public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordModel model)
@@ -80,7 +111,18 @@ namespace ComplyX.Controllers
         {
             return ResponseResult(await _IUserService.CreateRoleAsync(roleName));
         }
-
+        /// <summary>
+        /// Assigns one or more roles to a user.
+        /// </summary>
+        /// <param name="request">
+        /// The details of the user and the roles to assign, including the UserId and list of RoleIds.
+        /// </param>
+        /// <returns>
+        /// An <see cref="IActionResult"/> indicating the result of the role assignment operation.
+        /// </returns>
+        /// <response code="200">Roles were assigned to the user successfully.</response>
+        /// <response code="400">If there is an error during role assignment, such as invalid user or role IDs.</response>
+        /// <response code="401">If the request is unauthorized.</response>
         [Authorize]
         [HttpPost("AssignRolesToUser")]         
         public async Task<IActionResult> AssignRolesToUser([FromBody] AssignRoleToUser request)
