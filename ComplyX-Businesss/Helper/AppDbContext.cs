@@ -56,6 +56,10 @@ namespace ComplyX.Shared.Data
         public virtual DbSet<ExitTypes> ExitTypes { get; set; }
 
         public virtual DbSet<FilingStatuses> FilingStatuses { get; set; }
+        public virtual DbSet<TDS_Party> TDS_Party { get; set; }
+        public virtual DbSet<ComplianceDeadlines> ComplianceDeadlines { get; set; }
+        public virtual DbSet<ComplianceFilings> ComplianceFilings { get; set; }
+        public virtual DbSet<ComplianceSchedules> ComplianceSchedules { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

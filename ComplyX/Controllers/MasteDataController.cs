@@ -38,7 +38,7 @@ namespace ComplyX.Controllers
         /// <summary>
         /// Saves or updates employment type data.
         /// </summary>
-        /// <param name="employmentTypes">
+        /// <param name="EmploymentTypes">
         /// The employment type details to be saved or updated.
         /// </param>
         /// <returns>
@@ -56,9 +56,9 @@ namespace ComplyX.Controllers
         }
 
         /// <summary>
-        /// Removes subcontractor data based on the specified subcontractor identifier.
+        /// Removes Employment data based on the specified subcontractor identifier.
         /// </summary>
-        /// <param name="subcontractorId">
+        /// <param name="EmploymentID">
         /// The unique identifier of the subcontractor to be removed.
         /// </param>
         /// <returns>
@@ -78,7 +78,7 @@ namespace ComplyX.Controllers
         /// <summary>
         /// Retrieves employment type data based on the specified employment type identifier.
         /// </summary>
-        /// <param name="employmentTypeId">
+        /// <param name="EmploymentTypeId">
         /// The unique identifier of the employment type to be retrieved.
         /// </param>
         /// <returns>
@@ -98,7 +98,7 @@ namespace ComplyX.Controllers
         /// <summary>
         /// Retrieves a filtered and paginated list of employment types based on the specified criteria.
         /// </summary>
-        /// <param name="pagedListCriteria">
+        /// <param name="PagedListCriteria">
         /// The criteria for filtering, paging, and sorting the employment types.
         /// </param>
         /// <returns>
@@ -118,7 +118,7 @@ namespace ComplyX.Controllers
         /// <summary>
         /// Saves or updates exit type data.
         /// </summary>
-        /// <param name="exitTypes">
+        /// <param name="ExitTypes">
         /// The exit type details to be saved or updated.
         /// </param>
         /// <returns>
@@ -138,7 +138,7 @@ namespace ComplyX.Controllers
         /// <summary>
         /// Removes exit type data based on the specified exit type identifier.
         /// </summary>
-        /// <param name="exitTypeId">
+        /// <param name="ExitTypeID">
         /// The unique identifier of the exit type to be removed.
         /// </param>
         /// <returns>
@@ -159,7 +159,7 @@ namespace ComplyX.Controllers
         /// <summary>
         /// Retrieves subcontractor data based on the specified exit type identifier.
         /// </summary>
-        /// <param name="exitTypeId">
+        /// <param name="ExitTypeID">
         /// The unique identifier of the exit type associated with the subcontractors to be retrieved.
         /// </param>
         /// <returns>
@@ -179,7 +179,7 @@ namespace ComplyX.Controllers
         /// <summary>
         /// Retrieves a filtered and paginated list of exit types based on the specified criteria.
         /// </summary>
-        /// <param name="pagedListCriteria">
+        /// <param name="PagedListCriteria">
         /// The criteria for filtering, paging, and sorting the exit types.
         /// </param>
         /// <returns>
@@ -199,7 +199,7 @@ namespace ComplyX.Controllers
         /// <summary>
         /// Saves or updates filing status data.
         /// </summary>
-        /// <param name="filingStatus">
+        /// <param name="FilingStatuses">
         /// The filing status details to be saved or updated.
         /// </param>
         /// <returns>
