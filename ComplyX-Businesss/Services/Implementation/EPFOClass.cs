@@ -607,6 +607,163 @@ namespace ComplyX.BusinessLogic
             }
         }
 
+        public Task<ManagerBaseResponse<bool>> SaveEPFOMonthlyWageData(EPFOMonthlyWage EPFOMonthlyWage)
+        {
+            var response = new ManagerBaseResponse<List<EPFOMonthlyWage>>();
 
+            try
+            {
+                var companyid = _context.Employees.Where(x => x.CompanyID == EPFOMonthlyWage.CompanyId && x.EmployeeID == EPFOMonthlyWage.EmployeeId).FirstOrDefault();
+                if (companyid == null)
+                {
+                    return Task.FromResult(new ManagerBaseResponse<bool>
+                    {
+                        Result = false,
+                        Message = "Company Data not found."
+                    });
+                }
+                else
+                {
+                    if (EPFOMonthlyWage.WageId == 0)
+                    {
+                        // Insert
+                        EPFOMonthlyWage _model = new EPFOMonthlyWage();
+                        _model.CompanyId = companyid.CompanyID;
+                        _model.EmployeeId = EPFOMonthlyWage.EmployeeId;
+                        _model.SubcontractorId = EPFOMonthlyWage.SubcontractorId;
+                        _model.WageMonth = EPFOMonthlyWage.WageMonth;
+                        _model.Wages = EPFOMonthlyWage.Wages;
+                        _model.EPSWages = EPFOMonthlyWage.EPSWages;
+                        _model.EDLIWages = EPFOMonthlyWage.EDLIWages;
+                        _model.EPFWages = EPFOMonthlyWage.EPFWages;
+                        _model.Contribution = EPFOMonthlyWage.Contribution;
+                        _model.EmployerShare = EPFOMonthlyWage.EmployerShare;
+                        _model.PensionShare = EPFOMonthlyWage.PensionShare;
+                        _model.NCPDays = EPFOMonthlyWage.NCPDays;
+                        _model.RefundAdvance = EPFOMonthlyWage.RefundAdvance;
+                        _model.CreatedAt = Util.GetCurrentCSTDateAndTime();
+
+                        _context.Add(_model);
+                        _context.SaveChanges();
+                    }
+                    else
+                    {
+                        // Update
+                        var originalTerm = _context.EPFOMonthlyWage
+                            .Where(x => x.WageId == EPFOMonthlyWage.WageId).FirstOrDefault();
+                        originalTerm.CompanyId = companyid.CompanyID;
+                        originalTerm.EmployeeId = EPFOMonthlyWage.EmployeeId;
+                        originalTerm.SubcontractorId = EPFOMonthlyWage.SubcontractorId;
+                        originalTerm.WageMonth = EPFOMonthlyWage.WageMonth;
+                        originalTerm.Wages = EPFOMonthlyWage.Wages;
+                        originalTerm.EPSWages = EPFOMonthlyWage.EPSWages;
+                        originalTerm.EDLIWages = EPFOMonthlyWage.EDLIWages;
+                        originalTerm.EPFWages = EPFOMonthlyWage.EPFWages;
+                        originalTerm.Contribution = EPFOMonthlyWage.Contribution;
+                        originalTerm.EmployerShare = EPFOMonthlyWage.EmployerShare;
+                        originalTerm.PensionShare = EPFOMonthlyWage.PensionShare;
+                        originalTerm.NCPDays = EPFOMonthlyWage.NCPDays;
+                        originalTerm.RefundAdvance = EPFOMonthlyWage.RefundAdvance;
+                        originalTerm.CreatedAt = Util.GetCurrentCSTDateAndTime();
+
+                        _context.Update(originalTerm);
+                        _context.SaveChanges();
+                    }
+                }
+
+                return Task.FromResult(new ManagerBaseResponse<bool>
+                {
+                    Result = true,
+                    Message = "CompanyEPFO Data Saved Successfully."
+                });
+            }
+            catch (Exception e)
+            {
+                return Task.FromResult(new ManagerBaseResponse<bool>
+                {
+                    Result = false,
+                    Message = e.Message
+                });
+            }
+        }
+        public async Task<ManagerBaseResponse<bool>> RemoveEPFOMonthlyWageData(string WageID)
+        {
+            try
+            {
+                // Get all report detail definitions for the given report name
+                var Company = await _context.EPFOMonthlyWage.Where(x => x.WageId.ToString() == WageID).ToListAsync();
+
+                if (string.IsNullOrEmpty(Company.ToString()))
+                {
+                    return new ManagerBaseResponse<bool>
+                    {
+                        Result = false,
+                        Message = "EPFOMonthlyWage Id is not Vaild",
+                    };
+                }
+
+                // Remove all related report details
+                _context.EPFOMonthlyWage.RemoveRange(Company);
+
+                await _context.SaveChangesAsync();
+
+                return new ManagerBaseResponse<bool>
+                {
+                    Result = true,
+                    Message = "EPFOMonthlyWage Data Removed Successfully.",
+                };
+
+            }
+            catch (Exception ex)
+            {
+                return new ManagerBaseResponse<bool>
+                {
+                    Result = false,
+                    Message = ex.Message
+                };
+            }
+
+        }
+        public async Task<ManagerBaseResponse<IEnumerable<EPFOMonthlyWage>>> GetAllEPFOMonthlyWageFilter(PagedListCriteria PagedListCriteria)
+        {
+            try
+            {
+
+                var query = _context.EPFOMonthlyWage.AsQueryable();
+                var searchText = PagedListCriteria.SearchText?.Trim().ToLower();
+                if (!string.IsNullOrWhiteSpace(searchText))
+                {
+                    query = query.Where(x => x.WageMonth.ToLower().Contains(searchText.ToLower()));
+                }
+
+                query = query.OrderBy(a => a.WageId);
+
+                PageListed<EPFOMonthlyWage> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+
+                return new ManagerBaseResponse<IEnumerable<EPFOMonthlyWage>>
+                {
+                    Result = result.Data,
+                    Message = "EPFOMonthlyWage Data Retrieved Successfully.",
+                    PageDetail = new PageDetailModel()
+                    {
+                        Skip = PagedListCriteria.Skip,
+                        Take = PagedListCriteria.Take,
+                        Count = result.TotalCount,
+                        SearchText = PagedListCriteria.SearchText,
+                        FilterdCount = PagedListCriteria.Filters,
+                    }
+                };
+            }
+            catch (Exception ex)
+            {
+
+                return new ManagerBaseResponse<IEnumerable<EPFOMonthlyWage>>
+                {
+                    IsSuccess = false,
+                    Result = null,
+                    Message = ex.Message
+                };
+            }
+        }
     }
 }

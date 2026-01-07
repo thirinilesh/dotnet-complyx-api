@@ -53,5 +53,6 @@ namespace ComplyX_Businesss.Models
         public virtual ICollection<Leave_Encashment_Policy>? Leave_Encashment_Policy { get; set; } = new List<Leave_Encashment_Policy>();
         public virtual ICollection<FnF_Calculations>? FnF_Calculations { get; set; } = new List<FnF_Calculations>();
         public virtual ICollection<Gratuity_Transactions>? Gratuity_Transactions { get; set; } = new List<Gratuity_Transactions>();
+        public virtual ICollection<EPFOMonthlyWage>? EPFOMonthlyWage { get; set; } = new List<EPFOMonthlyWage>();
     }
 }

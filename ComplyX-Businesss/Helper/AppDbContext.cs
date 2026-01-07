@@ -60,6 +60,7 @@ namespace ComplyX.Shared.Data
         public virtual DbSet<ComplianceDeadlines> ComplianceDeadlines { get; set; }
         public virtual DbSet<ComplianceFilings> ComplianceFilings { get; set; }
         public virtual DbSet<ComplianceSchedules> ComplianceSchedules { get; set; }
+        public virtual DbSet<EPFOMonthlyWage> EPFOMonthlyWage { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -326,6 +327,20 @@ namespace ComplyX.Shared.Data
                 entity.HasOne(d => d.Company).WithMany(p => p.FnF_Calculations)
                      .HasForeignKey(d => d.CompanyID)
                     .HasConstraintName("FK_FnF_Calculations_Company");
+            });
+            modelBuilder.Entity<EPFOMonthlyWage>(entity =>
+            {
+                entity.HasKey(e => e.WageId);
+
+                entity.HasOne(d => d.Company).WithMany(p => p.EPFOMonthlyWage)
+                     .HasForeignKey(d => d.CompanyId)
+                    .HasConstraintName("FK_EPFOMonthlyWage_Company");
+                entity.HasOne(d => d.Employees).WithMany(p => p.EPFOMonthlyWage)
+                    .HasForeignKey(d => d.EmployeeId)
+                   .HasConstraintName("FK_EPFOMonthlyWage_Employee");
+                entity.HasOne(d => d.Subcontractors).WithMany(p => p.EPFOMonthlyWage)
+                    .HasForeignKey(d => d.SubcontractorId)
+                   .HasConstraintName("FK_EPFOMonthlyWage_SubcontractorID");
             });
 
         }

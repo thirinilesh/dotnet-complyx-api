@@ -251,5 +251,61 @@ namespace ComplyX.Controllers
         {
             return ResponseResult(await _EPFOServices.GetEPFOPeriodDataFilter(PagedListCriteria));
         }
+
+        /// <summary>
+        /// Saves the details of a company's EPFO information. 
+        /// If the EPFO data already exists, updates the existing record.
+        /// </summary>
+        /// <param name="epfoMonthlyWage">
+        /// The company EPFO details to be saved or updated.
+        /// </param>
+        /// <returns>
+        /// An <see cref="IActionResult"/> indicating the result of the save or update operation.
+        /// </returns>
+        /// <response code="200">The company EPFO data was saved or updated successfully.</response>
+        /// <response code="400">If there is an error while saving or updating the company EPFO data.</response>
+        [HttpPut("SaveEPFOMonthlyWageData")]
+        public async Task<IActionResult> SaveEPFOMonthlyWageData([FromBody] EPFOMonthlyWage EPFOMonthlyWage)
+        {
+            return ResponseResult(await _EPFOServices.SaveEPFOMonthlyWageData(EPFOMonthlyWage));
+        }
+        /// <summary>
+        /// Deletes a company's EPFO data based on the provided wage ID.
+        /// </summary>
+        /// <param name="wageId">
+        /// The unique identifier of the company EPFO data to be deleted.
+        /// </param>
+        /// <returns>
+        /// An <see cref="IActionResult"/> indicating the result of the delete operation.
+        /// </returns>
+        /// <response code="200">The company EPFO data was successfully deleted.</response>
+        /// <response code="400">If there is an error while deleting the company EPFO data.</response>
+        /// <response code="404">If no company EPFO data with the given wageId is found.</response>
+        [HttpPut("RemoveEPFOMonthlyWageData")]
+        public async Task<IActionResult> RemoveEPFOMonthlyWageData(string WageID)
+        {
+            return ResponseResult(await _EPFOServices.RemoveEPFOMonthlyWageData(WageID));
+        }
+
+        /// <summary>
+        /// Retrieves a filtered and paginated list of company EPFO data based on the provided criteria.
+        /// </summary>
+        /// <param name="pagedListCriteria">
+        /// The criteria used to filter, sort, search, and paginate the company EPFO data.
+        /// </param>
+        /// <returns>
+        /// An <see cref="IActionResult"/> containing the filtered list of company EPFO data.
+        /// If no data is found, it returns a 204 No Content response.
+        /// If an error occurs, it returns a 400 Bad Request response.
+        /// </returns>
+        /// <response code="200">Returns the filtered list of company EPFO data.</response>
+        /// <response code="204">If no company EPFO data is found.</response>
+        /// <response code="400">If there is an error while fetching the company EPFO data.</response>
+        [HttpGet("GetAllEPFOMonthlyWageFilter")]
+        public async Task<IActionResult> GetAllEPFOMonthlyWageFilter([FromQuery] PagedListCriteria PagedListCriteria)
+        {
+            return ResponseResult(await _EPFOServices.GetAllEPFOMonthlyWageFilter(PagedListCriteria));
+        }
+
     }
 }

@@ -23,5 +23,10 @@ namespace ComplyX.Services
 
         Task<ManagerBaseResponse<bool>> RemoveEPFOPeriodData(string EPFOPeriodId);
         Task<ManagerBaseResponse<IEnumerable<EPFOPeriod>>> GetEPFOPeriodDataFilter(PagedListCriteria PagedListCriteria);
+
+        Task<ManagerBaseResponse<bool>> SaveEPFOMonthlyWageData(EPFOMonthlyWage EPFOMonthlyWage);
+
+        Task<ManagerBaseResponse<bool>> RemoveEPFOMonthlyWageData(string WageId);
+        Task<ManagerBaseResponse<IEnumerable<EPFOMonthlyWage>>> GetAllEPFOMonthlyWageFilter(PagedListCriteria PagedListCriteria);
     }
 }
