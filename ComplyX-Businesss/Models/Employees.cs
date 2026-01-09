@@ -50,5 +50,7 @@ namespace ComplyX_Businesss.Models
         public virtual ICollection<EmployeeEPFO>? EmployeeEPFO { get; set; } = new List<EmployeeEPFO>();
         public virtual ICollection<Gratuity_Transactions>? Gratuity_Transactions { get; set; } = new List<Gratuity_Transactions>();
         public virtual ICollection<EPFOMonthlyWage>? EPFOMonthlyWage { get; set; } = new List<EPFOMonthlyWage>();
+        public bool IsPensioner { get; internal set; }
+        public bool IsVendor { get; internal set; }
     }
 }

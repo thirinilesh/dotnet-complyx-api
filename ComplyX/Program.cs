@@ -14,6 +14,7 @@ using ComplyX.Services;
 using ComplyX.Controllers;
 using ComplyX_Businesss.Services.Interface;
 using ComplyX_Businesss.Services.Implementation;
+using ComplyX_Businesss.Helper;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -40,6 +41,7 @@ builder.Services.AddScoped<MasterServices, MasterClass>();
 builder.Services.AddScoped<ITTDSServices, ITTDSCClass>();
 builder.Services.AddScoped<ComplianceMgmtService, ComplianceMgmtCLass>();
 builder.Services.AddScoped<AccountOwnerLogic>();
+builder.Services.AddScoped<Commanfield>();
 builder.Services.AddScoped<Nest.Filter>();
 builder.Services.AddSingleton<JwtTokenService>();
 

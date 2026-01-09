@@ -29,7 +29,7 @@ namespace ComplyX_Businesss.Models
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         public int MaxEmployees { get; set; }
-        public int? ProductOwnerId { get; set; }
+        public int ProductOwnerId { get; set; }
         public virtual ProductOwners? ProductOwners { get; set; }
 
         public virtual ICollection<Subcontractors>? Subcontractorss { get; set; } = new List<Subcontractors>();
@@ -54,5 +54,7 @@ namespace ComplyX_Businesss.Models
         public virtual ICollection<FnF_Calculations>? FnF_Calculations { get; set; } = new List<FnF_Calculations>();
         public virtual ICollection<Gratuity_Transactions>? Gratuity_Transactions { get; set; } = new List<Gratuity_Transactions>();
         public virtual ICollection<EPFOMonthlyWage>? EPFOMonthlyWage { get; set; } = new List<EPFOMonthlyWage>();
+        public virtual ICollection<TDSDeductor>? TDSDeductor { get; set; } = new List<TDSDeductor>();
+        public virtual ICollection<TDSDeductee>? TDSDeductee { get; set; } = new List<TDSDeductee>();
     }
 }

@@ -5,7 +5,6 @@ using ComplyX.Shared.Data;
 
 using ComplyX_Businesss.Models;
 
-
 namespace ComplyX.Shared.Data
 {
     public class AppDbContext : IdentityDbContext<ApplicationUser>
@@ -56,11 +55,13 @@ namespace ComplyX.Shared.Data
         public virtual DbSet<ExitTypes> ExitTypes { get; set; }
 
         public virtual DbSet<FilingStatuses> FilingStatuses { get; set; }
-        public virtual DbSet<TDS_Party> TDS_Party { get; set; }
+        public virtual DbSet<TDSDeductor> TDSDeductor { get; set; }
+        public virtual DbSet<TDSDeductee> TDSDeductee { get; set; }
         public virtual DbSet<ComplianceDeadlines> ComplianceDeadlines { get; set; }
         public virtual DbSet<ComplianceFilings> ComplianceFilings { get; set; }
         public virtual DbSet<ComplianceSchedules> ComplianceSchedules { get; set; }
         public virtual DbSet<EPFOMonthlyWage> EPFOMonthlyWage { get; set; }
+        public virtual DbSet<TDSReturn> TDSReturn { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -342,9 +343,41 @@ namespace ComplyX.Shared.Data
                     .HasForeignKey(d => d.SubcontractorId)
                    .HasConstraintName("FK_EPFOMonthlyWage_SubcontractorID");
             });
+            modelBuilder.Entity<TDSDeductor>(entity =>
+            {
+                entity.HasKey(e => e.DeductorID);
 
+                entity.HasOne(d => d.Company).WithMany(p => p.TDSDeductor)
+                     .HasForeignKey(d => d.CompanyID)
+                    .HasConstraintName("FK_TDSDeductor_Company");
+            });
+            modelBuilder.Entity<TDSDeductee>(entity =>
+            {
+                entity.HasKey(e => e.DeducteeID);
+
+                entity.HasOne(d => d.Company).WithMany(p => p.TDSDeductee)
+                     .HasForeignKey(d => d.CompanyID)
+                    .HasConstraintName("FK_TDSDedutee_Company");
+            });
+            modelBuilder.Entity<TDSDeductee>()
+                  .Property(x => x.PANStatus)
+                  .HasConversion<string>();
+
+            modelBuilder.Entity<TDSDeductee>()
+                .Property(x => x.DeducteeType)
+                .HasConversion<string>();
+
+            modelBuilder.Entity<TDSReturn>(entity =>
+            {
+                entity.HasKey(e => e.ReturnID);
+
+                entity.HasOne(d => d.TDSDeductor).WithMany(p => p.TDSReturns)
+                     .HasForeignKey(d => d.DeductorID)
+                    .HasConstraintName("FK_TDSReturn_TDSDeductor");
+            });
         }
 
-
+        
+         
     }
 }
