@@ -34,5 +34,7 @@ namespace ComplyX_Businesss.Models
         public virtual Company? Company { get; set; }
 
         public virtual ICollection<TDSReturn>? TDSReturns { get; set; } = new List<TDSReturn>();
+        public virtual ICollection<TDSEntry>? TDSEntry { get; set; } = new List<TDSEntry>();
+        public virtual ICollection<TDSChallan>? TDSChallan { get; set; } = new List<TDSChallan>();
     }
 }

@@ -28,6 +28,7 @@ namespace ComplyX_Businesss.Models
         public string? UpdatedBy { get; set; }
         public DateTime? UpdatedAt { get; set; }
         public virtual Company? Company { get; set; }
+        public virtual ICollection<TDSEntry>? TDSEntry { get; set; } = new List<TDSEntry>();
 
     }
 }

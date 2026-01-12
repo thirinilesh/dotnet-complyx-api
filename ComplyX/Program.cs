@@ -15,6 +15,8 @@ using ComplyX.Controllers;
 using ComplyX_Businesss.Services.Interface;
 using ComplyX_Businesss.Services.Implementation;
 using ComplyX_Businesss.Helper;
+using System.Text.Json.Serialization;
+using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -69,7 +71,12 @@ builder.Services.AddAuthentication(options =>
 });
 
 // Add Controllers
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+      .AddJsonOptions(options =>
+      {
+          options.JsonSerializerOptions.Converters.Add(
+              new JsonStringEnumConverter(JsonNamingPolicy.CamelCase, allowIntegerValues: false));
+      });
 
 // Swagger
 builder.Services.AddEndpointsApiExplorer();

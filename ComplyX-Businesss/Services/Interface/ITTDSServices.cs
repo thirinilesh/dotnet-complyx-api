@@ -23,5 +23,11 @@ namespace ComplyX_Businesss.Services.Interface
         Task<ManagerBaseResponse<bool>> SaveTDSReturnData(TDSReturn TDSReturn, string UserName);
         Task<ManagerBaseResponse<List<TDSReturn>>> GetAllTDSReturnData(string ReturnID);
         Task<ManagerBaseResponse<IEnumerable<TDSReturn>>> GetTDSReturnFilter(PagedListCriteria PagedListCriteria);
+        Task<ManagerBaseResponse<bool>> SaveTDSEntryData(TDSEntry TDSEntry, string UserName);
+        Task<ManagerBaseResponse<List<TDSEntry>>> GetAllTDSEntryData(string ReturnID);
+        Task<ManagerBaseResponse<IEnumerable<TDSEntry>>> GetTDSEntryFilter(PagedListCriteria PagedListCriteria);
+        Task<ManagerBaseResponse<bool>> SaveTDSChallanData(TDSChallan TDSChallan, string UserName);
+        Task<ManagerBaseResponse<List<TDSChallan>>> GetAllTDSChallanData(string ChallanID);
+        Task<ManagerBaseResponse<IEnumerable<TDSChallan>>> GetTDSChallanFilter(PagedListCriteria PagedListCriteria);
     }
 }

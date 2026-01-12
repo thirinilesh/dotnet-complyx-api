@@ -59,24 +59,24 @@ namespace ComplyX_Businesss.Services.Implementation
                     if (TDSDeductor.DeductorID == 0)
                     {
                         // Insert
-                        TDSDeductor _model = new TDSDeductor();
-                        _model.CompanyID = TDSDeductor.CompanyID;
-                        _model.DeductorCategory = TDSDeductor.DeductorCategory;
-                        _model.DeductorName = TDSDeductor.DeductorName;
-                        _model.TAN = TDSDeductor.TAN;
-                        _model.PAN = TDSDeductor.PAN;
-                        _model.Address1 = TDSDeductor.Address1;
-                        _model.Address2 = TDSDeductor.Address2;
-                        _model.City = TDSDeductor.City;
-                        _model.State = TDSDeductor.State;
-                        _model.PinCode = TDSDeductor.PinCode;
-                        _model.Phone = TDSDeductor.Phone;
-                        _model.Email = TDSDeductor.Email;
-                        _model.AOCode = TDSDeductor.AOCode;
-                        _model.CreatedBy = user.Id;
-                        _model.CreatedAt = Util.GetCurrentCSTDateAndTime();
+                        TDSDeductor originalTerm = new TDSDeductor();
+                        originalTerm.CompanyID = TDSDeductor.CompanyID;
+                        originalTerm.DeductorCategory = TDSDeductor.DeductorCategory;
+                        originalTerm.DeductorName = TDSDeductor.DeductorName;
+                        originalTerm.TAN = TDSDeductor.TAN;
+                        originalTerm.PAN = TDSDeductor.PAN;
+                        originalTerm.Address1 = TDSDeductor.Address1;
+                        originalTerm.Address2 = TDSDeductor.Address2;
+                        originalTerm.City = TDSDeductor.City;
+                        originalTerm.State = TDSDeductor.State;
+                        originalTerm.PinCode = TDSDeductor.PinCode;
+                        originalTerm.Phone = TDSDeductor.Phone;
+                        originalTerm.Email = TDSDeductor.Email;
+                        originalTerm.AOCode = TDSDeductor.AOCode;
+                        originalTerm.CreatedBy = user.Id;
+                        originalTerm.CreatedAt = Util.GetCurrentCSTDateAndTime();
 
-                        _context.Add(_model);
+                        _context.Add(originalTerm);
                        await  _context.SaveChangesAsync();
                     }
                     else
@@ -197,21 +197,21 @@ namespace ComplyX_Businesss.Services.Implementation
                 if (TDSDedutee.DeducteeID == 0)
                 {
                         // Insert
-                        TDSDeductee _model = new TDSDeductee();
-                    _model.CompanyID = TDSDedutee.CompanyID;
-                    _model.DeducteeName = TDSDedutee.DeducteeName;
-                        _model.DeducteeType = TDSDedutee.DeducteeType;
-                    _model.AadhaarLinked = TDSDedutee.AadhaarLinked;
-                    _model.PANStatus = TDSDedutee.PANStatus;
-                    _model.PAN = TDSDedutee.PAN;
-                    _model.Mobile = TDSDedutee.Mobile;
-                    _model.Email = TDSDedutee.Email;
-                    _model.ResidentStatus = TDSDedutee.ResidentStatus;
-                    _model.IsActive = TDSDedutee.IsActive;
-                    _model.CreatedBy = user.Id;
-                    _model.CreatedAt = Util.GetCurrentCSTDateAndTime();
+                        TDSDeductee originalTerm = new TDSDeductee();
+                    originalTerm.CompanyID = TDSDedutee.CompanyID;
+                    originalTerm.DeducteeName = TDSDedutee.DeducteeName;
+                        originalTerm.DeducteeType = TDSDedutee.DeducteeType;
+                    originalTerm.AadhaarLinked = TDSDedutee.AadhaarLinked;
+                    originalTerm.PANStatus = TDSDedutee.PANStatus;
+                    originalTerm.PAN = TDSDedutee.PAN;
+                    originalTerm.Mobile = TDSDedutee.Mobile;
+                    originalTerm.Email = TDSDedutee.Email;
+                    originalTerm.ResidentStatus = TDSDedutee.ResidentStatus;
+                    originalTerm.IsActive = TDSDedutee.IsActive;
+                    originalTerm.CreatedBy = user.Id;
+                    originalTerm.CreatedAt = Util.GetCurrentCSTDateAndTime();
 
-                    _context.Add(_model);
+                    _context.Add(originalTerm);
                     _context.SaveChanges();
                 }
                 else
@@ -346,7 +346,7 @@ namespace ComplyX_Businesss.Services.Implementation
                 {                   
                       foreach (var item in data)
                         {
-                            TDSDeductee _model = new TDSDeductee();
+                            TDSDeductee originalTerm = new TDSDeductee();
                             var deducteename = _context.TDSDeductee.FirstOrDefault(x => x.DeducteeName == item.Employee.FirstName + " " + item.Employee.LastName); 
                      
                             if (deducteename != null)
@@ -355,19 +355,19 @@ namespace ComplyX_Businesss.Services.Implementation
                             }
                         
                             else {
-                                    _model.CompanyID = item.Employee.CompanyID;
-                                    _model.DeducteeType = _commanfield.GetDeducteeType(item.Employee);
-                                    _model.DeducteeName = item.Employee.FirstName + " " + item.Employee.LastName;
-                                    _model.PAN = item.Employee.PAN;
-                                    _model.PANStatus = string.IsNullOrEmpty(item.Employee.PAN)? PANStatus.NOT_AVAILABLE.ToString() : _commanfield.IsValidPAN(item.Employee.PAN) ? PANStatus.VALID.ToString(): PANStatus.INVALID.ToString();
-                                    _model.AadhaarLinked = !string.IsNullOrEmpty(item.Employee.Aadhaar) ? true : false;
-                                    _model.ResidentStatus = item.Employee.Nationality == "Indian" ? "RESIDENT" : "NON_RESIDENT";
-                                    _model.Email = item.Employee.Email;
-                                    _model.Mobile = item.Employee.Mobile;
-                                    _model.IsActive = item.Employee.ActiveStatus;
-                                    _model.CreatedAt = Util.GetCurrentCSTDateAndTime();
-                                    _model.CreatedBy = user.Id;
-                                    _context.TDSDeductee.Add(_model);
+                                    originalTerm.CompanyID = item.Employee.CompanyID;
+                                    originalTerm.DeducteeType = _commanfield.GetDeducteeType(item.Employee);
+                                    originalTerm.DeducteeName = item.Employee.FirstName + " " + item.Employee.LastName;
+                                    originalTerm.PAN = item.Employee.PAN;
+                                    originalTerm.PANStatus = string.IsNullOrEmpty(item.Employee.PAN)? PANStatus.NOT_AVAILABLE.ToString() : _commanfield.IsValidPAN(item.Employee.PAN) ? PANStatus.VALID.ToString(): PANStatus.INVALID.ToString();
+                                    originalTerm.AadhaarLinked = !string.IsNullOrEmpty(item.Employee.Aadhaar) ? true : false;
+                                    originalTerm.ResidentStatus = item.Employee.Nationality == "Indian" ? "RESIDENT" : "NON_RESIDENT";
+                                    originalTerm.Email = item.Employee.Email;
+                                    originalTerm.Mobile = item.Employee.Mobile;
+                                    originalTerm.IsActive = item.Employee.ActiveStatus;
+                                    originalTerm.CreatedAt = Util.GetCurrentCSTDateAndTime();
+                                    originalTerm.CreatedBy = user.Id;
+                                    _context.TDSDeductee.Add(originalTerm);
                                     await _context.SaveChangesAsync();
 
                             }
@@ -431,7 +431,7 @@ namespace ComplyX_Businesss.Services.Implementation
                         string address = item.product.Address;
                         string[] parts = address.Split(',');
 
-                        TDSDeductor _model = new TDSDeductor();
+                        TDSDeductor originalTerm = new TDSDeductor();
                         var deducteename = _context.TDSDeductor.FirstOrDefault(x => x.DeductorName == item.product.OwnerName);
 
                         if (deducteename != null)
@@ -441,22 +441,22 @@ namespace ComplyX_Businesss.Services.Implementation
 
                         else
                         {
-                            _model.CompanyID = item.Company.CompanyID;
-                            _model.DeductorName = item.product.OwnerName;
-                            _model.TAN = null;
-                            _model.PAN = item.Company.PAN;
-                            _model.DeductorCategory = "Company";
-                            _model.Address1 = parts[0];
-                            _model.Address2 = parts[1];
-                            _model.City = parts.Length > 1 ? parts[2] : parts[1];
-                            _model.State = item.product.State;
-                            _model.PinCode = item.product.Pincode;
-                            _model.Email = item.product.Email;
-                            _model.Phone = item.product.Mobile;
-                            _model.IsActive = item.product.IsActive;
-                            _model.CreatedAt = Util.GetCurrentCSTDateAndTime();
-                            _model.CreatedBy = user.Id;
-                            _context.TDSDeductor.Add(_model);
+                            originalTerm.CompanyID = item.Company.CompanyID;
+                            originalTerm.DeductorName = item.product.OwnerName;
+                            originalTerm.TAN = null;
+                            originalTerm.PAN = item.Company.PAN;
+                            originalTerm.DeductorCategory = "Company";
+                            originalTerm.Address1 = parts[0];
+                            originalTerm.Address2 = parts[1];
+                            originalTerm.City = parts.Length > 1 ? parts[2] : parts[1];
+                            originalTerm.State = item.product.State;
+                            originalTerm.PinCode = item.product.Pincode;
+                            originalTerm.Email = item.product.Email;
+                            originalTerm.Phone = item.product.Mobile;
+                            originalTerm.IsActive = item.product.IsActive;
+                            originalTerm.CreatedAt = Util.GetCurrentCSTDateAndTime();
+                            originalTerm.CreatedBy = user.Id;
+                            _context.TDSDeductor.Add(originalTerm);
                             await _context.SaveChangesAsync();
                         }
                     }
@@ -502,20 +502,20 @@ namespace ComplyX_Businesss.Services.Implementation
                     if (TDSReturn.ReturnID == 0)
                     {
                         // Insert
-                        TDSReturn _model = new TDSReturn();
-                        _model.DeductorID = Deductor.DeductorID;
-                        _model.FormType = TDSReturn.FormType;
-                        _model.FinancialYear = TDSReturn.FinancialYear;
-                        _model.Quarter = TDSReturn.Quarter;
-                        _model.ReturnType = TDSReturn.ReturnType;
-                        _model.OriginalTokenNo = TDSReturn.OriginalTokenNo;
-                        _model.Status = TDSReturn.Status;
-                        _model.FVUVersion = TDSReturn.FVUVersion;
-                        _model.RPUVersion = TDSReturn.RPUVersion;                     
-                        _model.CreatedBy = user.Id;
-                        _model.CreatedAt = Util.GetCurrentCSTDateAndTime();
+                        TDSReturn originalTerm = new TDSReturn();
+                        originalTerm.DeductorID = Deductor.DeductorID;
+                        originalTerm.FormType = _commanfield.FormType(TDSReturn.FormType);
+                        originalTerm.FinancialYear = _commanfield.FinancialYear(TDSReturn.FinancialYear);
+                        originalTerm.Quarter = TDSReturn.Quarter;
+                        originalTerm.ReturnType = TDSReturn.ReturnType;
+                        originalTerm.OriginalTokenNo = TDSReturn.ReturnType == "CORRECTION" ? TDSReturn.OriginalTokenNo : null;
+                        originalTerm.Status = TDSReturn.Status;
+                        originalTerm.FVUVersion = TDSReturn.FVUVersion;
+                        originalTerm.RPUVersion = TDSReturn.RPUVersion;                     
+                        originalTerm.CreatedBy = user.Id;
+                        originalTerm.CreatedAt = Util.GetCurrentCSTDateAndTime();
 
-                        _context.Add(_model);
+                        _context.Add(originalTerm);
                         await _context.SaveChangesAsync();
                     }
                     else
@@ -525,11 +525,11 @@ namespace ComplyX_Businesss.Services.Implementation
                             .Where(x => x.ReturnID == TDSReturn.ReturnID)
                             .FirstOrDefault();
                         originalTerm.DeductorID = Deductor.DeductorID;
-                        originalTerm.FormType = TDSReturn.FormType;
-                        originalTerm.FinancialYear = TDSReturn.FinancialYear;
+                        originalTerm.FormType = _commanfield.FormType(TDSReturn.FormType);
+                        originalTerm.FinancialYear = _commanfield.FinancialYear(TDSReturn.FinancialYear);
                         originalTerm.Quarter = TDSReturn.Quarter;
                         originalTerm.ReturnType = TDSReturn.ReturnType;
-                        originalTerm.OriginalTokenNo = TDSReturn.OriginalTokenNo;
+                        originalTerm.OriginalTokenNo = TDSReturn.ReturnType == "CORRECTION" ? TDSReturn.OriginalTokenNo : null;
                         originalTerm.Status = TDSReturn.Status;
                         originalTerm.FVUVersion = TDSReturn.FVUVersion;
                         originalTerm.RPUVersion = TDSReturn.RPUVersion;
@@ -614,6 +614,301 @@ namespace ComplyX_Businesss.Services.Implementation
             {
 
                 return new ManagerBaseResponse<IEnumerable<TDSReturn>>
+                {
+                    IsSuccess = false,
+                    Result = null,
+                    Message = ex.Message
+                };
+            }
+        }
+        public async Task<ManagerBaseResponse<bool>> SaveTDSEntryData(TDSEntry TDSEntry, string UserName)
+        {
+            var response = new ManagerBaseResponse<List<TDSEntry>>();
+
+            try
+            {
+                var Deductor = _context.TDSDeductor.FirstOrDefault(x => x.DeductorID == TDSEntry.DeductorID);
+                var Deductee = _context.TDSDeductee.FirstOrDefault(x => x.DeducteeID == TDSEntry.DeducteeID);
+                if (Deductor == null && Deductee == null)
+                {
+                    return new ManagerBaseResponse<bool>
+                    {
+                        Result = false,
+                        Message = "Deductor and Deductee Data not Found."
+                    };
+                }
+                else
+                {
+                    var user = _context.Users.FirstOrDefault(x => x.UserName == UserName);
+                    if (TDSEntry.EntryID == 0)
+                    {
+                        // Insert
+                        TDSEntry _model = new TDSEntry();
+                        _model.DeductorID = TDSEntry.DeductorID;
+                        _model.DeducteeID = TDSEntry.DeducteeID;
+                        _model.SectionCode = TDSEntry.SectionCode;
+                        _model.PaymentDate = TDSEntry.PaymentDate;
+                        _model.AmountPaid = TDSEntry.AmountPaid;
+                        _model.TaxableAmount = TDSEntry.TaxableAmount;
+                        _model.TDSRate = TDSEntry.TDSRate;
+                        _model.TDSAmount = TDSEntry.TDSAmount;
+                        _model.Surcharge = TDSEntry.Surcharge;
+                        _model.Cess = TDSEntry.Cess;
+                        _model.TotalTDS = TDSEntry.TDSAmount + TDSEntry.Surcharge + TDSEntry.Cess;
+                        _model.HigherRateApplied = TDSEntry.HigherRateApplied;
+                        _model.HigherRateReason = TDSEntry.HigherRateReason;
+                        _model.IsMappedToReturn = TDSEntry.IsMappedToReturn;
+                        _model.CreatedAt = Util.GetCurrentCSTDateAndTime();
+
+                        _context.Add(_model);
+                        await _context.SaveChangesAsync();
+                    }
+                    else
+                    {
+                        // Update
+                        var originalTerm = _context.TDSEntry
+                            .Where(x => x.EntryID == TDSEntry.EntryID)
+                            .FirstOrDefault();
+                        originalTerm.DeductorID = TDSEntry.DeductorID;
+                        originalTerm.DeducteeID = TDSEntry.DeducteeID;
+                        originalTerm.SectionCode = TDSEntry.SectionCode;
+                        originalTerm.PaymentDate = TDSEntry.PaymentDate;
+                        originalTerm.AmountPaid = TDSEntry.AmountPaid;
+                        originalTerm.TaxableAmount = TDSEntry.TaxableAmount;
+                        originalTerm.TDSRate = TDSEntry.TDSRate;
+                        originalTerm.TDSAmount = TDSEntry.TDSAmount;
+                        originalTerm.Surcharge = TDSEntry.Surcharge;
+                        originalTerm.Cess = TDSEntry.Cess;
+                        originalTerm.TotalTDS = TDSEntry.TDSAmount + TDSEntry.Surcharge + TDSEntry.Cess;
+                        originalTerm.HigherRateApplied = TDSEntry.HigherRateApplied;
+                        originalTerm.HigherRateReason = TDSEntry.HigherRateReason;
+                        originalTerm.IsMappedToReturn = TDSEntry.IsMappedToReturn;
+                        originalTerm.CreatedAt = Util.GetCurrentCSTDateAndTime();
+                        _context.Update(originalTerm);
+                        _context.SaveChanges();
+                    }
+                }
+                return new ManagerBaseResponse<bool>
+                {
+                    Result = true,
+                    Message = "TDS Entry Saved Successfully."
+                };
+            }
+            catch (Exception e)
+            {
+                return new ManagerBaseResponse<bool>
+                {
+
+                    Result = false,
+                    Message = e.Message
+                };
+            }
+        }
+        public async Task<ManagerBaseResponse<List<TDSEntry>>> GetAllTDSEntryData(string EntryID)
+        {
+            try
+            {
+                var plans = _context.TDSEntry.Where(x => x.EntryID.ToString() == EntryID).ToList();
+
+
+                return new ManagerBaseResponse<List<TDSEntry>>
+                {
+                    IsSuccess = true,
+                    Result = plans,
+                    Message = "TDS Entry Data Retrieved Successfully.",
+                };
+            }
+            catch (Exception ex)
+            {
+
+                return new ManagerBaseResponse<List<TDSEntry>>
+                {
+                    IsSuccess = false,
+                    Result = null,
+                    Message = ex.Message
+                };
+            }
+        }
+        public async Task<ManagerBaseResponse<IEnumerable<TDSEntry>>> GetTDSEntryFilter(PagedListCriteria PagedListCriteria)
+        {
+            try
+            {
+
+                var query = _context.TDSEntry.AsQueryable();
+                var searchText = PagedListCriteria.SearchText?.Trim().ToLower();
+                if (!string.IsNullOrWhiteSpace(searchText))
+                {
+                    query = query.Where(x => x.SectionCode.ToLower().Contains(searchText.ToLower()));
+                }
+
+                query = query.OrderBy(a => a.EntryID);
+
+                PageListed<TDSEntry> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+
+                return new ManagerBaseResponse<IEnumerable<TDSEntry>>
+                {
+                    Result = result.Data,
+                    Message = "TDS Entry Data Retrieved Successfully.",
+                    PageDetail = new PageDetailModel()
+                    {
+                        Skip = PagedListCriteria.Skip,
+                        Take = PagedListCriteria.Take,
+                        Count = result.TotalCount,
+                        SearchText = PagedListCriteria.SearchText,
+                        FilterdCount = PagedListCriteria.Filters,
+                    }
+                };
+            }
+            catch (Exception ex)
+            {
+
+                return new ManagerBaseResponse<IEnumerable<TDSEntry>>
+                {
+                    IsSuccess = false,
+                    Result = null,
+                    Message = ex.Message
+                };
+            }
+        }
+
+
+        public async Task<ManagerBaseResponse<bool>> SaveTDSChallanData(TDSChallan TDSChallan, string UserName)
+        {
+            var response = new ManagerBaseResponse<List<TDSChallan>>();
+
+            try
+            {
+                var Deductor = _context.TDSDeductor.FirstOrDefault(x => x.DeductorID == TDSChallan.DeductorID);
+                if (Deductor == null)
+                {
+                    return new ManagerBaseResponse<bool>
+                    {
+                        Result = false,
+                        Message = "Deductor Data not Found."
+                    };
+                }
+                else
+                {
+                    var user = _context.Users.FirstOrDefault(x => x.UserName == UserName);
+                    if (TDSChallan.ChallanID == 0)
+                    {
+                        // Insert
+                        TDSChallan _model = new TDSChallan();
+                        _model.DeductorID = Deductor.DeductorID;
+                        _model.BSRCode = TDSChallan.BSRCode;
+                        _model.ChallanDate = TDSChallan.ChallanDate;
+                        _model.ChallanSerialNo = TDSChallan.ChallanSerialNo;
+                        _model.SectionCode = TDSChallan.SectionCode;
+                        _model.TaxAmount = TDSChallan.TaxAmount;
+                        _model.InterestAmount = TDSChallan.InterestAmount;
+                        _model.LateFeeAmount = TDSChallan.LateFeeAmount;
+                        _model.OtherAmount = TDSChallan.OtherAmount;
+                        _model.TotalAmount = TDSChallan.TaxAmount + TDSChallan.InterestAmount + TDSChallan.LateFeeAmount + TDSChallan.OtherAmount;
+                        _model.MatchedWithOLTAS = TDSChallan.MatchedWithOLTAS;
+                        _model.IsMappedToReturn = TDSChallan.IsMappedToReturn;
+                        _model.CreatedAt = Util.GetCurrentCSTDateAndTime();
+
+                        _context.Add(_model);
+                        await _context.SaveChangesAsync();
+                    }
+                    else
+                    {
+                        // Update
+                        var originalTerm = _context.TDSChallan
+                            .Where(x => x.ChallanID == TDSChallan.ChallanID)
+                            .FirstOrDefault();
+                        originalTerm.DeductorID = Deductor.DeductorID;
+                        originalTerm.BSRCode = TDSChallan.BSRCode;
+                        originalTerm.ChallanDate = TDSChallan.ChallanDate;
+                        originalTerm.ChallanSerialNo = TDSChallan.ChallanSerialNo;
+                        originalTerm.SectionCode = TDSChallan.SectionCode;
+                        originalTerm.TaxAmount = TDSChallan.TaxAmount;
+                        originalTerm.InterestAmount = TDSChallan.InterestAmount;
+                        originalTerm.LateFeeAmount = TDSChallan.LateFeeAmount;
+                        originalTerm.OtherAmount = TDSChallan.OtherAmount;
+                        originalTerm.TotalAmount = TDSChallan.TaxAmount + TDSChallan.InterestAmount + TDSChallan.LateFeeAmount + TDSChallan.OtherAmount;
+                        originalTerm.MatchedWithOLTAS = TDSChallan.MatchedWithOLTAS;
+                        originalTerm.IsMappedToReturn = TDSChallan.IsMappedToReturn;
+                        originalTerm.CreatedAt = Util.GetCurrentCSTDateAndTime();
+                        _context.Update(originalTerm);
+                        _context.SaveChanges();
+                    }
+                }
+                return new ManagerBaseResponse<bool>
+                {
+                    Result = true,
+                    Message = "TDS Challan Saved Successfully."
+                };
+            }
+            catch (Exception e)
+            {
+                return new ManagerBaseResponse<bool>
+                {
+
+                    Result = false,
+                    Message = e.Message
+                };
+            }
+        }
+        public async Task<ManagerBaseResponse<List<TDSChallan>>> GetAllTDSChallanData(string ChallanID)
+        {
+            try
+            {
+                var plans = _context.TDSChallan.Where(x => x.ChallanID.ToString() == ChallanID).ToList();
+
+
+                return new ManagerBaseResponse<List<TDSChallan>>
+                {
+                    IsSuccess = true,
+                    Result = plans,
+                    Message = "TDS Challan Data Retrieved Successfully.",
+                };
+            }
+            catch (Exception ex)
+            {
+
+                return new ManagerBaseResponse<List<TDSChallan>>
+                {
+                    IsSuccess = false,
+                    Result = null,
+                    Message = ex.Message
+                };
+            }
+        }
+        public async Task<ManagerBaseResponse<IEnumerable<TDSChallan>>> GetTDSChallanFilter(PagedListCriteria PagedListCriteria)
+        {
+            try
+            {
+
+                var query = _context.TDSChallan.AsQueryable();
+                var searchText = PagedListCriteria.SearchText?.Trim().ToLower();
+                if (!string.IsNullOrWhiteSpace(searchText))
+                {
+                    query = query.Where(x => x.BSRCode.ToLower().Contains(searchText.ToLower()));
+                }
+
+                query = query.OrderBy(a => a.ChallanID);
+
+                PageListed<TDSChallan> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+
+                return new ManagerBaseResponse<IEnumerable<TDSChallan>>
+                {
+                    Result = result.Data,
+                    Message = "TDS Challan Data Retrieved Successfully.",
+                    PageDetail = new PageDetailModel()
+                    {
+                        Skip = PagedListCriteria.Skip,
+                        Take = PagedListCriteria.Take,
+                        Count = result.TotalCount,
+                        SearchText = PagedListCriteria.SearchText,
+                        FilterdCount = PagedListCriteria.Filters,
+                    }
+                };
+            }
+            catch (Exception ex)
+            {
+
+                return new ManagerBaseResponse<IEnumerable<TDSChallan>>
                 {
                     IsSuccess = false,
                     Result = null,

@@ -62,6 +62,8 @@ namespace ComplyX.Shared.Data
         public virtual DbSet<ComplianceSchedules> ComplianceSchedules { get; set; }
         public virtual DbSet<EPFOMonthlyWage> EPFOMonthlyWage { get; set; }
         public virtual DbSet<TDSReturn> TDSReturn { get; set; }
+        public virtual DbSet<TDSChallan> TDSChallan { get; set; }
+        public virtual DbSet<TDSEntry> TDSEntry { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -374,6 +376,25 @@ namespace ComplyX.Shared.Data
                 entity.HasOne(d => d.TDSDeductor).WithMany(p => p.TDSReturns)
                      .HasForeignKey(d => d.DeductorID)
                     .HasConstraintName("FK_TDSReturn_TDSDeductor");
+            });
+            modelBuilder.Entity<TDSChallan>(entity =>
+            {
+                entity.HasKey(e => e.ChallanID);
+
+                entity.HasOne(d => d.TDSDeductor).WithMany(p => p.TDSChallan)
+                     .HasForeignKey(d => d.DeductorID)
+                    .HasConstraintName("FK_TDSChallan_TDSDeductor");
+            });
+            modelBuilder.Entity<TDSEntry>(entity =>
+            {
+                entity.HasKey(e => e.EntryID);
+
+                entity.HasOne(d => d.TDSDeductor).WithMany(p => p.TDSEntry)
+                     .HasForeignKey(d => d.DeductorID)
+                    .HasConstraintName("FK_TDSEntry_TDSDeductor");
+                entity.HasOne(d => d.TDSDeductee).WithMany(p => p.TDSEntry)
+                    .HasForeignKey(d => d.DeducteeID)
+                   .HasConstraintName("FK_TDSEntry_TDSDeductee");
             });
         }
 

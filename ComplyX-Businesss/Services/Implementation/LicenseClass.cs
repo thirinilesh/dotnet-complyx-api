@@ -133,8 +133,6 @@ namespace ComplyX.BusinessLogic
                 };
             }
         }
-
-
         public Task<ManagerBaseResponse<bool>> SaveLicenseKeyActivationData(LicenseActivation LicenseActivation)
         {
             var response = new ManagerBaseResponse<List<LicenseActivation>>();
@@ -200,7 +198,6 @@ namespace ComplyX.BusinessLogic
                 });
             }
         }
-
         public async Task<ManagerBaseResponse<IEnumerable<LicenseActivation>>> GetLicenseActivationFilter(PagedListCriteria PagedListCriteria)
         {
             try
@@ -242,8 +239,6 @@ namespace ComplyX.BusinessLogic
                 };
             }
         }
-
-
         public Task<ManagerBaseResponse<bool>> SaveLicenseAuditLogsData(LicenseAuditLogs LicenseAuditLogs)
         {
             var response = new ManagerBaseResponse<List<LicenseAuditLogs>>();
@@ -295,7 +290,6 @@ namespace ComplyX.BusinessLogic
                 });
             }
         }
-
         public async Task<ManagerBaseResponse<IEnumerable<LicenseAuditLogs>>> GetLicenseAuditLogsFilter(PagedListCriteria PagedListCriteria)
         {
             try
@@ -337,8 +331,6 @@ namespace ComplyX.BusinessLogic
                 };
             }
         }
-
-
         public Task<ManagerBaseResponse<bool>> SaveMachineBindingData(MachineBinding MachineBinding)
         {
             var response = new ManagerBaseResponse<List<MachineBinding>>();
@@ -406,7 +398,6 @@ namespace ComplyX.BusinessLogic
                 });
             }
         }
-
         public async Task<ManagerBaseResponse<IEnumerable<MachineBinding>>> GetMachineBindingFilter(PagedListCriteria PagedListCriteria)
         {
             try
