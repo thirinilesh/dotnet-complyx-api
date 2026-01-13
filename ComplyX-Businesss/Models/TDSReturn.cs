@@ -35,5 +35,7 @@ namespace ComplyX_Businesss.Models
         public DateTime? UpdatedAt { get; set; }
 
         public virtual TDSDeductor? TDSDeductor { get; set; }
+        public virtual ICollection<TDSReturnChallan>? TDSReturnChallan { get; set; } = new List<TDSReturnChallan>();
+        public virtual ICollection<TDSReturnEntry>? TDSReturnEntry { get; set; } = new List<TDSReturnEntry>();
     }
 }

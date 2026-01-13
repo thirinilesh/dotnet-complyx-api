@@ -29,5 +29,15 @@ namespace ComplyX_Businesss.Services.Interface
         Task<ManagerBaseResponse<bool>> SaveTDSChallanData(TDSChallan TDSChallan, string UserName);
         Task<ManagerBaseResponse<List<TDSChallan>>> GetAllTDSChallanData(string ChallanID);
         Task<ManagerBaseResponse<IEnumerable<TDSChallan>>> GetTDSChallanFilter(PagedListCriteria PagedListCriteria);
+        Task<ManagerBaseResponse<bool>> SaveTDSReturnChallanData(TDSReturnChallan TDSReturnChallan, string UserName);
+        Task<ManagerBaseResponse<List<TDSReturnChallan>>> GetAllTDSReturnChallanData(string TDSReturnChallanID);
+        Task<ManagerBaseResponse<IEnumerable<TDSReturnChallan>>> GetTDSReturnChallanFilter(PagedListCriteria PagedListCriteria);
+        Task<ManagerBaseResponse<bool>> SaveTDSReturnEntryData(TDSReturnEntry TDSReturnEntry, string UserName);
+        Task<ManagerBaseResponse<List<TDSReturnEntry>>> GetAllTDSReturnEntryData(string TDSReturnEntryID);
+        Task<ManagerBaseResponse<IEnumerable<TDSReturnEntry>>> GetTDSReturnEntryFilter(PagedListCriteria PagedListCriteria);
+        Task<ManagerBaseResponse<bool>> SaveTDSChallanAllocationData(TDSChallanAllocation TDSChallanAllocation, string UserName);
+        Task<ManagerBaseResponse<List<TDSChallanAllocation>>> GetAllTDSChallanAllocationData(string AllocationID);
+        Task<ManagerBaseResponse<IEnumerable<TDSChallanAllocation>>> GetTDSChallanAllocationFilter(PagedListCriteria PagedListCriteria);
+
     }
 }

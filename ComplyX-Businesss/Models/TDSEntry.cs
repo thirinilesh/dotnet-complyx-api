@@ -30,5 +30,8 @@ namespace ComplyX_Businesss.Models
         public DateTime CreatedAt { get; set; }
         public virtual TDSDeductor? TDSDeductor { get; set; }
         public virtual TDSDeductee? TDSDeductee { get; set; }
-    }
+        public virtual ICollection<TDSReturnEntry>? TDSReturnEntry { get; set; } = new List<TDSReturnEntry>();
+        public virtual ICollection<TDSChallanAllocation>? TDSChallanAllocation { get; set; } = new List<TDSChallanAllocation>();
+    } 
+
 }

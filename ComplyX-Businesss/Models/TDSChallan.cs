@@ -27,5 +27,8 @@ namespace ComplyX_Businesss.Models
         public bool IsMappedToReturn { get; set; }
         public DateTime CreatedAt { get; set; }
         public virtual TDSDeductor? TDSDeductor { get; set; }
+        public virtual ICollection<TDSReturnChallan>? TDSReturnChallan { get; set; } = new List<TDSReturnChallan>();
+        public virtual ICollection<TDSChallanAllocation>? TDSChallanAllocation { get; set; } = new List<TDSChallanAllocation>();
+
     }
 }

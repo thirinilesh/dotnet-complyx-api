@@ -64,6 +64,9 @@ namespace ComplyX.Shared.Data
         public virtual DbSet<TDSReturn> TDSReturn { get; set; }
         public virtual DbSet<TDSChallan> TDSChallan { get; set; }
         public virtual DbSet<TDSEntry> TDSEntry { get; set; }
+        public virtual DbSet<TDSReturnChallan> TDsReturnChallan { get; set; }
+        public virtual DbSet<TDSReturnEntry> TDSReturnEntry { get; set; }
+        public virtual DbSet<TDSChallanAllocation> TDSChallanAllocation    { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -395,6 +398,39 @@ namespace ComplyX.Shared.Data
                 entity.HasOne(d => d.TDSDeductee).WithMany(p => p.TDSEntry)
                     .HasForeignKey(d => d.DeducteeID)
                    .HasConstraintName("FK_TDSEntry_TDSDeductee");
+            });
+            modelBuilder.Entity<TDSReturnChallan>(entity =>
+            {
+                entity.HasKey(e => e.ReturnChallanID);
+
+                entity.HasOne(d => d.TDSChallan).WithMany(p => p.TDSReturnChallan)
+                     .HasForeignKey(d => d.ChallanID)
+                    .HasConstraintName("FK_TDSReturnChallan_TDSChallan");
+                entity.HasOne(d => d.TDSReturn).WithMany(p => p.TDSReturnChallan)
+                     .HasForeignKey(d => d.ReturnID)
+                    .HasConstraintName("FK_TDSReturnChallan_TDSReturn");
+            });
+            modelBuilder.Entity<TDSReturnEntry>(entity =>
+            {
+                entity.HasKey(e => e.ReturnEntryId);
+
+                entity.HasOne(d => d.TDSEntry).WithMany(p => p.TDSReturnEntry)
+                     .HasForeignKey(d => d.EntryID)
+                    .HasConstraintName("FK_TDSReturnChallan_TDSChallan");
+                entity.HasOne(d => d.TDSReturn).WithMany(p => p.TDSReturnEntry)
+                     .HasForeignKey(d => d.ReturnID)
+                    .HasConstraintName("FK_TDSReturnChallan_TDSEntry");
+            });
+            modelBuilder.Entity<TDSChallanAllocation>(entity =>
+            {
+                entity.HasKey(e => e.AllocationID);
+
+                entity.HasOne(d => d.TDSEntry).WithMany(p => p.TDSChallanAllocation)
+                     .HasForeignKey(d => d.EntryID)
+                    .HasConstraintName("FK_TDSReturnChallan_TDSEntry");
+                entity.HasOne(d => d.TDSChallan).WithMany(p => p.TDSChallanAllocation)
+                     .HasForeignKey(d => d.ChallanID)
+                    .HasConstraintName("FK_TDSChallanAllocation_TDSEChallan");
             });
         }
 

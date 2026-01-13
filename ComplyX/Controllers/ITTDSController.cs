@@ -378,5 +378,185 @@ namespace ComplyX.Controllers
         {
             return ResponseResult(await _ITTDSServices.GetAllTDSChallanData(ChallanID));
         }
+
+        /// <summary>
+        /// Saves or updates TDS Return Challan data.
+        /// </summary>
+        /// <param name="tdsReturnChallan">
+        /// The TDS Return Challan details to be saved or updated.
+        /// </param>
+        /// <returns>
+        /// An <see cref="IActionResult"/> indicating the result of the operation.
+        /// Returns a success response when the TDS Return Challan data is saved successfully.
+        /// Returns a bad request response when the request data is invalid.
+        /// </returns>
+        /// <response code="200">TDS Return Challan data saved successfully.</response>
+        /// <response code="400">Invalid request data or validation error.</response>
+        /// <response code="500">An unexpected error occurred while processing the request.</response>
+        [HttpPost("SaveTDSReturnChallanData")]
+        public async Task<IActionResult> SaveTDSReturnChallanData([FromBody] TDSReturnChallan TDSReturnChallan)
+        {
+            return ResponseResult(await _ITTDSServices.SaveTDSReturnChallanData(TDSReturnChallan, User.Claims.GetUserId()));
+        }
+
+        /// <summary>
+        /// Retrieves a filtered and paginated list of TDS Return Challan data.
+        /// </summary>
+        /// <param name="pagedListCriteria">
+        /// The paging, sorting, and filtering criteria used to retrieve TDS Return Challan data.
+        /// </param>
+        /// <returns>
+        /// An <see cref="IActionResult"/> containing the filtered list of TDS Return Challan data.
+        /// Returns 204 No Content if no records are found.
+        /// Returns 400 Bad Request if an error occurs while fetching data.
+        /// </returns>
+        /// <response code="200">Returns the filtered list of TDS Return Challan data.</response>
+        /// <response code="204">If no TDS Return Challan data is found.</response>
+        /// <response code="400">If there is an error while fetching the TDS Return Challan data.</response>
+        [HttpGet("GetTDSReturnChallanFilter")]
+        public async Task<IActionResult> GetTDSReturnChallanFilter([FromQuery] PagedListCriteria PagedListCriteria)
+        {
+            return ResponseResult(await _ITTDSServices.GetTDSReturnChallanFilter(PagedListCriteria));
+        }
+
+        /// <summary>
+        /// Retrieves the list of TDS Challan data associated with the specified return ID.
+        /// </summary>
+        /// <param name="returnId">
+        /// The unique identifier of the TDS return.
+        /// </param>
+        /// <returns>
+        /// An <see cref="IActionResult"/> containing the list of TDS Challan data.
+        /// Returns 204 No Content if no records are found.
+        /// Returns 400 Bad Request if an error occurs during retrieval.
+        /// </returns>
+        /// <response code="200">Returns the list of TDS Challan data.</response>
+        /// <response code="204">If no TDS Challan data is found.</response>
+        /// <response code="400">If there is an error while fetching the TDS Challan data.</response>
+        [HttpGet("GetAllTDSReturnChallanData")]
+        public async Task<IActionResult> GetAllTDSReturnChallanData(string ReturnChallanID)
+        {
+            return ResponseResult(await _ITTDSServices.GetAllTDSReturnChallanData(ReturnChallanID));
+        }
+
+        /// <summary>
+        /// Saves or updates TDS Return Entry data.
+        /// </summary>
+        /// <param name="tdsReturnEntry">
+        /// The TDS Return Entry details to be saved or updated.
+        /// </param>
+        /// <returns>
+        /// An <see cref="IActionResult"/> indicating the result of the operation.
+        /// Returns a success response when the TDS Return Entry data is saved successfully.
+        /// Returns a bad request response when the request data is invalid.
+        /// </returns>
+        /// <response code="200">TDS Return Entry data saved successfully.</response>
+        /// <response code="400">Invalid request data or validation error.</response>
+        /// <response code="500">An unexpected error occurred while processing the request.</response>
+        [HttpPost("SaveTDSReturnEntryData")]
+        public async Task<IActionResult> SaveTDSReturnEntryData([FromBody] TDSReturnEntry TDSReturnEntry)
+        {
+            return ResponseResult(await _ITTDSServices.SaveTDSReturnEntryData(TDSReturnEntry, User.Claims.GetUserId()));
+        }
+
+        ///// <summary>
+        /// Retrieves a filtered and paginated list of TDS Return Entry data.
+        /// </summary>
+        /// <param name="pagedListCriteria">
+        /// The paging, sorting, and filtering criteria used to retrieve TDS Return Entry data.
+        /// </param>
+        /// <returns>
+        /// An <see cref="IActionResult"/> containing the filtered list of TDS Return Entry data.
+        /// Returns 204 No Content if no records are found.
+        /// Returns 400 Bad Request if an error occurs while fetching data.
+        /// </returns>
+        /// <response code="200">Returns the filtered list of TDS Return Entry data.</response>
+        /// <response code="204">If no TDS Return Entry data is found.</response>
+        /// <response code="400">If there is an error while fetching the TDS Return Entry data.</response>
+        [HttpGet("GetTDSReturnEntryFilter")]
+        public async Task<IActionResult> GetTDSReturnEntryFilter([FromQuery] PagedListCriteria PagedListCriteria)
+        {
+            return ResponseResult(await _ITTDSServices.GetTDSReturnEntryFilter(PagedListCriteria));
+        }
+
+        /// <summary>
+        /// Retrieves the list of TDS Return Entry data associated with the specified return ID.
+        /// </summary>
+        /// <param name="returnId">
+        /// The unique identifier of the TDS return.
+        /// </param>
+        /// <returns>
+        /// An <see cref="IActionResult"/> containing the list of TDS Return Entry data.
+        /// Returns 204 No Content if no records are found.
+        /// Returns 400 Bad Request if an error occurs during retrieval.
+        /// </returns>
+        /// <response code="200">Returns the list of TDS Return Entry data.</response>
+        /// <response code="204">If no TDS Return Entry data is found.</response>
+        /// <response code="400">If there is an error while fetching the TDS Return Entry data.</response>
+        [HttpGet("GetAllTDSReturnEntryData")]
+        public async Task<IActionResult> GetAllTDSReturnEntryData(string ReturnEntryID)
+        {
+            return ResponseResult(await _ITTDSServices.GetAllTDSReturnEntryData(ReturnEntryID));
+        }
+
+        /// <summary>
+        /// Saves or updates TDS Challan Allocation data.
+        /// </summary>
+        /// <param name="tdsChallanAllocation">
+        /// The TDS Challan Allocation details to be saved or updated.
+        /// </param>
+        /// <returns>
+        /// An <see cref="IActionResult"/> indicating the result of the operation.
+        /// Returns a success response when the TDS Challan Allocation data is saved successfully.
+        /// Returns a bad request response when the request data is invalid.
+        /// </returns>
+        /// <response code="200">TDS Challan Allocation data saved successfully.</response>
+        /// <response code="400">Invalid request data or validation error.</response>
+        /// <response code="500">An unexpected error occurred while processing the request.</response>
+        [HttpPost("SaveTDSChallanAllocationData")]
+        public async Task<IActionResult> SaveTDSChallanAllocationData([FromBody] TDSChallanAllocation TDSChallanAllocation)
+        {
+            return ResponseResult(await _ITTDSServices.SaveTDSChallanAllocationData(TDSChallanAllocation, User.Claims.GetUserId()));
+        }
+
+        ///// <summary>
+        /// Retrieves a filtered and paginated list of TDS Return Entry data.
+        /// </summary>
+        /// <param name="pagedListCriteria">
+        /// The paging, sorting, and filtering criteria used to retrieve TDS Return Entry data.
+        /// </param>
+        /// <returns>
+        /// An <see cref="IActionResult"/> containing the filtered list of TDS Return Entry data.
+        /// Returns 204 No Content if no records are found.
+        /// Returns 400 Bad Request if an error occurs while fetching data.
+        /// </returns>
+        /// <response code="200">Returns the filtered list of TDS Return Entry data.</response>
+        /// <response code="204">If no TDS Return Entry data is found.</response>
+        /// <response code="400">If there is an error while fetching the TDS Return Entry data.</response>
+        [HttpGet("GetTDSChallanAllocationFilter")]
+        public async Task<IActionResult> GetTDSChallanAllocationFilter([FromQuery] PagedListCriteria PagedListCriteria)
+        {
+            return ResponseResult(await _ITTDSServices.GetTDSChallanAllocationFilter(PagedListCriteria));
+        }
+
+        /// <summary>
+        /// Retrieves the list of TDS Return Entry data associated with the specified return ID.
+        /// </summary>
+        /// <param name="returnId">
+        /// The unique identifier of the TDS return.
+        /// </param>
+        /// <returns>
+        /// An <see cref="IActionResult"/> containing the list of TDS Return Entry data.
+        /// Returns 204 No Content if no records are found.
+        /// Returns 400 Bad Request if an error occurs during retrieval.
+        /// </returns>
+        /// <response code="200">Returns the list of TDS Return Entry data.</response>
+        /// <response code="204">If no TDS Return Entry data is found.</response>
+        /// <response code="400">If there is an error while fetching the TDS Return Entry data.</response>
+        [HttpGet("GetAllTDSChallanAllocationData")]
+        public async Task<IActionResult> GetAllTDSChallanAllocationData(string AllocationID)
+        {
+            return ResponseResult(await _ITTDSServices.GetAllTDSChallanAllocationData(AllocationID));
+        }
     }
 }
