@@ -34,7 +34,7 @@ namespace ComplyX.Controllers
         /// <summary>
         /// Saves or updates TDS deductor data.
         /// </summary>
-        /// <param name="tdsDeductor">
+        /// <param name="TDSDeductor">
         /// The TDS deductor details to be saved or updated.
         /// </param>
         /// <returns>
@@ -53,7 +53,7 @@ namespace ComplyX.Controllers
         /// <summary>
         /// Retrieves a filtered and paginated list of TDS deductors.
         /// </summary>
-        /// <param name="pagedListCriteria">
+        /// <param name="PagedListCriteria">
         /// The paging, sorting, and filtering criteria used to retrieve TDS deductors.
         /// </param>
         /// <returns>
@@ -73,7 +73,7 @@ namespace ComplyX.Controllers
         /// <summary>
         /// Retrieves the list of TDS deductors associated with the specified deductor ID.
         /// </summary>
-        /// <param name="deductorId">
+        /// <param name="DeductorID">
         /// The unique identifier of the TDS deductor.
         /// </param>
         /// <returns>
@@ -93,7 +93,7 @@ namespace ComplyX.Controllers
         /// <summary>
         /// Saves or updates TDS deductor data.
         /// </summary>
-        /// <param name="tdsDeductor">
+        /// <param name="TDSDeductee">
         /// The TDS deductor details to be saved or updated.
         /// </param>
         /// <returns>
@@ -113,7 +113,7 @@ namespace ComplyX.Controllers
         /// <summary>
         /// Retrieves a filtered and paginated list of TDS deductors.
         /// </summary>
-        /// <param name="pagedListCriteria">
+        /// <param name="PagedListCriteria">
         /// The paging, sorting, and filtering criteria used to retrieve TDS deductors.
         /// </param>
         /// <returns>
@@ -133,7 +133,7 @@ namespace ComplyX.Controllers
         /// <summary>
         /// Retrieves the list of TDS deductors associated with the specified deductor ID.
         /// </summary>
-        /// <param name="deductorId">
+        /// <param name="DeductorID">
         /// The unique identifier of the TDS deductor.
         /// </param>
         /// <returns>
@@ -153,10 +153,10 @@ namespace ComplyX.Controllers
         /// <summary>
         /// Saves or synchronizes TDS deductee data for the specified company.
         /// </summary>
-        /// <param name="tdsDeductee">
+        /// <param name="TDSDeductee">
         /// The TDS deductee data to save or synchronize.
         /// </param>
-        /// <param name="companyId">
+        /// <param name="CompanyID">
         /// The unique identifier of the company.
         /// </param>
         /// <returns>
@@ -178,10 +178,10 @@ namespace ComplyX.Controllers
         /// <summary>
         /// Saves or synchronizes TDS deductor data for the specified company.
         /// </summary>
-        /// <param name="tdsDeductor">
+        /// <param name="TDSDeductor">
         /// The TDS deductor data to save or synchronize.
         /// </param>
-        /// <param name="companyId">
+        /// <param name="CompanyID">
         /// The unique identifier of the company.
         /// </param>
         /// <returns>
@@ -203,7 +203,7 @@ namespace ComplyX.Controllers
         /// <summary>
         /// Saves or updates TDS return data.
         /// </summary>
-        /// <param name="tdsReturn">
+        /// <param name="TDSReturn">
         /// The TDS return details to be saved or updated.
         /// </param>
         /// <returns>
@@ -223,7 +223,7 @@ namespace ComplyX.Controllers
         /// <summary>
         /// Retrieves a filtered and paginated list of TDS returns.
         /// </summary>
-        /// <param name="pagedListCriteria">
+        /// <param name="PagedListCriteria">
         /// The paging, sorting, and filtering criteria used to retrieve TDS returns.
         /// </param>
         /// <returns>
@@ -243,7 +243,7 @@ namespace ComplyX.Controllers
         /// <summary>
         /// Retrieves the list of TDS return data associated with the specified return ID.
         /// </summary>
-        /// <param name="returnId">
+        /// <param name="ReturnID">
         /// The unique identifier of the TDS return.
         /// </param>
         /// <returns>
@@ -282,7 +282,7 @@ namespace ComplyX.Controllers
         /// <summary>
         /// Retrieves a filtered and paginated list of TDS returns.
         /// </summary>
-        /// <param name="pagedListCriteria">
+        /// <param name="PagedListCriteria">
         /// The paging, sorting, and filtering criteria used to retrieve TDS returns.
         /// </param>
         /// <returns>
@@ -302,7 +302,7 @@ namespace ComplyX.Controllers
         /// <summary>
         /// Retrieves the list of TDS return data associated with the specified return ID.
         /// </summary>
-        /// <param name="returnId">
+        /// <param name="ReturnID">
         /// The unique identifier of the TDS return.
         /// </param>
         /// <returns>
@@ -322,7 +322,7 @@ namespace ComplyX.Controllers
         /// <summary>
         /// Saves or updates TDS Challan data.
         /// </summary>
-        /// <param name="tdsEntry">
+        /// <param name="TDSChallan">
         /// The TDS Challan details to be saved or updated.
         /// </param>
         /// <returns>
@@ -342,7 +342,7 @@ namespace ComplyX.Controllers
         /// <summary>
         /// Retrieves a filtered and paginated list of TDS Challan data.
         /// </summary>
-        /// <param name="pagedListCriteria">
+        /// <param name="PagedListCriteria">
         /// The paging, sorting, and filtering criteria used to retrieve TDS Challan data.
         /// </param>
         /// <returns>
@@ -362,7 +362,7 @@ namespace ComplyX.Controllers
         /// <summary>
         /// Retrieves the list of TDS Challan data associated with the specified return ID.
         /// </summary>
-        /// <param name="returnId">
+        /// <param name="ChallanID">
         /// The unique identifier of the TDS return.
         /// </param>
         /// <returns>
@@ -382,7 +382,7 @@ namespace ComplyX.Controllers
         /// <summary>
         /// Saves or updates TDS Return Challan data.
         /// </summary>
-        /// <param name="tdsReturnChallan">
+        /// <param name="TDSReturnChallan">
         /// The TDS Return Challan details to be saved or updated.
         /// </param>
         /// <returns>
@@ -402,7 +402,7 @@ namespace ComplyX.Controllers
         /// <summary>
         /// Retrieves a filtered and paginated list of TDS Return Challan data.
         /// </summary>
-        /// <param name="pagedListCriteria">
+        /// <param name="PagedListCriteria">
         /// The paging, sorting, and filtering criteria used to retrieve TDS Return Challan data.
         /// </param>
         /// <returns>
@@ -422,7 +422,7 @@ namespace ComplyX.Controllers
         /// <summary>
         /// Retrieves the list of TDS Challan data associated with the specified return ID.
         /// </summary>
-        /// <param name="returnId">
+        /// <param name="ReturnChallanID">
         /// The unique identifier of the TDS return.
         /// </param>
         /// <returns>
@@ -442,7 +442,7 @@ namespace ComplyX.Controllers
         /// <summary>
         /// Saves or updates TDS Return Entry data.
         /// </summary>
-        /// <param name="tdsReturnEntry">
+        /// <param name="TDSReturnEntry">
         /// The TDS Return Entry details to be saved or updated.
         /// </param>
         /// <returns>
@@ -459,10 +459,10 @@ namespace ComplyX.Controllers
             return ResponseResult(await _ITTDSServices.SaveTDSReturnEntryData(TDSReturnEntry, User.Claims.GetUserId()));
         }
 
-        ///// <summary>
+        /// <summary>
         /// Retrieves a filtered and paginated list of TDS Return Entry data.
         /// </summary>
-        /// <param name="pagedListCriteria">
+        /// <param name="PagedListCriteria">
         /// The paging, sorting, and filtering criteria used to retrieve TDS Return Entry data.
         /// </param>
         /// <returns>
@@ -482,7 +482,7 @@ namespace ComplyX.Controllers
         /// <summary>
         /// Retrieves the list of TDS Return Entry data associated with the specified return ID.
         /// </summary>
-        /// <param name="returnId">
+        /// <param name="ReturnEntryID">
         /// The unique identifier of the TDS return.
         /// </param>
         /// <returns>
@@ -502,7 +502,7 @@ namespace ComplyX.Controllers
         /// <summary>
         /// Saves or updates TDS Challan Allocation data.
         /// </summary>
-        /// <param name="tdsChallanAllocation">
+        /// <param name="TDSChallanAllocation">
         /// The TDS Challan Allocation details to be saved or updated.
         /// </param>
         /// <returns>
@@ -519,10 +519,10 @@ namespace ComplyX.Controllers
             return ResponseResult(await _ITTDSServices.SaveTDSChallanAllocationData(TDSChallanAllocation, User.Claims.GetUserId()));
         }
 
-        ///// <summary>
+        /// <summary>
         /// Retrieves a filtered and paginated list of TDS Return Entry data.
         /// </summary>
-        /// <param name="pagedListCriteria">
+        /// <param name="PagedListCriteria">
         /// The paging, sorting, and filtering criteria used to retrieve TDS Return Entry data.
         /// </param>
         /// <returns>
@@ -542,7 +542,7 @@ namespace ComplyX.Controllers
         /// <summary>
         /// Retrieves the list of TDS Return Entry data associated with the specified return ID.
         /// </summary>
-        /// <param name="returnId">
+        /// <param name="AllocationID">
         /// The unique identifier of the TDS return.
         /// </param>
         /// <returns>

@@ -67,6 +67,9 @@ namespace ComplyX.Shared.Data
         public virtual DbSet<TDSReturnChallan> TDsReturnChallan { get; set; }
         public virtual DbSet<TDSReturnEntry> TDSReturnEntry { get; set; }
         public virtual DbSet<TDSChallanAllocation> TDSChallanAllocation    { get; set; }
+        public virtual DbSet<CompanyPartyRole> CompanyPartyRole { get; set; }
+        public virtual DbSet<PartyMaster> PartyMaster { get; set; }
+        public virtual DbSet<legalDocument> LegalDocument { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -431,6 +434,17 @@ namespace ComplyX.Shared.Data
                 entity.HasOne(d => d.TDSChallan).WithMany(p => p.TDSChallanAllocation)
                      .HasForeignKey(d => d.ChallanID)
                     .HasConstraintName("FK_TDSChallanAllocation_TDSEChallan");
+            });
+            modelBuilder.Entity<CompanyPartyRole>(entity =>
+            {
+                entity.HasKey(e => e.CompanyPartyRoleID);
+
+                entity.HasOne(d => d.Company).WithMany(p => p.CompanyPartyRole)
+                     .HasForeignKey(d => d.CompanyID)
+                    .HasConstraintName("FK_CompanyPartyRole_Company");
+                entity.HasOne(d => d.PartyMaster).WithMany(p => p.CompanyPartyRole)
+                     .HasForeignKey(d => d.PartyID)
+                    .HasConstraintName("FK_CompanyPartyRole_PartyMaster");
             });
         }
 

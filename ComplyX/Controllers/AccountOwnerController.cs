@@ -770,7 +770,7 @@ namespace ComplyX.Controllers
         /// <response code="200">Returns the list of all payment transactions.</response>
         /// <response code="204">If no payment transactions are found.</response>
         /// <response code="400">If there is an error while fetching the payment transaction data.</response>
-        [HttpPost("GetAllCustomerPaymentsData")]
+        [HttpGet("GetAllCustomerPaymentsData")]
         public async Task<IActionResult> GetAllCustomerPaymentsData()
         {
             return ResponseResult(await _IProductOwnere.GetAllCustomerPaymentsData());
@@ -815,5 +815,206 @@ namespace ComplyX.Controllers
         {
             return ResponseResult(await _IProductOwnere.GetAllCustomerPaymentFilter(PagedListCriteria));
         }
+
+        /// <summary>
+        /// Saves or updates party master data.
+        /// </summary>
+        /// <param name="partyMaster">
+        /// The party master details to be saved or updated.
+        /// </param>
+        /// <returns>
+        /// An <see cref="IActionResult"/> indicating the result of the operation.
+        /// Returns 200 OK when the data is saved successfully.
+        /// Returns 400 Bad Request if the request data is invalid or an error occurs.
+        /// </returns>
+        /// <response code="200">Party master data saved successfully.</response>
+        /// <response code="400">Error occurred while saving party master data.</response>
+        [HttpPut("SavePartyMasterData")]
+        public async Task<IActionResult> SavePartyMasterData([FromBody] PartyMaster PartyMaster)
+        {
+            return ResponseResult(await _IProductOwnere.SavePartyMasterData(PartyMaster, User.Claims.GetUserId()));
+        }
+
+        /// <summary>
+        /// Deletes customer payment data based on the specified payment identifier.
+        /// </summary>
+        /// <param name="PaymentID">
+        /// The unique identifier of the customer payment to be deleted.
+        /// </param>
+        /// <returns>
+        /// An <see cref="IActionResult"/> indicating the result of the delete operation.
+        /// If the customer payment is deleted successfully, it returns a 200 OK response.
+        /// If the specified payment is not found, it returns a 204 No Content response.
+        /// If an error occurs during the deletion process, it returns a 400 Bad Request response.
+        /// </returns>
+        /// <response code="200">Customer payment data deleted successfully.</response>
+        /// <response code="204">If the specified customer payment is not found.</response>
+        /// <response code="400">If there is an error while deleting the customer payment data.</response>
+        [HttpPut("RemovePartyMasterData")]
+        public async Task<IActionResult> RemovePartyMasterData(string PartyID)
+        {
+            return ResponseResult(await _IProductOwnere.RemovePartyMasterData(PartyID));
+        }
+
+        /// <summary>
+        /// Retrieves the list of all party master records.
+        /// </summary>
+        /// <returns>
+        /// An <see cref="IActionResult"/> containing the list of all party master records.
+        /// Returns 200 OK with data when records are found.
+        /// Returns 204 No Content when no records are available.
+        /// Returns 400 Bad Request if an error occurs during retrieval.
+        /// </returns>
+        /// <response code="200">Returns the list of all party master records.</response>
+        /// <response code="204">No party master records found.</response>
+        /// <response code="400">Error occurred while fetching party master data.</response>
+        [HttpGet("GetAllPartyMasterData")]
+        public async Task<IActionResult> GetAllPartyMasterData()
+        {
+            return ResponseResult(await _IProductOwnere.GetAllPartyMasterData());
+        }
+
+        /// <summary>
+        /// Retrieves party master data for the specified party identifier.
+        /// </summary>
+        /// <param name="partyId">
+        /// The unique identifier of the party to retrieve.
+        /// </param>
+        /// <returns>
+        /// An <see cref="IActionResult"/> containing the party master details for the specified party ID.
+        /// Returns 200 OK when data is found.
+        /// Returns 204 No Content when no record exists for the given party ID.
+        /// Returns 400 Bad Request if an error occurs during retrieval.
+        /// </returns>
+        /// <response code="200">Returns the party master details for the specified party ID.</response>
+        /// <response code="204">No party master data found for the given party ID.</response>
+        /// <response code="400">Error occurred while fetching party master data.</response>
+        [HttpPost("GetAllPartyMastertDataByID")]
+        public async Task<IActionResult> GetAllPartyMastertDataByID(string PartyID)
+        {
+            return ResponseResult(await _IProductOwnere.GetAllPartyMasterDataByID(PartyID));
+        }
+
+        /// <summary>
+        /// Retrieves a filtered and paginated list of party master records.
+        /// </summary>
+        /// <param name="pagedListCriteria">
+        /// The paging, sorting, and filtering criteria used to retrieve party master data.
+        /// </param>
+        /// <returns>
+        /// An <see cref="IActionResult"/> containing the filtered list of party master records.
+        /// Returns 200 OK when records are found.
+        /// Returns 204 No Content when no records match the criteria.
+        /// Returns 400 Bad Request if an error occurs during retrieval.
+        /// </returns>
+        /// <response code="200">Returns the filtered list of party master records.</response>
+        /// <response code="204">No party master records found.</response>
+        /// <response code="400">Error occurred while fetching party master data.</response>
+        [HttpGet("GetAllPatryMasterFilter")]
+        public async Task<IActionResult> GetAllPatryMasterFilter([FromQuery] PagedListCriteria PagedListCriteria)
+        {
+            return ResponseResult(await _IProductOwnere.GetAllPartyMasterFilter(PagedListCriteria));
+        }
+
+        /// <summary>
+        /// Saves or updates company party role data.
+        /// </summary>
+        /// <param name="companyPartyRole">
+        /// The company party role details to be saved or updated.
+        /// </param>
+        /// <returns>
+        /// An <see cref="IActionResult"/> indicating the result of the operation.
+        /// Returns 200 OK when the data is saved successfully.
+        /// Returns 400 Bad Request if the request data is invalid or an error occurs.
+        /// </returns>
+        /// <response code="200">Company party role data saved successfully.</response>
+        /// <response code="400">Error occurred while saving company party role data.</response>
+        [HttpPut("SaveCompanyPartyRoleData")]
+        public async Task<IActionResult> SaveCompanyPartyRoleData([FromBody] CompanyPartyRole CompanyPartyRole)
+        {
+            return ResponseResult(await _IProductOwnere.SaveCompanyPartyRoleData(CompanyPartyRole, User.Claims.GetUserId()));
+        }
+
+        /// <summary>
+        /// Deletes party master data for the specified party identifier.
+        /// </summary>
+        /// <param name="CompanyPartyROleID">
+        /// The unique identifier of the party to be deleted.
+        /// </param>
+        /// <returns>
+        /// An <see cref="IActionResult"/> indicating the result of the delete operation.
+        /// Returns 200 OK when the party is deleted successfully.
+        /// Returns 204 No Content when the specified party is not found.
+        /// Returns 400 Bad Request if an error occurs during deletion.
+        /// </returns>
+        /// <response code="200">Party master data deleted successfully.</response>
+        /// <response code="204">Party master data not found.</response>
+        /// <response code="400">Error occurred while deleting party master data.</response>
+        [HttpPut("RemoveCompanyPartyRoleData")]
+        public async Task<IActionResult> RemoveCompanyPartyRoleData(string CompanyPartyROleID)
+        {
+            return ResponseResult(await _IProductOwnere.RemoveCompanyPartyRoleData(CompanyPartyROleID));
+        }
+
+        //// <summary>
+        /// Retrieves the list of all company party role records.
+        /// </summary>
+        /// <returns>
+        /// An <see cref="IActionResult"/> containing the list of all company party role records.
+        /// Returns 200 OK when records are found.
+        /// Returns 204 No Content when no records are available.
+        /// Returns 400 Bad Request if an error occurs during retrieval.
+        /// </returns>
+        /// <response code="200">Returns the list of all company party role records.</response>
+        /// <response code="204">No company party role records found.</response>
+        /// <response code="400">Error occurred while fetching company party role data.</response>
+        [HttpGet("GetAllCompanyPartyRoleData")]
+        public async Task<IActionResult> GetAllCompanyPartyRoleData()
+        {
+            return ResponseResult(await _IProductOwnere.GetAllCompanyPartyRoleData());
+        }
+
+        /// <summary>
+        /// Retrieves company party role data for the specified party identifier.
+        /// </summary>
+        /// <param name="companyPartyId">
+        /// The unique identifier of the company party to retrieve.
+        /// </param>
+        /// <returns>
+        /// An <see cref="IActionResult"/> containing the company party role details for the specified ID.
+        /// Returns 200 OK when data is found.
+        /// Returns 204 No Content when no record exists for the given ID.
+        /// Returns 400 Bad Request if an error occurs during retrieval.
+        /// </returns>
+        /// <response code="200">Returns the company party role details for the specified ID.</response>
+        /// <response code="204">No company party role data found for the given ID.</response>
+        /// <response code="400">Error occurred while fetching company party role data.</response>
+        [HttpPost("GetAllCompanyPartyRoleDataByID")]
+        public async Task<IActionResult> GetAllPartyMastevrtDataByID(string CompanyPartyID)
+        {
+            return ResponseResult(await _IProductOwnere.GetAllCompanyPartyRoleDataByID(CompanyPartyID));
+        }
+
+        /// <summary>
+        /// Retrieves a filtered and paginated list of company party role records.
+        /// </summary>
+        /// <param name="pagedListCriteria">
+        /// The paging, sorting, and filtering criteria used to retrieve company party role data.
+        /// </param>
+        /// <returns>
+        /// An <see cref="IActionResult"/> containing the filtered list of company party role records.
+        /// Returns 200 OK when records are found.
+        /// Returns 204 No Content when no records match the criteria.
+        /// Returns 400 Bad Request if an error occurs during retrieval.
+        /// </returns>
+        /// <response code="200">Returns the filtered list of company party role records.</response>
+        /// <response code="204">No company party role records found.</response>
+        /// <response code="400">Error occurred while fetching company party role data.</response>
+        [HttpGet("GetAllCompanyPartyRoleFilter")]
+        public async Task<IActionResult> GetAllCompanyPartyRoleFilter([FromQuery] PagedListCriteria PagedListCriteria)
+        {
+            return ResponseResult(await _IProductOwnere.GetAllCompanyPartyRoleFilter(PagedListCriteria));
+        }
+
     }
 }

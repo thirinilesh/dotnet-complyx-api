@@ -112,7 +112,7 @@ namespace ComplyX.Controllers
         /// <summary>
         /// Saves or updates compliance schedule data.
         /// </summary>
-        /// <param name="complianceSchedules">
+        /// <param name="ComplianceSchedules">
         /// The compliance schedule details to be saved or updated.
         /// </param>
         /// <returns>
@@ -131,7 +131,7 @@ namespace ComplyX.Controllers
         /// <summary>
         /// Removes compliance schedule data based on the specified schedule identifier.
         /// </summary>
-        /// <param name="scheduleId">
+        /// <param name="ScheduleID">
         /// The unique identifier of the compliance schedule to be removed.
         /// </param>
         /// <returns>
@@ -152,7 +152,7 @@ namespace ComplyX.Controllers
         /// <summary>
         /// Retrieves compliance schedule data based on the specified schedule identifier.
         /// </summary>
-        /// <param name="scheduleId">
+        /// <param name="ScheduleID">
         /// The unique identifier of the compliance schedule to be retrieved.
         /// </param>
         /// <returns>
@@ -193,7 +193,7 @@ namespace ComplyX.Controllers
         /// <summary>
         /// Saves or updates compliance filing data.
         /// </summary>
-        /// <param name="complianceFilings">
+        /// <param name="ComplianceFilings">
         /// The compliance filing details to be saved or updated.
         /// </param>
         /// <returns>
@@ -212,7 +212,7 @@ namespace ComplyX.Controllers
         /// <summary>
         /// Removes compliance filing data based on the specified filing identifier.
         /// </summary>
-        /// <param name="filingId">
+        /// <param name="FilingID">
         /// The unique identifier of the compliance filing to be removed.
         /// </param>
         /// <returns>
@@ -233,7 +233,7 @@ namespace ComplyX.Controllers
         /// <summary>
         /// Retrieves compliance filing data based on the specified filing identifier.
         /// </summary>
-        /// <param name="filingId">
+        /// <param name="FilingID">
         /// The unique identifier of the compliance filing to be retrieved.
         /// </param>
         /// <returns>
@@ -254,7 +254,7 @@ namespace ComplyX.Controllers
         /// <summary>
         /// Retrieves a filtered and paginated list of compliance filings based on the specified criteria.
         /// </summary>
-        /// <param name="pagedListCriteria">
+        /// <param name="PagedListCriteria">
         /// The criteria for filtering, paging, and sorting the compliance filings.
         /// </param>
         /// <returns>

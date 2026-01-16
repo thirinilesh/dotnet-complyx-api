@@ -16,6 +16,7 @@ using Nest;
 using ComplyX_Businesss.Helper;
 using System;
 using PagedList;
+using AutoMapper.Configuration.Annotations;
 
 
 namespace ComplyX.BusinessLogic
@@ -1809,5 +1810,427 @@ namespace ComplyX.BusinessLogic
                 };
             }
         }
+        public async Task<ManagerBaseResponse<bool>> SavePartyMasterData(PartyMaster PartyMaster, string UserName)
+        {
+            var response = new ManagerBaseResponse<List<PartyMaster>>();
+
+            try
+            {
+                var user = _context.Users.FirstOrDefault(x => x.UserName == UserName);
+                if (user == null)
+                {
+                    return new ManagerBaseResponse<bool>
+                    {
+                        Result = false,
+                        Message = "User not Found."
+                    };
+                }
+                else
+                {
+
+                    if (PartyMaster.PartyID == 0)
+                    {
+                        // Insert
+                        PartyMaster _model = new PartyMaster();
+                        _model.PartyType =  PartyMaster.PartyType;
+                        _model.PartyName = PartyMaster.PartyName;
+                        _model.PAN = PartyMaster.PAN;
+                        _model.GSTIN = PartyMaster.GSTIN;
+                        _model.Address1 = PartyMaster.Address1;
+                        _model.Address2 = PartyMaster.Address2;
+                        _model.City = PartyMaster.City;
+                        _model.StateCode = PartyMaster.StateCode;
+                        _model.PinCode = PartyMaster.PinCode;
+                        _model.Email = PartyMaster.Email;
+                        _model.Phone = PartyMaster.Phone;
+                        _model.IsActive = PartyMaster.IsActive; 
+                        _model.CreatedAt = Util.GetCurrentCSTDateAndTime();
+                        _model.CreatedBy = user.Id;
+
+                        _context.Add(_model);
+                        _context.SaveChanges();
+                    }
+                    else
+                    {
+                        // Update
+                        var originalTerm = _context.PartyMaster
+                            .Where(x => x.PartyID    == PartyMaster.PartyID)
+                                .FirstOrDefault();
+                        originalTerm.PartyType = PartyMaster.PartyType;
+                        originalTerm.PartyName = PartyMaster.PartyName;
+                        originalTerm.PAN = PartyMaster.PAN;
+                        originalTerm.GSTIN = PartyMaster.GSTIN;
+                        originalTerm.Address1 = PartyMaster.Address1;
+                        originalTerm.Address2 = PartyMaster.Address2;
+                        originalTerm.City = PartyMaster.City;
+                        originalTerm.StateCode = PartyMaster.StateCode;
+                        originalTerm.PinCode = PartyMaster.PinCode;
+                        originalTerm.Email = PartyMaster.Email;
+                        originalTerm.Phone = PartyMaster.Phone;
+                        originalTerm.IsActive = PartyMaster.IsActive;
+                        originalTerm.CreatedAt = Util.GetCurrentCSTDateAndTime();
+                        originalTerm.CreatedBy = user.Id;
+
+                        _context.Update(originalTerm);
+                        _context.SaveChanges();
+                    }
+                }
+                return new ManagerBaseResponse<bool>
+                {
+                    Result = true,
+                    Message = "Party Master Data Saved Successfully."
+                };
+            }
+            catch (Exception e)
+            {
+                return new ManagerBaseResponse<bool>
+                {
+                    Result = false,
+                    Message = e.Message
+                };
+            }
+        }
+        public async Task<ManagerBaseResponse<bool>> RemovePartyMasterData(string PartyID)
+        {
+            try
+            {
+                // Get all report detail definitions for the given report name
+                var Party = await _context.PartyMaster.Where(x => x.PartyID.ToString() == PartyID).ToListAsync();
+
+                if (string.IsNullOrEmpty(Party.ToString()))
+                {
+                    return new ManagerBaseResponse<bool>
+                    {
+                        Result = false,
+                        Message = "Party Id is not Vaild",
+                    };
+                }
+
+                // Remove all related report details
+                _context.PartyMaster.RemoveRange(Party);
+
+                await _context.SaveChangesAsync();
+
+                return new ManagerBaseResponse<bool>
+                {
+                    Result = true,
+                    Message = "Party Master Data Removed Successfully.",
+                };
+
+            }
+            catch (Exception ex)
+            {
+                return new ManagerBaseResponse<bool>
+                {
+                    Result = false,
+                    Message = ex.Message
+                };
+            }
+        }
+        public async Task<ManagerBaseResponse<List<PartyMaster>>> GetAllPartyMasterData()
+        {
+            try
+            {
+                var Party = await _context.PartyMaster.AsQueryable().OrderBy(x => x.PartyID).ToListAsync();
+
+                return new ManagerBaseResponse<List<PartyMaster>>
+                {
+                    IsSuccess = true,
+                    Result = Party,
+                    Message = "Party Master Data Retrieved Successfully.",
+                };
+            }
+            catch (Exception ex)
+            {
+
+                return new ManagerBaseResponse<List<PartyMaster>>
+                {
+                    IsSuccess = false,
+                    Result = null,
+                    Message = ex.Message
+                };
+            }
+        }
+        public async Task<ManagerBaseResponse<List<PartyMaster>>> GetAllPartyMasterDataByID(string PartyID)
+        {
+            try
+            {
+                var PartyMaster = await _context.PartyMaster.Where(x => x.PartyID.ToString() == PartyID).ToListAsync();
+
+                return new ManagerBaseResponse<List<PartyMaster>>
+                {
+                    IsSuccess = true,
+                    Result = PartyMaster,
+                    Message = "Customer Payments Data Retrieved Successfully.",
+                };
+            }
+            catch (Exception ex)
+            {
+
+                return new ManagerBaseResponse<List<PartyMaster>>
+                {
+                    IsSuccess = false,
+                    Result = null,
+                    Message = ex.Message
+                };
+            }
+        }
+        public async Task<ManagerBaseResponse<IEnumerable<PartyMaster>>> GetAllPartyMasterFilter(PagedListCriteria PagedListCriteria)
+        {
+            try
+            {
+
+                var query = _context.PartyMaster.AsQueryable();
+                var searchText = PagedListCriteria.SearchText?.Trim().ToLower();
+                if (!string.IsNullOrWhiteSpace(searchText))
+                {
+                    query = query.Where(x => x.PartyName.ToLower().Contains(searchText.ToLower()));
+                }
+
+                query = query.OrderBy(a => a.PartyID);
+
+                PageListed<PartyMaster> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+                return new ManagerBaseResponse<IEnumerable<PartyMaster>>
+                {
+                    Result = result.Data,
+                    Message = "Party Master Retrieved Successfully.",
+                    PageDetail = new PageDetailModel()
+                    {
+                        Skip = PagedListCriteria.Skip,
+                        Take = PagedListCriteria.Take,
+                        Count = result.TotalCount,
+                        SearchText = PagedListCriteria.SearchText,
+                        FilterdCount = PagedListCriteria.Filters
+                    }
+                };
+            }
+            catch (Exception ex)
+            {
+
+                return new ManagerBaseResponse<IEnumerable<PartyMaster>>
+                {
+                    IsSuccess = false,
+                    Result = null,
+                    Message = ex.Message
+                };
+            }
+        }
+        public async Task<ManagerBaseResponse<bool>> SaveCompanyPartyRoleData(CompanyPartyRole CompanyPartyRole, string UserName)
+        {
+            var response = new ManagerBaseResponse<List<CompanyPartyRole>>();
+
+            try
+            {
+                var user = _context.Users.FirstOrDefault(x => x.UserName == UserName);
+                var Party = _context.PartyMaster.FirstOrDefault(x => x.PartyID == CompanyPartyRole.PartyID);
+                var Company = _context.Companies.FirstOrDefault(x => x.CompanyID == CompanyPartyRole.CompanyID);
+                if (user == null)
+                {
+                    return new ManagerBaseResponse<bool>
+                    {
+                        Result = false,
+                        Message = "User not Found."
+                    };
+                }
+                else
+                {
+                    if (Party == null || Company == null)
+                    {
+
+                        return new ManagerBaseResponse<bool>
+                        {
+                            Result = false,
+                            Message = "Party and Company Data not Found."
+                        };
+                    }
+                    else
+                    {
+                        var Data = _context.CompanyPartyRole.FirstOrDefault(x => x.CompanyID == CompanyPartyRole.CompanyID && x.PartyID == CompanyPartyRole.PartyID);
+
+                        if (Data != null)
+                        {
+                            return new ManagerBaseResponse<bool>
+                            {
+                                Result = false,
+                                Message = "Party and Company Data are already Exist."
+                            };
+
+                        }
+                        else
+                        {
+                            if (CompanyPartyRole.CompanyPartyRoleID == 0)
+                            {
+                                // Insert
+                                CompanyPartyRole _model = new CompanyPartyRole();
+                                _model.PartyID = CompanyPartyRole.PartyID;
+                                _model.CompanyID = CompanyPartyRole.CompanyID;
+                                _model.RoleType = CompanyPartyRole.RoleType;
+                                _model.IsActive = CompanyPartyRole.IsActive;
+                                _model.CreatedAt = Util.GetCurrentCSTDateAndTime();
+                                _model.CreatedBy = user.Id;
+
+                                _context.Add(_model);
+                                _context.SaveChanges();
+                            }
+                            else
+                            {
+                                // Update
+                                var originalTerm = _context.CompanyPartyRole
+                                    .Where(x => x.CompanyPartyRoleID == CompanyPartyRole.CompanyPartyRoleID)
+                                        .FirstOrDefault();
+                                originalTerm.PartyID = CompanyPartyRole.PartyID;
+                                originalTerm.CompanyID = CompanyPartyRole.CompanyID;
+                                originalTerm.RoleType = CompanyPartyRole.RoleType;
+                                originalTerm.IsActive = CompanyPartyRole.IsActive;
+                                originalTerm.CreatedAt = Util.GetCurrentCSTDateAndTime();
+                                originalTerm.CreatedBy = user.Id;
+
+                                _context.Update(originalTerm);
+                                _context.SaveChanges();
+                            }
+                        }
+                    }
+                }
+                return new ManagerBaseResponse<bool>
+                {
+                    Result = true,
+                    Message = "Company Party Role Data Saved Successfully."
+                };
+            }
+            catch (Exception e)
+            {
+                return new ManagerBaseResponse<bool>
+                {
+                    Result = false,
+                    Message = e.Message
+                };
+            }
+        }
+        public async Task<ManagerBaseResponse<bool>> RemoveCompanyPartyRoleData(string CompanyPartyRoleID)
+        {
+            try
+            {
+                // Get all report detail definitions for the given report name
+                var Party = await _context.CompanyPartyRole.Where(x => x.CompanyPartyRoleID.ToString() == CompanyPartyRoleID).ToListAsync();
+
+                if (string.IsNullOrEmpty(Party.ToString()))
+                {
+                    return new ManagerBaseResponse<bool>
+                    {
+                        Result = false,
+                        Message = "Company Party Role Id is not Vaild",
+                    };
+                }
+
+                // Remove all related report details
+                _context.CompanyPartyRole.RemoveRange(Party);
+
+                await _context.SaveChangesAsync();
+
+                return new ManagerBaseResponse<bool>
+                {
+                    Result = true,
+                    Message = "Company Party Role Data Removed Successfully.",
+                };
+
+            }
+            catch (Exception ex)
+            {
+                return new ManagerBaseResponse<bool>
+                {
+                    Result = false,
+                    Message = ex.Message
+                };
+            }
+        }
+        public async Task<ManagerBaseResponse<List<CompanyPartyRole>>> GetAllCompanyPartyRoleData()
+        {
+            try
+            {
+                var Party = await _context.CompanyPartyRole.AsQueryable().OrderBy(x => x.CompanyPartyRoleID).ToListAsync();
+
+                return new ManagerBaseResponse<List<CompanyPartyRole>>
+                {
+                    IsSuccess = true,
+                    Result = Party,
+                    Message = "Company Party  Role Data Retrieved Successfully.",
+                };
+            }
+            catch (Exception ex)
+            {
+
+                return new ManagerBaseResponse<List<CompanyPartyRole>>
+                {
+                    IsSuccess = false,
+                    Result = null,
+                    Message = ex.Message
+                };
+            }
+        }
+        public async Task<ManagerBaseResponse<List<CompanyPartyRole>>> GetAllCompanyPartyRoleDataByID(string CompanyPartyRoleID)
+        {
+            try
+            {
+                var PartyMaster = await _context.CompanyPartyRole.Where(x => x.CompanyPartyRoleID.ToString() == CompanyPartyRoleID).ToListAsync();
+
+                return new ManagerBaseResponse<List<CompanyPartyRole>>
+                {
+                    IsSuccess = true,
+                    Result = PartyMaster,
+                    Message = "Company Party Role Data Retrieved Successfully.",
+                };
+            }
+            catch (Exception ex)
+            {
+
+                return new ManagerBaseResponse<List<CompanyPartyRole>>
+                {
+                    IsSuccess = false,
+                    Result = null,
+                    Message = ex.Message
+                };
+            }
+        }
+        public async Task<ManagerBaseResponse<IEnumerable<CompanyPartyRole>>> GetAllCompanyPartyRoleFilter(PagedListCriteria PagedListCriteria)
+        {
+            try
+            {
+
+                var query = _context.CompanyPartyRole.AsQueryable();
+                var searchText = PagedListCriteria.SearchText?.Trim().ToLower();
+                if (!string.IsNullOrWhiteSpace(searchText))
+                {
+                    query = query.Where(x => x.RoleType.ToLower().Contains(searchText.ToLower()));
+                }
+
+                query = query.OrderBy(a => a.CompanyPartyRoleID);
+
+                PageListed<CompanyPartyRole> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+                return new ManagerBaseResponse<IEnumerable<CompanyPartyRole>>
+                {
+                    Result = result.Data,
+                    Message = "Company Party Role Retrieved Successfully.",
+                    PageDetail = new PageDetailModel()
+                    {
+                        Skip = PagedListCriteria.Skip,
+                        Take = PagedListCriteria.Take,
+                        Count = result.TotalCount,
+                        SearchText = PagedListCriteria.SearchText,
+                        FilterdCount = PagedListCriteria.Filters
+                    }
+                };
+            }
+            catch (Exception ex)
+            {
+
+                return new ManagerBaseResponse<IEnumerable<CompanyPartyRole>>
+                {
+                    IsSuccess = false,
+                    Result = null,
+                    Message = ex.Message
+                };
+            }
+        }
+
     }
 }

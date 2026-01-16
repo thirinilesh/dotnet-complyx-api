@@ -51,7 +51,16 @@ namespace ComplyX.Services
         Task<ManagerBaseResponse<List<CustomerPayments>>> GetAllCustomerPaymentsData();
         Task<ManagerBaseResponse<List<CustomerPayments>>> GetAllCustomerPaymentDataByID(string PaymentID);
         Task<ManagerBaseResponse<IEnumerable<CustomerPayments>>> GetAllCustomerPaymentFilter(PagedListCriteria PagedListCriteria);
-
+        Task<ManagerBaseResponse<bool>> SavePartyMasterData(PartyMaster PartyMaster, string UserName);
+        Task<ManagerBaseResponse<bool>> RemovePartyMasterData(string PartyID);
+        Task<ManagerBaseResponse<List<PartyMaster>>> GetAllPartyMasterData();
+        Task<ManagerBaseResponse<List<PartyMaster>>> GetAllPartyMasterDataByID(string PArtyID);
+        Task<ManagerBaseResponse<IEnumerable<PartyMaster>>> GetAllPartyMasterFilter(PagedListCriteria PagedListCriteria);
+        Task<ManagerBaseResponse<bool>> SaveCompanyPartyRoleData(CompanyPartyRole CompanyPartyRole, string UserName);
+        Task<ManagerBaseResponse<bool>> RemoveCompanyPartyRoleData(string CompanyPartyRoleID);
+        Task<ManagerBaseResponse<List<CompanyPartyRole>>> GetAllCompanyPartyRoleData();
+        Task<ManagerBaseResponse<List<CompanyPartyRole>>> GetAllCompanyPartyRoleDataByID(string CompanyPartyRoleID);
+        Task<ManagerBaseResponse<IEnumerable<CompanyPartyRole>>> GetAllCompanyPartyRoleFilter(PagedListCriteria PagedListCriteria);
     }
 
 }

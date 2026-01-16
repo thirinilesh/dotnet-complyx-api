@@ -78,7 +78,7 @@ namespace ComplyX.Controllers
         /// <summary>
         /// Retrieves employment type data based on the specified employment type identifier.
         /// </summary>
-        /// <param name="EmploymentTypeId">
+        /// <param name="EmploymentTypeID">
         /// The unique identifier of the employment type to be retrieved.
         /// </param>
         /// <returns>
@@ -219,7 +219,7 @@ namespace ComplyX.Controllers
         /// <summary>
         /// Removes filing status data based on the specified filing status identifier.
         /// </summary>
-        /// <param name="filingStatusId">
+        /// <param name="FilingStatusesID">
         /// The unique identifier of the filing status to be removed.
         /// </param>
         /// <returns>
@@ -235,12 +235,12 @@ namespace ComplyX.Controllers
         public async Task<IActionResult> RemoveFillingStatusesData(string FilingStatusesID)
         {
             return ResponseResult(await _MasterServices.RemoveFillingStatusesData(FilingStatusesID));
-        }      
-      
+        }
+
         /// <summary>
         /// Retrieves filing status data based on the specified filing status identifier.
         /// </summary>
-        /// <param name="filingStatusId">
+        /// <param name="FilingStatusesID">
         /// The unique identifier of the filing status to be retrieved.
         /// </param>
         /// <returns>
@@ -259,7 +259,7 @@ namespace ComplyX.Controllers
         /// <summary>
         /// Retrieves a filtered and paginated list of filing statuses based on the specified criteria.
         /// </summary>
-        /// <param name="pagedListCriteria">
+        /// <param name="PagedListCriteria">
         /// The criteria for filtering, paging, and sorting the filing statuses.
         /// </param>
         /// <returns>

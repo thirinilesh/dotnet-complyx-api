@@ -56,5 +56,7 @@ namespace ComplyX_Businesss.Models
         public virtual ICollection<EPFOMonthlyWage>? EPFOMonthlyWage { get; set; } = new List<EPFOMonthlyWage>();
         public virtual ICollection<TDSDeductor>? TDSDeductor { get; set; } = new List<TDSDeductor>();
         public virtual ICollection<TDSDeductee>? TDSDeductee { get; set; } = new List<TDSDeductee>();
+
+        public virtual ICollection<CompanyPartyRole>? CompanyPartyRole { get; set; } = new List<CompanyPartyRole>();
     }
 }

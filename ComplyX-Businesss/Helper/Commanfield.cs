@@ -89,5 +89,20 @@ namespace ComplyX_Businesss.Helper
             REVISED = 4,
             REJECTED = 5
         }
+        public enum PartyType
+        {
+            BUSINESS = 1,
+            INDIVIDUAL = 2,
+            GOVT = 3 ,
+            UNREGISTERED = 4
+        }
+        public enum RoleType
+        {
+            SUPPLIER =1,
+            CUSTOMER = 2,
+            SUBCONTRACTOR = 3, 
+            DEDUCTEE = 4, 
+            TRANSPORTER = 5
+        }
     }
 }
