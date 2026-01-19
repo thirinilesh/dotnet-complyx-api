@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static ComplyX_Businesss.Helper.Commanfield;
 
 namespace ComplyX_Businesss.Models
 {
@@ -13,6 +14,9 @@ namespace ComplyX_Businesss.Models
         [Key]
         public int DeducteeID { get; set; }
         public int CompanyID { get; set; }
+        [Required]
+        [EnumDataType(typeof(DeducteeType),
+       ErrorMessage = "Invalid ReturnType. Allowed values:  EMPLOYEE,VENDOR,PENSIONER,OTHER")]
         public string DeducteeType { get; set; }
         public string DeducteeName { get; set; }
         [RegularExpression(@"^[A-Z]{5}[0-9]{4}[A-Z]{1}$", ErrorMessage = "Invalid PAN format.")]

@@ -70,6 +70,8 @@ namespace ComplyX.Shared.Data
         public virtual DbSet<CompanyPartyRole> CompanyPartyRole { get; set; }
         public virtual DbSet<PartyMaster> PartyMaster { get; set; }
         public virtual DbSet<legalDocument> LegalDocument { get; set; }
+        public virtual DbSet<legalDocumentVersion> LegalDocumentVersion { get; set; }
+        public virtual DbSet<legalDocumentAcceptance> LegalDocumentAcceptance { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -445,6 +447,27 @@ namespace ComplyX.Shared.Data
                 entity.HasOne(d => d.PartyMaster).WithMany(p => p.CompanyPartyRole)
                      .HasForeignKey(d => d.PartyID)
                     .HasConstraintName("FK_CompanyPartyRole_PartyMaster");
+            });
+
+            modelBuilder.Entity<legalDocumentVersion>(entity =>
+            {
+                entity.HasKey(e => e.version_id);
+
+            entity.HasOne(d => d.legalDocument).WithMany(p => p.legalDocumentVersion)
+                     .HasForeignKey(d => d.document_id)
+                    .HasConstraintName("FK_legalDocumentVersion_legalDocument");
+                
+            });
+            modelBuilder.Entity<legalDocumentAcceptance>(entity =>
+            {
+                entity.HasKey(e => e.acceptance_id);
+
+                entity.HasOne(d => d.legalDocument).WithMany(p => p.legalDocumentAcceptance)
+                         .HasForeignKey(d => d.document_id)
+                        .HasConstraintName("FK_legalDocumentAcceptance_legalDocument");
+                entity.HasOne(d => d.legalDocumentVersion).WithMany(p => p.legalDocumentAcceptance)
+                        .HasForeignKey(d => d.version_id)
+                       .HasConstraintName("FK_legalDocumentAcceptance_legalDocumentVersion");
             });
         }
 

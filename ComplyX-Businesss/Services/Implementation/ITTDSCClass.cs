@@ -215,7 +215,6 @@ namespace ComplyX_Businesss.Services.Implementation
                         originalTerm.PANStatus = TDSDedutee.PANStatus;
                         originalTerm.DeducteeType = TDSDedutee.DeducteeType;
                         originalTerm.DeducteeName = TDSDedutee.DeducteeName;
-
                         originalTerm.ResidentStatus = TDSDedutee.ResidentStatus;
                         originalTerm.UpdatedAt = Util.GetCurrentCSTDateAndTime();
                         originalTerm.UpdatedBy = user.Id;
@@ -348,7 +347,7 @@ namespace ComplyX_Businesss.Services.Implementation
                         else
                         {
                             originalTerm.CompanyID = item.Employee.CompanyID;
-                            originalTerm.DeducteeType = _commanfield.GetDeducteeType(item.Employee);
+                            originalTerm.DeducteeType = _commanfield.GetDeducteeType(deducteename.DeducteeType);
                             originalTerm.DeducteeName = item.Employee.FirstName + " " + item.Employee.LastName;
                             originalTerm.PAN = item.Employee.PAN;
                             originalTerm.PANStatus = string.IsNullOrEmpty(item.Employee.PAN) ? PANStatus.NOT_AVAILABLE.ToString() : _commanfield.IsValidPAN(item.Employee.PAN) ? PANStatus.VALID.ToString() : PANStatus.INVALID.ToString();

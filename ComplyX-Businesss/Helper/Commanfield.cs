@@ -8,6 +8,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.SignalR;
 
 namespace ComplyX_Businesss.Helper
 {
@@ -27,6 +28,20 @@ namespace ComplyX_Businesss.Helper
             PENSIONER,
             OTHER
         }
+
+        public enum DeductorCategory
+        { 
+            COMPANY,
+            FIRM_LLP,
+            INDIVIDUAL,
+            HUF,
+            GOVERNMENT,
+            PSU_AUTONOMOUS,
+            TRUST_NGO,
+            BANK_FI,
+            COOPERATIVE,
+            FOREIGN_ENTITY
+        }
         public  bool IsValidPAN(string pan)
         {
             if (string.IsNullOrWhiteSpace(pan))
@@ -40,15 +55,15 @@ namespace ComplyX_Businesss.Helper
 
             return panRegex.IsMatch(pan);
         }
-        public string GetDeducteeType(Employees employee)
+        public string GetDeducteeType(string employee)
         {
             if (employee == null)
                 return "OTHER";
 
-            if (employee.IsPensioner)
+            if (employee == "PENSIONER")
                 return "PENSIONER";
 
-            if (employee.IsVendor)
+            if (employee == "VENDOR")
                 return "VENDOR";
 
             return "EMPLOYEE";

@@ -6,6 +6,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static ComplyX_Businesss.Helper.Commanfield;
 
 namespace ComplyX_Businesss.Models
 {
@@ -17,6 +18,9 @@ namespace ComplyX_Businesss.Models
         public string DeductorName {  get; set; }     
         public string? TAN { get; set; }    
         public string? PAN { get; set; }
+        [Required]
+        [EnumDataType(typeof(DeductorCategory),
+        ErrorMessage = "Invalid ReturnType. Allowed values: COMPANY,FIRM_LLP,INDIVIDUAL,HUF,GOVERNMENT,PSU_AUTONOMOUS,TRUST_NGO,BANK_FI,COOPERATIVE,FOREIGN_ENTITY")]
         public string DeductorCategory { get; set; }
         public string Address1 { get; set; }
         public string Address2 { get; set; }

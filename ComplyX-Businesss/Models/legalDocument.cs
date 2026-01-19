@@ -18,6 +18,8 @@ namespace ComplyX_Businesss.Models
         public string? status { get; set; }
         public DateTime created_at { get; set; }
         public string created_by { get; set; }
+        public virtual ICollection<legalDocumentAcceptance>? legalDocumentAcceptance { get; set; } = new List<legalDocumentAcceptance>();
+        public virtual ICollection<legalDocumentVersion>? legalDocumentVersion { get; set; } = new List<legalDocumentVersion>();
 
     }
 }
