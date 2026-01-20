@@ -1326,5 +1326,139 @@ namespace ComplyX_Businesss.Services.Implementation
             }
         }
 
+        public async Task<ManagerBaseResponse<bool>> SaveTDSRatesData(TDSRates TDSRates, string UserName)
+        {
+            var response = new ManagerBaseResponse<List<TDSRates>>();
+
+            try
+            {
+                
+                    var user = _context.Users.FirstOrDefault(x => x.UserName == UserName);
+                    
+                    if (user == null)
+                    {
+                        return new ManagerBaseResponse<bool>
+                        {
+                            Result = false,
+                            Message = "User not Found."
+                        };
+                    }
+                    else
+                    {
+
+
+                        if (TDSRates.TaxID == 0)
+                        {
+                            // Insert
+                            TDSRates _model = new TDSRates();
+                            _model.TaxName = TDSRates.TaxName;
+                        _model.Rate = TDSRates.Rate;
+                        _model.TaxType = TDSRates.TaxType;
+                        _model.IsActive = TDSRates.IsActive;
+                            _model.CreatedAt = Util.GetCurrentCSTDateAndTime();
+                            _model.CreatedBy = user.Id;
+
+                            _context.Add(_model);
+                            await _context.SaveChangesAsync();
+                        }
+                        else
+                        {
+                            // Update
+                            var originalTerm = _context.TDSRates
+                                .Where(x => x.TaxID == TDSRates.TaxID)
+                                .FirstOrDefault();
+                        originalTerm.TaxName = TDSRates.TaxName;
+                        originalTerm.Rate = TDSRates.Rate;
+                        originalTerm.TaxType = TDSRates.TaxType;
+                        originalTerm.IsActive = TDSRates.IsActive;
+                        originalTerm.UpdatedAt = Util.GetCurrentCSTDateAndTime();
+                        originalTerm.UpdatedBy = user.Id;
+                        _context.Update(originalTerm);
+                            _context.SaveChanges();
+                        }
+                    }
+                return new ManagerBaseResponse<bool>
+                {
+                    Result = true,
+                    Message = "TDS Rates Saved Successfully."
+                };
+            }
+            catch (Exception e)
+            {
+                return new ManagerBaseResponse<bool>
+                {
+
+                    Result = false,
+                    Message = e.Message
+                };
+            }
+        }
+        public async Task<ManagerBaseResponse<List<TDSRates>>> GetAllTDSRatesData(string TaxID)
+        {
+            try
+            {
+                var plans = _context.TDSRates.Where(x => x.TaxID.ToString() == TaxID).ToList();
+
+
+                return new ManagerBaseResponse<List<TDSRates>>
+                {
+                    IsSuccess = true,
+                    Result = plans,
+                    Message = "TDS Rates Data Retrieved Successfully.",
+                };
+            }
+            catch (Exception ex)
+            {
+
+                return new ManagerBaseResponse<List<TDSRates>>
+                {
+                    IsSuccess = false,
+                    Result = null,
+                    Message = ex.Message
+                };
+            }
+        }
+        public async Task<ManagerBaseResponse<IEnumerable<TDSRates>>> GetTDSRatesFilter(PagedListCriteria PagedListCriteria)
+        {
+            try
+            {
+
+                var query = _context.TDSRates.AsQueryable();
+                var searchText = PagedListCriteria.SearchText?.Trim().ToLower();
+                if (!string.IsNullOrWhiteSpace(searchText))
+                {
+                    query = query.Where(x => x.TaxName.ToLower().Contains(searchText.ToLower()));
+                }
+
+                query = query.OrderBy(a => a.TaxID);
+
+                PageListed<TDSRates> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+
+                return new ManagerBaseResponse<IEnumerable<TDSRates>>
+                {
+                    Result = result.Data,
+                    Message = "TDS Rates Data Retrieved Successfully.",
+                    PageDetail = new PageDetailModel()
+                    {
+                        Skip = PagedListCriteria.Skip,
+                        Take = PagedListCriteria.Take,
+                        Count = result.TotalCount,
+                        SearchText = PagedListCriteria.SearchText,
+                        FilterdCount = PagedListCriteria.Filters,
+                    }
+                };
+            }
+            catch (Exception ex)
+            {
+
+                return new ManagerBaseResponse<IEnumerable<TDSRates>>
+                {
+                    IsSuccess = false,
+                    Result = null,
+                    Message = ex.Message
+                };
+            }
+        }
+
     }
 }

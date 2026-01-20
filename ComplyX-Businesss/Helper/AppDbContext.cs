@@ -72,6 +72,7 @@ namespace ComplyX.Shared.Data
         public virtual DbSet<legalDocument> LegalDocument { get; set; }
         public virtual DbSet<legalDocumentVersion> LegalDocumentVersion { get; set; }
         public virtual DbSet<legalDocumentAcceptance> LegalDocumentAcceptance { get; set; }
+        public virtual DbSet<TDSRates> TDSRates { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

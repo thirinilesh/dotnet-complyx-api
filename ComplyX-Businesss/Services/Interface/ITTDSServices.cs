@@ -38,6 +38,9 @@ namespace ComplyX_Businesss.Services.Interface
         Task<ManagerBaseResponse<bool>> SaveTDSChallanAllocationData(TDSChallanAllocation TDSChallanAllocation, string UserName);
         Task<ManagerBaseResponse<List<TDSChallanAllocation>>> GetAllTDSChallanAllocationData(string AllocationID);
         Task<ManagerBaseResponse<IEnumerable<TDSChallanAllocation>>> GetTDSChallanAllocationFilter(PagedListCriteria PagedListCriteria);
+        Task<ManagerBaseResponse<bool>> SaveTDSRatesData(TDSRates TDSRates, string UserName);
+        Task<ManagerBaseResponse<List<TDSRates>>> GetAllTDSRatesData(string TaxID);
+        Task<ManagerBaseResponse<IEnumerable<TDSRates>>> GetTDSRatesFilter(PagedListCriteria PagedListCriteria);
 
     }
 }

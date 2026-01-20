@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ComplyX_Businesss.Services.Interface;
+using Microsoft.Graph.Models;
 
 namespace ComplyX.Controllers
 {
@@ -557,6 +558,69 @@ namespace ComplyX.Controllers
         public async Task<IActionResult> GetAllTDSChallanAllocationData(string AllocationID)
         {
             return ResponseResult(await _ITTDSServices.GetAllTDSChallanAllocationData(AllocationID));
+        }
+
+        /// <summary>
+        /// Saves or updates TDS Rates data.
+        /// </summary>
+        /// <param name="tdsRates">
+        /// The TDS Rates details to be saved or updated.
+        /// </param>
+        /// <returns>
+        /// An <see cref="IActionResult"/> indicating the result of the operation.
+        /// Returns 200 OK when the TDS Rates data is saved successfully.
+        /// Returns 400 Bad Request if the request data is invalid.
+        /// Returns 500 Internal Server Error if an unexpected error occurs.
+        /// </returns>
+        /// <response code="200">TDS Rates data saved successfully.</response>
+        /// <response code="400">Invalid request data or validation error.</response>
+        /// <response code="500">An unexpected error occurred while processing the request.</response>
+        [HttpPost("SaveTDSRatesData")]
+        public async Task<IActionResult> SaveTDSRatesData([FromBody] TDSRates TDSRates)
+        {
+            return ResponseResult(await _ITTDSServices.SaveTDSRatesData(TDSRates, User.Claims.GetUserId()));
+        }
+
+        /// <summary>
+        /// Retrieves a filtered and paginated list of TDS Rates data.
+        /// </summary>
+        /// <param name="PagedListCriteria">
+        /// The paging, sorting, and filtering criteria used to retrieve TDS Rates data.
+        /// </param>
+        /// <returns>
+        /// An <see cref="IActionResult"/> containing the filtered list of TDS Rates data.
+        /// Returns 200 OK when records are found.
+        /// Returns 204 No Content when no records are found.
+        /// Returns 400 Bad Request if an error occurs while fetching data.
+        /// </returns>
+        /// <response code="200">Returns the filtered list of TDS Rates data.</response>
+        /// <response code="204">No TDS Rates data found.</response>
+        /// <response code="400">Error occurred while fetching TDS Rates data.</response>
+        [HttpGet("GetTDSRatesFilter")]
+        public async Task<IActionResult> GetTDSRatesFilter([FromQuery] PagedListCriteria PagedListCriteria)
+        {
+            return ResponseResult(await _ITTDSServices.GetTDSRatesFilter(PagedListCriteria));
+        }
+
+        /// <summary>
+        /// Retrieves the list of TDS Rates data associated with the specified Tax ID.
+        /// </summary>
+        /// <param name="TaxID">
+        /// The unique identifier of the TDS Tax.
+        /// </param>
+        /// <returns>
+        /// An <see cref="IActionResult"/> containing the list of TDS Rates data.
+        /// Returns 200 OK when records are found.
+        /// Returns 204 No Content when no records are found.
+        /// Returns 400 Bad Request if an error occurs during retrieval.
+        /// </returns>
+        /// <response code="200">Returns the list of TDS Rates data.</response>
+        /// <response code="204">No TDS Rates data found.</response>
+        /// <response code="400">Error occurred while fetching TDS Rates data.</response>
+        [HttpGet("GetAllTDSRatesData")]
+        public async Task<IActionResult> GetAllTDSRatesData(string TaxID)
+        {
+            return ResponseResult(await _ITTDSServices.GetAllTDSRatesData(TaxID));
         }
     }
 }
