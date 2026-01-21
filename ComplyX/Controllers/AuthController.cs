@@ -20,6 +20,12 @@ namespace Lakshmi.Api.Controller
         private readonly ILogger<AuthController> _logger;
         private readonly IAuthenticationService _authenticationsService;
         private readonly IUserService _IUserService;
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AuthController"/> class.
+        /// </summary>
+        /// <param name="logger">The logger instance for logging information and errors.</param>
+        /// <param name="authenticationsService">The service used for handling authentication operations.</param>
+        /// <param name="IUserService">The service used for managing user-related operations.</param>
         public AuthController(ILogger<AuthController> logger, IAuthenticationService authenticationsService, IUserService IUserService)
         {
             _logger = logger;

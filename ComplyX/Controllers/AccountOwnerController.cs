@@ -3,7 +3,7 @@ using ComplyX.BusinessLogic;
 using ComplyX.Shared.Data;
 using ComplyX.Shared.Helper;
 using ComplyX_Businesss.Models;
-using ComplyX.Services;
+using ComplyX_Businesss.Services;
 using FluentValidation.Results;
 using Lakshmi.Aca.Api.Controllers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -11,9 +11,16 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using ComplyX_Businesss.Helper;
+using ComplyX_Businesss.Services.Interface;
+using ComplyX_Businesss.BusinessLogic;
 
 namespace ComplyX.Controllers
 {
+    /// <summary>
+    /// Controller to manage account owners.
+    /// Provides endpoints to create, update, delete, and retrieve account owner data.
+    /// </summary>
     [ApiController]
     [Route("[controller]")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
@@ -25,6 +32,14 @@ namespace ComplyX.Controllers
 
         private readonly AccountOwnerLogic _logic;
         private readonly IProductOwner _IProductOwnere;
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AccountOwnerController"/> class.
+        /// </summary>
+        /// <param name="tokenservice">Service to handle JWT token operations.</param>
+        /// <param name="context">Database context for data access.</param>
+        /// <param name="logic">Business logic for account owners.</param>
+        /// <param name="IProductOwnere">Service to manage product owners.</param>
+
         public AccountOwnerController(JwtTokenService tokenservice, AppDbContext context, AccountOwnerLogic logic, IProductOwner IProductOwnere)
         {
             _tokenService = tokenservice;
@@ -32,6 +47,11 @@ namespace ComplyX.Controllers
             _logic = logic;
             _IProductOwnere =  IProductOwnere;
         }
+
+        /// <summary>
+        /// Retrieves the list of all account owners.
+        /// </summary>
+        /// <returns>An <see cref="IActionResult"/> containing the list of account owners.</returns>
 
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status403Forbidden, Type = typeof(ErrorResponse))]
@@ -819,7 +839,7 @@ namespace ComplyX.Controllers
         /// <summary>
         /// Saves or updates party master data.
         /// </summary>
-        /// <param name="partyMaster">
+        /// <param name="PartyMaster">
         /// The party master details to be saved or updated.
         /// </param>
         /// <returns>
@@ -838,7 +858,7 @@ namespace ComplyX.Controllers
         /// <summary>
         /// Deletes customer payment data based on the specified payment identifier.
         /// </summary>
-        /// <param name="PaymentID">
+        /// <param name="PartyID">
         /// The unique identifier of the customer payment to be deleted.
         /// </param>
         /// <returns>
@@ -877,7 +897,7 @@ namespace ComplyX.Controllers
         /// <summary>
         /// Retrieves party master data for the specified party identifier.
         /// </summary>
-        /// <param name="partyId">
+        /// <param name="PartyID">
         /// The unique identifier of the party to retrieve.
         /// </param>
         /// <returns>
@@ -898,7 +918,7 @@ namespace ComplyX.Controllers
         /// <summary>
         /// Retrieves a filtered and paginated list of party master records.
         /// </summary>
-        /// <param name="pagedListCriteria">
+        /// <param name="PagedListCriteria">
         /// The paging, sorting, and filtering criteria used to retrieve party master data.
         /// </param>
         /// <returns>
@@ -919,7 +939,7 @@ namespace ComplyX.Controllers
         /// <summary>
         /// Saves or updates company party role data.
         /// </summary>
-        /// <param name="companyPartyRole">
+        /// <param name="CompanyPartyRole">
         /// The company party role details to be saved or updated.
         /// </param>
         /// <returns>
@@ -956,7 +976,7 @@ namespace ComplyX.Controllers
             return ResponseResult(await _IProductOwnere.RemoveCompanyPartyRoleData(CompanyPartyROleID));
         }
 
-        //// <summary>
+        /// <summary>
         /// Retrieves the list of all company party role records.
         /// </summary>
         /// <returns>
@@ -977,7 +997,7 @@ namespace ComplyX.Controllers
         /// <summary>
         /// Retrieves company party role data for the specified party identifier.
         /// </summary>
-        /// <param name="companyPartyId">
+        /// <param name="CompanyPartyID">
         /// The unique identifier of the company party to retrieve.
         /// </param>
         /// <returns>
@@ -998,7 +1018,7 @@ namespace ComplyX.Controllers
         /// <summary>
         /// Retrieves a filtered and paginated list of company party role records.
         /// </summary>
-        /// <param name="pagedListCriteria">
+        /// <param name="PagedListCriteria">
         /// The paging, sorting, and filtering criteria used to retrieve company party role data.
         /// </param>
         /// <returns>

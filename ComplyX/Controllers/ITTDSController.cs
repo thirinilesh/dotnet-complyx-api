@@ -13,9 +13,15 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ComplyX_Businesss.Services.Interface;
 using Microsoft.Graph.Models;
+using Microsoft.Graph.Drives.Item.Items.Item.Workbook.Functions.OddFYield;
+using ComplyX_Businesss.Helper;
 
 namespace ComplyX.Controllers
 {
+    /// <summary>
+    /// Controller for managing TDS (Tax Deducted at Source) operations.
+    /// Provides endpoints to save, retrieve, and manage TDS deductee and deductor data.
+    /// </summary>
     [ApiController]
     [Route("[controller]")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
@@ -26,6 +32,12 @@ namespace ComplyX.Controllers
         private readonly JwtTokenService _tokenService;
 
         private readonly ITTDSServices _ITTDSServices;
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ITTDSController"/> class.
+        /// </summary>
+        /// <param name="tokenservice">Service for managing JWT token operations.</param>
+        /// <param name="context">The application database context.</param>
+        /// <param name="ITTDSServices">The service for managing TDS operations.</param>
         public ITTDSController(JwtTokenService tokenservice, AppDbContext context, ITTDSServices ITTDSServices)
         {
             _tokenService = tokenservice;
@@ -154,47 +166,41 @@ namespace ComplyX.Controllers
         /// <summary>
         /// Saves or synchronizes TDS deductee data for the specified company.
         /// </summary>
-        /// <param name="TDSDeductee">
-        /// The TDS deductee data to save or synchronize.
-        /// </param>
         /// <param name="CompanyID">
         /// The unique identifier of the company.
         /// </param>
         /// <returns>
         /// An <see cref="IActionResult"/> containing the result of the save/sync operation.
         /// Returns:
-        /// - 200 OK with the result if successful.
+        /// - 200 OK if the operation is successful.
         /// - 204 No Content if no data was processed.
         /// - 400 Bad Request if an error occurs.
         /// </returns>
-        /// <response code="200">Returns the result of the save/sync operation.</response>
-        /// <response code="204">If no TDS deductee data is found to process.</response>
-        /// <response code="400">If there is an error during processing.</response>
+        /// <response code="200">Save or sync completed successfully.</response>
+        /// <response code="204">No TDS deductee data found to process.</response>
+        /// <response code="400">An error occurred during processing.</response>
         [HttpPost("SaveSyncTDSDeducteeData")]
-        public async Task<IActionResult> SaveSyncTDSDeducteeData(int CompanyID)
-        {
-            return ResponseResult(await _ITTDSServices.SaveSyncTDSDeducteeData(CompanyID, User.Claims.GetUserId()));
-        }
+            public async Task<IActionResult> SaveSyncTDSDeducteeData(int CompanyID)
+            {
+                return ResponseResult(await _ITTDSServices.SaveSyncTDSDeducteeData(CompanyID, User.Claims.GetUserId()));
+            }
 
         /// <summary>
         /// Saves or synchronizes TDS deductor data for the specified company.
         /// </summary>
-        /// <param name="TDSDeductor">
-        /// The TDS deductor data to save or synchronize.
-        /// </param>
         /// <param name="CompanyID">
         /// The unique identifier of the company.
         /// </param>
         /// <returns>
         /// An <see cref="IActionResult"/> containing the result of the save/sync operation.
         /// Returns:
-        /// - 200 OK with the result if successful.
+        /// - 200 OK if the operation is successful.
         /// - 204 No Content if no data was processed.
         /// - 400 Bad Request if an error occurs.
         /// </returns>
-        /// <response code="200">Returns the result of the save/sync operation.</response>
-        /// <response code="204">If no TDS deductor data is found to process.</response>
-        /// <response code="400">If there is an error during processing.</response>
+        /// <response code="200">Save or sync completed successfully.</response>
+        /// <response code="204">No TDS deductor data found to process.</response>
+        /// <response code="400">An error occurred during processing.</response>
         [HttpPost("SaveSyncTDSDeductorData")]
         public async Task<IActionResult> SaveSyncTDSDeductorData(int CompanyID)
         {
@@ -261,9 +267,10 @@ namespace ComplyX.Controllers
             return ResponseResult(await _ITTDSServices.GetAllTDSReturnData(ReturnID));
         }
 
+        /// <summary>
         /// Saves or updates TDS return data.
         /// </summary>
-        /// <param name="tdsEntry">
+        /// <param name="TDSEntry">
         /// The TDS return details to be saved or updated.
         /// </param>
         /// <returns>
@@ -563,7 +570,7 @@ namespace ComplyX.Controllers
         /// <summary>
         /// Saves or updates TDS Rates data.
         /// </summary>
-        /// <param name="tdsRates">
+        /// <param name="TDSRates">
         /// The TDS Rates details to be saved or updated.
         /// </param>
         /// <returns>

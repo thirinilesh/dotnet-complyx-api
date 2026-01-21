@@ -15,11 +15,12 @@ using Microsoft.Extensions.Logging;
 using Nest;
 using ComplyX_Businesss.Helper;
 using System;
-using PagedList;
+using X.PagedList;
 using AutoMapper.Configuration.Annotations;
+using ComplyX_Businesss.Services;
 
 
-namespace ComplyX.BusinessLogic
+namespace ComplyX_Businesss.BusinessLogic
 {
     public class AccountOwnerLogic : IProductOwner
     {
@@ -513,7 +514,7 @@ namespace ComplyX.BusinessLogic
                         _model.PlanId = ProductOwnerSubscriptions.PlanId;
 
                         _context.Add(_model);
-                        _context.SaveChanges();
+                        await _context.SaveChangesAsync();
                     }
                     else
                     {
@@ -965,8 +966,8 @@ namespace ComplyX.BusinessLogic
                         _model.CreatedAt = Util.GetCurrentCSTDateAndTime();
 
                         _context.Add(_model);
-                        _context.SaveChanges();
-                    }
+                    await _context.SaveChangesAsync();
+                }
                     else
                     {
                         // Update
@@ -1354,7 +1355,7 @@ namespace ComplyX.BusinessLogic
                     _model.IsActive = subscriptionPlans.IsActive;
 
                     _context.Add(_model);
-                    _context.SaveChanges();
+                    await _context.SaveChangesAsync();
                 }
                 else
                 {
@@ -1459,7 +1460,7 @@ namespace ComplyX.BusinessLogic
                     _model.CreatedAt = Util.GetCurrentCSTDateAndTime();
 
                     _context.Add(_model);
-                    _context.SaveChanges();
+                    await _context.SaveChangesAsync();
                 }
                 else
                 {
@@ -1848,7 +1849,7 @@ namespace ComplyX.BusinessLogic
                         _model.CreatedBy = user.Id;
 
                         _context.Add(_model);
-                        _context.SaveChanges();
+                        await _context.SaveChangesAsync();
                     }
                     else
                     {
@@ -2070,7 +2071,7 @@ namespace ComplyX.BusinessLogic
                                 _model.CreatedBy = user.Id;
 
                                 _context.Add(_model);
-                                _context.SaveChanges();
+                                await _context.SaveChangesAsync();
                             }
                             else
                             {

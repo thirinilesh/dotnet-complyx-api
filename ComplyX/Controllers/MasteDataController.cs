@@ -13,9 +13,14 @@ using ComplyX_Businesss.Services.Implementation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Lakshmi.Aca.Api.Controllers;
+using ComplyX_Businesss.Helper;
 
 namespace ComplyX.Controllers
 {
+    /// <summary>
+    /// Controller for managing master data operations.
+    /// Provides endpoints to create, update, retrieve, and manage master data entities.
+    /// </summary>
     [ApiController]
     [Route("[controller]")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
@@ -27,6 +32,12 @@ namespace ComplyX.Controllers
 
      
         private readonly MasterServices _MasterServices;
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MasteDataController"/> class.
+        /// </summary>
+        /// <param name="tokenservice">Service to manage JWT token operations.</param>
+        /// <param name="context">The application database context.</param>
+        /// <param name="MasterServices">The service for managing master data operations.</param>
         public MasteDataController(JwtTokenService tokenservice, AppDbContext context, MasterServices MasterServices)
         {
             _tokenService = tokenservice;

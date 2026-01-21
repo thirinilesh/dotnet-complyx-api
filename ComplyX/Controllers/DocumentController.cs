@@ -4,7 +4,7 @@ using ComplyX.Shared.Data;
 using ComplyX.Shared.Helper;
 using ComplyX_Businesss.Models;
 using ComplyX.Controllers;
-using ComplyX.Services;
+using ComplyX_Businesss.Services;
 using FluentValidation.Results;
 using Lakshmi.Aca.Api.Controllers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -13,10 +13,15 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ComplyX_Businesss.Services.Interface;
+using ComplyX_Businesss.Helper;
 
 
 namespace ComplyX.Controllers
 {
+    /// <summary>
+    /// Controller for managing documents.
+    /// Provides endpoints to create, retrieve, update, and delete documents.
+    /// </summary>
     [ApiController]
     [Route("[controller]")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
@@ -27,6 +32,12 @@ namespace ComplyX.Controllers
         private readonly JwtTokenService _tokenService;
         private readonly DocumentService _documentService;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DocumentController"/> class.
+        /// </summary>
+        /// <param name="tokenservice">Service for managing JWT token operations.</param>
+        /// <param name="context">The application database context.</param>
+        /// <param name="documentService">The service for managing document operations.</param>
         public DocumentController(JwtTokenService tokenservice, AppDbContext context, DocumentService documentService)
         {
             _tokenService = tokenservice;

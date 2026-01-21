@@ -12,7 +12,10 @@ using Azure.Core;
 
 namespace ComplyX.Controllers
 {
-
+    /// <summary>
+    /// Controller for managing user operations.
+    /// Provides endpoints to create, update, retrieve, and manage user accounts.
+    /// </summary>
     [ApiController]
     [Route("api/[controller]")]
     //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
@@ -21,6 +24,11 @@ namespace ComplyX.Controllers
     {
         private readonly IUserService _IUserService;
         private readonly UserManager<ApplicationUser> _userManager;
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UserController"/> class.
+        /// </summary>
+        /// <param name="IUserService">The service used to manage user operations.</param>
+        /// <param name="userManager">The user manager for handling application users.</param>
         public UserController(IUserService IUserService, UserManager<ApplicationUser> userManager)
         {
             _IUserService = IUserService;

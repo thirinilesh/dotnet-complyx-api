@@ -5,7 +5,7 @@ using ComplyX.Shared.Data;
 
 using ComplyX_Businesss.Models;
 
-namespace ComplyX.Shared.Data
+namespace ComplyX_Businesss.Helper
 {
     public class AppDbContext : IdentityDbContext<ApplicationUser>
     {

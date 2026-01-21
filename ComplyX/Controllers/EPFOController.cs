@@ -3,23 +3,32 @@ using Azure.Core;
 using ComplyX_Businesss.Models;
 using ComplyX.Shared.Helper;
 using ComplyX.Shared.Data;
-using ComplyX.Services;
+using ComplyX_Businesss.Services;
 using FluentValidation.Results;
 using Lakshmi.Aca.Api.Controllers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
- 
+using ComplyX_Businesss.Helper;
+
 namespace ComplyX.Controllers
 {
+    /// <summary>
+    /// Controller for managing EPFO (Employee Provident Fund Organization) related operations.
+    /// Provides endpoints to handle EPFO transactions, contributions, and related data.
+    /// </summary>
     [ApiController]
     [Route("[controller]")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class EPFOController : BaseController
     {
         private readonly EPFOServices _EPFOServices;
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EPFOController"/> class.
+        /// </summary>
+        /// <param name="context">The application database context.</param>
+        /// <param name="EPFOServices">The service for managing EPFO operations.</param>
         public EPFOController(AppDbContext context, EPFOServices EPFOServices)
         {
             _EPFOServices = EPFOServices;
@@ -254,7 +263,7 @@ namespace ComplyX.Controllers
         /// Saves the details of a company's EPFO information. 
         /// If the EPFO data already exists, updates the existing record.
         /// </summary>
-        /// <param name="epfoMonthlyWage">
+        /// <param name="EPFOMonthlyWage">
         /// The company EPFO details to be saved or updated.
         /// </param>
         /// <returns>
@@ -270,7 +279,7 @@ namespace ComplyX.Controllers
         /// <summary>
         /// Deletes a company's EPFO data based on the provided wage ID.
         /// </summary>
-        /// <param name="wageId">
+        /// <param name="WageID">
         /// The unique identifier of the company EPFO data to be deleted.
         /// </param>
         /// <returns>
@@ -288,7 +297,7 @@ namespace ComplyX.Controllers
         /// <summary>
         /// Retrieves a filtered and paginated list of company EPFO data based on the provided criteria.
         /// </summary>
-        /// <param name="pagedListCriteria">
+        /// <param name="PagedListCriteria">
         /// The criteria used to filter, sort, search, and paginate the company EPFO data.
         /// </param>
         /// <returns>

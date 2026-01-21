@@ -1,6 +1,6 @@
 ﻿using ComplyX.Shared.Helper;
 using ComplyX_Businesss.Models;
-using ComplyX.Services;
+using ComplyX_Businesss.Services;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
@@ -9,11 +9,10 @@ using System.Runtime.InteropServices;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using static System.Net.Mime.MediaTypeNames;
 using Microsoft.AspNetCore.Identity;
-using ComplyX.Shared.Helper;
 using ComplyX.Shared.Data;
 using ComplyX_Businesss.Helper;
 
-namespace ComplyX.BusinessLogic
+namespace ComplyX_Businesss.BusinessLogic
 {
     public class EPFOClass  : EPFOServices
     {

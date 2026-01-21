@@ -19,7 +19,6 @@ using ComplyX_Tests.Service;
 using NHibernate.Mapping.ByCode.Impl;
 using System;
 using ComplyX.Shared.Data;
-using ComplyX_Tests.Service;
 using AppDbContext = ComplyX_Tests.Service.AppDbContext;
 using static ComplyX_Tests.Service.ApiExceptionNotFound;
 using ComplyX_Tests.Profile;
@@ -34,8 +33,6 @@ namespace ComplyX_Tests.Service
         private readonly Mock<ICompanyRespository> _mockCompanyRepository;
         private readonly EmployeeService _service;
         private readonly AppDbContext _appcontext;
-        private readonly ICompanyRespository _companyRepository;
-        private readonly DbContext _dbContext;
         private readonly Mock<ICompanyRespository> _companyRepoMock;
 
         public CompanyServicesTest()

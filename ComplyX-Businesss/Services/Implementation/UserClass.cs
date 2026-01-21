@@ -9,7 +9,7 @@ using System.Security.Claims;
 using BCrypt.Net;
 using Microsoft.AspNetCore.Mvc;
  
-using ComplyX.Services;
+using ComplyX_Businesss.Services;
 using System.Security.Principal;
 using Microsoft.EntityFrameworkCore;
 using Azure;
@@ -21,12 +21,13 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Jose.native;
  using Azure.Core;
 using System.Text.RegularExpressions;
+using ComplyX_Businesss.Helper;
 
 namespace ComplyX.BusinessLogic
 {
     public class UserClass : IUserService
     {
-        private readonly IUserService _IUserService;
+ 
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly JwtTokenService _tokenService;
         private readonly AppDbContext _context;

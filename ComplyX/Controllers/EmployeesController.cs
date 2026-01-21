@@ -11,19 +11,28 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Mvc;
- 
+using ComplyX_Businesss.Helper;
+
 
 namespace ComplyX.Controllers
 {
+    /// <summary>
+    /// Controller for managing employees.
+    /// Provides endpoints to create, read, update, and delete employee records.
+    /// </summary>
     [ApiController]
     [Route("[controller]")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class EmployeesController : BaseController
     {
         private readonly IEmployeeServices _IEmployeeServices;
-
-        public EmployeesController(AppDbContext context, IEmployeeServices IEmployeeServices)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EmployeesController"/> class.
+        /// </summary>
+        /// <param name="IEmployeeServices">
+        /// The service used to perform employee-related operations.
+        /// </param>
+        public EmployeesController(IEmployeeServices IEmployeeServices)
         {
             _IEmployeeServices = IEmployeeServices;
         }

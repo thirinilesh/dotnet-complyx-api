@@ -511,7 +511,7 @@ namespace ComplyX_Businesss.Services.Implementation
         {
             try
             {
-                var plans = _context.LegalDocumentAcceptance.Where(x => x.acceptance_id.ToString() == Acceptanceid).ToList();
+                var plans =  _context.LegalDocumentAcceptance.Where(x => x.acceptance_id.ToString() == Acceptanceid).ToList();
 
 
                 return new ManagerBaseResponse<List<legalDocumentAcceptance>>

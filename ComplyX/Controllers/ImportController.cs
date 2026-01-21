@@ -14,9 +14,14 @@ using static System.Net.Mime.MediaTypeNames;
 using Lakshmi.Aca.Api.Controllers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using ComplyX_Businesss.Helper;
 
 namespace ComplyX.Controllers
 {
+    /// <summary>
+    /// Controller for managing import operations.
+    /// Provides endpoints to import data and manage related processes.
+    /// </summary>
     [ApiController]
     [Route("[controller]")]
   //  [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
@@ -24,7 +29,11 @@ namespace ComplyX.Controllers
     {
 
         private readonly ImportServices _ImportServices;
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ImportController"/> class.
+        /// </summary>
+        /// <param name="context">The application database context.</param>
+        /// <param name="ImportServices">The service for managing import operations.</param>
         public ImportController(AppDbContext context, ImportServices ImportServices)
         {
             _ImportServices = ImportServices;

@@ -4,7 +4,7 @@ using ComplyX.Shared.Data;
 using ComplyX.Shared.Helper;
 using ComplyX_Businesss.Models;
 using ComplyX_Businesss.Services.Interface;
-using ComplyX.Services;
+using ComplyX_Businesss.Services;
 using FluentValidation.Results;
 using Lakshmi.Aca.Api.Controllers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -12,9 +12,15 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using ComplyX_Businesss.Helper;
+using ComplyX_Businesss.BusinessLogic;
 
 namespace ComplyX.Controllers
 {
+    /// <summary>
+    /// Controller for handling GST-related operations.
+    /// Provides endpoints to create, update, retrieve, and manage GST data.
+    /// </summary>
     [ApiController]
     [Route("[controller]")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
@@ -24,8 +30,13 @@ namespace ComplyX.Controllers
 
         private readonly JwtTokenService _tokenService;
 
-        private readonly AccountOwnerLogic _logic;
         private readonly IGSTServices _IGSTServices;
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GSTController"/> class.
+        /// </summary>
+        /// <param name="tokenservice">Service to handle JWT token operations.</param>
+        /// <param name="context">Database context for accessing GST data.</param>
+        /// <param name="IGSTServices">Service for GST business logic.</param>
         public GSTController(JwtTokenService tokenservice, AppDbContext context, IGSTServices IGSTServices)
         {
             _tokenService = tokenservice;
@@ -433,7 +444,7 @@ namespace ComplyX.Controllers
             return ResponseResult(await _IGSTServices.RemoveGST_SalesData(SaleID));
         }
 
-        // <summary>
+        /// <summary>
         /// Retrieves the list of all GST Sales records.
         /// </summary>
         /// <returns>

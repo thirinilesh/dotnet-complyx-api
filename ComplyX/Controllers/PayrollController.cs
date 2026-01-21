@@ -11,12 +11,14 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Mvc;
-
-using Microsoft.AspNetCore.Mvc;
+using ComplyX_Businesss.Helper;
 
 namespace ComplyX.Controllers
 {
+    /// <summary>
+    /// Controller for managing payroll-related operations.
+    /// Provides endpoints for leave encashment, salary, and other payroll transactions.
+    /// </summary>
     [ApiController]
     [Route("[controller]")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
@@ -24,6 +26,9 @@ namespace ComplyX.Controllers
     {
         private readonly IPayrollServices _IPayrollServices;
 
+        /// <summary>
+        /// Service for handling payroll business logic.
+        /// </summary>
         public PayrollController(AppDbContext context, IPayrollServices IPayrollServices)
         {
             _IPayrollServices = IPayrollServices;
@@ -256,6 +261,18 @@ namespace ComplyX.Controllers
         {
             return ResponseResult(await _IPayrollServices.RemoveLeave_Encashment_TransactionData(EncashmentID));
         }
+
+        /// <summary>
+        /// Retrieves the leave encashment transaction details for a specific Encashment ID.
+        /// </summary>
+        /// <param name="EncashmentID">The unique identifier of the leave encashment transaction.</param>
+        /// <returns>
+        /// An <see cref="IActionResult"/> containing the transaction details.
+        /// Returns 200 OK with the transaction if found, or an appropriate error response if not found.
+        /// </returns>
+        /// <response code="200">Returns the leave encashment transaction details.</response>
+        /// <response code="400">If the EncashmentID is invalid.</response>
+        /// <response code="404">If no transaction is found for the given ID.</response>
         [HttpGet("GetLeaveEncashmentTransacionByID")]
         public async Task<IActionResult> GetLeave_Encashment_TransactionByID(string EncashmentID)
         {

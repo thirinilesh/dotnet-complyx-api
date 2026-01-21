@@ -3,7 +3,7 @@ using ComplyX_Businesss.Models;
 using ComplyX.Services;
 
 
-namespace ComplyX.Services
+namespace ComplyX_Businesss.Services
 {
     public interface EPFOServices
     {

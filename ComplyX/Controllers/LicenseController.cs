@@ -10,22 +10,26 @@ using Lakshmi.Aca.Api.Controllers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Mvc;
-
-using Microsoft.AspNetCore.Mvc;
-using ComplyX.Shared.Data;
+using ComplyX_Businesss.Helper;
 
 namespace ComplyX.Shared.Controllers
 {
+    /// <summary>
+    /// Controller for managing license operations.
+    /// Provides endpoints to create, update, retrieve, and manage licenses.
+    /// </summary>
     [ApiController]
     [Route("[controller]")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class LicenseController : BaseController
     {
         private readonly LicenseServices _LicenseServices;
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LicenseController"/> class.
+        /// </summary>
+        /// <param name="context">The application database context.</param>
+        /// <param name="LicenseServices">The service for managing license operations.</param>
         public LicenseController(AppDbContext context, LicenseServices LicenseServices)
         {
             _LicenseServices = LicenseServices;

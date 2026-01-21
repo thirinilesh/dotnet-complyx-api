@@ -12,12 +12,17 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ComplyX_Businesss.Services.Interface;
+using ComplyX_Businesss.Helper;
 
 namespace ComplyX.Controllers
 {
+    /// <summary>
+    /// Controller for managing compliance operations.
+    /// Provides endpoints to manage compliance data, track status, and handle compliance-related processes.
+    /// </summary>
     [ApiController]
     [Route("[controller]")]
-   // [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class ComplianceMgmtController : BaseController
     {
         private readonly AppDbContext _context;
@@ -25,6 +30,13 @@ namespace ComplyX.Controllers
         private readonly JwtTokenService _tokenService;
 
         private readonly ComplianceMgmtService _ComplianceMgmtService;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ComplianceMgmtController"/> class.
+        /// </summary>
+        /// <param name="tokenservice">Service for managing JWT token operations.</param>
+        /// <param name="context">The application database context.</param>
+        /// <param name="ComplianceMgmtService">The service for managing compliance operations.</param>
         public ComplianceMgmtController(JwtTokenService tokenservice, AppDbContext context, ComplianceMgmtService ComplianceMgmtService)
         {
             _tokenService = tokenservice;

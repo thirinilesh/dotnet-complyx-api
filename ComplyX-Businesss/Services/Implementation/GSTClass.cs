@@ -2,7 +2,6 @@
 using ComplyX_Businesss.Services.Interface;
 using ComplyX_Businesss.Models;
 using ComplyX.Services;
-using ComplyX.Shared.Data;
 using ComplyX.Shared.Helper;
 using Microsoft.EntityFrameworkCore;
 using ComplyX_Businesss.Helper;

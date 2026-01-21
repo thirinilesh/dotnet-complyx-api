@@ -16,7 +16,7 @@ using Microsoft.Extensions.Logging;
 using Nest;
 using ComplyX_Businesss.Helper;
 using System;
-using PagedList;
+using X.PagedList;
 
 
 namespace ComplyX_Businesss.Services.Implementation

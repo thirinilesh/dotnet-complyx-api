@@ -10,7 +10,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Text.Json;
 using System.Threading.Tasks;
-using PagedList;
+using X.PagedList;
 using ComplyX.Shared.Helper;
 using ComplyX.Shared.Data;
 

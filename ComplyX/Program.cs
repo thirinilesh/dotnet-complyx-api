@@ -17,6 +17,8 @@ using ComplyX_Businesss.Services.Implementation;
 using ComplyX_Businesss.Helper;
 using System.Text.Json.Serialization;
 using System.Text.Json;
+using ComplyX_Businesss.Services;
+using ComplyX_Businesss.BusinessLogic;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -58,6 +60,7 @@ builder.Services.AddAuthentication(options =>
 })
 .AddJwtBearer(options =>
 {
+
     var key = Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]);
     options.TokenValidationParameters = new TokenValidationParameters
     {
