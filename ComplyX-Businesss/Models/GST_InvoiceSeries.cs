@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace ComplyX_Businesss.Models
@@ -15,6 +16,7 @@ namespace ComplyX_Businesss.Models
         public int? CurrentNumber { get; set; }
         public string? Suffix { get; set; }
         public DateTime? LastUpdated { get; set; }
+        [JsonIgnore]
         public virtual Company? Company { get; set; }
     }
 }

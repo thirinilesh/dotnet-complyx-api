@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace ComplyX_Businesss.Models
@@ -30,8 +31,9 @@ namespace ComplyX_Businesss.Models
 
         public DateTime? approved_at { get; set; }
         public string? approved_by { get; set; }
-
+        [JsonIgnore]
         public virtual legalDocument? legalDocument { get; set; }
+        [JsonIgnore]
         public virtual ICollection<legalDocumentAcceptance>? legalDocumentAcceptance { get; set; } = new List<legalDocumentAcceptance>();
     }
 }

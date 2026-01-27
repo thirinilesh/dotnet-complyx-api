@@ -1,5 +1,6 @@
 ﻿using ComplyX_Businesss.Models;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace ComplyX_Businesss.Models
 {
@@ -16,8 +17,9 @@ namespace ComplyX_Businesss.Models
         public decimal AmountPaid { get; set; }  
         public string TransactionId { get; set; } = string.Empty;
         public string Remarks { get; set; } = string.Empty;
-
-        public virtual ProductOwners ProductOwners { get; set; }
+        [JsonIgnore]
+        public virtual ProductOwners? ProductOwners { get; set; }
+        [JsonIgnore]
         public virtual SubscriptionPlans SubscriptionPlans { get; set; }
     }
 }

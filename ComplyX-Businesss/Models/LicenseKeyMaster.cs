@@ -1,4 +1,5 @@
 ﻿using ComplyX_Businesss.Models;
+using System.Text.Json.Serialization;
 
 namespace ComplyX_Businesss.Models
 {
@@ -14,8 +15,11 @@ namespace ComplyX_Businesss.Models
         public bool IsActive { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
+        [JsonIgnore]
         public virtual ProductOwners? ProductOwners { get; set; }
+        [JsonIgnore]
         public virtual ICollection<LicenseActivation>? LicenseActivation { get; set; } = new List<LicenseActivation>();
+        [JsonIgnore]
         public virtual ICollection<LicenseAuditLogs>? LicenseAuditLogs { get; set; } = new List<LicenseAuditLogs>();
     }
 }

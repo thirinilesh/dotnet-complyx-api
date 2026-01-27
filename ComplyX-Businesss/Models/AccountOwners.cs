@@ -2,6 +2,7 @@
 using FluentValidation;
 using System.ComponentModel.DataAnnotations;
 using System.Security.AccessControl;
+using System.Text.Json.Serialization;
 
 namespace ComplyX_Businesss.Models
 {
@@ -38,9 +39,11 @@ namespace ComplyX_Businesss.Models
         public bool? AllowCLRAModule { get; set; }
         public bool? AllowPayrollModule { get; set; }
         public bool? AllowDSCSigning { get; set; }
-
+        [JsonIgnore]
         public virtual ICollection<Company> Companies { get; set; } = new List<Company>();
+        [JsonIgnore]
         public virtual ICollection<ProductOwnerSubscriptions> ProductOwnerSubscriptionss { get; set; } = new List<ProductOwnerSubscriptions>();
+        [JsonIgnore]
         public virtual ICollection<LicenseKeyMaster>? LicenseKeyMaster { get; set; } = new List<LicenseKeyMaster>();
         internal FluentValidation.Results.ValidationResult Validate(ProductOwners productOwners)
         {

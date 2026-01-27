@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace ComplyX_Businesss.Models
@@ -24,6 +25,7 @@ namespace ComplyX_Businesss.Models
         public decimal TotalBillValue { get; set; }
         public DateTime? CreatedOn { get; set; }
         public int? CreatedBy { get; set; }
+        [JsonIgnore]
         public virtual Company? Company { get; set; }
     }
 }

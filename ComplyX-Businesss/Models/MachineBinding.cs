@@ -1,4 +1,6 @@
-﻿namespace ComplyX_Businesss.Models
+﻿using System.Text.Json.Serialization;
+
+namespace ComplyX_Businesss.Models
 {
     public class MachineBinding
     {
@@ -11,6 +13,7 @@
         public DateTime FirstSeenAt { get; set; }
         public DateTime? LastSeenAt { get; set; }
         public int LicenseActivationId { get; set; }
+        [JsonIgnore]
         public virtual LicenseActivation? LicenseActivation { get; set; }
     }
 }

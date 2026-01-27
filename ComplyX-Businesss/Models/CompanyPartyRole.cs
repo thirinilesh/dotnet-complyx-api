@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using static ComplyX_Businesss.Helper.Commanfield;
 
@@ -21,7 +22,9 @@ namespace ComplyX_Businesss.Models
         public bool IsActive { get; set; }
         public DateTime CreatedAt { get; set; }
         public string CreatedBy { get; set; }
+        [JsonIgnore]
         public virtual Company? Company { get; set; }
+        [JsonIgnore]
         public virtual PartyMaster? PartyMaster { get; set; }
 
     }

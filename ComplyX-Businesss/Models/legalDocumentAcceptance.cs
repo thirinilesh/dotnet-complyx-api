@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace ComplyX_Businesss.Models
@@ -19,7 +20,9 @@ namespace ComplyX_Businesss.Models
         public string? accepted_device { get; set; }
         public string? acceptance_method { get; set; }
         public string consent_proof_hash { get; set; }
+        [JsonIgnore]
         public virtual legalDocument? legalDocument { get; set; }
+        [JsonIgnore]
         public virtual legalDocumentVersion? legalDocumentVersion { get; set; }
 
     }

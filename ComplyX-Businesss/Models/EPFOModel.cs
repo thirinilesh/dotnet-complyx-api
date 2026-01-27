@@ -13,6 +13,7 @@ namespace ComplyX_Businesss.Models
         public string? Extension { get; set; }
         public string? OfficeCode { get; set; }
         public DateTime? CreatedAt { get; set; }
+        [JsonIgnore]
         public virtual Company Companies { get; set; }
     }
 
@@ -25,7 +26,7 @@ namespace ComplyX_Businesss.Models
         public DateTime? DOJ_EPF { get; set; }
         public DateTime? DOE_EPF { get; set; }
         public DateTime? CreatedAt { get; set; }
-    
+        [JsonIgnore]
         public virtual Employees Employees { get; set; }
     }
 
@@ -41,7 +42,9 @@ namespace ComplyX_Businesss.Models
         public decimal TotalContribution { get; set; }
         public string? Status { get; set; }
         public DateTime? CreatedAt { get; set; }
+        [JsonIgnore]
         public virtual Company? Companies { get; set; }
+        [JsonIgnore]
         public virtual Subcontractors? Subcontractorss { get; set; }
     }
 
@@ -63,10 +66,13 @@ namespace ComplyX_Businesss.Models
         public bool IsLocked { get; set; } = false;
         public DateTime? LockedAt { get; set; }
         public string? LockedByUserId { get; set; }
+        [JsonIgnore]
         public virtual Company Companies { get; set; }
+        [JsonIgnore]
         public virtual Subcontractors? Subcontractorss { get; set; }
-
+        [JsonIgnore]
         public virtual ApplicationUser? CreatedByUser { get; set; }
+        [JsonIgnore]
         public virtual ApplicationUser? LockedByUser { get; set; }
     }
 }

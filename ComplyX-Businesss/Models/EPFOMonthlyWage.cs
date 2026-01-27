@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace ComplyX_Businesss.Models
@@ -27,9 +28,11 @@ namespace ComplyX_Businesss.Models
         public int? NCPDays { get; set; }
         public decimal? RefundAdvance { get; set; }
         public DateTime? CreatedAt { get; set; }
-
+        [JsonIgnore]
         public virtual Company? Company { get; set; }
+        [JsonIgnore]
         public virtual Employees? Employees { get; set; }
+        [JsonIgnore]
         public virtual Subcontractors? Subcontractors { get; set; }
 
     }

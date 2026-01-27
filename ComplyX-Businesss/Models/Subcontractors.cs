@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace ComplyX_Businesss.Models
 {
@@ -16,14 +17,16 @@ namespace ComplyX_Businesss.Models
         public string GSTIN { get; set; }
         public string PAN { get; set; }
         public DateTime CreatedAt { get; set; }
-
+        [JsonIgnore]
         public virtual Company? Companies { get; set; }
 
+        [JsonIgnore]
         public virtual ICollection<Employees>? Employees { get; set; } = new List<Employees>();
-
+        [JsonIgnore]
         public virtual ICollection<EPFOECRFile>? EPFOECRFile { get; set; } = new List<EPFOECRFile>();
+        [JsonIgnore]
         public virtual ICollection<EPFOPeriod>? EPFOPeriods { get; set; } = new List<EPFOPeriod>();
-
+        [JsonIgnore]
         public virtual ICollection<EPFOMonthlyWage>? EPFOMonthlyWage { get; set; } = new List<EPFOMonthlyWage>();
     }
 }

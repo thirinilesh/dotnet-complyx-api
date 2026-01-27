@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
- 
+using System.Text.Json.Serialization;
+
 namespace ComplyX_Businesss.Models
 {
     public class Employees
@@ -42,13 +43,17 @@ namespace ComplyX_Businesss.Models
         public string PTState { get; set; } = string.Empty;
         public bool ActiveStatus { get; set; } = false;
         public bool IsDeleted { get; set; } = false;
-
+        [JsonIgnore]
         public virtual Company Companies { get; set; }
+        [JsonIgnore]
         public virtual Subcontractors? Subcontractor { get; set; }
-
+        [JsonIgnore]
         public virtual ICollection<PayrollData> Payroll { get; set; } = new List<PayrollData>();
+        [JsonIgnore]
         public virtual ICollection<EmployeeEPFO>? EmployeeEPFO { get; set; } = new List<EmployeeEPFO>();
+        [JsonIgnore]
         public virtual ICollection<Gratuity_Transactions>? Gratuity_Transactions { get; set; } = new List<Gratuity_Transactions>();
+        [JsonIgnore]
         public virtual ICollection<EPFOMonthlyWage>? EPFOMonthlyWage { get; set; } = new List<EPFOMonthlyWage>();
        
     }

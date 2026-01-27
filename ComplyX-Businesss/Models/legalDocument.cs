@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace ComplyX_Businesss.Models
@@ -18,7 +19,9 @@ namespace ComplyX_Businesss.Models
         public string? status { get; set; }
         public DateTime created_at { get; set; }
         public string created_by { get; set; }
+        [JsonIgnore]
         public virtual ICollection<legalDocumentAcceptance>? legalDocumentAcceptance { get; set; } = new List<legalDocumentAcceptance>();
+        [JsonIgnore]
         public virtual ICollection<legalDocumentVersion>? legalDocumentVersion { get; set; } = new List<legalDocumentVersion>();
 
     }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace ComplyX_Businesss.Models
@@ -20,9 +21,9 @@ namespace ComplyX_Businesss.Models
         public DateTime? PaidOn { get; set; }
         public string? Status {  get; set; }
         public DateTime? CreatedAt { get; set; }
-
+        [JsonIgnore]
         public virtual Company? Company { get; set; }
-
+        [JsonIgnore]
         public virtual CustomerPayments? CustomerPayments { get; set; }
     }
 }

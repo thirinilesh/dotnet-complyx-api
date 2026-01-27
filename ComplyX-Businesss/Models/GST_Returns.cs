@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace ComplyX_Businesss.Models
@@ -20,6 +21,7 @@ namespace ComplyX_Businesss.Models
         public DateTime? FilingDate { get; set; }
         public string? Status { get; set; }
         public DateTime? CreatedOn { get; set; }
+        [JsonIgnore]
         public virtual Company? Company { get; set; }
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace ComplyX_Businesss.Models
+﻿using System.Text.Json.Serialization;
+
+namespace ComplyX_Businesss.Models
 {
     public class LicenseActivation
     {
@@ -12,9 +14,11 @@
         public bool IsRevoked { get; set; }
         public DateTime? GraceExpiryAt { get; set; }
         public string? AppVersion { get; set; }
-
+        [JsonIgnore]
         public virtual LicenseKeyMaster? LicenseKeyMaster { get; set; }
+        [JsonIgnore]
         public virtual ICollection<LicenseAuditLogs>? LicenseAuditLogs { get; set; } = new List<LicenseAuditLogs>();
+        [JsonIgnore]
         public virtual ICollection<MachineBinding>? MachineBinding { get; set; } = new List<MachineBinding>();
     }
 }

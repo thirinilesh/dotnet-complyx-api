@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace ComplyX_Businesss.Models
 {
@@ -20,7 +21,7 @@ namespace ComplyX_Businesss.Models
         public decimal NetPay { get; set; }
         public string BankAccount { get; set; }
         public string IFSC { get; set; }
-
+        [JsonIgnore]
         public virtual Employees? Employees { get; set; }
 
     }

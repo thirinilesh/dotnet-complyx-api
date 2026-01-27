@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using static ComplyX_Businesss.Helper.Commanfield;
 
@@ -31,7 +32,9 @@ namespace ComplyX_Businesss.Models
         public DateTime? CreatedAt { get; set; }
         public string? UpdatedBy { get; set; }
         public DateTime? UpdatedAt { get; set; }
+        [JsonIgnore]
         public virtual Company? Company { get; set; }
+        [JsonIgnore]
         public virtual ICollection<TDSEntry>? TDSEntry { get; set; } = new List<TDSEntry>();
 
     }

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace ComplyX_Businesss.Models
@@ -15,7 +16,9 @@ namespace ComplyX_Businesss.Models
         public decimal AllocatedTDSAmount { get; set; }
         public DateTime CreatedAt { get; set; }
         public string CreatedBy { get; set; }
+        [JsonIgnore]
         public virtual TDSChallan? TDSChallan { get; set; }
+        [JsonIgnore]
         public virtual TDSEntry? TDSEntry { get; set; }
     }
 }

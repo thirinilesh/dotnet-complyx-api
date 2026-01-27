@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace ComplyX_Businesss.Models
@@ -28,9 +29,13 @@ namespace ComplyX_Businesss.Models
         public string? HigherRateReason { get; set; }
         public bool IsMappedToReturn { get; set; }
         public DateTime CreatedAt { get; set; }
+        [JsonIgnore]
         public virtual TDSDeductor? TDSDeductor { get; set; }
+        [JsonIgnore]
         public virtual TDSDeductee? TDSDeductee { get; set; }
+        [JsonIgnore]
         public virtual ICollection<TDSReturnEntry>? TDSReturnEntry { get; set; } = new List<TDSReturnEntry>();
+        [JsonIgnore]
         public virtual ICollection<TDSChallanAllocation>? TDSChallanAllocation { get; set; } = new List<TDSChallanAllocation>();
     } 
 

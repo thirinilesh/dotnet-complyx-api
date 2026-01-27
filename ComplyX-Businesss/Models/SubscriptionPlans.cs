@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace ComplyX_Businesss.Models
 {
@@ -25,6 +26,7 @@ namespace ComplyX_Businesss.Models
         public bool AllowDSCSigning { get; set; }
         public bool AllowCloudBackup { get; set; }
         public bool IsActive { get; set; }
+        [JsonIgnore]
         public virtual ICollection<ProductOwnerSubscriptions>? ProductOwnerSubscriptionss { get; set; } = new List<ProductOwnerSubscriptions>();
     }
 }

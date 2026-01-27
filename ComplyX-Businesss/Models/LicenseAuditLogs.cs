@@ -1,4 +1,6 @@
-﻿namespace ComplyX_Businesss.Models
+﻿using System.Text.Json.Serialization;
+
+namespace ComplyX_Businesss.Models
 {
     public class LicenseAuditLogs
     {
@@ -10,8 +12,9 @@
         public DateTime LoggedAt { get; set; }
         public string? MachineHash { get; set; }
         public string? IPAddress { get; set; }
-
+        [JsonIgnore]
         public virtual LicenseKeyMaster? LicenseKeyMaster { get; set; }
+        [JsonIgnore]
         public virtual LicenseActivation? LicenseActivation { get; set; }
     }
 }
