@@ -1,0 +1,10 @@
+C:\ThiriRepos\dotnet-complyx-api\ComplyX-Tests\bin\Release\net8.0\.msCoverageSourceRootsMapping_ComplyX-Tests
+C:\ThiriRepos\dotnet-complyx-api\ComplyX-Tests\bin\Release\net8.0\CoverletSourceRootsMapping_ComplyX-Tests
+C:\ThiriRepos\dotnet-complyx-api\ComplyX-Tests\obj\Release\net8.0\ComplyX-Tests.csproj.AssemblyReference.cache
+C:\ThiriRepos\dotnet-complyx-api\ComplyX-Tests\obj\Release\net8.0\rpswa.dswa.cache.json
+C:\ThiriRepos\dotnet-complyx-api\ComplyX-Tests\obj\Release\net8.0\ComplyX-Tests.GeneratedMSBuildEditorConfig.editorconfig
+C:\ThiriRepos\dotnet-complyx-api\ComplyX-Tests\obj\Release\net8.0\ComplyX-Tests.AssemblyInfoInputs.cache
+C:\ThiriRepos\dotnet-complyx-api\ComplyX-Tests\obj\Release\net8.0\ComplyX-Tests.AssemblyInfo.cs
+C:\ThiriRepos\dotnet-complyx-api\ComplyX-Tests\obj\Release\net8.0\ComplyX-Tests.csproj.CoreCompileInputs.cache
+C:\ThiriRepos\dotnet-complyx-api\ComplyX-Tests\obj\Release\net8.0\ComplyX-Tests.MvcApplicationPartsAssemblyInfo.cache
+C:\ThiriRepos\dotnet-complyx-api\ComplyX-Tests\obj\Release\net8.0\ComplyX-Tests.sourcelink.json

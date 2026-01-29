@@ -1,0 +1,8 @@
+C:\ThiriRepos\dotnet-complyx-api\ComplyX-Businesss\obj\Release\net8.0\staticwebassets.build.json
+C:\ThiriRepos\dotnet-complyx-api\ComplyX-Businesss\obj\Release\net8.0\staticwebassets.build.json
+C:\ThiriRepos\dotnet-complyx-api\ComplyX-Businesss\obj\Release\net8.0\staticwebassets.build.json
+C:\ThiriRepos\dotnet-complyx-api\ComplyX-Businesss\obj\Release\net8.0\staticwebassets.build.json
+C:\ThiriRepos\dotnet-complyx-api\ComplyX-Businesss\obj\Release\net8.0\staticwebassets.build.json
+C:\ThiriRepos\dotnet-complyx-api\ComplyX-Businesss\obj\Release\net8.0\staticwebassets.build.json
+C:\ThiriRepos\dotnet-complyx-api\ComplyX-Businesss\obj\Release\net8.0\staticwebassets.build.json
+C:\ThiriRepos\dotnet-complyx-api\ComplyX-Businesss\obj\Release\net8.0\staticwebassets.build.json

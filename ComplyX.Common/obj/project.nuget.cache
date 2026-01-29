@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "dgSpecHash": "x1cfWppvD9c=",
+  "success": true,
+  "projectFilePath": "C:\\ThiriRepos\\dotnet-complyx-api\\ComplyX.Common\\ComplyX.Common.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\niles\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\8.0.23\\microsoft.windowsdesktop.app.ref.8.0.23.nupkg.sha512",
+    "C:\\Users\\niles\\.nuget\\packages\\microsoft.netcore.app.ref\\8.0.23\\microsoft.netcore.app.ref.8.0.23.nupkg.sha512",
+    "C:\\Users\\niles\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\8.0.23\\microsoft.aspnetcore.app.ref.8.0.23.nupkg.sha512"
+  ],
+  "logs": []
+}

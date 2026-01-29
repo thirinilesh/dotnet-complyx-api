@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComplyX-Businesss", "Comply
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComplyX-Tests", "ComplyX-Tests\ComplyX-Tests.csproj", "{B72E4B8D-7EEB-0185-77D7-5661199C8C90}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComplyX.Data", "ComplyX.Data\ComplyX.Data.csproj", "{987E76EC-F30E-6706-3698-92ACBE0583B4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{B72E4B8D-7EEB-0185-77D7-5661199C8C90}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B72E4B8D-7EEB-0185-77D7-5661199C8C90}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B72E4B8D-7EEB-0185-77D7-5661199C8C90}.Release|Any CPU.Build.0 = Release|Any CPU
+		{987E76EC-F30E-6706-3698-92ACBE0583B4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{987E76EC-F30E-6706-3698-92ACBE0583B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{987E76EC-F30E-6706-3698-92ACBE0583B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{987E76EC-F30E-6706-3698-92ACBE0583B4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

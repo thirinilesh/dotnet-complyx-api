@@ -1,0 +1,6 @@
+C:\ThiriRepos\dotnet-complyx-api\ComplyX.Data\obj\Release\net8.0\ComplyX.Data.csproj.AssemblyReference.cache
+C:\ThiriRepos\dotnet-complyx-api\ComplyX.Data\obj\Release\net8.0\ComplyX.Data.GeneratedMSBuildEditorConfig.editorconfig
+C:\ThiriRepos\dotnet-complyx-api\ComplyX.Data\obj\Release\net8.0\ComplyX.Data.AssemblyInfoInputs.cache
+C:\ThiriRepos\dotnet-complyx-api\ComplyX.Data\obj\Release\net8.0\ComplyX.Data.AssemblyInfo.cs
+C:\ThiriRepos\dotnet-complyx-api\ComplyX.Data\obj\Release\net8.0\ComplyX.Data.csproj.CoreCompileInputs.cache
+C:\ThiriRepos\dotnet-complyx-api\ComplyX.Data\obj\Release\net8.0\ComplyX.Data.sourcelink.json

@@ -1,0 +1,12 @@
+C:\ThiriRepos\dotnet-complyx-api\ComplyX.Data\bin\Debug\net8.0\ComplyX.Data.deps.json
+C:\ThiriRepos\dotnet-complyx-api\ComplyX.Data\bin\Debug\net8.0\ComplyX.Data.dll
+C:\ThiriRepos\dotnet-complyx-api\ComplyX.Data\bin\Debug\net8.0\ComplyX.Data.pdb
+C:\ThiriRepos\dotnet-complyx-api\ComplyX.Data\obj\Debug\net8.0\ComplyX.Data.GeneratedMSBuildEditorConfig.editorconfig
+C:\ThiriRepos\dotnet-complyx-api\ComplyX.Data\obj\Debug\net8.0\ComplyX.Data.AssemblyInfoInputs.cache
+C:\ThiriRepos\dotnet-complyx-api\ComplyX.Data\obj\Debug\net8.0\ComplyX.Data.AssemblyInfo.cs
+C:\ThiriRepos\dotnet-complyx-api\ComplyX.Data\obj\Debug\net8.0\ComplyX.Data.csproj.CoreCompileInputs.cache
+C:\ThiriRepos\dotnet-complyx-api\ComplyX.Data\obj\Debug\net8.0\ComplyX.Data.sourcelink.json
+C:\ThiriRepos\dotnet-complyx-api\ComplyX.Data\obj\Debug\net8.0\ComplyX.Data.dll
+C:\ThiriRepos\dotnet-complyx-api\ComplyX.Data\obj\Debug\net8.0\refint\ComplyX.Data.dll
+C:\ThiriRepos\dotnet-complyx-api\ComplyX.Data\obj\Debug\net8.0\ComplyX.Data.pdb
+C:\ThiriRepos\dotnet-complyx-api\ComplyX.Data\obj\Debug\net8.0\ref\ComplyX.Data.dll

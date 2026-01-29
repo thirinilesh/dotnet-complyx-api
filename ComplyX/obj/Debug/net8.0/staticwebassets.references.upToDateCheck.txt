@@ -1,0 +1,3 @@
+C:\ThiriRepos\dotnet-complyx-api\ComplyX-Businesss\obj\Debug\net8.0\staticwebassets.build.json
+C:\ThiriRepos\dotnet-complyx-api\ComplyX-Businesss\obj\Debug\net8.0\staticwebassets.build.json
+C:\ThiriRepos\dotnet-complyx-api\ComplyX-Businesss\obj\Debug\net8.0\staticwebassets.build.json
