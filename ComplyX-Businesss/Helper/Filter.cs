@@ -12,7 +12,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using X.PagedList;
 using ComplyX.Shared.Helper;
-using ComplyX.Shared.Data;
+using ComplyX_Businesss.Helper;
 
 namespace ComplyX_Businesss.Helper
 {

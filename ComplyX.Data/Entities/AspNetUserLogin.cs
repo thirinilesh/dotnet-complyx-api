@@ -1,9 +1,10 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Identity;
+using System;
 using System.Collections.Generic;
 
 namespace ComplyX.Data.Entities;
 
-public partial class AspNetUserLogin
+public partial class AspNetUserLogin :IdentityUserLogin<string>
 {
     public string LoginProvider { get; set; } = null!;
 

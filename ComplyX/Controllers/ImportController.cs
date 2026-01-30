@@ -34,7 +34,7 @@ namespace ComplyX.Controllers
         /// </summary>
         /// <param name="context">The application database context.</param>
         /// <param name="ImportServices">The service for managing import operations.</param>
-        public ImportController(AppDbContext context, ImportServices ImportServices)
+        public ImportController(ComplyX_Businesss.Helper.AppContext context, ImportServices ImportServices)
         {
             _ImportServices = ImportServices;
         }

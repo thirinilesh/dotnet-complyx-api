@@ -1,15 +1,16 @@
 ﻿using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using ComplyX.Shared;
 using ComplyX.Shared.Data;
 
 using ComplyX_Businesss.Models;
 
 namespace ComplyX_Businesss.Helper
 {
-    public class AppDbContext : IdentityDbContext<ApplicationUser>
+    public class AppContext : IdentityDbContext<ApplicationUser>
     {
-        public AppDbContext(DbContextOptions<AppDbContext> options)
+        public AppContext(DbContextOptions<AppContext> options)
         : base(options)
         {
         }

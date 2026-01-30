@@ -1,10 +1,15 @@
-﻿using System;
+﻿using ComplyX.Data.DbContexts;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace ComplyX.Data.Entities;
-
-public partial class AspNetUser
+         
+public partial class AspNetUser  
 {
+    [Key]
     public string Id { get; set; } = null!;
 
     public bool? IsApproved { get; set; }
@@ -54,6 +59,6 @@ public partial class AspNetUser
     public virtual ICollection<Epfoperiod> EpfoperiodCreatedByUsers { get; set; } = new List<Epfoperiod>();
 
     public virtual ICollection<Epfoperiod> EpfoperiodLockedByUsers { get; set; } = new List<Epfoperiod>();
-
     public virtual ICollection<AspNetRole> Roles { get; set; } = new List<AspNetRole>();
+    public virtual ICollection<AspNetUserRole> AspNetUserRole { get; set; } = new List<AspNetUserRole>();
 }

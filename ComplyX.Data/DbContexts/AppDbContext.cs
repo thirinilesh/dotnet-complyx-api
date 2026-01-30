@@ -1,15 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using ComplyX.Data.Entities;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using ComplyX.Data.Entities;
 
 namespace ComplyX.Data.DbContexts;
 
-public partial class AppDbContext : DbContext
+public partial class AppDbContext :IdentityDbContext<ApplicationUsers>
 {
-    public AppDbContext()
-    {
-    }
+  
 
     public AppDbContext(DbContextOptions<AppDbContext> options)
         : base(options)
@@ -18,17 +19,17 @@ public partial class AppDbContext : DbContext
 
     public virtual DbSet<AccountOwner> AccountOwners { get; set; }
 
-    public virtual DbSet<AspNetRole> AspNetRoles { get; set; }
+    //public virtual DbSet<AspNetRole> AspNetRoles { get; set; }
 
-    public virtual DbSet<AspNetRoleClaim> AspNetRoleClaims { get; set; }
+    //public virtual DbSet<AspNetRoleClaim> AspNetRoleClaims { get; set; }
 
-    public virtual DbSet<AspNetUser> AspNetUsers { get; set; }
+    //public virtual DbSet<AspNetUser> AspNetUsers { get; set; }
 
-    public virtual DbSet<AspNetUserClaim> AspNetUserClaims { get; set; }
+    //public virtual DbSet<AspNetUserClaim> AspNetUserClaims { get; set; }
 
-    public virtual DbSet<AspNetUserLogin> AspNetUserLogins { get; set; }
+    //public virtual DbSet<AspNetUserLogin> AspNetUserLogins { get; set; }
 
-    public virtual DbSet<AspNetUserToken> AspNetUserTokens { get; set; }
+    //public virtual DbSet<AspNetUserToken> AspNetUserTokens { get; set; }
 
     public virtual DbSet<AuditLog> AuditLogs { get; set; }
 
@@ -154,72 +155,18 @@ public partial class AppDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<AspNetRole>(entity =>
-        {
-            entity.HasIndex(e => e.NormalizedName, "RoleNameIndex")
-                .IsUnique()
-                .HasFilter("([NormalizedName] IS NOT NULL)");
+        base.OnModelCreating(modelBuilder);
 
-            entity.Property(e => e.Name).HasMaxLength(256);
-            entity.Property(e => e.NormalizedName).HasMaxLength(256);
-        });
+        modelBuilder.Entity<ApplicationUsers>().ToTable("AspNetUsers");
+        modelBuilder.Entity<IdentityRole>().ToTable("AspNetRoles");
+        modelBuilder.Entity<IdentityUserRole<string>>().ToTable("AspNetUserRoles");
+        modelBuilder.Entity<IdentityUserClaim<string>>().ToTable("AspNetUserClaims");
+        modelBuilder.Entity<IdentityUserLogin<string>>().ToTable("AspNetUserLogins");
+        modelBuilder.Entity<IdentityUserToken<string>>().ToTable("AspNetUserTokens");
+        modelBuilder.Entity<IdentityRoleClaim<string>>().ToTable("AspNetRoleClaims");
 
-        modelBuilder.Entity<AspNetRoleClaim>(entity =>
-        {
-            entity.HasIndex(e => e.RoleId, "IX_AspNetRoleClaims_RoleId");
-
-            entity.HasOne(d => d.Role).WithMany(p => p.AspNetRoleClaims).HasForeignKey(d => d.RoleId);
-        });
-
-        modelBuilder.Entity<AspNetUser>(entity =>
-        {
-            entity.HasIndex(e => e.NormalizedEmail, "EmailIndex");
-
-            entity.HasIndex(e => e.NormalizedUserName, "UserNameIndex")
-                .IsUnique()
-                .HasFilter("([NormalizedUserName] IS NOT NULL)");
-
-            entity.Property(e => e.Email).HasMaxLength(256);
-            entity.Property(e => e.NormalizedEmail).HasMaxLength(256);
-            entity.Property(e => e.NormalizedUserName).HasMaxLength(256);
-            entity.Property(e => e.UserName).HasMaxLength(256);
-
-            entity.HasMany(d => d.Roles).WithMany(p => p.Users)
-                .UsingEntity<Dictionary<string, object>>(
-                    "AspNetUserRole",
-                    r => r.HasOne<AspNetRole>().WithMany().HasForeignKey("RoleId"),
-                    l => l.HasOne<AspNetUser>().WithMany().HasForeignKey("UserId"),
-                    j =>
-                    {
-                        j.HasKey("UserId", "RoleId");
-                        j.ToTable("AspNetUserRoles");
-                        j.HasIndex(new[] { "RoleId" }, "IX_AspNetUserRoles_RoleId");
-                    });
-        });
-
-        modelBuilder.Entity<AspNetUserClaim>(entity =>
-        {
-            entity.HasIndex(e => e.UserId, "IX_AspNetUserClaims_UserId");
-
-            entity.HasOne(d => d.User).WithMany(p => p.AspNetUserClaims).HasForeignKey(d => d.UserId);
-        });
-
-        modelBuilder.Entity<AspNetUserLogin>(entity =>
-        {
-            entity.HasKey(e => new { e.LoginProvider, e.ProviderKey });
-
-            entity.HasIndex(e => e.UserId, "IX_AspNetUserLogins_UserId");
-
-            entity.HasOne(d => d.User).WithMany(p => p.AspNetUserLogins).HasForeignKey(d => d.UserId);
-        });
-
-        modelBuilder.Entity<AspNetUserToken>(entity =>
-        {
-            entity.HasKey(e => new { e.UserId, e.LoginProvider, e.Name });
-
-            entity.HasOne(d => d.User).WithMany(p => p.AspNetUserTokens).HasForeignKey(d => d.UserId);
-        });
-
+        modelBuilder.Entity<IdentityUserLogin<string>>()
+                .HasKey(l => new { l.LoginProvider, l.ProviderKey });
         modelBuilder.Entity<AuditLog>(entity =>
         {
             entity.HasKey(e => e.LogId).HasName("PK__AuditLog__5E5499A8CF355BBD");
@@ -1499,8 +1446,8 @@ public partial class AppDbContext : DbContext
         modelBuilder.Entity<RegisterUser>(entity =>
         {
             entity
-                .HasNoKey()
-                .ToTable("RegisterUser");
+                 .HasNoKey();
+               // .ToTable("RegisterUser");
 
             entity.Property(e => e.Address).HasMaxLength(50);
             entity.Property(e => e.Domain).HasMaxLength(50);

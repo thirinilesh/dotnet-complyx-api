@@ -1,6 +1,5 @@
 ﻿using Azure.Core;
 using ComplyX.BusinessLogic;
-using ComplyX.Shared.Data;
 using ComplyX.Shared.Helper;
 using ComplyX_Businesss.Models;
 using ComplyX.Controllers;
@@ -14,6 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ComplyX_Businesss.Services.Interface;
 using ComplyX_Businesss.Helper;
+using AppContext = ComplyX_Businesss.Helper.AppContext;
 
 
 namespace ComplyX.Controllers
@@ -27,7 +27,7 @@ namespace ComplyX.Controllers
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class DocumentController : BaseController
     {
-        private readonly AppDbContext _context;
+        private readonly AppContext _context;
 
         private readonly JwtTokenService _tokenService;
         private readonly DocumentService _documentService;
@@ -38,7 +38,7 @@ namespace ComplyX.Controllers
         /// <param name="tokenservice">Service for managing JWT token operations.</param>
         /// <param name="context">The application database context.</param>
         /// <param name="documentService">The service for managing document operations.</param>
-        public DocumentController(JwtTokenService tokenservice, AppDbContext context, DocumentService documentService)
+        public DocumentController(JwtTokenService tokenservice, AppContext context, DocumentService documentService)
         {
             _tokenService = tokenservice;
             _context = context;

@@ -2,7 +2,6 @@
 using Azure.Core;
 using ComplyX_Businesss.Models;
 using ComplyX.Shared.Helper;
-using ComplyX.Shared.Data;
 using ComplyX_Businesss.Services;
 using FluentValidation.Results;
 using Lakshmi.Aca.Api.Controllers;
@@ -11,6 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using ComplyX_Businesss.Helper;
+using AppContext = ComplyX_Businesss.Helper.AppContext;
 
 namespace ComplyX.Controllers
 {
@@ -29,7 +29,7 @@ namespace ComplyX.Controllers
         /// </summary>
         /// <param name="context">The application database context.</param>
         /// <param name="EPFOServices">The service for managing EPFO operations.</param>
-        public EPFOController(AppDbContext context, EPFOServices EPFOServices)
+        public EPFOController(AppContext context, EPFOServices EPFOServices)
         {
             _EPFOServices = EPFOServices;
         }

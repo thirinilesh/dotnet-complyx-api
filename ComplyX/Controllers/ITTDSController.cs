@@ -1,6 +1,6 @@
 ﻿using Azure.Core;
 using ComplyX.BusinessLogic;
-using ComplyX.Shared.Data;
+
 using ComplyX.Shared.Helper;
 using ComplyX_Businesss.Models;
 using ComplyX.Services;
@@ -15,6 +15,7 @@ using ComplyX_Businesss.Services.Interface;
 using Microsoft.Graph.Models;
 using Microsoft.Graph.Drives.Item.Items.Item.Workbook.Functions.OddFYield;
 using ComplyX_Businesss.Helper;
+using AppContext = ComplyX_Businesss.Helper.AppContext;
 
 namespace ComplyX.Controllers
 {
@@ -27,7 +28,7 @@ namespace ComplyX.Controllers
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class ITTDSController : BaseController
     {
-        private readonly AppDbContext _context;
+        private readonly AppContext _context;
 
         private readonly JwtTokenService _tokenService;
 
@@ -38,7 +39,7 @@ namespace ComplyX.Controllers
         /// <param name="tokenservice">Service for managing JWT token operations.</param>
         /// <param name="context">The application database context.</param>
         /// <param name="ITTDSServices">The service for managing TDS operations.</param>
-        public ITTDSController(JwtTokenService tokenservice, AppDbContext context, ITTDSServices ITTDSServices)
+        public ITTDSController(JwtTokenService tokenservice, AppContext context, ITTDSServices ITTDSServices)
         {
             _tokenService = tokenservice;
             _context = context;

@@ -1,6 +1,6 @@
 ﻿using ComplyX.Shared.Helper;
 using ComplyX_Businesss.Models;
-using ComplyX.Shared.Data;
+ 
 using ComplyX.Services;
 
 using Microsoft.EntityFrameworkCore;
@@ -15,6 +15,7 @@ using static System.Net.Mime.MediaTypeNames;
 using ComplyX_Businesss.Helper;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.EntityFrameworkCore.Metadata;
+using AppContext = ComplyX_Businesss.Helper.AppContext;
 
 namespace ComplyX.BusinessLogic
 {
@@ -26,9 +27,9 @@ namespace ComplyX.BusinessLogic
             { "name", "Name" }
         };
 
-        private readonly AppDbContext _context;
+        private readonly AppContext _context;
 
-        public EmployeeClass(AppDbContext context)
+        public EmployeeClass(AppContext context)
         {
             _context = context;
         }

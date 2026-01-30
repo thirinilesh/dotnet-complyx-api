@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ComplyX_Businesss.Helper;
 using ComplyX_Businesss.BusinessLogic;
+using AppContext = ComplyX_Businesss.Helper.AppContext;
 
 namespace ComplyX.Controllers
 {
@@ -26,7 +27,7 @@ namespace ComplyX.Controllers
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class GSTController : BaseController
     {
-        private readonly AppDbContext _context;
+        private readonly AppContext _context;
 
         private readonly JwtTokenService _tokenService;
 
@@ -37,7 +38,7 @@ namespace ComplyX.Controllers
         /// <param name="tokenservice">Service to handle JWT token operations.</param>
         /// <param name="context">Database context for accessing GST data.</param>
         /// <param name="IGSTServices">Service for GST business logic.</param>
-        public GSTController(JwtTokenService tokenservice, AppDbContext context, IGSTServices IGSTServices)
+        public GSTController(JwtTokenService tokenservice, AppContext context, IGSTServices IGSTServices)
         {
             _tokenService = tokenservice;
             _context = context;

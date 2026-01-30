@@ -1,8 +1,10 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 
 namespace ComplyX.Data.Entities;
 
+[Keyless]
 public partial class RegisterUser
 {
     public string? UserName { get; set; }

@@ -8,12 +8,13 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using AppContext = ComplyX_Businesss.Helper.AppContext;
 
 #nullable disable
 
 namespace ComplyX.Migrations
 {
-    [DbContext(typeof(AppDbContext))]
+    [DbContext(typeof(AppContext))]
     partial class AppDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

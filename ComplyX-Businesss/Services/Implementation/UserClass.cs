@@ -2,7 +2,6 @@
 using ComplyX_Businesss.Models;
 using Microsoft.AspNetCore.Identity;
 using ComplyX.Shared.Helper;
-using ComplyX.Shared.Data;
 using ComplyX;
 using System.Web;
 using System.Security.Claims;
@@ -22,6 +21,8 @@ using Jose.native;
  using Azure.Core;
 using System.Text.RegularExpressions;
 using ComplyX_Businesss.Helper;
+using ComplyX.Shared.Data;
+using AppContext = ComplyX_Businesss.Helper.AppContext;
 
 namespace ComplyX.BusinessLogic
 {
@@ -30,10 +31,10 @@ namespace ComplyX.BusinessLogic
  
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly JwtTokenService _tokenService;
-        private readonly AppDbContext _context;
+        private readonly AppContext _context;
         private readonly RoleManager<IdentityRole> _roleManager;
 
-        public UserClass( AppDbContext context, UserManager<ApplicationUser> userManager, JwtTokenService tokenservice, RoleManager<IdentityRole> roleManager)
+        public UserClass(AppContext context, UserManager<ApplicationUser> userManager, JwtTokenService tokenservice, RoleManager<IdentityRole> roleManager)
         {
             _context = context;
             _userManager = userManager;

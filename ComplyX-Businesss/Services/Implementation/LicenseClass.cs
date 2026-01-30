@@ -1,7 +1,6 @@
 ﻿using ComplyX_Businesss.Models;
 using ComplyX.Services;
 using ComplyX.Shared.Helper;
-using ComplyX.Shared.Data;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
@@ -13,6 +12,7 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using static System.Net.Mime.MediaTypeNames;
 using Microsoft.AspNetCore.Identity;
 using ComplyX_Businesss.Helper;
+using AppContext = ComplyX_Businesss.Helper.AppContext;
 
 namespace ComplyX.BusinessLogic
 {
@@ -24,9 +24,9 @@ namespace ComplyX.BusinessLogic
             { "name", "Name" }
         };
 
-        private readonly AppDbContext _context;
+        private readonly AppContext _context;
 
-        public LicenseClass(AppDbContext context)
+        public LicenseClass(AppContext context)
         {
             _context = context;
            

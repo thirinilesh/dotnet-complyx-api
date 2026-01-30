@@ -29,7 +29,7 @@ namespace ComplyX.Controllers
         /// <summary>
         /// Service for handling payroll business logic.
         /// </summary>
-        public PayrollController(AppDbContext context, IPayrollServices IPayrollServices)
+        public PayrollController(ComplyX_Businesss.Helper.AppContext context, IPayrollServices IPayrollServices)
         {
             _IPayrollServices = IPayrollServices;
         }

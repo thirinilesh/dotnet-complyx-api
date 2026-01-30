@@ -1,4 +1,4 @@
-﻿using ComplyX.Shared.Data;
+﻿
 using ComplyX.Shared.Helper;
 using ComplyX_Businesss.Models;
 using ComplyX.Services;
@@ -13,15 +13,17 @@ using System.Data;
 using System.Reflection;
 using System.ComponentModel;
 using ComplyX_Businesss.Helper;
+using ComplyX.Shared.Data;
+using AppContext = ComplyX_Businesss.Helper.AppContext;
 
 namespace ComplyX.BusinessLogic
 {
     public class ImportClass : ImportServices
     {
-        private readonly AppDbContext _context;
+        private readonly AppContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
    
-        public ImportClass(AppDbContext context , UserManager<ApplicationUser> usermanager)
+        public ImportClass(AppContext context , UserManager<ApplicationUser> usermanager)
         {
             _context = context;
             _userManager = usermanager;

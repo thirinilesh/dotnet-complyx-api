@@ -1,23 +1,32 @@
 ﻿using ComplyX;
 using ComplyX_Businesss.Models;
 using ComplyX.Services;
-using ComplyX.Shared.Data;
+using ComplyX_Businesss.Helper;
+using ComplyX_Businesss.Models.ProductOwner;
 using ComplyX.Shared.Helper;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Linq;
 using System.Runtime.InteropServices;
- 
+using ComplyX.Data.DbContexts;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using static System.Net.Mime.MediaTypeNames;
 using Microsoft.Extensions.Logging;
 using Nest;
+using EF = Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions;
 using ComplyX_Businesss.Helper;
-using System;
+using System.Collections.Immutable;
 using X.PagedList;
 using AutoMapper.Configuration.Annotations;
 using ComplyX_Businesss.Services;
+using AppDbContext = ComplyX_Businesss.Helper.AppContext;
+using ComplyX.Repositories.UnitOfWork;
+using ComplyX.Repositories.Repositories.Abstractions;
+using System.Collections;
+using AppContext = ComplyX_Businesss.Helper.AppContext;
+//using NHibernate.Linq;
+
 
 
 namespace ComplyX_Businesss.BusinessLogic
@@ -29,15 +38,17 @@ namespace ComplyX_Businesss.BusinessLogic
             { "name", "Name" }
         };
 
-        private readonly AppDbContext _context;
+        private readonly AppContext _context;
         private readonly Nest.Filter _filter;
+        private readonly IUnitOfWork _UnitOfWork;
+        private readonly ComplyX.Data.DbContexts.AppDbContext _appDbContext;
 
-
-        public AccountOwnerLogic(AppDbContext context , Nest.Filter filter)
+        public AccountOwnerLogic(AppContext context , Nest.Filter filter, IUnitOfWork UnitOfWork , ComplyX.Data.DbContexts.AppDbContext appDbContext)
         {
             _context = context;
             _filter = filter;
-           
+            _UnitOfWork = UnitOfWork;
+            _appDbContext = appDbContext;
         }
         public async Task<List<ProductOwners>> GetAllAsync()
         {
@@ -51,6 +62,41 @@ namespace ComplyX_Businesss.BusinessLogic
             catch (Exception ex)
             {
                 throw new Exception("Error fetching account owners", ex);
+            }
+        }
+        public async Task<ManagerBaseResponse<IEnumerable<ProductOwnerResponseModel>>> GetAllProductOwnerData()
+        {
+            try
+            {
+
+                var owners = await _UnitOfWork.ProductOwnerRepositories.GetQueryable().AsNoTracking()
+                        .Select(x => new ProductOwnerResponseModel
+                        {
+                            ProductOwnerId = x.ProductOwnerId,
+                            OwnerName = x.OwnerName,
+                            Email = x.Email,
+                            Mobile = x.Mobile,
+                            OrganizationName = x.OrganizationName
+                        })
+                        .ToListAsync();
+
+
+                return new ManagerBaseResponse<IEnumerable<ProductOwnerResponseModel>>
+                {
+                    IsSuccess = true,
+                    Result = owners,
+                    Message = "Subscription Plans Retrieved Successfully.",
+                };
+            }
+            catch (Exception ex)
+            {
+
+                return new ManagerBaseResponse<IEnumerable<ProductOwnerResponseModel>>
+                {
+                    IsSuccess = false,
+                    Result = null,
+                    Message = ex.Message
+                };
             }
         }
         public Task<ManagerBaseResponse<bool>> SaveProductOwnerData(ProductOwners ProductOwners)

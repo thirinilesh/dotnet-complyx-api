@@ -1,11 +1,13 @@
 ﻿using AutoMapper;
 using AutoMapper.Configuration;
-using ComplyX.Shared.Data;
+using ComplyX.Shared;
 using FluentNHibernate.Automapping;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using ComplyX.Shared.Data;
+using ComplyX_Businesss.Helper;
 using System.Threading.Tasks;
 
 namespace ComplyX_Businesss.Models

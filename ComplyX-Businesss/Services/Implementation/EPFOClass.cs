@@ -11,6 +11,7 @@ using static System.Net.Mime.MediaTypeNames;
 using Microsoft.AspNetCore.Identity;
 using ComplyX.Shared.Data;
 using ComplyX_Businesss.Helper;
+using AppContext = ComplyX_Businesss.Helper.AppContext;
 
 namespace ComplyX_Businesss.BusinessLogic
 {
@@ -20,10 +21,10 @@ namespace ComplyX_Businesss.BusinessLogic
         {
             { "name", "Name" }
         };
-        private readonly AppDbContext _context;
+        private readonly AppContext _context;
         private readonly UserManager<ApplicationUser> _usermanager;
 
-        public EPFOClass(AppDbContext context, UserManager<ApplicationUser> usermanager)
+        public EPFOClass(AppContext context, UserManager<ApplicationUser> usermanager)
         {
             _context = context;
             _usermanager = usermanager;

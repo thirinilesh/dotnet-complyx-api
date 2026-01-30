@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using ComplyX_Businesss.Helper;
+using AppContext = ComplyX_Businesss.Helper.AppContext;
 
 namespace ComplyX.Shared.Controllers
 {
@@ -30,7 +31,7 @@ namespace ComplyX.Shared.Controllers
         /// </summary>
         /// <param name="context">The application database context.</param>
         /// <param name="LicenseServices">The service for managing license operations.</param>
-        public LicenseController(AppDbContext context, LicenseServices LicenseServices)
+        public LicenseController(AppContext context, LicenseServices LicenseServices)
         {
             _LicenseServices = LicenseServices;
         }

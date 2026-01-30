@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Lakshmi.Aca.Api.Controllers;
 using ComplyX_Businesss.Helper;
+using AppContext = ComplyX_Businesss.Helper.AppContext;
 
 namespace ComplyX.Controllers
 {
@@ -26,7 +27,7 @@ namespace ComplyX.Controllers
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class MasteDataController : BaseController
     {
-        private readonly AppDbContext _context;
+        private readonly AppContext _context;
 
         private readonly JwtTokenService _tokenService;
 
@@ -38,7 +39,7 @@ namespace ComplyX.Controllers
         /// <param name="tokenservice">Service to manage JWT token operations.</param>
         /// <param name="context">The application database context.</param>
         /// <param name="MasterServices">The service for managing master data operations.</param>
-        public MasteDataController(JwtTokenService tokenservice, AppDbContext context, MasterServices MasterServices)
+        public MasteDataController(JwtTokenService tokenservice, AppContext context, MasterServices MasterServices)
         {
             _tokenService = tokenservice;
             _context = context;

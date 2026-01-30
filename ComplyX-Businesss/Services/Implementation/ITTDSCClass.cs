@@ -1,11 +1,13 @@
-﻿using ComplyX.Shared.Data;
+﻿
 using ComplyX.Shared.Helper;
 using ComplyX_Businesss.Helper;
 using ComplyX_Businesss.Models;
 using ComplyX_Businesss.Services.Interface;
 using Microsoft.AspNetCore.Identity;
 using NHibernate.Linq;
+using ComplyX.Shared.Data;
 using static ComplyX_Businesss.Helper.Commanfield;
+using AppContext = ComplyX_Businesss.Helper.AppContext;
 
 namespace ComplyX_Businesss.Services.Implementation
 {
@@ -16,12 +18,12 @@ namespace ComplyX_Businesss.Services.Implementation
             { "name", "Name" }
         };
 
-        private readonly AppDbContext _context;
+        private readonly AppContext _context;
         private readonly Nest.Filter _filter;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly Commanfield _commanfield;
 
-        public ITTDSCClass(AppDbContext context, Nest.Filter filter, UserManager<ApplicationUser> userManager, Commanfield commanfield)
+        public ITTDSCClass(AppContext context, Nest.Filter filter, UserManager<ApplicationUser> userManager, Commanfield commanfield)
         {
             _context = context;
             _filter = filter;

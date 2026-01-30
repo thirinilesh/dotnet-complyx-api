@@ -1,4 +1,4 @@
-﻿using ComplyX.Shared.Data;
+﻿
 ﻿using ComplyX_Businesss.Models;
 using ComplyX.Shared.Helper;
 using ComplyX.BusinessLogic;
@@ -12,6 +12,7 @@ using System.Text;
 using Jose;
 using ComplyX.Services;
 using ComplyX.Controllers;
+using ComplyX_Businesss.Helper;
 using ComplyX_Businesss.Services.Interface;
 using ComplyX_Businesss.Services.Implementation;
 using ComplyX_Businesss.Helper;
@@ -19,17 +20,25 @@ using System.Text.Json.Serialization;
 using System.Text.Json;
 using ComplyX_Businesss.Services;
 using ComplyX_Businesss.BusinessLogic;
+using ComplyX.Data.DbContexts;
+using ComplyX.Shared.Data;
+using ComplyX.Repositories.UnitOfWork;
+using ComplyX.Repositories.Repositories.Abstractions;
+using ComplyX.Repositories.Repositories;
+using AppContext = ComplyX_Businesss.Helper.AppContext;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add DbContext
-builder.Services.AddDbContext<AppDbContext>(options =>
+builder.Services.AddDbContext< AppDbContext >(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
-
+builder.Services.AddDbContext<AppContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
+);
 // Add Identity
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
-    .AddEntityFrameworkStores<AppDbContext>()
+    .AddEntityFrameworkStores< AppDbContext >()
     .AddDefaultTokenProviders();
 
 // Add custom services
@@ -45,9 +54,12 @@ builder.Services.AddScoped<MasterServices, MasterClass>();
 builder.Services.AddScoped<ITTDSServices, ITTDSCClass>();
 builder.Services.AddScoped<ComplianceMgmtService, ComplianceMgmtCLass>();
 builder.Services.AddScoped<DocumentService, DocumentClass>();
+builder.Services.AddScoped<IUnitOfWork,UnitOfWork>();
+builder.Services.AddScoped<IProductOwnerRepositories, ProductOwnerRespositories>();
 builder.Services.AddScoped<AccountOwnerLogic>();
 builder.Services.AddScoped<Commanfield>();
 builder.Services.AddScoped<Nest.Filter>();
+builder.Services.AddScoped<DbContext, ComplyX.Data.DbContexts.AppDbContext>();
 builder.Services.AddSingleton<JwtTokenService>();
 
 // Configure JWT
@@ -87,7 +99,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(o =>
 {
     var assemblyName = Assembly.GetExecutingAssembly().GetName().Name;
-    var xmlPath = Path.Combine(AppContext.BaseDirectory, $"{assemblyName}.xml");
+    var xmlPath = Path.Combine(System.AppContext.BaseDirectory, $"{assemblyName}.xml");
     if (File.Exists(xmlPath))
         o.IncludeXmlComments(xmlPath, includeControllerXmlComments: true);
 

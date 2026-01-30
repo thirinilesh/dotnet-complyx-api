@@ -1,6 +1,5 @@
 ﻿using Azure.Core;
 using ComplyX.BusinessLogic;
-using ComplyX.Shared.Data;
 using ComplyX.Shared.Helper;
 using ComplyX_Businesss.Models;
 using ComplyX_Businesss.Services;
@@ -14,6 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using ComplyX_Businesss.Helper;
 using ComplyX_Businesss.Services.Interface;
 using ComplyX_Businesss.BusinessLogic;
+using AppContext = ComplyX_Businesss.Helper.AppContext;
 
 namespace ComplyX.Controllers
 {
@@ -26,7 +26,7 @@ namespace ComplyX.Controllers
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class AccountOwnerController : BaseController
     {
-        private readonly AppDbContext  _context;
+        private readonly AppContext  _context;
 
         private readonly JwtTokenService  _tokenService;
 
@@ -40,7 +40,7 @@ namespace ComplyX.Controllers
         /// <param name="logic">Business logic for account owners.</param>
         /// <param name="IProductOwnere">Service to manage product owners.</param>
 
-        public AccountOwnerController(JwtTokenService tokenservice, AppDbContext context, AccountOwnerLogic logic, IProductOwner IProductOwnere)
+        public AccountOwnerController(JwtTokenService tokenservice, AppContext context, AccountOwnerLogic logic, IProductOwner IProductOwnere)
         {
             _tokenService = tokenservice;
             _context = context;
@@ -61,7 +61,17 @@ namespace ComplyX.Controllers
             var owners = await _logic.GetAllAsync();
             return Ok(owners);
         }
+        /// <summary>
+        /// Retrieves the list of all account owners.
+        /// </summary>
+        /// <returns>An <see cref="IActionResult"/> containing the list of account owners.</returns>
 
+        [HttpGet]
+  
+        public async Task<IActionResult> GetAllProductOwnerData()
+        {
+            return ResponseResult(await _IProductOwnere.GetAllProductOwnerData());
+        }
         /// <summary>
         /// Saves or updates product owner data.
         /// </summary>

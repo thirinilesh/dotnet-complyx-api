@@ -1,5 +1,5 @@
 ﻿
-using ComplyX.Shared.Data;
+
 using ComplyX_Businesss.Models;
 using ComplyX.Services;
 using ComplyX.Shared.Helper;
@@ -13,6 +13,7 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using static System.Net.Mime.MediaTypeNames;
 using System.Globalization;
 using ComplyX_Businesss.Helper;
+using AppContext = ComplyX_Businesss.Helper.AppContext;
 
 namespace ComplyX.BusinessLogic
 {
@@ -22,9 +23,9 @@ namespace ComplyX.BusinessLogic
         {
             { "name", "Name" }
         };
-        private readonly AppDbContext _context;
+        private readonly AppContext _context;
 
-        public PayrollClass(AppDbContext context)
+        public PayrollClass(AppContext context)
         {
             _context = context;
         }

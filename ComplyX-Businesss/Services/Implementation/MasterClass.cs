@@ -2,7 +2,6 @@
 using ComplyX_Businesss.Services.Interface;
 using ComplyX_Businesss.Models;
 using ComplyX.Services;
-using ComplyX.Shared.Data;
 using ComplyX.Shared.Helper;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
@@ -17,6 +16,7 @@ using Nest;
 using ComplyX_Businesss.Helper;
 using System;
 using X.PagedList;
+using AppContext = ComplyX_Businesss.Helper.AppContext;
 
 
 namespace ComplyX_Businesss.Services.Implementation
@@ -28,9 +28,9 @@ namespace ComplyX_Businesss.Services.Implementation
             { "name", "Name" }
         };
 
-        private readonly AppDbContext _context;
+        private readonly AppContext _context;
 
-        public MasterClass(AppDbContext context)
+        public MasterClass(AppContext context)
         {
             _context = context;
         }

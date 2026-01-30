@@ -1,5 +1,5 @@
 ﻿using ComplyX.Shared.Helper;
- 
+using ComplyX_Businesss.Models.ProductOwner;
 using ComplyX_Businesss.Helper;
 using ComplyX_Businesss.Models;
 using System.Globalization;
@@ -10,6 +10,7 @@ namespace ComplyX_Businesss.Services
     {
         Task<ManagerBaseResponse<bool>> SaveProductOwnerData(ProductOwners ProductOwners);
         Task<ManagerBaseResponse<bool>> RemoveProductOwnerData(string ProductOwnerId);
+        Task<ManagerBaseResponse<IEnumerable<ProductOwnerResponseModel>>> GetAllProductOwnerData();
         Task<ManagerBaseResponse<IEnumerable<ProductOwners>>> GetAllProductOwnerFilter(PagedListCriteria PagedListCriteria);
         Task<ManagerBaseResponse<bool>> SaveCompanyData(Company company);
         Task<ManagerBaseResponse<bool>> RemoveCompanyData(string CompanyId);
