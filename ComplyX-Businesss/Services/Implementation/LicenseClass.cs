@@ -13,6 +13,12 @@ using static System.Net.Mime.MediaTypeNames;
 using Microsoft.AspNetCore.Identity;
 using ComplyX_Businesss.Helper;
 using AppContext = ComplyX_Businesss.Helper.AppContext;
+using ComplyX_Businesss.Models.LicenseKeyMaster;
+using ComplyX.Data.Entities;
+using ComplyX.Repositories.UnitOfWork;
+using ComplyX_Businesss.Models.LicenseActivation;
+using ComplyX_Businesss.Models.LicenseAuditLog;
+using ComplyX_Businesss.Models.MachineBinding;
 
 namespace ComplyX.BusinessLogic
 {
@@ -25,26 +31,27 @@ namespace ComplyX.BusinessLogic
         };
 
         private readonly AppContext _context;
+        private readonly IUnitOfWork _UnitOfWork;
 
-        public LicenseClass(AppContext context)
+        public LicenseClass(AppContext context,IUnitOfWork unitOfWork)
         {
             _context = context;
-           
+           _UnitOfWork = unitOfWork;
         }
-        public Task<ManagerBaseResponse<bool>> SaveLicenseKeyMasterData(LicenseKeyMaster LicenseKeyMaster)
+        public async Task<ManagerBaseResponse<bool>> SaveLicenseKeyMasterData(LicenseKeyMasterRequestModel LicenseKeyMaster)
         {
             var response = new ManagerBaseResponse<List<LicenseKeyMaster>>();
 
             try
             {
-                var ProductOwner = _context.ProductOwners.Where(x => x.ProductOwnerId == LicenseKeyMaster.ProductOwnerId).FirstOrDefault();
+                var ProductOwner = _UnitOfWork.ProductOwnerRepositories.GetQueryable().Where(x => x.ProductOwnerId == LicenseKeyMaster.ProductOwnerId).FirstOrDefault();
                 if (ProductOwner == null)
                 {
-                    return Task.FromResult(new ManagerBaseResponse<bool>
+                    return new ManagerBaseResponse<bool>
                     {
                         Result = false,
                         Message = "ProductOwner Data not found."
-                    });
+                    };
                 }
                 else
                 {
@@ -61,35 +68,33 @@ namespace ComplyX.BusinessLogic
                         _model.IsActive = LicenseKeyMaster.IsActive;
                         _model.CreatedAt = Util.GetCurrentCSTDateAndTime();                     
 
-                        _context.Add(_model);
-                        _context.SaveChanges();
+                       await _UnitOfWork.LegalKeyMasterRepositories.AddAsync(_model);
                     }
                     else
                     {
                         // Update
-                        var originalTerm = _context.LicenseKeyMaster
+                        var originalTerm = _UnitOfWork.LegalKeyMasterRepositories.GetQueryable()
                             .Where(x => x.LicenseId == LicenseKeyMaster.LicenseId).FirstOrDefault();
                         originalTerm.IsActive = LicenseKeyMaster.IsActive;
                         originalTerm.UpdatedAt = Util.GetCurrentCSTDateAndTime();
 
-                        _context.Update(originalTerm);
-                        _context.SaveChanges();
+                       
                     }
                 }
-
-                return Task.FromResult(new ManagerBaseResponse<bool>
+                await _UnitOfWork.CommitAsync();
+                return new ManagerBaseResponse<bool>
                 {
                     Result = true,
                     Message = "LicenseKeyMaster Data Saved Successfully."
-                });
+                };
             }
             catch (Exception e)
             {
-                return Task.FromResult(new ManagerBaseResponse<bool>
+                return new ManagerBaseResponse<bool>
                 {
                     Result = false,
                     Message = e.Message
-                });
+                };
             }
         }
         public async Task<ManagerBaseResponse<IEnumerable<LicenseKeyMaster>>> GetLicenseKeyMasterFilter(PagedListCriteria PagedListCriteria)
@@ -97,7 +102,7 @@ namespace ComplyX.BusinessLogic
             try
             {
 
-                var query = _context.LicenseKeyMaster.AsQueryable();
+                var query = _UnitOfWork.LegalKeyMasterRepositories.GetQueryable();
                 var searchText = PagedListCriteria.SearchText?.Trim().ToLower();
                 if (!string.IsNullOrWhiteSpace(searchText))
                 {
@@ -133,20 +138,20 @@ namespace ComplyX.BusinessLogic
                 };
             }
         }
-        public Task<ManagerBaseResponse<bool>> SaveLicenseKeyActivationData(LicenseActivation LicenseActivation)
+        public async Task<ManagerBaseResponse<bool>> SaveLicenseKeyActivationData(LicenseActivationRequestModel LicenseActivation)
         {
             var response = new ManagerBaseResponse<List<LicenseActivation>>();
 
             try
             {
-                var License = _context.LicenseKeyMaster.Where(x => x.LicenseId == LicenseActivation.LicenseId).FirstOrDefault();
+                var License = _UnitOfWork.LicenseActivationRespositories.GetQueryable().Where(x => x.LicenseId == LicenseActivation.LicenseId).FirstOrDefault();
                 if (License == null)
                 {
-                    return Task.FromResult(new ManagerBaseResponse<bool>
+                    return new ManagerBaseResponse<bool>
                     {
                         Result = false,
                         Message = "License Data not found."
-                    });
+                    };
                 }
                 else
                 {
@@ -164,13 +169,12 @@ namespace ComplyX.BusinessLogic
                         _model.GraceExpiryAt = Util.GetCurrentCSTDateAndTime();
                         _model.AppVersion = LicenseActivation.AppVersion;
 
-                        _context.Add(_model);
-                        _context.SaveChanges();
+                       await _UnitOfWork.LicenseActivationRespositories.AddAsync(_model);
                     }
                     else
                     {
                         // Update
-                        var originalTerm = _context.LicenseActivation
+                        var originalTerm = _UnitOfWork.LicenseActivationRespositories.GetQueryable()
                             .Where(x => x.ActivationId == LicenseActivation.ActivationId).FirstOrDefault();
                         originalTerm.LastVerifiedAt = Util.GetCurrentCSTDateAndTime();
                         originalTerm.IsRevoked = LicenseActivation.IsRevoked;
@@ -178,24 +182,23 @@ namespace ComplyX.BusinessLogic
                         originalTerm.AppVersion = LicenseActivation.AppVersion;
 
 
-                        _context.Update(originalTerm);
-                        _context.SaveChanges();
+                       
                     }
                 }
-
-                return Task.FromResult(new ManagerBaseResponse<bool>
+                await _UnitOfWork.CommitAsync();
+                return  new ManagerBaseResponse<bool>
                 {
                     Result = true,
                     Message = "LicenseKey Activation Data Saved Successfully."
-                });
+                };
             }
             catch (Exception e)
             {
-                return Task.FromResult(new ManagerBaseResponse<bool>
+                return new ManagerBaseResponse<bool>
                 {
                     Result = false,
                     Message = e.Message
-                });
+                };
             }
         }
         public async Task<ManagerBaseResponse<IEnumerable<LicenseActivation>>> GetLicenseActivationFilter(PagedListCriteria PagedListCriteria)
@@ -203,7 +206,7 @@ namespace ComplyX.BusinessLogic
             try
             {
 
-                var query = _context.LicenseActivation.AsQueryable();
+                var query = _UnitOfWork.LicenseActivationRespositories.GetQueryable();
                 var searchText = PagedListCriteria.SearchText?.Trim().ToLower();
                 if (!string.IsNullOrWhiteSpace(searchText))
                 {
@@ -239,63 +242,62 @@ namespace ComplyX.BusinessLogic
                 };
             }
         }
-        public Task<ManagerBaseResponse<bool>> SaveLicenseAuditLogsData(LicenseAuditLogs LicenseAuditLogs)
+        public async Task<ManagerBaseResponse<bool>> SaveLicenseAuditLogsData(LicenseAuditLogRequestModel LicenseAuditLogs)
         {
-            var response = new ManagerBaseResponse<List<LicenseAuditLogs>>();
+            var response = new ManagerBaseResponse<List<LicenseAuditLog>>();
 
             try
             {
-                var LicenseActive = _context.LicenseActivation.Where(x => x.ActivationId == LicenseAuditLogs.ActivationId && x.LicenseId == LicenseAuditLogs.LicenseId).FirstOrDefault();
+                var LicenseActive = _UnitOfWork.LicenseActivationRespositories.GetQueryable().Where(x => x.ActivationId == LicenseAuditLogs.ActivationId && x.LicenseId == LicenseAuditLogs.LicenseId).FirstOrDefault();
                
                 if (LicenseActive == null)
                 {
-                    return Task.FromResult(new ManagerBaseResponse<bool>
+                    return new ManagerBaseResponse<bool>
                     {
                         Result = false,
                         Message = "License not active."
-                    });
+                    };
                 }
                 else
                 {
                     if (LicenseAuditLogs.AuditId == 0)
                     {
                         // Insert
-                        LicenseAuditLogs _model = new LicenseAuditLogs();
+                        LicenseAuditLog _model = new LicenseAuditLog();
                         _model.LicenseId = LicenseAuditLogs.LicenseId;
                         _model.ActivationId = LicenseAuditLogs.ActivationId;
                         _model.EventMessage = LicenseAuditLogs.EventMessage;
                         _model.EventType    = LicenseAuditLogs.EventType;
                         _model.LoggedAt = LicenseAuditLogs.LoggedAt;
                         _model.MachineHash = LicenseAuditLogs.MachineHash;
-                        _model.IPAddress = LicenseAuditLogs.IPAddress;
+                        _model.Ipaddress = LicenseAuditLogs.Ipaddress;
 
-                        _context.Add(_model);
-                        _context.SaveChanges();
+                       await _UnitOfWork.LicenseAuditLogRespositories.AddAsync(_model);
                     }
                      
                 }
-
-                return Task.FromResult(new ManagerBaseResponse<bool>
+                await _UnitOfWork.CommitAsync();
+                return new ManagerBaseResponse<bool>
                 {
                     Result = true,
                     Message = "License Activation log Saved Successfully."
-                });
+                };
             }
             catch (Exception e)
             {
-                return Task.FromResult(new ManagerBaseResponse<bool>
+                return new ManagerBaseResponse<bool>
                 {
                     Result = false,
                     Message = e.Message
-                });
+                };
             }
         }
-        public async Task<ManagerBaseResponse<IEnumerable<LicenseAuditLogs>>> GetLicenseAuditLogsFilter(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<LicenseAuditLog>>> GetLicenseAuditLogsFilter(PagedListCriteria PagedListCriteria)
         {
             try
             {
 
-                var query = _context.LicenseAuditLogs.AsQueryable();
+                var query = _UnitOfWork.LicenseAuditLogRespositories.GetQueryable();
                 var searchText = PagedListCriteria.SearchText?.Trim().ToLower();
                 if (!string.IsNullOrWhiteSpace(searchText))
                 {
@@ -304,9 +306,9 @@ namespace ComplyX.BusinessLogic
 
                 query = query.OrderBy(a => a.AuditId);
 
-                PageListed<LicenseAuditLogs> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+                PageListed<LicenseAuditLog> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
 
-                return new ManagerBaseResponse<IEnumerable<LicenseAuditLogs>>
+                return new ManagerBaseResponse<IEnumerable<LicenseAuditLog>>
                 {
                     Result = result.Data,
                     Message = "License Activation Logs Data Retrieved Successfully.",
@@ -323,7 +325,7 @@ namespace ComplyX.BusinessLogic
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<IEnumerable<LicenseAuditLogs>>
+                return new ManagerBaseResponse<IEnumerable<LicenseAuditLog>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -331,20 +333,20 @@ namespace ComplyX.BusinessLogic
                 };
             }
         }
-        public Task<ManagerBaseResponse<bool>> SaveMachineBindingData(MachineBinding MachineBinding)
+        public async Task<ManagerBaseResponse<bool>> SaveMachineBindingData(MachineBindingRequestModel MachineBinding)
         {
             var response = new ManagerBaseResponse<List<MachineBinding>>();
 
             try
             {
-                var LicenseActive = _context.LicenseActivation.Where(x => x.ActivationId == MachineBinding.LicenseActivationId).FirstOrDefault();
+                var LicenseActive = _UnitOfWork.LicenseActivationRespositories.GetQueryable().Where(x => x.ActivationId == MachineBinding.LicenseActivationId).FirstOrDefault();
                 if (LicenseActive == null)
                 {
-                    return Task.FromResult(new ManagerBaseResponse<bool>
+                    return new ManagerBaseResponse<bool>
                     {
                         Result = false,
                         Message = "License Active Data not found."
-                    });
+                    };
                 }
                 else
                 {
@@ -353,49 +355,47 @@ namespace ComplyX.BusinessLogic
                         // Insert
                         MachineBinding _model = new MachineBinding();
                          _model.MachineHash = MachineBinding.MachineHash;
-                        _model.CPUID = MachineBinding.CPUID;
+                        _model.Cpuid = MachineBinding.Cpuid;
                         _model.MotherboardSerial = MachineBinding.MotherboardSerial;
-                        _model.MACAddresses = MachineBinding.MACAddresses;
-                        _model.WindowsSID = MachineBinding.WindowsSID;
+                        _model.Macaddresses = MachineBinding.Macaddresses;
+                        _model.WindowsSid = MachineBinding.WindowsSid;
                         _model.FirstSeenAt = MachineBinding.FirstSeenAt;
                         _model.LastSeenAt = MachineBinding.LastSeenAt;
                         _model.LicenseActivationId = MachineBinding.LicenseActivationId;
 
-                        _context.Add(_model);
-                        _context.SaveChanges();
+                       await _UnitOfWork.MachineBindingRespositories.AddAsync(_model);
                     }
                     else
                     {
                         // Update
-                        var originalTerm = _context.MachineBinding
+                        var originalTerm = _UnitOfWork.MachineBindingRespositories.GetQueryable()
                             .Where(x => x.MachineBindingId == MachineBinding.MachineBindingId).FirstOrDefault();
                         originalTerm.MachineHash = MachineBinding.MachineHash;
-                        originalTerm.CPUID = MachineBinding.CPUID;
+                        originalTerm.Cpuid = MachineBinding.Cpuid;
                         originalTerm.MotherboardSerial = MachineBinding.MotherboardSerial ;
-                        originalTerm.MACAddresses = MachineBinding.MACAddresses ;
-                        originalTerm.WindowsSID = MachineBinding.WindowsSID ;
+                        originalTerm.Macaddresses = MachineBinding.Macaddresses ;
+                        originalTerm.WindowsSid = MachineBinding.WindowsSid ;
                         originalTerm.FirstSeenAt = MachineBinding.FirstSeenAt ;
                         originalTerm.LastSeenAt = MachineBinding.LastSeenAt ;
                         originalTerm .LicenseActivationId = MachineBinding.LicenseActivationId ;
 
-                        _context.Update(originalTerm);
-                        _context.SaveChanges();
+                        
                     }
                 }
-
-                return Task.FromResult(new ManagerBaseResponse<bool>
+                await _UnitOfWork.CommitAsync();
+                return  new ManagerBaseResponse<bool>
                 {
                     Result = true,
                     Message = "MachineBindings Data Saved Successfully."
-                });
+                };
             }
             catch (Exception e)
             {
-                return Task.FromResult(new ManagerBaseResponse<bool>
+                return  new ManagerBaseResponse<bool>
                 {
                     Result = false,
                     Message = e.Message
-                });
+                };
             }
         }
         public async Task<ManagerBaseResponse<IEnumerable<MachineBinding>>> GetMachineBindingFilter(PagedListCriteria PagedListCriteria)
@@ -403,7 +403,7 @@ namespace ComplyX.BusinessLogic
             try
             {
 
-                var query = _context.MachineBinding.AsQueryable();
+                var query = _UnitOfWork.MachineBindingRespositories.GetQueryable();
                 var searchText = PagedListCriteria.SearchText?.Trim().ToLower();
                 if (!string.IsNullOrWhiteSpace(searchText))
                 {

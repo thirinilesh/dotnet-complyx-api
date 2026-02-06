@@ -17,6 +17,12 @@ using ComplyX_Businesss.Helper;
 using System;
 using X.PagedList;
 using AppContext = ComplyX_Businesss.Helper.AppContext;
+using ComplyX.Data.Entities;
+using ComplyX_Businesss.Models.EmploymentTypes;
+using ComplyX.Repositories.UnitOfWork;
+using ComplyX_Businesss.Models.LicenseKeyMaster;
+using ComplyX_Businesss.Models.ExitTypes;
+using ComplyX_Businesss.Models.FilingStatus;
 
 
 namespace ComplyX_Businesss.Services.Implementation
@@ -29,51 +35,52 @@ namespace ComplyX_Businesss.Services.Implementation
         };
 
         private readonly AppContext _context;
+        private readonly IUnitOfWork _UnitOfWork;
 
-        public MasterClass(AppContext context)
+
+        public MasterClass(AppContext context,IUnitOfWork unitOfWork)
         {
             _context = context;
+            _UnitOfWork = unitOfWork;
         }
 
-        public Task<ManagerBaseResponse<bool>> SaveEmploymentTypesData(EmploymentTypes EmploymentTypes)
+        public async Task<ManagerBaseResponse<bool>> SaveEmploymentTypesData(EmploymentTypeRequestModel EmploymentTypes)
         {
-            var response = new ManagerBaseResponse<List<EmploymentTypes>>();
+            var response = new ManagerBaseResponse<List<EmploymentType>>();
 
             try
             {
-                   if (EmploymentTypes.EmploymentTypeID == 0)
+                   if (EmploymentTypes.EmploymentTypeId == 0)
                     {
                     // Insert
-                    EmploymentTypes _model = new EmploymentTypes();
+                    EmploymentType _model = new EmploymentType();
                         _model.Name = EmploymentTypes.Name;
 
-                        _context.Add(_model);
-                        _context.SaveChanges();
+                       await _UnitOfWork.EmploymentTypeRespositories.AddAsync(_model);
                     }
                     else
                     {
                         // Update
-                        var originalTerm = _context.EmploymentTypes
-                            .Where(x => x.EmploymentTypeID == EmploymentTypes.EmploymentTypeID).FirstOrDefault();
+                        var originalTerm = _UnitOfWork.EmploymentTypeRespositories.GetQueryable()
+                            .Where(x => x.EmploymentTypeId == EmploymentTypes.EmploymentTypeId).FirstOrDefault();
                        originalTerm.Name = EmploymentTypes.Name;
-                        _context.Update(originalTerm);
-                        _context.SaveChanges();
-                    }
+                
+                }
 
-
-                return Task.FromResult(new ManagerBaseResponse<bool>
+                   await _UnitOfWork.CommitAsync();
+                return  new ManagerBaseResponse<bool>
                 {
                     Result = true,
                     Message = "EMployement Types Data Saved Successfully."
-                });
+                } ;
             }
             catch (Exception e)
             {
-                return Task.FromResult(new ManagerBaseResponse<bool>
+                return  new ManagerBaseResponse<bool>
                 {
                     Result = false,
                     Message = e.Message
-                });
+                } ;
             }
         }
         public async Task<ManagerBaseResponse<bool>> RemoveEmploymentTypesData(string EmploymentTypeID)
@@ -81,7 +88,7 @@ namespace ComplyX_Businesss.Services.Implementation
             try
             {
                 // Get all report detail definitions for the given report name
-                var Employee = await _context.EmploymentTypes.Where(x => x.EmploymentTypeID.ToString() == EmploymentTypeID).ToListAsync();
+                var Employee = await _UnitOfWork.EmploymentTypeRespositories.GetQueryable().Where(x => x.EmploymentTypeId.ToString() == EmploymentTypeID).ToListAsync();
 
                 if (string.IsNullOrEmpty(Employee.ToString()))
                 {
@@ -93,9 +100,8 @@ namespace ComplyX_Businesss.Services.Implementation
                 }
 
                 // Remove all related report details
-                _context.EmploymentTypes.RemoveRange(Employee);
-
-                await _context.SaveChangesAsync();
+                _UnitOfWork.EmploymentTypeRespositories.RemoveRange(Employee);
+                await _UnitOfWork.CommitAsync();
 
                 return new ManagerBaseResponse<bool>
                 {
@@ -114,13 +120,17 @@ namespace ComplyX_Businesss.Services.Implementation
             }
 
         }
-        public async Task<ManagerBaseResponse<List<EmploymentTypes>>> GetEmploymentTypesData(string EmploymentTypeID)
+        public async Task<ManagerBaseResponse<List<EmploymentTypeResponseModel>>> GetEmploymentTypesData(string EmploymentTypeID)
         {
             try
             {
-                var plans = await _context.EmploymentTypes.Where(x => x.EmploymentTypeID.ToString() == EmploymentTypeID).ToListAsync();
+                var plans = await _UnitOfWork.EmploymentTypeRespositories.GetQueryable().Where(x => x.EmploymentTypeId.ToString() == EmploymentTypeID).Select(x => new EmploymentTypeResponseModel
+                {
+                    EmploymentTypeId = x.EmploymentTypeId,
+                    Name = x.Name
+                }).ToListAsync();
 
-                return new ManagerBaseResponse<List<EmploymentTypes>>
+                return new ManagerBaseResponse<List<EmploymentTypeResponseModel>>
                 {
                     IsSuccess = true,
                     Result = plans,
@@ -130,7 +140,7 @@ namespace ComplyX_Businesss.Services.Implementation
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<List<EmploymentTypes>>
+                return new ManagerBaseResponse<List<EmploymentTypeResponseModel>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -138,23 +148,23 @@ namespace ComplyX_Businesss.Services.Implementation
                 };
             }
         }
-        public async Task<ManagerBaseResponse<IEnumerable<EmploymentTypes>>> GetEmploymentTypesFilter(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<EmploymentType>>> GetEmploymentTypesFilter(PagedListCriteria PagedListCriteria)
         {
             try
             {
 
-                var query = _context.EmploymentTypes.AsQueryable();
+                var query = _UnitOfWork.EmploymentTypeRespositories.GetQueryable();
                 var searchText = PagedListCriteria.SearchText?.Trim().ToLower();
                 if (!string.IsNullOrWhiteSpace(searchText))
                 {
                     query = query.Where(x => x.Name.ToLower().Contains(searchText.ToLower()));
                 }
 
-                query = query.OrderBy(a => a.EmploymentTypeID);
+                query = query.OrderBy(a => a.EmploymentTypeId);
 
-                PageListed<EmploymentTypes> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+                PageListed<EmploymentType> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
 
-                return new ManagerBaseResponse<IEnumerable<EmploymentTypes>>
+                return new ManagerBaseResponse<IEnumerable<EmploymentType>>
                 {
                     Result = result.Data,
                     Message = "Employment Type Data Retrieved Successfully.",
@@ -171,7 +181,7 @@ namespace ComplyX_Businesss.Services.Implementation
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<IEnumerable<EmploymentTypes>>
+                return new ManagerBaseResponse<IEnumerable<EmploymentType>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -179,45 +189,43 @@ namespace ComplyX_Businesss.Services.Implementation
                 };
             }
         }
-        public Task<ManagerBaseResponse<bool>>SaveExitTypesData(ExitTypes ExitTypes)
+        public async Task<ManagerBaseResponse<bool>>SaveExitTypesData(ExitTypeRequestModel ExitTypes)
         {
-            var response = new ManagerBaseResponse<List<ExitTypes>>();
+            var response = new ManagerBaseResponse<List<ExitType>>();
 
             try
             {
-                if (ExitTypes.ExitTypeID == 0)
+                if (ExitTypes.ExitTypeId == 0)
                 {
                     // Insert
-                    ExitTypes _model = new ExitTypes();
+                    ExitType _model = new ExitType();
                     _model.Name = ExitTypes.Name;
 
-                    _context.Add(_model);
-                    _context.SaveChanges();
+                   await _UnitOfWork.ExitTypesRespositories.AddAsync(_model);
                 }
                 else
                 {
                     // Update
-                    var originalTerm = _context.ExitTypes
-                        .Where(x => x.ExitTypeID == ExitTypes.ExitTypeID).FirstOrDefault();
+                    var originalTerm = _UnitOfWork.ExitTypesRespositories.GetQueryable()
+                        .Where(x => x.ExitTypeId == ExitTypes.ExitTypeId).FirstOrDefault();
                     originalTerm.Name = ExitTypes.Name;
-                    _context.Update(originalTerm);
-                    _context.SaveChanges();
+ 
                 }
 
-
-                return Task.FromResult(new ManagerBaseResponse<bool>
+                await _UnitOfWork.CommitAsync();
+                return new ManagerBaseResponse<bool>
                 {
                     Result = true,
                     Message = "Exit Types Data Saved Successfully."
-                });
+                };
             }
             catch (Exception e)
             {
-                return Task.FromResult(new ManagerBaseResponse<bool>
+                return new ManagerBaseResponse<bool>
                 {
                     Result = false,
                     Message = e.Message
-                });
+                };
             }
         }
         public async Task<ManagerBaseResponse<bool>> RemoveExitTypesData(string ExitTypesID)
@@ -225,7 +233,7 @@ namespace ComplyX_Businesss.Services.Implementation
             try
             {
                 // Get all report detail definitions for the given report name
-                var Employee = await _context.ExitTypes.Where(x => x.ExitTypeID.ToString() == ExitTypesID).ToListAsync();
+                var Employee = await _UnitOfWork.ExitTypesRespositories.GetQueryable().Where(x => x.ExitTypeId.ToString() == ExitTypesID).ToListAsync();
 
                 if (string.IsNullOrEmpty(Employee.ToString()))
                 {
@@ -237,10 +245,8 @@ namespace ComplyX_Businesss.Services.Implementation
                 }
 
                 // Remove all related report details
-                _context.ExitTypes.RemoveRange(Employee);
-
-                await _context.SaveChangesAsync();
-
+               _UnitOfWork.ExitTypesRespositories.RemoveRange(Employee);
+                await _UnitOfWork.CommitAsync();
                 return new ManagerBaseResponse<bool>
                 {
                     Result = true,
@@ -258,13 +264,17 @@ namespace ComplyX_Businesss.Services.Implementation
             }
 
         }
-        public async Task<ManagerBaseResponse<List<ExitTypes>>> GetExitTypesData(string ExitTypesID)
+        public async Task<ManagerBaseResponse<List<ExitTypeResponseModel>>> GetExitTypesData(string ExitTypesID)
         {
             try
             {
-                var plans = await _context.ExitTypes.Where(x => x.ExitTypeID.ToString() == ExitTypesID).ToListAsync();
+                var plans = await _UnitOfWork.ExitTypesRespositories.GetQueryable().Where(x => x.ExitTypeId.ToString() == ExitTypesID).Select(x => new ExitTypeResponseModel
+                {
+                    ExitTypeId = x.ExitTypeId,
+                    Name = x.Name
+                }).ToListAsync();
 
-                return new ManagerBaseResponse<List<ExitTypes>>
+                return new ManagerBaseResponse<List<ExitTypeResponseModel>>
                 {
                     IsSuccess = true,
                     Result = plans,
@@ -274,7 +284,7 @@ namespace ComplyX_Businesss.Services.Implementation
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<List<ExitTypes>>
+                return new ManagerBaseResponse<List<ExitTypeResponseModel>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -282,23 +292,23 @@ namespace ComplyX_Businesss.Services.Implementation
                 };
             }
         }
-        public async Task<ManagerBaseResponse<IEnumerable<ExitTypes>>> GetExitTypesFilter(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<ExitType>>> GetExitTypesFilter(PagedListCriteria PagedListCriteria)
         {
             try
             {
 
-                var query = _context.ExitTypes.AsQueryable();
+                var query = _UnitOfWork.ExitTypesRespositories.GetQueryable();
                 var searchText = PagedListCriteria.SearchText?.Trim().ToLower();
                 if (!string.IsNullOrWhiteSpace(searchText))
                 {
                     query = query.Where(x => x.Name.ToLower().Contains(searchText.ToLower()));
                 }
 
-                query = query.OrderBy(a => a.ExitTypeID);
+                query = query.OrderBy(a => a.ExitTypeId);
 
-                PageListed<ExitTypes> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+                PageListed<ExitType> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
 
-                return new ManagerBaseResponse<IEnumerable<ExitTypes>>
+                return new ManagerBaseResponse<IEnumerable<ExitType>>
                 {
                     Result = result.Data,
                     Message = "Exit Type Data Retrieved Successfully.",
@@ -315,7 +325,7 @@ namespace ComplyX_Businesss.Services.Implementation
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<IEnumerable<ExitTypes>>
+                return new ManagerBaseResponse<IEnumerable<ExitType>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -323,45 +333,43 @@ namespace ComplyX_Businesss.Services.Implementation
                 };
             }
         }
-        public Task<ManagerBaseResponse<bool>> SaveFillingStatusesData(FilingStatuses FilingStatuses)
+        public async Task<ManagerBaseResponse<bool>> SaveFillingStatusesData(FilingsStatusRequestModel FilingStatuses)
         {
-            var response = new ManagerBaseResponse<List<FilingStatuses>>();
+            var response = new ManagerBaseResponse<List<FilingStatus>>();
 
             try
             {
-                if (FilingStatuses.FilingStatusID == 0)
+                if (FilingStatuses.FilingStatusId == 0)
                 {
                     // Insert
-                    FilingStatuses _model = new FilingStatuses();
+                    FilingStatus _model = new FilingStatus();
                     _model.Name = FilingStatuses.Name;
 
-                    _context.Add(_model);
-                    _context.SaveChanges();
+           await _UnitOfWork.FilingStatusesRespositories.AddAsync(_model);
                 }
                 else
                 {
                     // Update
-                    var originalTerm = _context.FilingStatuses
-                        .Where(x => x.FilingStatusID == FilingStatuses.FilingStatusID).FirstOrDefault();
+                    var originalTerm = _UnitOfWork.FilingStatusesRespositories.GetQueryable()
+                        .Where(x => x.FilingStatusId == FilingStatuses.FilingStatusId).FirstOrDefault();
                     originalTerm.Name = FilingStatuses.Name;
-                    _context.Update(originalTerm);
-                    _context.SaveChanges();
+                   
                 }
+                await _UnitOfWork.CommitAsync();
 
-
-                return Task.FromResult(new ManagerBaseResponse<bool>
+                return  new ManagerBaseResponse<bool>
                 {
                     Result = true,
                     Message = "Filing Status Data Saved Successfully."
-                });
+                } ;
             }
             catch (Exception e)
             {
-                return Task.FromResult(new ManagerBaseResponse<bool>
+                return  new ManagerBaseResponse<bool>
                 {
                     Result = false,
                     Message = e.Message
-                });
+                } ;
             }
         }
         public async Task<ManagerBaseResponse<bool>> RemoveFillingStatusesData(string FilingStatusID)
@@ -369,7 +377,7 @@ namespace ComplyX_Businesss.Services.Implementation
             try
             {
                 // Get all report detail definitions for the given report name
-                var Employee = await _context.FilingStatuses.Where(x => x.FilingStatusID.ToString() == FilingStatusID).ToListAsync();
+                var Employee = await _UnitOfWork.FilingStatusesRespositories.GetQueryable().Where(x => x.FilingStatusId.ToString() == FilingStatusID).ToListAsync();
 
                 if (string.IsNullOrEmpty(Employee.ToString()))
                 {
@@ -381,9 +389,9 @@ namespace ComplyX_Businesss.Services.Implementation
                 }
 
                 // Remove all related report details
-                _context.FilingStatuses.RemoveRange(Employee);
+              _UnitOfWork.FilingStatusesRespositories.RemoveRange(Employee);
 
-                await _context.SaveChangesAsync();
+                await _UnitOfWork.CommitAsync();
 
                 return new ManagerBaseResponse<bool>
                 {
@@ -402,13 +410,17 @@ namespace ComplyX_Businesss.Services.Implementation
             }
 
         }
-        public async Task<ManagerBaseResponse<List<FilingStatuses>>> GetFillingStatusesData(string FilingStatusesID)
+        public async Task<ManagerBaseResponse<List<FilingsStatusResponseModel>>> GetFillingStatusesData(string FilingStatusesID)
         {
             try
             {
-                var plans = await _context.FilingStatuses.Where(x => x.FilingStatusID.ToString() == FilingStatusesID).ToListAsync();
+                var plans = await _UnitOfWork.FilingStatusesRespositories.GetQueryable().Where(x => x.FilingStatusId.ToString() == FilingStatusesID).Select(x => new FilingsStatusResponseModel
+                {
+                    FilingStatusId = x.FilingStatusId,
+                    Name = x.Name
+                }).ToListAsync();
 
-                return new ManagerBaseResponse<List<FilingStatuses>>
+                return new ManagerBaseResponse<List<FilingsStatusResponseModel>>
                 {
                     IsSuccess = true,
                     Result = plans,
@@ -418,7 +430,7 @@ namespace ComplyX_Businesss.Services.Implementation
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<List<FilingStatuses>>
+                return new ManagerBaseResponse<List<FilingsStatusResponseModel>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -426,23 +438,23 @@ namespace ComplyX_Businesss.Services.Implementation
                 };
             }
         }
-        public async Task<ManagerBaseResponse<IEnumerable<FilingStatuses>>> GetFillingStatusesFilter(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<FilingStatus>>> GetFillingStatusesFilter(PagedListCriteria PagedListCriteria)
         {
             try
             {
 
-                var query = _context.FilingStatuses.AsQueryable();
+                var query = _UnitOfWork.FilingStatusesRespositories.GetQueryable();
                 var searchText = PagedListCriteria.SearchText?.Trim().ToLower();
                 if (!string.IsNullOrWhiteSpace(searchText))
                 {
                     query = query.Where(x => x.Name.ToLower().Contains(searchText.ToLower()));
                 }
 
-                query = query.OrderBy(a => a.FilingStatusID);
+                query = query.OrderBy(a => a.FilingStatusId);
 
-                PageListed<FilingStatuses> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+                PageListed<FilingStatus> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
 
-                return new ManagerBaseResponse<IEnumerable<FilingStatuses>>
+                return new ManagerBaseResponse<IEnumerable<FilingStatus>>
                 {
                     Result = result.Data,
                     Message = "FilingStatuses Data Retrieved Successfully.",
@@ -459,7 +471,7 @@ namespace ComplyX_Businesss.Services.Implementation
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<IEnumerable<FilingStatuses>>
+                return new ManagerBaseResponse<IEnumerable<FilingStatus>>
                 {
                     IsSuccess = false,
                     Result = null,

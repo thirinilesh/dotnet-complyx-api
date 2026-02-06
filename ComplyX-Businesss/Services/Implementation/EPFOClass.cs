@@ -12,6 +12,13 @@ using Microsoft.AspNetCore.Identity;
 using ComplyX.Shared.Data;
 using ComplyX_Businesss.Helper;
 using AppContext = ComplyX_Businesss.Helper.AppContext;
+using ComplyX.Repositories.UnitOfWork;
+using ComplyX_Businesss.Models.CompanyEPFO;
+using ComplyX.Data.Entities;
+using ComplyX_Businesss.Models.EmployeeEPFO;
+using ComplyX_Businesss.Models.EPFOECRFile;
+using ComplyX_Businesss.Models.EPFOPeriod;
+using ComplyX_Businesss.Models.EPFOMonthWage;
 
 namespace ComplyX_Businesss.BusinessLogic
 {
@@ -22,71 +29,71 @@ namespace ComplyX_Businesss.BusinessLogic
             { "name", "Name" }
         };
         private readonly AppContext _context;
-        private readonly UserManager<ApplicationUser> _usermanager;
+        private readonly UserManager<ApplicationUsers> _usermanager;
+        private readonly IUnitOfWork _UnitOfWork;
 
-        public EPFOClass(AppContext context, UserManager<ApplicationUser> usermanager)
+        public EPFOClass(AppContext context, UserManager<ApplicationUsers> usermanager, IUnitOfWork unitOfWork)
         {
             _context = context;
             _usermanager = usermanager;
+            _UnitOfWork = unitOfWork;
         }
-        public   Task<ManagerBaseResponse<bool>> SaveCompanyEPFOData(CompanyEPFO CompanyEPFO)
+        public   async Task<ManagerBaseResponse<bool>> SaveCompanyEPFOData(CompanyEPFORequestModel CompanyEPFO)
         {
-            var response = new ManagerBaseResponse<List<CompanyEPFO>>();
+            var response = new ManagerBaseResponse<List<CompanyEpfo>>();
 
             try
             {
-                var companyid =  _context.Companies.Where(x => x.CompanyID == CompanyEPFO.CompanyId).FirstOrDefault();
+                var companyid =  _UnitOfWork.CompanyRepository.GetQueryable().Where(x => x.CompanyId == CompanyEPFO.CompanyId).FirstOrDefault();
                 if (companyid == null)
                 {
-                    return Task.FromResult(new ManagerBaseResponse<bool>
+                    return new ManagerBaseResponse<bool>
                     {
                         Result = false,
                         Message = "Company Data not found."
-                    });
+                    } ;
                 }
                 else
                 {
-                    if (CompanyEPFO.CompanyEPFOId == 0)
+                    if (CompanyEPFO.CompanyEpfoid == 0)
                     {
                         // Insert
-                        CompanyEPFO _model = new CompanyEPFO();
-                        _model.CompanyId = companyid.CompanyID;
+                        CompanyEpfo _model = new CompanyEpfo();
+                        _model.CompanyId = companyid.CompanyId;
                         _model.EstablishmentCode = CompanyEPFO.EstablishmentCode;
                         _model.Extension = CompanyEPFO.Extension;
                         _model.OfficeCode = CompanyEPFO.OfficeCode;
                         _model.CreatedAt= Util.GetCurrentCSTDateAndTime();
 
-                        _context.Add(_model);
-                        _context.SaveChanges();
+                        await _UnitOfWork.CompanyEPFORespositories.AddAsync(_model);
                     }
                     else
                     {
                         // Update
-                        var originalTerm = _context.CompanyEPFO
-                            .Where(x => x.CompanyEPFOId == CompanyEPFO.CompanyEPFOId).FirstOrDefault();
-                        originalTerm.CompanyId = companyid.CompanyID;
+                        var originalTerm = _UnitOfWork.CompanyEPFORespositories.GetQueryable()
+                            .Where(x => x.CompanyEpfoid == CompanyEPFO.CompanyEpfoid).FirstOrDefault();
+                        originalTerm.CompanyId = companyid.CompanyId;
                         originalTerm.EstablishmentCode = CompanyEPFO.EstablishmentCode;
                         originalTerm.Extension = CompanyEPFO.Extension;
                         originalTerm.OfficeCode = CompanyEPFO.OfficeCode;
 
-                        _context.Update(originalTerm);
-                        _context.SaveChanges();
+                        
                     }
                 }
-
-                return Task.FromResult(new ManagerBaseResponse<bool>
+                await _UnitOfWork.CommitAsync();
+                return  new ManagerBaseResponse<bool>
                 {
                     Result = true,
                     Message = "CompanyEPFO Data Saved Successfully."
-                });
+                } ;
             }
             catch (Exception e)
             {
-                return Task.FromResult(new ManagerBaseResponse<bool>
+                return  new ManagerBaseResponse<bool>
                 {
                     Result = false,
                     Message = e.Message
-                });
+                } ;
             }
         }
         public async Task<ManagerBaseResponse<bool>> RemoveCompanyEPFOData(string CompanyEPFOId)
@@ -94,7 +101,7 @@ namespace ComplyX_Businesss.BusinessLogic
             try
             {
                 // Get all report detail definitions for the given report name
-                var Company = await _context.CompanyEPFO.Where(x => x.CompanyEPFOId.ToString() == CompanyEPFOId).ToListAsync();
+                var Company = await _UnitOfWork.CompanyEPFORespositories.GetQueryable().Where(x => x.CompanyEpfoid.ToString() == CompanyEPFOId).ToListAsync();
 
                 if (string.IsNullOrEmpty(Company.ToString()))
                 {
@@ -106,10 +113,8 @@ namespace ComplyX_Businesss.BusinessLogic
                 }
 
                 // Remove all related report details
-                _context.CompanyEPFO.RemoveRange(Company);
-
-                await _context.SaveChangesAsync();
-
+                _UnitOfWork.CompanyEPFORespositories.RemoveRange(Company);
+                await _UnitOfWork.CommitAsync();
                 return new ManagerBaseResponse<bool>
                 {
                     Result = true,
@@ -127,23 +132,23 @@ namespace ComplyX_Businesss.BusinessLogic
             }
 
         }
-        public async Task<ManagerBaseResponse<IEnumerable<CompanyEPFO>>> GetAllCompanyEPFOFilter(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<CompanyEpfo>>> GetAllCompanyEPFOFilter(PagedListCriteria PagedListCriteria)
         {
             try
             {
 
-                var query = _context.CompanyEPFO.AsQueryable();
+                var query = _UnitOfWork.CompanyEPFORespositories.GetQueryable();
                 var searchText = PagedListCriteria.SearchText?.Trim().ToLower();
                 if (!string.IsNullOrWhiteSpace(searchText))
                 {
                     query = query.Where(x => x.EstablishmentCode.ToLower().Contains(searchText.ToLower()));
                 }
 
-                query = query.OrderBy(a => a.CompanyEPFOId);
+                query = query.OrderBy(a => a.CompanyEpfoid);
 
-                PageListed<CompanyEPFO> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+                PageListed<CompanyEpfo> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
 
-                return new ManagerBaseResponse<IEnumerable<CompanyEPFO>>
+                return new ManagerBaseResponse<IEnumerable<CompanyEpfo>>
                 {
                     Result = result.Data,
                     Message = "CompanyEPFO Data Retrieved Successfully.",
@@ -160,7 +165,7 @@ namespace ComplyX_Businesss.BusinessLogic
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<IEnumerable<CompanyEPFO>>
+                return new ManagerBaseResponse<IEnumerable<CompanyEpfo>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -168,62 +173,60 @@ namespace ComplyX_Businesss.BusinessLogic
                 };
             }
         }
-        public Task<ManagerBaseResponse<bool>> SaveEmployeeEPFOData(EmployeeEPFO EmployeeEPFO)
+        public async Task<ManagerBaseResponse<bool>> SaveEmployeeEPFOData(EmployeeEPFORequestModel EmployeeEPFO)
         {
-            var response = new ManagerBaseResponse<List<CompanyEPFO>>();
+            var response = new ManagerBaseResponse<List<EmployeeEpfo>>();
 
             try
             {
-                var Employees = _context.Employees.Where(x => x.EmployeeID == EmployeeEPFO.EmployeeID).FirstOrDefault();
+                var Employees = _UnitOfWork.EmployeeRespositories.GetQueryable().Where(x => x.EmployeeId == EmployeeEPFO.EmployeeId).FirstOrDefault();
                 if (Employees == null)
                 {
-                    return Task.FromResult(new ManagerBaseResponse<bool>
+                    return  new ManagerBaseResponse<bool>
                     {
                         Result = false,
                         Message = "Employee Data not found."
-                    });
+                    } ;
                 }
                 else
                 {
-                    if (EmployeeEPFO.EmployeeEPFOId == 0)
+                    if (EmployeeEPFO.EmployeeEpfoid == 0)
                     {
                         // Insert
-                        EmployeeEPFO _model = new EmployeeEPFO();
-                        _model.EmployeeID = Employees.EmployeeID;
-                        _model.UAN = EmployeeEPFO.UAN;
-                        _model.PFAccountNumber = EmployeeEPFO.PFAccountNumber;
-                        _model.DOJ_EPF = EmployeeEPFO.DOJ_EPF;
-                        _model.DOE_EPF = EmployeeEPFO.DOE_EPF;
+                        EmployeeEpfo _model = new EmployeeEpfo();
+                        _model.EmployeeId = Employees.EmployeeId;
+                        _model.Uan = EmployeeEPFO.Uan;
+                        _model.PfaccountNumber = EmployeeEPFO.PfaccountNumber;
+                        _model.DojEpf = EmployeeEPFO.DojEpf;
+                        _model.DoeEpf = EmployeeEPFO.DoeEpf;
                         _model.CreatedAt = Util.GetCurrentCSTDateAndTime();
 
-                        _context.Add(_model);
-                        _context.SaveChanges();
+                       await _UnitOfWork.EmployeeEPFORespositories.AddAsync(_model);
                     }
                     else
                     {
                         // Update
-                        var originalTerm = _context.EmployeeEPFO
-                            .Where(x => x.EmployeeEPFOId == EmployeeEPFO.EmployeeEPFOId).FirstOrDefault();
-                        originalTerm.DOE_EPF = EmployeeEPFO.DOE_EPF;
+                        var originalTerm = _UnitOfWork.EmployeeEPFORespositories.GetQueryable()
+                            .Where(x => x.EmployeeEpfoid == EmployeeEPFO.EmployeeEpfoid).FirstOrDefault();
+                        originalTerm.DoeEpf = EmployeeEPFO.DoeEpf;
 
-                        _context.Update(originalTerm);
-                        _context.SaveChanges();
+                        
                     }
                 }
-
-                return Task.FromResult(new ManagerBaseResponse<bool>
+                await _UnitOfWork.CommitAsync();
+                return  new ManagerBaseResponse<bool>
                 {
                     Result = true,
                     Message = "EmployeeEPFO Data Saved Successfully."
-                });
+                } ;
             }
             catch (Exception e)
             {
-                return Task.FromResult(new ManagerBaseResponse<bool>
+                return new ManagerBaseResponse<bool>
                 {
                     Result = false,
                     Message = e.Message
-                });
+                };
             }
         }
         public async Task<ManagerBaseResponse<bool>> RemoveEmployeeEPFOData(string EmployeeEPFOId)
@@ -231,7 +234,7 @@ namespace ComplyX_Businesss.BusinessLogic
             try
             {
                 // Get all report detail definitions for the given report name
-                var Employee = await _context.EmployeeEPFO.Where(x => x.EmployeeEPFOId.ToString() == EmployeeEPFOId).ToListAsync();
+                var Employee = await _UnitOfWork.EmployeeEPFORespositories.GetQueryable().Where(x => x.EmployeeEpfoid.ToString() == EmployeeEPFOId).ToListAsync();
 
                 if (string.IsNullOrEmpty(Employee.ToString()))
                 {
@@ -243,9 +246,8 @@ namespace ComplyX_Businesss.BusinessLogic
                 }
 
                 // Remove all related report details
-                _context.EmployeeEPFO.RemoveRange(Employee);
-
-                await _context.SaveChangesAsync();
+                _UnitOfWork.EmployeeEPFORespositories.RemoveRange(Employee);
+                await _UnitOfWork.CommitAsync();
 
                 return new ManagerBaseResponse<bool>
                 {
@@ -264,23 +266,23 @@ namespace ComplyX_Businesss.BusinessLogic
             }
 
         }
-        public async Task<ManagerBaseResponse<IEnumerable<EmployeeEPFO>>> GetAllEmployeeEPFOFilter(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<EmployeeEpfo>>> GetAllEmployeeEPFOFilter(PagedListCriteria PagedListCriteria)
         {
             try
             {
 
-                var query = _context.EmployeeEPFO.AsQueryable();
+                var query = _UnitOfWork.EmployeeEPFORespositories.GetQueryable();
                 var searchText = PagedListCriteria.SearchText?.Trim().ToLower();
                 if (!string.IsNullOrWhiteSpace(searchText))
                 {
-                    query = query.Where(x => x.PFAccountNumber.ToLower().Contains(searchText.ToLower()));
+                    query = query.Where(x => x.PfaccountNumber.ToLower().Contains(searchText.ToLower()));
                 }
 
-                query = query.OrderBy(a => a.EmployeeEPFOId);
+                query = query.OrderBy(a => a.EmployeeEpfoid);
 
-                PageListed<EmployeeEPFO> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+                PageListed<EmployeeEpfo> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
 
-                return new ManagerBaseResponse<IEnumerable<EmployeeEPFO>>
+                return new ManagerBaseResponse<IEnumerable<EmployeeEpfo>>
                 {
                     Result = result.Data,
                     Message = "EmployeeEPFO Data Retrieved Successfully.",
@@ -297,7 +299,7 @@ namespace ComplyX_Businesss.BusinessLogic
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<IEnumerable<EmployeeEPFO>>
+                return new ManagerBaseResponse<IEnumerable<EmployeeEpfo>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -305,28 +307,28 @@ namespace ComplyX_Businesss.BusinessLogic
                 };
             }
         }
-        public Task<ManagerBaseResponse<bool>> SaveEPFOECRData(EPFOECRFile EPFOECRFile)
+        public async Task<ManagerBaseResponse<bool>> SaveEPFOECRData(EPFOECRFileRequestModel EPFOECRFile)
         {
-            var response = new ManagerBaseResponse<List<EPFOECRFile>>();
+            var response = new ManagerBaseResponse<List<Epfoecrfile>>();
 
             try
             {
-                var EPFOECR = _context.Companies.Where(x => x.CompanyID == EPFOECRFile.CompanyId).FirstOrDefault();
+                var EPFOECR = _UnitOfWork.CompanyRepository.GetQueryable().Where(x => x.CompanyId == EPFOECRFile.CompanyId).FirstOrDefault();
                 if (EPFOECR == null)
                 {
-                    return Task.FromResult(new ManagerBaseResponse<bool>
+                    return  new ManagerBaseResponse<bool>
                     {
                         Result = false,
                         Message = "EPFOECR Company Data not found."
-                    });
+                    } ;
                 }
                 else
                 {
-                    if (EPFOECRFile.ECRFileId == 0)
+                    if (EPFOECRFile.EcrfileId == 0)
                     {
                         // Insert
-                        EPFOECRFile _model = new EPFOECRFile();
-                        _model.CompanyId = EPFOECR.CompanyID;
+                        Epfoecrfile _model = new Epfoecrfile();
+                        _model.CompanyId = EPFOECR.CompanyId;
                          _model.SubcontractorId = EPFOECRFile.SubcontractorId;
                         _model.WageMonth = EPFOECRFile.WageMonth;
                         _model.FileName = EPFOECRFile.FileName;
@@ -336,15 +338,14 @@ namespace ComplyX_Businesss.BusinessLogic
                         _model.Status = EPFOECRFile.Status;
                         _model.CreatedAt = Util.GetCurrentCSTDateAndTime();
 
-                        _context.Add(_model);
-                        _context.SaveChanges();
+                        await _UnitOfWork.EPFOECRFileRespositories.AddAsync(_model);
                     }
                     else
                     {
                         // Update
-                        var originalTerm = _context.EPFOECRFile
-                            .Where(x => x.ECRFileId == EPFOECRFile.ECRFileId).FirstOrDefault();
-                        originalTerm.CompanyId = EPFOECR.CompanyID;
+                        var originalTerm = _UnitOfWork.EPFOECRFileRespositories.GetQueryable()
+                            .Where(x => x.EcrfileId == EPFOECRFile.EcrfileId).FirstOrDefault();
+                        originalTerm.CompanyId = EPFOECR.CompanyId;
                         originalTerm.SubcontractorId = EPFOECRFile.SubcontractorId;
                         originalTerm.WageMonth = EPFOECRFile.WageMonth;
                         originalTerm.FileName = EPFOECRFile.FileName;
@@ -353,24 +354,23 @@ namespace ComplyX_Businesss.BusinessLogic
                         originalTerm.TotalEmployees = EPFOECRFile.TotalEmployees;
                         originalTerm.Status = EPFOECRFile.Status;
 
-                        _context.Update(originalTerm);
-                        _context.SaveChanges();
+                         
                     }
                 }
-
-                return Task.FromResult(new ManagerBaseResponse<bool>
+                await _UnitOfWork.CommitAsync();
+                return  new ManagerBaseResponse<bool>
                 {
                     Result = true,
                     Message = "EPFOECR File Data Saved Successfully."
-                });
+                } ;
             }
             catch (Exception e)
             {
-                return Task.FromResult(new ManagerBaseResponse<bool>
+                return  new ManagerBaseResponse<bool>
                 {
                     Result = false,
                     Message = e.Message
-                });
+                } ;
             }
         }
         public async Task<ManagerBaseResponse<bool>> RemoveEPFOECRData(string ECRFileId)
@@ -378,7 +378,7 @@ namespace ComplyX_Businesss.BusinessLogic
             try
             {
                 // Get all report detail definitions for the given report name
-                var EPFOECR = await _context.EPFOECRFile.Where(x => x.ECRFileId.ToString() == ECRFileId).ToListAsync();
+                var EPFOECR = await _UnitOfWork.EPFOECRFileRespositories.GetQueryable().Where(x => x.EcrfileId.ToString() == ECRFileId).ToListAsync();
 
                 if (string.IsNullOrEmpty(EPFOECR.ToString()))
                 {
@@ -390,9 +390,8 @@ namespace ComplyX_Businesss.BusinessLogic
                 }
 
                 // Remove all related report details
-                _context.EPFOECRFile.RemoveRange(EPFOECR);
-
-                await _context.SaveChangesAsync();
+                _UnitOfWork.EPFOECRFileRespositories.RemoveRange(EPFOECR);
+                await _UnitOfWork.CommitAsync();
 
                 return new ManagerBaseResponse<bool>
                 {
@@ -411,23 +410,23 @@ namespace ComplyX_Businesss.BusinessLogic
             }
 
         }
-        public async Task<ManagerBaseResponse<IEnumerable<EPFOECRFile>>> GetEPFOECRDataFilter(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<Epfoecrfile>>> GetEPFOECRDataFilter(PagedListCriteria PagedListCriteria)
         {
             try
             {
 
-                var query = _context.EPFOECRFile.AsQueryable();
+                var query = _UnitOfWork.EPFOECRFileRespositories.GetQueryable();
                 var searchText = PagedListCriteria.SearchText?.Trim().ToLower();
                 if (!string.IsNullOrWhiteSpace(searchText))
                 {
                     query = query.Where(x => x.FileName.ToLower().Contains(searchText.ToLower()));
                 }
 
-                query = query.OrderBy(a => a.ECRFileId);
+                query = query.OrderBy(a => a.EcrfileId);
 
-                PageListed<EPFOECRFile> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+                PageListed<Epfoecrfile> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
 
-                return new ManagerBaseResponse<IEnumerable<EPFOECRFile>>
+                return new ManagerBaseResponse<IEnumerable<Epfoecrfile>>
                 {
                     Result = result.Data,
                     Message = "EPFO ECRFile Data Retrieved Successfully.",
@@ -444,7 +443,7 @@ namespace ComplyX_Businesss.BusinessLogic
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<IEnumerable<EPFOECRFile>>
+                return new ManagerBaseResponse<IEnumerable<Epfoecrfile>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -452,55 +451,54 @@ namespace ComplyX_Businesss.BusinessLogic
                 };
             }
         }
-        public Task<ManagerBaseResponse<bool>> SaveEPFOPeriodData(EPFOPeriod EPFOPeriod , string UserID)
+        public async Task<ManagerBaseResponse<bool>> SaveEPFOPeriodData(EPFOPeriodRequestModel EPFOPeriod , string UserID)
         {
-            var response = new ManagerBaseResponse<List<EPFOPeriod>>();
+            var response = new ManagerBaseResponse<List<Epfoperiod>>();
 
             try
             {
                 var user = _context.Users.FirstOrDefault(u => u.UserName == UserID);
                 if (user == null)
                 {
-                    return Task.FromResult(new ManagerBaseResponse<bool>
+                    return new ManagerBaseResponse<bool>
                     {
                         Result = false,
                         Message = "User Data not found."
-                    });
+                    };
                 }
-                var companyid = _context.Companies.FirstOrDefault(x => x.CompanyID == EPFOPeriod.CompanyID);
+                var companyid = _UnitOfWork.CompanyRepository.GetQueryable().FirstOrDefault(x => x.CompanyId == EPFOPeriod.CompanyId);
                 if (companyid == null)
                 {
-                    return Task.FromResult(new ManagerBaseResponse<bool>
+                    return new ManagerBaseResponse<bool>
                     {
                         Result = false,
                         Message = "Company Data not found."
-                    });
+                    };
                 }
-                if (EPFOPeriod.EPFOPeriodId == 0)
+                if (EPFOPeriod.EpfoperiodId == 0)
                     {
                         // Insert
-                        EPFOPeriod _model = new EPFOPeriod();
-                        _model.CompanyID = EPFOPeriod.CompanyID;
+                        Epfoperiod _model = new Epfoperiod();
+                        _model.CompanyId = EPFOPeriod.CompanyId;
                         _model.SubcontractorId = EPFOPeriod.SubcontractorId;
                         _model.PeriodMonth = EPFOPeriod.PeriodMonth;
                         _model.PeriodYear = EPFOPeriod.PeriodYear;
                         _model.Status = EPFOPeriod.Status;
-                        _model.ECRFilePath = EPFOPeriod.ECRFilePath;
-                        _model.TRRN = EPFOPeriod.TRRN;
-                        _model.TRRNDate = EPFOPeriod.TRRNDate;
+                        _model.EcrfilePath = EPFOPeriod.EcrfilePath;
+                        _model.Trrn = EPFOPeriod.Trrn;
+                        _model.Trrndate = EPFOPeriod.Trrndate;
                         _model.ChallanFilePath = EPFOPeriod.ChallanFilePath;
                         _model.CreatedAt = Util.GetCurrentCSTDateAndTime();
                         _model.CreatedByUserId = user.Id;
                         _model.IsLocked =   EPFOPeriod.IsLocked;      
 
-                        _context.Add(_model);
-                        _context.SaveChanges();
+                      await _UnitOfWork.ePFOPeriodRespositories.AddAsync(_model);
                     }
                     else
                     {
                         // Update
-                        var originalTerm = _context.EPFOPeriod
-                            .Where(x => x.EPFOPeriodId== EPFOPeriod.EPFOPeriodId).FirstOrDefault();
+                        var originalTerm = _UnitOfWork.ePFOPeriodRespositories.GetQueryable()
+                            .Where(x => x.EpfoperiodId== EPFOPeriod.EpfoperiodId).FirstOrDefault();
  
                         originalTerm.Status = EPFOPeriod.Status;
                         originalTerm.UpdatedAt = Util.GetCurrentCSTDateAndTime();
@@ -508,23 +506,22 @@ namespace ComplyX_Businesss.BusinessLogic
                         originalTerm.LockedAt = Util.GetCurrentCSTDateAndTime();
                         originalTerm.LockedByUserId = user.Id;
 
-                    _context.Update(originalTerm);
-                        _context.SaveChanges();
-                    }
-                
-                return Task.FromResult(new ManagerBaseResponse<bool>
+                     
+                }
+                await _UnitOfWork.CommitAsync();
+                return  new ManagerBaseResponse<bool>
                 {
                     Result = true,
                     Message = "EPFO Peroid Data Saved Successfully."
-                });
+                } ;
             }
             catch (Exception e)
             {
-                return Task.FromResult(new ManagerBaseResponse<bool>
+                return new ManagerBaseResponse<bool>
                 {
                     Result = false,
                     Message = e.Message
-                });
+                };
             }
         }
         public async Task<ManagerBaseResponse<bool>> RemoveEPFOPeriodData(string EPFOPeriodId)
@@ -532,7 +529,7 @@ namespace ComplyX_Businesss.BusinessLogic
             try
             {
                 // Get all report detail definitions for the given report name
-                var EPFOPeriod = await _context.EPFOPeriod.Where(x => x.EPFOPeriodId.ToString() == EPFOPeriodId).ToListAsync();
+                var EPFOPeriod = await _UnitOfWork.ePFOPeriodRespositories.GetQueryable().Where(x => x.EpfoperiodId.ToString() == EPFOPeriodId).ToListAsync();
 
                 if (string.IsNullOrEmpty(EPFOPeriod.ToString()))
                 {
@@ -544,10 +541,8 @@ namespace ComplyX_Businesss.BusinessLogic
                 }
 
                 // Remove all related report details
-                _context.EPFOPeriod.RemoveRange(EPFOPeriod);
-
-                await _context.SaveChangesAsync();
-
+                _UnitOfWork.ePFOPeriodRespositories.RemoveRange(EPFOPeriod);
+                await _UnitOfWork.CommitAsync();
                 return new ManagerBaseResponse<bool>
                 {
                     Result = true,
@@ -565,23 +560,23 @@ namespace ComplyX_Businesss.BusinessLogic
             }
 
         }
-        public async Task<ManagerBaseResponse<IEnumerable<EPFOPeriod>>> GetEPFOPeriodDataFilter(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<Epfoperiod>>> GetEPFOPeriodDataFilter(PagedListCriteria PagedListCriteria)
         {
             try
             {
 
-                var query = _context.EPFOPeriod.AsQueryable();
+                var query = _UnitOfWork.ePFOPeriodRespositories.GetQueryable();
                 var searchText = PagedListCriteria.SearchText?.Trim().ToLower();
                 if (!string.IsNullOrWhiteSpace(searchText))
                 {
-                    query = query.Where(x => x.ECRFilePath.ToLower().Contains(searchText.ToLower()));
+                    query = query.Where(x => x.EcrfilePath.ToLower().Contains(searchText.ToLower()));
                 }
 
-                query = query.OrderBy(a => a.EPFOPeriodId);
+                query = query.OrderBy(a => a.EpfoperiodId);
 
-                PageListed<EPFOPeriod> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+                PageListed<Epfoperiod> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
 
-                return new ManagerBaseResponse<IEnumerable<EPFOPeriod>>
+                return new ManagerBaseResponse<IEnumerable<Epfoperiod>>
                 {
                     Result = result.Data,
                     Message = "EPFO Period Data Retrieved Successfully.",
@@ -598,7 +593,7 @@ namespace ComplyX_Businesss.BusinessLogic
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<IEnumerable<EPFOPeriod>>
+                return new ManagerBaseResponse<IEnumerable<Epfoperiod>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -607,83 +602,81 @@ namespace ComplyX_Businesss.BusinessLogic
             }
         }
 
-        public Task<ManagerBaseResponse<bool>> SaveEPFOMonthlyWageData(EPFOMonthlyWage EPFOMonthlyWage)
+        public async Task<ManagerBaseResponse<bool>> SaveEPFOMonthlyWageData(EPFOMonthWageRequestModel EPFOMonthlyWage)
         {
-            var response = new ManagerBaseResponse<List<EPFOMonthlyWage>>();
+            var response = new ManagerBaseResponse<List<EpfomonthlyWage>>();
 
             try
             {
-                var companyid = _context.Employees.Where(x => x.CompanyID == EPFOMonthlyWage.CompanyId && x.EmployeeID == EPFOMonthlyWage.EmployeeId).FirstOrDefault();
+                var companyid = _UnitOfWork.EmployeeRespositories.GetQueryable().Where(x => x.CompanyId == EPFOMonthlyWage.CompanyId && x.EmployeeId == EPFOMonthlyWage.EmployeeId).FirstOrDefault();
                 if (companyid == null)
                 {
-                    return Task.FromResult(new ManagerBaseResponse<bool>
+                    return  new ManagerBaseResponse<bool>
                     {
                         Result = false,
                         Message = "Company Data not found."
-                    });
+                    } ;
                 }
                 else
                 {
                     if (EPFOMonthlyWage.WageId == 0)
                     {
                         // Insert
-                        EPFOMonthlyWage _model = new EPFOMonthlyWage();
-                        _model.CompanyId = companyid.CompanyID;
+                        EpfomonthlyWage _model = new EpfomonthlyWage();
+                        _model.CompanyId = (int)companyid.CompanyId;
                         _model.EmployeeId = EPFOMonthlyWage.EmployeeId;
                         _model.SubcontractorId = EPFOMonthlyWage.SubcontractorId;
                         _model.WageMonth = EPFOMonthlyWage.WageMonth;
                         _model.Wages = EPFOMonthlyWage.Wages;
-                        _model.EPSWages = EPFOMonthlyWage.EPSWages;
-                        _model.EDLIWages = EPFOMonthlyWage.EDLIWages;
-                        _model.EPFWages = EPFOMonthlyWage.EPFWages;
+                        _model.Epswages = EPFOMonthlyWage.Epswages;
+                        _model.Edliwages = EPFOMonthlyWage.Edliwages;
+                        _model.Epfwages = EPFOMonthlyWage.Epfwages;
                         _model.Contribution = EPFOMonthlyWage.Contribution;
                         _model.EmployerShare = EPFOMonthlyWage.EmployerShare;
                         _model.PensionShare = EPFOMonthlyWage.PensionShare;
-                        _model.NCPDays = EPFOMonthlyWage.NCPDays;
+                        _model.Ncpdays = EPFOMonthlyWage.Ncpdays;
                         _model.RefundAdvance = EPFOMonthlyWage.RefundAdvance;
                         _model.CreatedAt = Util.GetCurrentCSTDateAndTime();
-
-                        _context.Add(_model);
-                        _context.SaveChanges();
+await _UnitOfWork.ePFOMonthWageRespositories.AddAsync( _model );
                     }
                     else
                     {
                         // Update
-                        var originalTerm = _context.EPFOMonthlyWage
+                        var originalTerm = _UnitOfWork.ePFOMonthWageRespositories.GetQueryable()
                             .Where(x => x.WageId == EPFOMonthlyWage.WageId).FirstOrDefault();
-                        originalTerm.CompanyId = companyid.CompanyID;
+                        originalTerm.CompanyId = (int)companyid.CompanyId;
                         originalTerm.EmployeeId = EPFOMonthlyWage.EmployeeId;
                         originalTerm.SubcontractorId = EPFOMonthlyWage.SubcontractorId;
                         originalTerm.WageMonth = EPFOMonthlyWage.WageMonth;
                         originalTerm.Wages = EPFOMonthlyWage.Wages;
-                        originalTerm.EPSWages = EPFOMonthlyWage.EPSWages;
-                        originalTerm.EDLIWages = EPFOMonthlyWage.EDLIWages;
-                        originalTerm.EPFWages = EPFOMonthlyWage.EPFWages;
+                        originalTerm.Epswages = EPFOMonthlyWage.Epswages;
+                        originalTerm.Edliwages = EPFOMonthlyWage.Edliwages;
+                        originalTerm.Epswages = EPFOMonthlyWage.Epswages;
                         originalTerm.Contribution = EPFOMonthlyWage.Contribution;
                         originalTerm.EmployerShare = EPFOMonthlyWage.EmployerShare;
                         originalTerm.PensionShare = EPFOMonthlyWage.PensionShare;
-                        originalTerm.NCPDays = EPFOMonthlyWage.NCPDays;
+                        originalTerm.Ncpdays = EPFOMonthlyWage.Ncpdays;
                         originalTerm.RefundAdvance = EPFOMonthlyWage.RefundAdvance;
                         originalTerm.CreatedAt = Util.GetCurrentCSTDateAndTime();
 
-                        _context.Update(originalTerm);
-                        _context.SaveChanges();
+                        
+
                     }
                 }
-
-                return Task.FromResult(new ManagerBaseResponse<bool>
+                await _UnitOfWork.CommitAsync();
+                return  new ManagerBaseResponse<bool>
                 {
                     Result = true,
                     Message = "CompanyEPFO Data Saved Successfully."
-                });
+                } ;
             }
             catch (Exception e)
             {
-                return Task.FromResult(new ManagerBaseResponse<bool>
+                return  new ManagerBaseResponse<bool>
                 {
                     Result = false,
                     Message = e.Message
-                });
+                } ;
             }
         }
         public async Task<ManagerBaseResponse<bool>> RemoveEPFOMonthlyWageData(string WageID)
@@ -691,7 +684,7 @@ namespace ComplyX_Businesss.BusinessLogic
             try
             {
                 // Get all report detail definitions for the given report name
-                var Company = await _context.EPFOMonthlyWage.Where(x => x.WageId.ToString() == WageID).ToListAsync();
+                var Company = await _UnitOfWork.ePFOMonthWageRespositories.GetQueryable().Where(x => x.WageId.ToString() == WageID).ToListAsync();
 
                 if (string.IsNullOrEmpty(Company.ToString()))
                 {
@@ -703,9 +696,8 @@ namespace ComplyX_Businesss.BusinessLogic
                 }
 
                 // Remove all related report details
-                _context.EPFOMonthlyWage.RemoveRange(Company);
-
-                await _context.SaveChangesAsync();
+                _UnitOfWork.ePFOMonthWageRespositories.RemoveRange(Company);
+                await _UnitOfWork.CommitAsync();
 
                 return new ManagerBaseResponse<bool>
                 {
@@ -724,12 +716,12 @@ namespace ComplyX_Businesss.BusinessLogic
             }
 
         }
-        public async Task<ManagerBaseResponse<IEnumerable<EPFOMonthlyWage>>> GetAllEPFOMonthlyWageFilter(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<EpfomonthlyWage>>> GetAllEPFOMonthlyWageFilter(PagedListCriteria PagedListCriteria)
         {
             try
             {
 
-                var query = _context.EPFOMonthlyWage.AsQueryable();
+                var query = _UnitOfWork.ePFOMonthWageRespositories.GetQueryable();
                 var searchText = PagedListCriteria.SearchText?.Trim().ToLower();
                 if (!string.IsNullOrWhiteSpace(searchText))
                 {
@@ -738,9 +730,9 @@ namespace ComplyX_Businesss.BusinessLogic
 
                 query = query.OrderBy(a => a.WageId);
 
-                PageListed<EPFOMonthlyWage> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+                PageListed<EpfomonthlyWage> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
 
-                return new ManagerBaseResponse<IEnumerable<EPFOMonthlyWage>>
+                return new ManagerBaseResponse<IEnumerable<EpfomonthlyWage>>
                 {
                     Result = result.Data,
                     Message = "EPFOMonthlyWage Data Retrieved Successfully.",
@@ -757,7 +749,7 @@ namespace ComplyX_Businesss.BusinessLogic
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<IEnumerable<EPFOMonthlyWage>>
+                return new ManagerBaseResponse<IEnumerable<EpfomonthlyWage>>
                 {
                     IsSuccess = false,
                     Result = null,

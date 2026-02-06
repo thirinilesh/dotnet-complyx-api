@@ -14,6 +14,11 @@ using static System.Net.Mime.MediaTypeNames;
 using System.Globalization;
 using ComplyX_Businesss.Helper;
 using AppContext = ComplyX_Businesss.Helper.AppContext;
+using ComplyX_Businesss.Models.PayrollData;
+using ComplyX.Data.Entities;
+using ComplyX.Repositories.UnitOfWork;
+using ComplyX_Businesss.Models.LeaveEncashmentPolicy;
+using ComplyX_Businesss.Models.LeaveEncashmentTransaction;
 
 namespace ComplyX.BusinessLogic
 {
@@ -24,19 +29,21 @@ namespace ComplyX.BusinessLogic
             { "name", "Name" }
         };
         private readonly AppContext _context;
+        private readonly IUnitOfWork _UnitOfWork;
 
-        public PayrollClass(AppContext context)
+        public PayrollClass(AppContext context, IUnitOfWork unitOfWork)
         {
             _context = context;
+            _UnitOfWork = unitOfWork;
         }
 
-        public async Task<ManagerBaseResponse<bool>> SavePayrollData(PayrollData Payrolls)
+        public async Task<ManagerBaseResponse<bool>> SavePayrollData(PayrollDataRequestModel Payrolls)
         {
-            var response = new ManagerBaseResponse<List<PayrollData>>();
+            var response = new ManagerBaseResponse<List<PayrollDatum>>();
 
             try
             {
-                var employeeid = await _context.Employees.FirstOrDefaultAsync(x => x.EmployeeID == Payrolls.EmployeeID);
+                var employeeid = await _UnitOfWork.EmployeeRespositories.GetQueryable().FirstOrDefaultAsync(x => x.EmployeeId == Payrolls.EmployeeId);
                 if (employeeid == null)
                 {
                     return (new ManagerBaseResponse<bool>
@@ -47,53 +54,50 @@ namespace ComplyX.BusinessLogic
                 }
                 else
                 {
-                    if (Payrolls.PayrollID == 0)
+                    if (Payrolls.PayrollId == 0)
                     {
                         // Insert
-                        PayrollData _model = new PayrollData();
-                        _model.EmployeeID = Payrolls.EmployeeID;
+                        PayrollDatum _model = new PayrollDatum();
+                        _model.EmployeeId = Payrolls.EmployeeId;
                         _model.Month = Payrolls.Month;
                         _model.Basic = Payrolls.Basic;
-                        _model.HRA = Payrolls.HRA;
+                        _model.Hra = Payrolls.Hra;
                         _model.SpecialAllowance = Payrolls.SpecialAllowance;
                         _model.VariablePay = Payrolls.VariablePay;
                         _model.GrossSalary = Payrolls.GrossSalary;
-                        _model.PF = Payrolls.PF;
-                        _model.ESI = Payrolls.ESI;
+                        _model.Pf = Payrolls.Pf;
+                        _model.Esi = Payrolls.Esi;
                         _model.ProfessionalTax = Payrolls.ProfessionalTax;
-                        _model.TDS = Payrolls.TDS;
+                        _model.Tds = Payrolls.Tds;
                         _model.NetPay = Payrolls.NetPay;
                         _model.BankAccount = Payrolls.BankAccount;
-                        _model.IFSC = Payrolls.IFSC;
+                        _model.Ifsc = Payrolls.Ifsc;
 
-                        _context.Add(_model);
-                        _context.SaveChanges();
+                        await _UnitOfWork.PayrollDataRespositories.AddAsync( _model );
                     }
                     else
                     {
                         // Update
-                        var originalTerm = _context.PayrollData
-                            .Where(x => x.PayrollID == Payrolls.PayrollID).FirstOrDefault();
-                        originalTerm.EmployeeID = Payrolls.EmployeeID;
+                        var originalTerm = _UnitOfWork.PayrollDataRespositories.GetQueryable()
+                            .Where(x => x.PayrollId == Payrolls.PayrollId).FirstOrDefault();
+                        originalTerm.EmployeeId = Payrolls.EmployeeId;
                         originalTerm.Month = Payrolls.Month;
                         originalTerm.Basic = Payrolls.Basic;
-                        originalTerm.HRA = Payrolls.HRA;
+                        originalTerm.Hra = Payrolls.Hra;
                         originalTerm.SpecialAllowance = Payrolls.SpecialAllowance;
                         originalTerm.VariablePay = Payrolls.VariablePay;
                         originalTerm.GrossSalary = Payrolls.GrossSalary;
-                        originalTerm.PF = Payrolls.PF;
-                        originalTerm.ESI = Payrolls.ESI;
+                        originalTerm.Pf = Payrolls.Pf;
+                        originalTerm.Esi = Payrolls.Esi;
                         originalTerm.ProfessionalTax = Payrolls.ProfessionalTax;
-                        originalTerm.TDS = Payrolls.TDS;
+                        originalTerm.Tds = Payrolls.Tds;
                         originalTerm.NetPay = Payrolls.NetPay;
                         originalTerm.BankAccount = Payrolls.BankAccount;
-                        originalTerm.IFSC = Payrolls.IFSC;
-
-                        _context.Update(originalTerm);
-                        _context.SaveChanges();
+                        originalTerm.Ifsc = Payrolls.Ifsc;
+ 
                     }
                 }
-                
+                await _UnitOfWork.CommitAsync();
                 return  (new ManagerBaseResponse<bool>
                 {
                     Result = true,
@@ -115,7 +119,7 @@ namespace ComplyX.BusinessLogic
             try
             {
                 // Get all report detail definitions for the given report name
-                var PayrollData = await _context.PayrollData.Where(x => x.PayrollID.ToString() == PayrollID).ToListAsync();
+                var PayrollData = await _UnitOfWork.PayrollDataRespositories.GetQueryable().Where(x => x.PayrollId.ToString() == PayrollID).ToListAsync();
 
                 if (string.IsNullOrEmpty(PayrollData.ToString()))
                 {
@@ -127,9 +131,9 @@ namespace ComplyX.BusinessLogic
                 }
 
                 // Remove all related report details
-                _context.PayrollData.RemoveRange(PayrollData);
+                _UnitOfWork.PayrollDataRespositories.RemoveRange(PayrollData);
 
-                await _context.SaveChangesAsync();
+                await _UnitOfWork.CommitAsync();
 
                 return new ManagerBaseResponse<bool>
                 {
@@ -153,7 +157,7 @@ namespace ComplyX.BusinessLogic
         {
             try
             {
-                var employees = await _context.Employees.FirstOrDefaultAsync(x => x.CompanyID.ToString() == CompanyID && x.EmployeeID.ToString() == EmployeeID);
+                var employees = await _UnitOfWork.EmployeeRespositories.GetQueryable().FirstOrDefaultAsync(x => x.CompanyId.ToString() == CompanyID && x.EmployeeId.ToString() == EmployeeID);
                 if (employees == null)
                 {
                     return new ManagerBaseResponse<bool>
@@ -164,7 +168,7 @@ namespace ComplyX.BusinessLogic
                 }
 
                 // Get all report detail definitions for the given report name
-                var PayrollData = await _context.PayrollData.Where(x => x.EmployeeID == employees.EmployeeID).ToListAsync();
+                var PayrollData = await _UnitOfWork.PayrollDataRespositories.GetQueryable().Where(x => x.EmployeeId == employees.EmployeeId).ToListAsync();
 
                 if (string.IsNullOrEmpty(PayrollData.ToString()))
                 {
@@ -176,9 +180,9 @@ namespace ComplyX.BusinessLogic
                 }
 
                 // Remove all related report details
-                _context.PayrollData.RemoveRange(PayrollData);
+                _UnitOfWork.PayrollDataRespositories.RemoveRange(PayrollData);
 
-                await _context.SaveChangesAsync();
+                await _UnitOfWork.CommitAsync();
 
                 return new ManagerBaseResponse<bool>
                 {
@@ -203,8 +207,8 @@ namespace ComplyX.BusinessLogic
             try
             {
 
-                var PayrollData = await _context.PayrollData.Join( _context.Employees, payroll => payroll.EmployeeID, emp => emp.EmployeeID,
-        (payroll, emp) => new { Payroll = payroll, Employee = emp } ).Where(x => x.Employee.CompanyID.ToString() == CompanyID).Select(x => x.Payroll).ToListAsync();
+                var PayrollData = await _UnitOfWork.PayrollDataRespositories.GetQueryable().Join( _UnitOfWork.EmployeeRespositories.GetQueryable(), payroll => payroll.EmployeeId, emp => emp.EmployeeId,
+        (payroll, emp) => new { Payroll = payroll, Employee = emp } ).Where(x => x.Employee.CompanyId.ToString() == CompanyID).Select(x => x.Payroll).ToListAsync();
 
 
                 if (string.IsNullOrEmpty(PayrollData.ToString()))
@@ -217,9 +221,9 @@ namespace ComplyX.BusinessLogic
                 }
 
                 // Remove all related report details
-                _context.PayrollData.RemoveRange(PayrollData);
+                _UnitOfWork.PayrollDataRespositories.RemoveRange(PayrollData);
 
-                await _context.SaveChangesAsync();
+                await _UnitOfWork.CommitAsync();
 
                 return new ManagerBaseResponse<bool>
                 {
@@ -239,11 +243,11 @@ namespace ComplyX.BusinessLogic
 
         }
 
-        public async Task<ManagerBaseResponse<bool>> EditPayrollDataByCompanyIDEmployeeID(PayrollData data, string CompanyID, string EmployeeID , string PayrollID)
+        public async Task<ManagerBaseResponse<bool>> EditPayrollDataByCompanyIDEmployeeID(PayrollDataRequestModel data, string CompanyID, string EmployeeID , string PayrollID)
         {
             try
             {
-                var employees = await _context.Employees.FirstOrDefaultAsync(x => x.CompanyID.ToString() == CompanyID && x.EmployeeID.ToString() == EmployeeID);
+                var employees = await _UnitOfWork.EmployeeRespositories.GetQueryable().FirstOrDefaultAsync(x => x.CompanyId.ToString() == CompanyID && x.EmployeeId.ToString() == EmployeeID);
                 if (employees == null)
                 {
                     return new ManagerBaseResponse<bool>
@@ -252,31 +256,31 @@ namespace ComplyX.BusinessLogic
                         Message = "Employee not found.",
                     };
                 } 
-                var PayrollData = await _context.PayrollData.Join(_context.Employees, payroll => payroll.EmployeeID, emp => emp.EmployeeID,
-                                        (payroll, emp) => new { Payroll = payroll, Employee = emp }).Where(x => x.Employee.CompanyID.ToString() == CompanyID 
-                                        && x.Employee.EmployeeID.ToString() == EmployeeID
-                                        && x.Payroll.PayrollID.ToString() == PayrollID)
+                var PayrollData = await _UnitOfWork.PayrollDataRespositories.GetQueryable().Join(_UnitOfWork.EmployeeRespositories.GetQueryable(), payroll => payroll.EmployeeId, emp => emp.EmployeeId,
+                                        (payroll, emp) => new { Payroll = payroll, Employee = emp }).Where(x => x.Employee.CompanyId.ToString() == CompanyID 
+                                        && x.Employee.EmployeeId.ToString() == EmployeeID
+                                        && x.Payroll.PayrollId.ToString() == PayrollID)
                                         .Select(x => x.Payroll).ToListAsync();
 
                 foreach (var payroll in PayrollData)
                 {
-                    payroll.EmployeeID = data.EmployeeID;
+                    payroll.EmployeeId = data.EmployeeId;
                     payroll.Month = data.Month;
                     payroll.Basic = data.Basic;
-                    payroll.HRA = data.HRA;
+                    payroll.Hra = data.Hra;
                     payroll.SpecialAllowance = data.SpecialAllowance;
                     payroll.VariablePay = data.VariablePay;
                     payroll.GrossSalary = data.GrossSalary;
-                    payroll.PF = data.PF;
-                    payroll.ESI = data.ESI;
+                    payroll.Pf = data.Pf;
+                    payroll.Esi = data.Esi;
                     payroll.ProfessionalTax = data.ProfessionalTax;
-                    payroll.TDS = data.TDS;
+                    payroll.Tds = data.Tds;
                     payroll.NetPay = data.NetPay;
                     payroll.BankAccount = data.BankAccount;
-                    payroll.IFSC = data.IFSC;
+                    payroll.Ifsc = data.Ifsc;
                 }
 
-                await _context.SaveChangesAsync();
+                await _UnitOfWork.CommitAsync();
 
                 return new ManagerBaseResponse<bool>
                 {
@@ -295,23 +299,23 @@ namespace ComplyX.BusinessLogic
             }
 
         }
-        public async Task<ManagerBaseResponse<IEnumerable<PayrollData>>> GetPayrollDataFilter(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<PayrollDatum>>> GetPayrollDataFilter(PagedListCriteria PagedListCriteria)
         {
             try
             {
 
-                var query = _context.PayrollData.AsQueryable();
+                var query = _UnitOfWork.PayrollDataRespositories.GetQueryable();
                 var searchText = PagedListCriteria.SearchText?.Trim().ToLower();
                 if (!string.IsNullOrWhiteSpace(searchText))
                 {
                     query = query.Where(x => x.Month.ToLower().Contains(searchText.ToLower()));
                 }
 
-                query = query.OrderBy(a => a.PayrollID);
+                query = query.OrderBy(a => a.PayrollId);
 
-                PageListed<PayrollData> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+                PageListed<PayrollDatum> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
 
-                return new ManagerBaseResponse<IEnumerable<PayrollData>>
+                return new ManagerBaseResponse<IEnumerable<PayrollDatum>>
                 {
                     Result = result.Data,
                     Message = "Payroll Data Retrieved Successfully.",
@@ -328,7 +332,7 @@ namespace ComplyX.BusinessLogic
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<IEnumerable<PayrollData>>
+                return new ManagerBaseResponse<IEnumerable<PayrollDatum>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -336,13 +340,13 @@ namespace ComplyX.BusinessLogic
                 };
             }
         }
-        public async Task<ManagerBaseResponse<bool>> SaveLeave_Encashment_PolicyData(Leave_Encashment_Policy Leave_Encashment_Policy)
+        public async Task<ManagerBaseResponse<bool>> SaveLeave_Encashment_PolicyData(LeaveEncashmentPolicyRequestModel Leave_Encashment_Policy)
         {
-            var response = new ManagerBaseResponse<List<Leave_Encashment_Policy>>();
+            var response = new ManagerBaseResponse<List<LeaveEncashmentPolicy>>();
 
             try
             {
-                var Company = await _context.Companies.FirstOrDefaultAsync(x => x.CompanyID == Leave_Encashment_Policy.CompanyID);
+                var Company = await _UnitOfWork.CompanyRepository.GetQueryable().FirstOrDefaultAsync(x => x.CompanyId == Leave_Encashment_Policy.CompanyId);
                 if (Company == null)
                 {
                     return (new ManagerBaseResponse<bool>
@@ -353,12 +357,12 @@ namespace ComplyX.BusinessLogic
                 }
                 else
                 {
-                    if (Leave_Encashment_Policy.PolicyID == Guid.Empty)
+                    if (Leave_Encashment_Policy.PolicyId == Guid.Empty)
                     {
                         // Insert
-                        Leave_Encashment_Policy _model = new Leave_Encashment_Policy();
-                        _model.PolicyID = Guid.NewGuid();
-                        _model.CompanyID = Leave_Encashment_Policy.CompanyID;
+                        LeaveEncashmentPolicy _model = new LeaveEncashmentPolicy();
+                        _model.PolicyId = Guid.NewGuid();
+                        _model.CompanyId = Leave_Encashment_Policy.CompanyId;
                         _model.LeaveType = Leave_Encashment_Policy.LeaveType;
                         _model.EncashmentAllowed = Leave_Encashment_Policy.EncashmentAllowed;
                         _model.MaxEncashableDays = Leave_Encashment_Policy.MaxEncashableDays;
@@ -366,15 +370,14 @@ namespace ComplyX.BusinessLogic
                         _model.EncashmentFormula = Leave_Encashment_Policy.EncashmentFormula;   
                         _model.CreatedAt = Util.GetCurrentCSTDateAndTime();
 
-                        _context.Add(_model);
-                        _context.SaveChanges();
+                       await _UnitOfWork.LeaveEncashmentPolicyRespositories.AddAsync(_model);
                     }
                     else
                     {
                         // Update
-                        var originalTerm = _context.Leave_Encashment_Policy
-                            .Where(x => x.PolicyID == Leave_Encashment_Policy.PolicyID).FirstOrDefault();
-                        originalTerm.CompanyID = Leave_Encashment_Policy.CompanyID;
+                        var originalTerm = _UnitOfWork.LeaveEncashmentPolicyRespositories.GetQueryable()
+                            .Where(x => x.PolicyId == Leave_Encashment_Policy.PolicyId).FirstOrDefault();
+                        originalTerm.CompanyId = Leave_Encashment_Policy.CompanyId;
                         originalTerm.LeaveType = Leave_Encashment_Policy.LeaveType;
                         originalTerm.EncashmentAllowed = Leave_Encashment_Policy.EncashmentAllowed;
                         originalTerm.MaxEncashableDays = Leave_Encashment_Policy.MaxEncashableDays;
@@ -382,11 +385,11 @@ namespace ComplyX.BusinessLogic
                         originalTerm.EncashmentFormula = Leave_Encashment_Policy.EncashmentFormula;
                         originalTerm.UpdatedAt = Util.GetCurrentCSTDateAndTime();
 
-                        _context.Update(originalTerm);
-                        _context.SaveChanges();
+                      
                     }
                 }
 
+                await _UnitOfWork.CommitAsync();
                 return (new ManagerBaseResponse<bool>
                 {
                     Result = true,
@@ -407,7 +410,7 @@ namespace ComplyX.BusinessLogic
             try
             {
                 // Get all report detail definitions for the given report name
-                var LeaveEncashmentPolicy = await _context.Leave_Encashment_Policy.Where(x => x.PolicyID.ToString() == PolicyID).ToListAsync();
+                var LeaveEncashmentPolicy = await _UnitOfWork.LeaveEncashmentPolicyRespositories.GetQueryable().Where(x => x.PolicyId.ToString() == PolicyID).ToListAsync();
 
                 if (string.IsNullOrEmpty(LeaveEncashmentPolicy.ToString()))
                 {
@@ -419,9 +422,9 @@ namespace ComplyX.BusinessLogic
                 }
 
                 // Remove all related report details
-                _context.Leave_Encashment_Policy.RemoveRange(LeaveEncashmentPolicy);
+                _UnitOfWork.LeaveEncashmentPolicyRespositories.RemoveRange(LeaveEncashmentPolicy);
 
-                await _context.SaveChangesAsync();
+                await _UnitOfWork.CommitAsync();
 
                 return new ManagerBaseResponse<bool>
                 {
@@ -440,13 +443,25 @@ namespace ComplyX.BusinessLogic
             }
 
         }
-        public async Task<ManagerBaseResponse<List<Leave_Encashment_Policy>>> GetLeave_Encashment_PolicyByID(string PolicyID)
+        public async Task<ManagerBaseResponse<List<LeaveEncashmentPolicyResponseModel>>> GetLeave_Encashment_PolicyByID(string PolicyID)
         {
             try
             {
-                var Policy = await _context.Leave_Encashment_Policy.AsQueryable().Where(x => x.PolicyID.ToString() == PolicyID).ToListAsync();
+                var Policy = await _UnitOfWork.LeaveEncashmentPolicyRespositories.GetQueryable().Where(x => x.PolicyId.ToString() == PolicyID)
+                      .Select(x => new LeaveEncashmentPolicyResponseModel
+                      {
+                          PolicyId = x.PolicyId,
+                          LeaveType = x.LeaveType,
+                          EncashmentAllowed = x.EncashmentAllowed,
+                          MaxEncashableDays = x.MaxEncashableDays,
+                          EncashmentFrequency = x.EncashmentFrequency,
+                          EncashmentFormula = x.EncashmentFormula,
+                          CreatedAt = x.CreatedAt,
+                          UpdatedAt = x.UpdatedAt,
+                          CompanyId = x.CompanyId
+                      }).ToListAsync();
 
-                return new ManagerBaseResponse<List<Leave_Encashment_Policy>>
+                return new ManagerBaseResponse<List<LeaveEncashmentPolicyResponseModel>>
                 {
                     IsSuccess = true,
                     Result = Policy,
@@ -456,7 +471,7 @@ namespace ComplyX.BusinessLogic
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<List<Leave_Encashment_Policy>>
+                return new ManagerBaseResponse<List<LeaveEncashmentPolicyResponseModel>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -464,23 +479,23 @@ namespace ComplyX.BusinessLogic
                 };
             }
         }
-        public async Task<ManagerBaseResponse<IEnumerable<Leave_Encashment_Policy>>> GetLeave_Encashment_PolicyFilter(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<LeaveEncashmentPolicy>>> GetLeave_Encashment_PolicyFilter(PagedListCriteria PagedListCriteria)
         {
             try
             {
 
-                var query = _context.Leave_Encashment_Policy.AsQueryable();
+                var query = _UnitOfWork.LeaveEncashmentPolicyRespositories.GetQueryable();
                 var searchText = PagedListCriteria.SearchText?.Trim().ToLower();
                 if (!string.IsNullOrWhiteSpace(searchText))
                 {
                     query = query.Where(x => x.LeaveType.ToLower().Contains(searchText.ToLower()));
                 }
 
-                query = query.OrderBy(a => a.PolicyID);
+                query = query.OrderBy(a => a.PolicyId);
 
-                PageListed<Leave_Encashment_Policy> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+                PageListed<LeaveEncashmentPolicy> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
 
-                return new ManagerBaseResponse<IEnumerable<Leave_Encashment_Policy>>
+                return new ManagerBaseResponse<IEnumerable<LeaveEncashmentPolicy>>
                 {
                     Result = result.Data,
                     Message = "LeaveEncashmentPolicy Data Retrieved Successfully.",
@@ -497,7 +512,7 @@ namespace ComplyX.BusinessLogic
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<IEnumerable<Leave_Encashment_Policy>>
+                return new ManagerBaseResponse<IEnumerable<LeaveEncashmentPolicy>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -506,13 +521,13 @@ namespace ComplyX.BusinessLogic
             }
         }
 
-        public async Task<ManagerBaseResponse<bool>> SaveLeave_Encashment_TransactionData(Leave_Encashment_Transactions Leave_Encashment_Transactions)
+        public async Task<ManagerBaseResponse<bool>> SaveLeave_Encashment_TransactionData(LeaveEncashmentTransactionRequestModel Leave_Encashment_Transactions)
         {
-            var response = new ManagerBaseResponse<List<Leave_Encashment_Transactions>>();
+            var response = new ManagerBaseResponse<List<LeaveEncashmentTransaction>>();
 
             try
             {
-                var Employee = await _context.Employees.FirstOrDefaultAsync(x => x.EmployeeID == Leave_Encashment_Transactions.EmployeeID && x.CompanyID == Leave_Encashment_Transactions.CompanyID);
+                var Employee = await _UnitOfWork.EmployeeRespositories.GetQueryable().FirstOrDefaultAsync(x => x.EmployeeId == Leave_Encashment_Transactions.Employeeid && x.CompanyId == Leave_Encashment_Transactions.CompanyId);
                 if (Employee == null)
                 {
                     return (new ManagerBaseResponse<bool>
@@ -523,13 +538,13 @@ namespace ComplyX.BusinessLogic
                 }
                 else
                 {
-                    if (Leave_Encashment_Transactions.EncashmentID == Guid.Empty)
+                    if (Leave_Encashment_Transactions.EncashmentId == Guid.Empty)
                     {
                         // Insert
-                        Leave_Encashment_Transactions _model = new Leave_Encashment_Transactions();
-                        _model.EncashmentID = Guid.NewGuid();
-                       _model.EmployeeID = Employee.EmployeeID;
-                        _model.CompanyID = Employee.CompanyID;
+                        LeaveEncashmentTransaction _model = new LeaveEncashmentTransaction();
+                        _model.EncashmentId = Guid.NewGuid();
+                       _model.Employeeid = Employee.EmployeeId;
+                        _model.CompanyId = Leave_Encashment_Transactions.CompanyId;
                         _model.LeaveType = Leave_Encashment_Transactions.LeaveType;
                         _model.DaysEncashed = Leave_Encashment_Transactions.DaysEncashed;
                         _model.EncashmentAmount = Leave_Encashment_Transactions.EncashmentAmount;
@@ -538,16 +553,15 @@ namespace ComplyX.BusinessLogic
                         _model.ApprovedBy = Guid.NewGuid();
                         _model.CreatedAt = Util.GetCurrentCSTDateAndTime();
 
-                        _context.Add(_model);
-                        _context.SaveChanges();
+                       await _UnitOfWork.LeaveEncashmentTransactionRespositories.AddAsync(_model);
                     }
                     else
                     {
                         // Update
-                        var originalTerm = _context.Leave_Encashment_Transactions
-                            .Where(x => x.EncashmentID == Leave_Encashment_Transactions.EncashmentID).FirstOrDefault();
-                        originalTerm.EmployeeID = Employee.EmployeeID;
-                        originalTerm.CompanyID = Employee.CompanyID;
+                        var originalTerm = _UnitOfWork.LeaveEncashmentTransactionRespositories.GetQueryable()
+                            .Where(x => x.EncashmentId == Leave_Encashment_Transactions.EncashmentId).FirstOrDefault();
+                        originalTerm.Employeeid = Employee.EmployeeId;
+                        originalTerm.CompanyId = Leave_Encashment_Transactions.CompanyId;
                         originalTerm.LeaveType = Leave_Encashment_Transactions.LeaveType;
                         originalTerm.DaysEncashed = Leave_Encashment_Transactions.DaysEncashed;
                         originalTerm.EncashmentAmount = Leave_Encashment_Transactions.EncashmentAmount;
@@ -556,11 +570,10 @@ namespace ComplyX.BusinessLogic
                         originalTerm.ApprovedBy = Guid.NewGuid();
                         originalTerm.UpdatedAt = Util.GetCurrentCSTDateAndTime();
 
-                        _context.Update(originalTerm);
-                        _context.SaveChanges();
+                        
                     }
                 }
-
+                await _UnitOfWork.CommitAsync();
                 return (new ManagerBaseResponse<bool>
                 {
                     Result = true,
@@ -581,7 +594,7 @@ namespace ComplyX.BusinessLogic
             try
             {
                 // Get all report detail definitions for the given report name
-                var LeaveEncashmentTransaction = await _context.Leave_Encashment_Transactions.Where(x => x.EncashmentID.ToString() == EncashmentID).ToListAsync();
+                var LeaveEncashmentTransaction = await _UnitOfWork.LeaveEncashmentTransactionRespositories.GetQueryable().Where(x => x.EncashmentId.ToString() == EncashmentID).ToListAsync();
 
                 if (string.IsNullOrEmpty(LeaveEncashmentTransaction.ToString()))
                 {
@@ -593,9 +606,9 @@ namespace ComplyX.BusinessLogic
                 }
 
                 // Remove all related report details
-                _context.Leave_Encashment_Transactions.RemoveRange(LeaveEncashmentTransaction);
+                _UnitOfWork.LeaveEncashmentTransactionRespositories.RemoveRange(LeaveEncashmentTransaction);
 
-                await _context.SaveChangesAsync();
+                await _UnitOfWork.CommitAsync();
 
                 return new ManagerBaseResponse<bool>
                 {
@@ -615,13 +628,27 @@ namespace ComplyX.BusinessLogic
 
         }
 
-        public async Task<ManagerBaseResponse<List<Leave_Encashment_Transactions>>> GetLeave_Encashment_TransactionByID(string EncashmentID)
+        public async Task<ManagerBaseResponse<List<LeaveEncashmentTransactionResponseModel>>> GetLeave_Encashment_TransactionByID(string EncashmentID)
         {
             try
             {
-                var Transaction = await _context.Leave_Encashment_Transactions.AsQueryable().Where(x => x.EncashmentID.ToString() == EncashmentID).ToListAsync();
+                var Transaction = await _UnitOfWork.LeaveEncashmentTransactionRespositories.GetQueryable().Where(x => x.EncashmentId.ToString() == EncashmentID)
+                     .Select(x => new LeaveEncashmentTransactionResponseModel
+                     {
+                         EncashmentId = x.EncashmentId,
+                         CompanyId = x.CompanyId,
+                         Employeeid = x.Employeeid,
+                         LeaveType = x.LeaveType,
+                         DaysEncashed = x.DaysEncashed,
+                         EncashmentAmount = x.EncashmentAmount,
+                         PaymentDate = x.PaymentDate,
+                         Status = x.Status,
+                         ApprovedBy = x.ApprovedBy,
+                         CreatedAt = x.CreatedAt,
+                         UpdatedAt = x.UpdatedAt
+                     }).ToListAsync();
 
-                return new ManagerBaseResponse<List<Leave_Encashment_Transactions>>
+                return new ManagerBaseResponse<List<LeaveEncashmentTransactionResponseModel>>
                 {
                     IsSuccess = true,
                     Result = Transaction,
@@ -631,7 +658,7 @@ namespace ComplyX.BusinessLogic
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<List<Leave_Encashment_Transactions>>
+                return new ManagerBaseResponse<List<LeaveEncashmentTransactionResponseModel>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -640,23 +667,23 @@ namespace ComplyX.BusinessLogic
             }
         }
 
-        public async Task<ManagerBaseResponse<IEnumerable<Leave_Encashment_Transactions>>> GetLeave_Encashment_TransactionFilter(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<LeaveEncashmentTransaction>>> GetLeave_Encashment_TransactionFilter(PagedListCriteria PagedListCriteria)
         {
             try
             {
 
-                var query = _context.Leave_Encashment_Transactions.AsQueryable();
+                var query = _UnitOfWork.LeaveEncashmentTransactionRespositories.GetQueryable();
                 var searchText = PagedListCriteria.SearchText?.Trim().ToLower();
                 if (!string.IsNullOrWhiteSpace(searchText))
                 {
                     query = query.Where(x => x.LeaveType.ToLower().Contains(searchText.ToLower()));
                 }
 
-                query = query.OrderBy(a => a.EncashmentID);
+                query = query.OrderBy(a => a.EncashmentId);
 
-                PageListed<Leave_Encashment_Transactions> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+                PageListed<LeaveEncashmentTransaction> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
 
-                return new ManagerBaseResponse<IEnumerable<Leave_Encashment_Transactions>>
+                return new ManagerBaseResponse<IEnumerable<LeaveEncashmentTransaction>>
                 {
                     Result = result.Data,
                     Message = "LeaveEncashmentTransaction Data Retrieved Successfully.",
@@ -673,7 +700,7 @@ namespace ComplyX.BusinessLogic
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<IEnumerable<Leave_Encashment_Transactions>>
+                return new ManagerBaseResponse<IEnumerable<LeaveEncashmentTransaction>>
                 {
                     IsSuccess = false,
                     Result = null,

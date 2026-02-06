@@ -39,7 +39,7 @@ public partial class Epfoperiod
 
     public virtual Company Company { get; set; } = null!;
 
-    public virtual AspNetUser? CreatedByUser { get; set; }
+    public virtual AspNetUser? CreatedByUser { get; set; } 
 
     public virtual AspNetUser? LockedByUser { get; set; }
 

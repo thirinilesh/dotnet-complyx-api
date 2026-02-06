@@ -16,6 +16,16 @@ using Microsoft.Graph.Models;
 using Microsoft.Graph.Drives.Item.Items.Item.Workbook.Functions.OddFYield;
 using ComplyX_Businesss.Helper;
 using AppContext = ComplyX_Businesss.Helper.AppContext;
+using ComplyX_Businesss.Models.Tdsdeductor;
+using ComplyX_Businesss.Models.Tdsdeductee;
+using ComplyX_Businesss.Models.Tdsreturn;
+using ComplyX_Businesss.Models.Tdsentry;
+using ComplyX_Businesss.Models.Tdschallan;
+using ComplyX_Businesss.Models.TdschallanAllocation;
+using ComplyX.Data.Entities;
+using ComplyX_Businesss.Models.Tdsrate;
+using ComplyX_Businesss.Models.TdsreturnEntry;
+using ComplyX_Businesss.Models.TdsreturnChallan;
 
 namespace ComplyX.Controllers
 {
@@ -60,7 +70,7 @@ namespace ComplyX.Controllers
         /// <response code="400">Invalid request data or validation error.</response>
         /// <response code="500">An unexpected error occurred while processing the request.</response>
         [HttpPost("SaveTDSDeductorData")]
-        public async Task<IActionResult> SaveTDSDeductorData([FromBody] TDSDeductor TDSDeductor)
+        public async Task<IActionResult> SaveTDSDeductorData([FromBody] TdsdeductorRequestModel TDSDeductor)
         {
             return ResponseResult(await _ITTDSServices.SaveTDSDeductorData(TDSDeductor , User.Claims.GetUserId()));
         }
@@ -119,7 +129,7 @@ namespace ComplyX.Controllers
         /// <response code="400">Invalid request data or validation error.</response>
         /// <response code="500">An unexpected error occurred while processing the request.</response>
         [HttpPost("SaveTDSDeducteeData")]
-        public async Task<IActionResult> SaveTDSDeducteeData([FromBody] TDSDeductee TDSDeductee)
+        public async Task<IActionResult> SaveTDSDeducteeData([FromBody] TdsdeducteeRequestModel TDSDeductee)
         {
             return ResponseResult(await _ITTDSServices.SaveTDSDeduteeData(TDSDeductee, User.Claims.GetUserId()));
         }
@@ -223,7 +233,7 @@ namespace ComplyX.Controllers
         /// <response code="400">Invalid request data or validation error.</response>
         /// <response code="500">An unexpected error occurred while processing the request.</response>
         [HttpPost("SaveTDSReturnData")]
-        public async Task<IActionResult> SaveTDSReturnData([FromBody] TDSReturn TDSReturn)
+        public async Task<IActionResult> SaveTDSReturnData([FromBody] TdsreturnRequestModel TDSReturn)
         {
             return ResponseResult(await _ITTDSServices.SaveTDSReturnData(TDSReturn, User.Claims.GetUserId()));
         }
@@ -283,7 +293,7 @@ namespace ComplyX.Controllers
         /// <response code="400">Invalid request data or validation error.</response>
         /// <response code="500">An unexpected error occurred while processing the request.</response>
         [HttpPost("SaveTDSEntryData")]
-        public async Task<IActionResult> SaveTDSEntryData([FromBody] TDSEntry TDSEntry)
+        public async Task<IActionResult> SaveTDSEntryData([FromBody] TdsentryRequestModel TDSEntry)
         {
             return ResponseResult(await _ITTDSServices.SaveTDSEntryData(TDSEntry, User.Claims.GetUserId()));
         }
@@ -343,7 +353,7 @@ namespace ComplyX.Controllers
         /// <response code="400">Invalid request data or validation error.</response>
         /// <response code="500">An unexpected error occurred while processing the request.</response>
         [HttpPost("SaveTDSChallanData")]
-        public async Task<IActionResult> SaveTDSChallanData([FromBody] TDSChallan TDSChallan)
+        public async Task<IActionResult> SaveTDSChallanData([FromBody] TdschallanRequestModel TDSChallan)
         {
             return ResponseResult(await _ITTDSServices.SaveTDSChallanData(TDSChallan, User.Claims.GetUserId()));
         }
@@ -403,7 +413,7 @@ namespace ComplyX.Controllers
         /// <response code="400">Invalid request data or validation error.</response>
         /// <response code="500">An unexpected error occurred while processing the request.</response>
         [HttpPost("SaveTDSReturnChallanData")]
-        public async Task<IActionResult> SaveTDSReturnChallanData([FromBody] TDSReturnChallan TDSReturnChallan)
+        public async Task<IActionResult> SaveTDSReturnChallanData([FromBody] TdsreturnChallanRequsetModel TDSReturnChallan)
         {
             return ResponseResult(await _ITTDSServices.SaveTDSReturnChallanData(TDSReturnChallan, User.Claims.GetUserId()));
         }
@@ -463,7 +473,7 @@ namespace ComplyX.Controllers
         /// <response code="400">Invalid request data or validation error.</response>
         /// <response code="500">An unexpected error occurred while processing the request.</response>
         [HttpPost("SaveTDSReturnEntryData")]
-        public async Task<IActionResult> SaveTDSReturnEntryData([FromBody] TDSReturnEntry TDSReturnEntry)
+        public async Task<IActionResult> SaveTDSReturnEntryData([FromBody] TdsreturnEntryRequestModel TDSReturnEntry)
         {
             return ResponseResult(await _ITTDSServices.SaveTDSReturnEntryData(TDSReturnEntry, User.Claims.GetUserId()));
         }
@@ -523,7 +533,7 @@ namespace ComplyX.Controllers
         /// <response code="400">Invalid request data or validation error.</response>
         /// <response code="500">An unexpected error occurred while processing the request.</response>
         [HttpPost("SaveTDSChallanAllocationData")]
-        public async Task<IActionResult> SaveTDSChallanAllocationData([FromBody] TDSChallanAllocation TDSChallanAllocation)
+        public async Task<IActionResult> SaveTDSChallanAllocationData([FromBody] TdschallanAllocationRequestModel TDSChallanAllocation)
         {
             return ResponseResult(await _ITTDSServices.SaveTDSChallanAllocationData(TDSChallanAllocation, User.Claims.GetUserId()));
         }
@@ -584,7 +594,7 @@ namespace ComplyX.Controllers
         /// <response code="400">Invalid request data or validation error.</response>
         /// <response code="500">An unexpected error occurred while processing the request.</response>
         [HttpPost("SaveTDSRatesData")]
-        public async Task<IActionResult> SaveTDSRatesData([FromBody] TDSRates TDSRates)
+        public async Task<IActionResult> SaveTDSRatesData([FromBody] TdsrateRequestModel TDSRates)
         {
             return ResponseResult(await _ITTDSServices.SaveTDSRatesData(TDSRates, User.Claims.GetUserId()));
         }

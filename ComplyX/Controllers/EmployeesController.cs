@@ -12,6 +12,10 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ComplyX_Businesss.Helper;
+using ComplyX_Businesss.Models.Employee;
+using ComplyX_Businesss.Models.GratuityPolicy;
+using ComplyX_Businesss.Models.GratuityTransaction;
+using ComplyX_Businesss.Models.FnFCalculation;
 
 
 namespace ComplyX.Controllers
@@ -49,7 +53,7 @@ namespace ComplyX.Controllers
         /// <response code="200">The employee data was saved or updated successfully.</response>
         /// <response code="400">If there is an error while saving or updating the employee data.</response>
         [HttpPut("SaveEmployeeData")]
-        public async Task<IActionResult> SaveEmployeeData([FromBody] Employees Employees)
+        public async Task<IActionResult> SaveEmployeeData([FromBody] EmployeeRequestModel Employees)
         {
             return ResponseResult(await _IEmployeeServices.SaveEmployeeData(Employees));
         }
@@ -164,7 +168,7 @@ namespace ComplyX.Controllers
         /// <response code="200">The gratuity policy was saved or updated successfully.</response>
         /// <response code="400">If there is an error while saving or updating the gratuity policy.</response>
         [HttpPost("SaveGratuity_PolicyData")]
-        public async Task<IActionResult> SaveGratuity_PolicyData([FromBody] Gratuity_Policy Gratuity_Policy)
+        public async Task<IActionResult> SaveGratuity_PolicyData([FromBody] GratuityPolicyRequestModel Gratuity_Policy)
         {
             return ResponseResult(await _IEmployeeServices.SaveGratuity_PolicyData(Gratuity_Policy));
         }
@@ -240,7 +244,7 @@ namespace ComplyX.Controllers
         /// <response code="200">The gratuity transaction was saved or updated successfully.</response>
         /// <response code="400">If there is an error while saving or updating the gratuity transaction.</response>
         [HttpPost("SaveGratuity_TransactionsData")]
-        public async Task<IActionResult> SaveGratuity_TransactionsData([FromBody] Gratuity_Transactions Gratuity_Transactions)
+        public async Task<IActionResult> SaveGratuity_TransactionsData([FromBody] GratuityTransactionRequestModel Gratuity_Transactions)
         {
             return ResponseResult(await _IEmployeeServices.SaveGratuity_TransactionsData(Gratuity_Transactions));
         }
@@ -314,7 +318,7 @@ namespace ComplyX.Controllers
         /// <response code="200">The FnF calculation was saved or updated successfully.</response>
         /// <response code="400">If there is an error while saving or updating the FnF calculation.</response>
         [HttpPost("SaveFnF_CalculationsData")]
-        public async Task<IActionResult> SaveFnF_CalculationsData([FromBody] FnF_Calculations FnF_Calculations)
+        public async Task<IActionResult> SaveFnF_CalculationsData([FromBody] FnFCalculationRequestModel FnF_Calculations)
         {
             return ResponseResult(await _IEmployeeServices.SaveFnF_CalculationsData(FnF_Calculations));
         }

@@ -12,6 +12,11 @@ using Microsoft.Identity.Client;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using AppContext = ComplyX_Businesss.Helper.AppContext;
+using ComplyX_Businesss.Models.ComplianceDeadline;
+using ComplyX.Repositories.UnitOfWork;
+using ComplyX.Data.Entities;
+using ComplyX_Businesss.Models.ComplianceSchedule;
+using ComplyX_Businesss.Models.ComplianceFiling;
 
 namespace ComplyX_Businesss.Services.Implementation
 {
@@ -24,21 +29,24 @@ namespace ComplyX_Businesss.Services.Implementation
 
         private readonly AppContext _context;
         private readonly Nest.Filter _filter;
+        private readonly IUnitOfWork _UnitOfWork;
 
 
-        public ComplianceMgmtCLass(AppContext context, Nest.Filter filter)
+
+        public ComplianceMgmtCLass(AppContext context, Nest.Filter filter, IUnitOfWork unitOfWork)
         {
             _context = context;
             _filter = filter;
+            _UnitOfWork = unitOfWork;
 
         }
-        public async Task<ManagerBaseResponse<bool>> SaveComplianceMgmtData(ComplianceDeadlines ComplianceDeadlines)
+        public async Task<ManagerBaseResponse<bool>> SaveComplianceMgmtData(ComplianceDeadlineRequestModel ComplianceDeadlines)
         {
-            var response = new ManagerBaseResponse<List<ComplianceDeadlines>>();
+            var response = new ManagerBaseResponse<List<ComplianceDeadline>>();
 
             try
             {
-                var company = await _context.Companies.FirstOrDefaultAsync(x => x.CompanyID == ComplianceDeadlines.CompanyID);
+                var company = await _UnitOfWork.CompanyRepository.GetQueryable().FirstOrDefaultAsync(x => x.CompanyId == ComplianceDeadlines.CompanyId);
 
                    
                 if (company == null)
@@ -51,11 +59,11 @@ namespace ComplyX_Businesss.Services.Implementation
                 }
                 else
                 {
-                    if (ComplianceDeadlines.DeadlineID == 0)
+                    if (ComplianceDeadlines.DeadlineId == 0)
                     {
                         // Insert
-                        ComplianceDeadlines _model = new ComplianceDeadlines();
-                        _model.CompanyID = ComplianceDeadlines.CompanyID;
+                        ComplianceDeadline _model = new ComplianceDeadline();
+                        _model.CompanyId = ComplianceDeadlines.CompanyId;
                         _model.ComplianceType = ComplianceDeadlines.ComplianceType;
                         _model.PeriodStart = ComplianceDeadlines.PeriodStart;
                         _model.PeriodEnd = ComplianceDeadlines.PeriodEnd;
@@ -65,16 +73,15 @@ namespace ComplyX_Businesss.Services.Implementation
                         _model.CreatedAt = Util.GetCurrentCSTDateAndTime();
 
 
-                        _context.Add(_model);
-                        _context.SaveChanges();
+                       await _UnitOfWork.ComplianceDeadlineRespositories.AddAsync(_model);
                     }
                     else
                     {
                         // Update
-                        var originalTerm = _context.ComplianceDeadlines
-                            .Where(x => x.DeadlineID == ComplianceDeadlines.DeadlineID)
+                        var originalTerm = _UnitOfWork.ComplianceDeadlineRespositories.GetQueryable()
+                            .Where(x => x.DeadlineId == ComplianceDeadlines.DeadlineId)
                             .FirstOrDefault();
-                        originalTerm.CompanyID = ComplianceDeadlines.CompanyID;
+                        originalTerm.CompanyId = ComplianceDeadlines.CompanyId;
                         originalTerm.ComplianceType = ComplianceDeadlines.ComplianceType;
                         originalTerm.PeriodStart = ComplianceDeadlines.PeriodStart;
                         originalTerm.PeriodEnd = ComplianceDeadlines.PeriodEnd;
@@ -84,10 +91,10 @@ namespace ComplyX_Businesss.Services.Implementation
                         originalTerm.UpdatedAt = Util.GetCurrentCSTDateAndTime();
 
 
-                        _context.Update(originalTerm);
-                        _context.SaveChanges();
+                       
                     }
                 }
+                await _UnitOfWork.CommitAsync();
                 return  new ManagerBaseResponse<bool>
                 {
                     Result = true,
@@ -108,7 +115,7 @@ namespace ComplyX_Businesss.Services.Implementation
             try
             {
                 // Get all report detail definitions for the given report name
-                var product = await _context.ComplianceDeadlines.Where(x => x.DeadlineID.ToString() == DeadlineID).ToListAsync();
+                var product = await _UnitOfWork.ComplianceDeadlineRespositories.GetQueryable().Where(x => x.DeadlineId.ToString() == DeadlineID).ToListAsync();
 
                 if (string.IsNullOrEmpty(product.ToString()))
                 {
@@ -120,9 +127,11 @@ namespace ComplyX_Businesss.Services.Implementation
                 }
 
                 // Remove all related report details
-                _context.ComplianceDeadlines.RemoveRange(product);
+                //_context.ComplianceDeadlines.RemoveRange(product);
 
-                await _context.SaveChangesAsync();
+                //await _context.SaveChangesAsync();
+                _UnitOfWork.ComplianceDeadlineRespositories.RemoveRange(product);
+                await _UnitOfWork.CommitAsync();
 
                 return new ManagerBaseResponse<bool>
                 {
@@ -140,13 +149,25 @@ namespace ComplyX_Businesss.Services.Implementation
                 };
             }
         }
-        public async Task<ManagerBaseResponse<List<ComplianceDeadlines>>> GetAllComplianceMgmtData(string DeadlineID)
+        public async Task<ManagerBaseResponse<List<ComplianceDeadlineResponseModel>>> GetAllComplianceMgmtData(string DeadlineID)
         {
             try
             {
-                var plans = await _context.ComplianceDeadlines.Where(x => x.DeadlineID.ToString() == DeadlineID).ToListAsync();
+                var plans = await _UnitOfWork.ComplianceDeadlineRespositories.GetQueryable().Where(x => x.DeadlineId.ToString() == DeadlineID).Select(x => new ComplianceDeadlineResponseModel
+                {
+                    DeadlineId = x.DeadlineId,
+                    CompanyId = x.CompanyId,
+                    ComplianceType = x.ComplianceType,
+                    PeriodStart = x.PeriodStart,
+                    PeriodEnd = x.PeriodEnd,
+                    DueDate = x.DueDate,
+                    Status = x.Status,
+                    AckNumber = x.AckNumber,
+                    CreatedAt = x.CreatedAt,
+                    UpdatedAt = x.UpdatedAt
+                }).ToListAsync();
 
-                return new ManagerBaseResponse<List<ComplianceDeadlines>>
+                return new ManagerBaseResponse<List<ComplianceDeadlineResponseModel>>
                 {
                     IsSuccess = true,
                     Result = plans,
@@ -156,7 +177,7 @@ namespace ComplyX_Businesss.Services.Implementation
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<List<ComplianceDeadlines>>
+                return new ManagerBaseResponse<List<ComplianceDeadlineResponseModel>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -164,23 +185,23 @@ namespace ComplyX_Businesss.Services.Implementation
                 };
             }
         }
-        public async Task<ManagerBaseResponse<IEnumerable<ComplianceDeadlines>>> GetComplianceMgmtFilter(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<ComplianceDeadline>>> GetComplianceMgmtFilter(PagedListCriteria PagedListCriteria)
         {
             try
             {
 
-                var query = _context. ComplianceDeadlines.AsQueryable();
+                var query = _UnitOfWork.ComplianceDeadlineRespositories.GetQueryable();
                 var searchText = PagedListCriteria.SearchText?.Trim().ToLower();
                 if (!string.IsNullOrWhiteSpace(searchText))
                 {
                     query = query.Where(x => x.ComplianceType.ToLower().Contains(searchText.ToLower()));
                 }
 
-                query = query.OrderBy(a => a.DeadlineID);
+                query = query.OrderBy(a => a.DeadlineId);
 
-                PageListed<ComplianceDeadlines> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+                PageListed<ComplianceDeadline> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
 
-                return new ManagerBaseResponse<IEnumerable<ComplianceDeadlines>>
+                return new ManagerBaseResponse<IEnumerable<ComplianceDeadline>>
                 {
                     Result = result.Data,
                     Message = "Compliance Deadlines Data Retrieved Successfully.",
@@ -197,7 +218,7 @@ namespace ComplyX_Businesss.Services.Implementation
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<IEnumerable<ComplianceDeadlines>>
+                return new ManagerBaseResponse<IEnumerable<ComplianceDeadline>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -206,13 +227,13 @@ namespace ComplyX_Businesss.Services.Implementation
             }
         }
 
-        public async Task<ManagerBaseResponse<bool>> SaveComplianceSchedulesData(ComplianceSchedules ComplianceSchedules)
+        public async Task<ManagerBaseResponse<bool>> SaveComplianceSchedulesData(ComplianceScheduleRequestModel ComplianceSchedules)
         {
-            var response = new ManagerBaseResponse<List<ComplianceSchedules>>();
+            var response = new ManagerBaseResponse<List<ComplianceSchedule>>();
 
             try
             {
-                var company = await _context.Companies.FirstOrDefaultAsync(x => x.CompanyID == ComplianceSchedules.CompanyID);
+                var company = await _UnitOfWork.CompanyRepository.GetQueryable().FirstOrDefaultAsync(x => x.CompanyId == ComplianceSchedules.CompanyId);
 
                 if (company == null)
                 {
@@ -226,11 +247,11 @@ namespace ComplyX_Businesss.Services.Implementation
                 {
 
 
-                    if (ComplianceSchedules.ScheduleID == 0)
+                    if (ComplianceSchedules.ScheduleId == 0)
                     {
                         // Insert
-                        ComplianceSchedules _model = new ComplianceSchedules();
-                        _model.CompanyID = ComplianceSchedules.CompanyID;
+                        ComplianceSchedule _model = new ComplianceSchedule();
+                        _model.CompanyId = ComplianceSchedules.CompanyId;
                         _model.ComplianceType = ComplianceSchedules.ComplianceType;
                         _model.Frequency = ComplianceSchedules.Frequency;
                         _model.StateCode = ComplianceSchedules.StateCode;
@@ -240,16 +261,15 @@ namespace ComplyX_Businesss.Services.Implementation
                         _model.Active = ComplianceSchedules.Active;
                         _model.CreatedAt = Util.GetCurrentCSTDateAndTime();
 
-                        _context.Add(_model);
-                        _context.SaveChanges();
+                        await _UnitOfWork.ComplianceScheduleRespositories.AddAsync(_model);
                     }
                     else
                     {
                         // Update
-                        var originalTerm = _context.ComplianceSchedules
-                            .Where(x => x.ScheduleID == ComplianceSchedules.ScheduleID)
+                        var originalTerm = _UnitOfWork.ComplianceScheduleRespositories.GetQueryable()
+                            .Where(x => x.ScheduleId == ComplianceSchedules.ScheduleId)
                             .FirstOrDefault();
-                        originalTerm.CompanyID = ComplianceSchedules.CompanyID;
+                        originalTerm.CompanyId = ComplianceSchedules.CompanyId;
                         originalTerm.ComplianceType = ComplianceSchedules.ComplianceType;
                         originalTerm.Frequency = ComplianceSchedules.Frequency;
                         originalTerm.StateCode = ComplianceSchedules.StateCode;
@@ -257,12 +277,12 @@ namespace ComplyX_Businesss.Services.Implementation
                         originalTerm.QuarterMonth = ComplianceSchedules.QuarterMonth;
                         originalTerm.OffsetDays = ComplianceSchedules.OffsetDays;
                         originalTerm.Active = ComplianceSchedules.Active;
-                        originalTerm.updatedAt = Util.GetCurrentCSTDateAndTime();
+                        originalTerm.UpdatedAt = Util.GetCurrentCSTDateAndTime();
 
-                        _context.Update(originalTerm);
-                        _context.SaveChanges();
+                      
                     }
                 }
+                await _UnitOfWork.CommitAsync();
                 return  new ManagerBaseResponse<bool>
                 {
                     Result = true,
@@ -283,7 +303,7 @@ namespace ComplyX_Businesss.Services.Implementation
             try
             {
                 // Get all report detail definitions for the given report name
-                var product = await _context.ComplianceSchedules.Where(x => x.ScheduleID.ToString() == ScheduleID).ToListAsync();
+                var product = await _UnitOfWork.ComplianceScheduleRespositories.GetQueryable().Where(x => x.ScheduleId.ToString() == ScheduleID).ToListAsync();
 
                 if (string.IsNullOrEmpty(product.ToString()))
                 {
@@ -295,9 +315,9 @@ namespace ComplyX_Businesss.Services.Implementation
                 }
 
                 // Remove all related report details
-                _context.ComplianceSchedules.RemoveRange(product);
+                _UnitOfWork.ComplianceScheduleRespositories.RemoveRange(product);
 
-                await _context.SaveChangesAsync();
+                await _UnitOfWork.CommitAsync();
 
                 return new ManagerBaseResponse<bool>
                 {
@@ -315,13 +335,26 @@ namespace ComplyX_Businesss.Services.Implementation
                 };
             }
         }
-        public async Task<ManagerBaseResponse<List<ComplianceSchedules>>> GetAllComplianceSchedulesData(string ScheduleID)
+        public async Task<ManagerBaseResponse<List<ComplianceScheduleResponseModel>>> GetAllComplianceSchedulesData(string ScheduleID)
         {
             try
             {
-                var plans = await _context.ComplianceSchedules.Where(x => x.ScheduleID.ToString() == ScheduleID).ToListAsync();
+                var plans = await _UnitOfWork.ComplianceScheduleRespositories.GetQueryable().Where(x => x.ScheduleId.ToString() == ScheduleID).Select(x => new ComplianceScheduleResponseModel
+                {
+                    ScheduleId = x.ScheduleId,
+                    CompanyId = x.CompanyId,
+                    ComplianceType = x.ComplianceType,
+                    Frequency = x.Frequency,
+                    StateCode = x.StateCode,
+                    BaseDay = x.BaseDay,
+                    QuarterMonth = x.QuarterMonth,
+                    OffsetDays = x.OffsetDays,
+                    Active = x.Active,
+                    CreatedAt = x.CreatedAt,
+                    UpdatedAt = x.UpdatedAt
+                }).ToListAsync();
 
-                return new ManagerBaseResponse<List<ComplianceSchedules>>
+                return new ManagerBaseResponse<List<ComplianceScheduleResponseModel>>
                 {
                     IsSuccess = true,
                     Result = plans,
@@ -331,7 +364,7 @@ namespace ComplyX_Businesss.Services.Implementation
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<List<ComplianceSchedules>>
+                return new ManagerBaseResponse<List<ComplianceScheduleResponseModel>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -339,23 +372,23 @@ namespace ComplyX_Businesss.Services.Implementation
                 };
             }
         }
-        public async Task<ManagerBaseResponse<IEnumerable<ComplianceSchedules>>> GetComplianceSchedulesFilter(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<ComplianceSchedule>>> GetComplianceSchedulesFilter(PagedListCriteria PagedListCriteria)
         {
             try
             {
 
-                var query = _context.ComplianceSchedules.AsQueryable();
+                var query = _UnitOfWork.ComplianceScheduleRespositories.GetQueryable();
                 var searchText = PagedListCriteria.SearchText?.Trim().ToLower();
                 if (!string.IsNullOrWhiteSpace(searchText))
                 {
                     query = query.Where(x => x.ComplianceType.ToLower().Contains(searchText.ToLower()));
                 }
 
-                query = query.OrderBy(a => a.ScheduleID);
+                query = query.OrderBy(a => a.ScheduleId);
 
-                PageListed<ComplianceSchedules> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+                PageListed<ComplianceSchedule> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
 
-                return new ManagerBaseResponse<IEnumerable<ComplianceSchedules>>
+                return new ManagerBaseResponse<IEnumerable<ComplianceSchedule>>
                 {
                     Result = result.Data,
                     Message = "Compliance Schedules Data Retrieved Successfully.",
@@ -372,7 +405,7 @@ namespace ComplyX_Businesss.Services.Implementation
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<IEnumerable<ComplianceSchedules>>
+                return new ManagerBaseResponse<IEnumerable<ComplianceSchedule>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -381,14 +414,14 @@ namespace ComplyX_Businesss.Services.Implementation
             }
         }
 
-        public async Task<ManagerBaseResponse<bool>> SaveComplianceFilingsData(ComplianceFilings ComplianceFilings)
+        public async Task<ManagerBaseResponse<bool>> SaveComplianceFilingsData(ComplianceFilingRequestModel ComplianceFilings)
         {
-            var response = new ManagerBaseResponse<List<ComplianceFilings>>();
+            var response = new ManagerBaseResponse<List<ComplianceFiling>>();
 
             try
             {
 
-                var employee = await _context.Employees.FirstOrDefaultAsync(x => x.EmployeeID == ComplianceFilings.EmployeeID && x.CompanyID == ComplianceFilings.CompanyID);
+                var employee = await _UnitOfWork.EmployeeRespositories.GetQueryable().FirstOrDefaultAsync(x => x.EmployeeId == ComplianceFilings.EmployeeId && x.CompanyId == ComplianceFilings.CompanyId);
                 if (employee == null)
                 {
                     return new ManagerBaseResponse<bool>
@@ -401,12 +434,12 @@ namespace ComplyX_Businesss.Services.Implementation
                 {
 
           
-                if (ComplianceFilings.FilingID == 0)
+                if (ComplianceFilings.FilingId == 0)
                 {
                     // Insert
-                    ComplianceFilings _model = new ComplianceFilings();
-                     _model.CompanyID = ComplianceFilings.CompanyID;
-                    _model.EmployeeID = ComplianceFilings.EmployeeID;
+                    ComplianceFiling _model = new ComplianceFiling();
+                     _model.CompanyId = ComplianceFilings.CompanyId;
+                        _model.EmployeeId = ComplianceFilings.EmployeeId;
                     _model.Type = ComplianceFilings.Type;
                     _model.FilingMonth = ComplianceFilings.FilingMonth;
                     _model.FilePath = ComplianceFilings.FilePath;   
@@ -415,17 +448,16 @@ namespace ComplyX_Businesss.Services.Implementation
                     _model.SubmittedAt = ComplianceFilings.SubmittedAt;
                     _model.CreatedAt = Util.GetCurrentCSTDateAndTime();
 
-                        _context.Add(_model);
-                    _context.SaveChanges();
+                      await _UnitOfWork.ComplianceFilingRespositories.AddAsync(_model);
                 }
                 else
                 {
                     // Update
-                    var originalTerm = _context.ComplianceFilings
-                        .Where(x => x.FilingID == ComplianceFilings.FilingID)
+                    var originalTerm = _UnitOfWork.ComplianceFilingRespositories.GetQueryable()
+                        .Where(x => x.FilingId == ComplianceFilings.FilingId)
                         .FirstOrDefault();
-                    originalTerm.CompanyID = ComplianceFilings.CompanyID;
-                    originalTerm.EmployeeID = ComplianceFilings.EmployeeID;
+                    originalTerm.CompanyId = ComplianceFilings.CompanyId;
+                    originalTerm.EmployeeId = ComplianceFilings.EmployeeId;
                     originalTerm.Type = ComplianceFilings.Type;
                     originalTerm.FilingMonth = ComplianceFilings.FilingMonth;
                     originalTerm.FilePath = ComplianceFilings.FilePath;
@@ -435,11 +467,10 @@ namespace ComplyX_Businesss.Services.Implementation
                     originalTerm.CreatedAt = Util.GetCurrentCSTDateAndTime();
 
 
-                        _context.Update(originalTerm);
-                    _context.SaveChanges();
+                     
                 }
                 }
-
+                await _UnitOfWork.CommitAsync();
                 return new ManagerBaseResponse<bool>
                 {
                     Result = true,
@@ -460,7 +491,7 @@ namespace ComplyX_Businesss.Services.Implementation
             try
             {
                 // Get all report detail definitions for the given report name
-                var product = await _context.ComplianceFilings.Where(x => x.FilingID.ToString() == FilingID).ToListAsync();
+                var product = await _UnitOfWork.ComplianceFilingRespositories.GetQueryable().Where(x => x.FilingId.ToString() == FilingID).ToListAsync();
 
                 if (string.IsNullOrEmpty(product.ToString()))
                 {
@@ -472,9 +503,8 @@ namespace ComplyX_Businesss.Services.Implementation
                 }
 
                 // Remove all related report details
-                _context.ComplianceFilings.RemoveRange(product);
-
-                await _context.SaveChangesAsync();
+                _UnitOfWork.ComplianceFilingRespositories.RemoveRange(product);
+                await _UnitOfWork.CommitAsync();
 
                 return new ManagerBaseResponse<bool>
                 {
@@ -492,13 +522,26 @@ namespace ComplyX_Businesss.Services.Implementation
                 };
             }
         }
-        public async Task<ManagerBaseResponse<List<ComplianceFilings>>> GetAllComplianceFilingsData(string FilingID)
+        public async Task<ManagerBaseResponse<List<ComplianceFilingResponseModel>>> GetAllComplianceFilingsData(string FilingID)
         {
             try
             {
-                var plans = await _context.ComplianceFilings.Where(x => x.FilingID.ToString() == FilingID).ToListAsync();
+                var plans = await _UnitOfWork.ComplianceFilingRespositories.GetQueryable().Where(x => x.FilingId.ToString() == FilingID).Select(x => new ComplianceFilingResponseModel
+                {
+                    FilingId = x.FilingId,
+                    CompanyId = x.CompanyId,
+                    EmployeeId = x.EmployeeId,
+                    Type = x.Type,
+                    FilingMonth = x.FilingMonth,
+                    FilePath = x.FilePath,
+                    Status = x.Status,
+                    Errors = x.Errors,
+                    SubmittedAt = x.SubmittedAt,
+                    CreatedAt = x.CreatedAt
+                })
+                    .ToListAsync();
 
-                return new ManagerBaseResponse<List<ComplianceFilings>>
+                return new ManagerBaseResponse<List<ComplianceFilingResponseModel>>
                 {
                     IsSuccess = true,
                     Result = plans,
@@ -508,7 +551,7 @@ namespace ComplyX_Businesss.Services.Implementation
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<List<ComplianceFilings>>
+                return new ManagerBaseResponse<List<ComplianceFilingResponseModel>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -516,23 +559,23 @@ namespace ComplyX_Businesss.Services.Implementation
                 };
             }
         }
-        public async Task<ManagerBaseResponse<IEnumerable<ComplianceFilings>>> GetComplianceFilingsFilter(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<ComplianceFiling>>> GetComplianceFilingsFilter(PagedListCriteria PagedListCriteria)
         {
             try
             {
 
-                var query = _context.ComplianceFilings.AsQueryable();
+                var query = _UnitOfWork.ComplianceFilingRespositories.GetQueryable();
                 var searchText = PagedListCriteria.SearchText?.Trim().ToLower();
                 if (!string.IsNullOrWhiteSpace(searchText))
                 {
                     query = query.Where(x => x.Type.ToLower().Contains(searchText.ToLower()));
                 }
 
-                query = query.OrderBy(a => a.FilingID);
+                query = query.OrderBy(a => a.FilingId);
 
-                PageListed<ComplianceFilings> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+                PageListed<ComplianceFiling> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
 
-                return new ManagerBaseResponse<IEnumerable<ComplianceFilings>>
+                return new ManagerBaseResponse<IEnumerable<ComplianceFiling>>
                 {
                     Result = result.Data,
                     Message = "Compliance Filings Data Retrieved Successfully.",
@@ -549,7 +592,7 @@ namespace ComplyX_Businesss.Services.Implementation
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<IEnumerable<ComplianceFilings>>
+                return new ManagerBaseResponse<IEnumerable<ComplianceFiling>>
                 {
                     IsSuccess = false,
                     Result = null,

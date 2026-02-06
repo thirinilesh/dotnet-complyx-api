@@ -14,6 +14,9 @@ using Microsoft.EntityFrameworkCore;
 using ComplyX_Businesss.Services.Interface;
 using ComplyX_Businesss.Helper;
 using AppContext = ComplyX_Businesss.Helper.AppContext;
+using ComplyX_Businesss.Models.LegalDocument;
+using ComplyX_Businesss.Models.LegalDocumentVersion;
+using ComplyX_Businesss.Models.LegalDocumentAcceptance;
 
 
 namespace ComplyX.Controllers
@@ -59,7 +62,7 @@ namespace ComplyX.Controllers
         /// <response code="200">Legal document data saved successfully.</response>
         /// <response code="400">Error occurred while saving legal document data.</response>
         [HttpPut("SavelegalDocumentData")]
-        public async Task<IActionResult> SavelegalDocumentData([FromBody] legalDocument legalDocument)
+        public async Task<IActionResult> SavelegalDocumentData([FromBody] LegalDocumentRequestModel legalDocument)
         {
             return ResponseResult(await _documentService.SavelegalDocumentData(legalDocument, User.Claims.GetUserId()));
         }
@@ -141,7 +144,7 @@ namespace ComplyX.Controllers
         /// <response code="400">Invalid request data.</response>
         /// <response code="500">An internal server error occurred.</response>
         [HttpPut("SavelegalDocumentVersionData")]
-        public async Task<IActionResult> SavelegalDocumentVersionData([FromBody] legalDocumentVersion legalDocumentVersion)
+        public async Task<IActionResult> SavelegalDocumentVersionData([FromBody] LegalDocumentVersionRequestModel legalDocumentVersion)
         {
             return ResponseResult(await _documentService.SavelegalDocumentVersionData(legalDocumentVersion, User.Claims.GetUserId()));
         }
@@ -216,7 +219,7 @@ namespace ComplyX.Controllers
         /// <response code="400">Invalid request data.</response>
         /// <response code="500">An internal server error occurred.</response>
         [HttpPut("SavelegalDocumentAcceptanceData")]
-        public async Task<IActionResult> SavelegalDocumentAcceptanceData([FromBody] legalDocumentAcceptance legalDocumentAcceptance)
+        public async Task<IActionResult> SavelegalDocumentAcceptanceData([FromBody] LegalDocumentAcceptanceRequestModel legalDocumentAcceptance)
         {
             return ResponseResult(await _documentService.SavelegalDocumentAcceptanceData(legalDocumentAcceptance, User.Claims.GetUserId()));
         }

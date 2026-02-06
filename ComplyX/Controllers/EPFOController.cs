@@ -11,6 +11,11 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using ComplyX_Businesss.Helper;
 using AppContext = ComplyX_Businesss.Helper.AppContext;
+using ComplyX_Businesss.Models.CompanyEPFO;
+using ComplyX_Businesss.Models.EmployeeEPFO;
+using ComplyX_Businesss.Models.EPFOECRFile;
+using ComplyX_Businesss.Models.EPFOPeriod;
+using ComplyX_Businesss.Models.EPFOMonthWage;
 
 namespace ComplyX.Controllers
 {
@@ -47,7 +52,7 @@ namespace ComplyX.Controllers
         /// <response code="200">The company EPFO data was saved or updated successfully.</response>
         /// <response code="400">If there is an error while saving or updating the company EPFO data.</response>
         [HttpPut("SaveCompanyEPFOData")]
-        public async Task<IActionResult> SaveCompanyEPFOData([FromBody] CompanyEPFO CompanyEPFO)
+        public async Task<IActionResult> SaveCompanyEPFOData([FromBody] CompanyEPFORequestModel CompanyEPFO)
         {
             return ResponseResult(await _EPFOServices.SaveCompanyEPFOData(CompanyEPFO));
         }
@@ -101,7 +106,7 @@ namespace ComplyX.Controllers
         /// <response code="200">The employee EPFO data was saved or updated successfully.</response>
         /// <response code="400">If there is an error while saving or updating the employee EPFO data.</response>
         [HttpPost("SaveEmployeeEPFOData")]
-        public async Task<IActionResult> SaveEmployeeEPFOData([FromBody] EmployeeEPFO EmployeeEPFO)
+        public async Task<IActionResult> SaveEmployeeEPFOData([FromBody] EmployeeEPFORequestModel EmployeeEPFO)
         {
             return ResponseResult(await _EPFOServices.SaveEmployeeEPFOData(EmployeeEPFO));
         }
@@ -158,7 +163,7 @@ namespace ComplyX.Controllers
         /// <response code="200">The EPFO ECR data was saved or updated successfully.</response>
         /// <response code="400">If there is an error while saving or updating the EPFO ECR data.</response>
         [HttpPut("SaveEPFOECRData")]
-        public async Task<IActionResult> SaveEPFOECRData([FromBody] EPFOECRFile EPFOECRFile)
+        public async Task<IActionResult> SaveEPFOECRData([FromBody] EPFOECRFileRequestModel EPFOECRFile)
         {
             return ResponseResult(await _EPFOServices.SaveEPFOECRData(EPFOECRFile));
         }
@@ -216,7 +221,7 @@ namespace ComplyX.Controllers
         /// <response code="200">The EPFO period data was saved or updated successfully.</response>
         /// <response code="400">If there is an error while saving or updating the EPFO period data.</response>
         [HttpPut("SaveEPFOPeriodData")]
-        public async Task<IActionResult> SaveEPFOPeriodData([FromBody] EPFOPeriod EPFOPeriod)
+        public async Task<IActionResult> SaveEPFOPeriodData([FromBody] EPFOPeriodRequestModel EPFOPeriod)
         {
             return ResponseResult(await _EPFOServices.SaveEPFOPeriodData(EPFOPeriod, User.Claims.GetUserId()));
         }
@@ -272,7 +277,7 @@ namespace ComplyX.Controllers
         /// <response code="200">The company EPFO data was saved or updated successfully.</response>
         /// <response code="400">If there is an error while saving or updating the company EPFO data.</response>
         [HttpPut("SaveEPFOMonthlyWageData")]
-        public async Task<IActionResult> SaveEPFOMonthlyWageData([FromBody] EPFOMonthlyWage EPFOMonthlyWage)
+        public async Task<IActionResult> SaveEPFOMonthlyWageData([FromBody] EPFOMonthWageRequestModel EPFOMonthlyWage)
         {
             return ResponseResult(await _EPFOServices.SaveEPFOMonthlyWageData(EPFOMonthlyWage));
         }

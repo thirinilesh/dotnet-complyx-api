@@ -9,6 +9,13 @@ using Microsoft.AspNetCore.Identity;
 using NHibernate.Linq;
 using static ComplyX_Businesss.Helper.Commanfield;
 using AppContext = ComplyX_Businesss.Helper.AppContext;
+using ComplyX.Repositories.UnitOfWork;
+using ComplyX_Businesss.Models.LegalDocument;
+using ComplyX.Data.Entities;
+using ComplyX_Businesss.Models.LegalDocumentVersion;
+using ComplyX_Businesss.Models.LegalDocumentAcceptance;
+using System.Security.Claims;
+using ComplyX.Data.DbContexts;
 
 namespace ComplyX_Businesss.Services.Implementation
 {
@@ -19,27 +26,29 @@ namespace ComplyX_Businesss.Services.Implementation
             { "name", "Name" }
         };
 
-        private readonly AppContext _context;
+        private readonly AppDbContext _context;
         private readonly Nest.Filter _filter;
-        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly UserManager<ApplicationUsers> _userManager;
         private readonly Commanfield _commanfield;
+        private readonly IUnitOfWork _UnitOfWork;
 
-        public DocumentClass(AppContext context, Nest.Filter filter, UserManager<ApplicationUser> userManager, Commanfield commanfield)
+        public DocumentClass(AppDbContext context, Nest.Filter filter, UserManager<ApplicationUsers> userManager, Commanfield commanfield,IUnitOfWork unitOfWork)
         {
             _context = context;
             _filter = filter;
             _userManager = userManager;
             _commanfield = commanfield;
+             _UnitOfWork = unitOfWork;
         }
 
-        public async Task<ManagerBaseResponse<bool>> SavelegalDocumentData(legalDocument legalDocument , string UserName)
+        public async Task<ManagerBaseResponse<bool>> SavelegalDocumentData(LegalDocumentRequestModel legalDocument , string UserName)
         {
-            var response = new ManagerBaseResponse<List<legalDocument>>();
+            var response = new ManagerBaseResponse<List<LegalDocument>>();
 
             try
             {
-                
-                    var user = _context.Users.FirstOrDefault(x => x.UserName == UserName);
+                var user = _context.ApplicationUsers.FirstOrDefault(x => x.UserName == UserName);
+                // var user = _context.Users.FirstOrDefault(x => x.UserName == UserName);
                 if (user == null)
                 {
                     return new ManagerBaseResponse<bool>
@@ -51,36 +60,35 @@ namespace ComplyX_Businesss.Services.Implementation
                 else
                 {
 
-                    if (legalDocument.document_id == 0)
+                    if (legalDocument.DocumentId == 0)
                     {
                         // Insert
-                        legalDocument originalTerm = new legalDocument();
-                        originalTerm.document_name = legalDocument.document_name;
-                        originalTerm.document_code = legalDocument.document_code;
-                        originalTerm.applicable_region = legalDocument.applicable_region;
-                        originalTerm.status = legalDocument.status;
-                        originalTerm.created_by = user.Id;
-                        originalTerm.created_at = Util.GetCurrentCSTDateAndTime();
+                        LegalDocument originalTerm = new LegalDocument();
+                        originalTerm.DocumentName = legalDocument.DocumentName;
+                        originalTerm.DocumentCode = legalDocument.DocumentCode;
+                        originalTerm.ApplicableRegion = legalDocument.ApplicableRegion;
+                        originalTerm.Status = legalDocument.Status;
+                        originalTerm.CreatedBy = user.Id;
+                        originalTerm.CreatedAt = Util.GetCurrentCSTDateAndTime();
 
-                        _context.Add(originalTerm);
-                        await _context.SaveChangesAsync();
+                        await _UnitOfWork.LegalDocumentRespositories.AddAsync(originalTerm);
                     }
                     else
                     {
                         // Update
-                        var originalTerm = _context.LegalDocument
-                            .Where(x => x.document_id == legalDocument.document_id)
+                        var originalTerm = _UnitOfWork.LegalDocumentRespositories.GetQueryable()
+                            .Where(x => x.DocumentId == legalDocument.DocumentId)
                             .FirstOrDefault();
-                        originalTerm.document_name = legalDocument.document_name;
-                        originalTerm.document_code = legalDocument.document_code;
-                        originalTerm.applicable_region = legalDocument.applicable_region;
-                        originalTerm.status = legalDocument.status;
-                        originalTerm.created_by = user.Id;
-                        originalTerm.created_at = Util.GetCurrentCSTDateAndTime();
-                        _context.Update(originalTerm);
-                        _context.SaveChanges();
+                        originalTerm.DocumentName = legalDocument.DocumentName;
+                        originalTerm.DocumentCode = legalDocument.DocumentCode;
+                        originalTerm.ApplicableRegion = legalDocument.ApplicableRegion;
+                        originalTerm.Status = legalDocument.Status;
+                        originalTerm.CreatedBy = user.Id.ToString();
+                        originalTerm.CreatedAt = Util.GetCurrentCSTDateAndTime();
+                      
                     }
                 }
+                await _UnitOfWork.CommitAsync();
                 return new ManagerBaseResponse<bool>
                 {
                     Result = true,
@@ -102,7 +110,7 @@ namespace ComplyX_Businesss.Services.Implementation
             try
             {
                 // Get all report detail definitions for the given report name
-                var Party = await _context.LegalDocument.Where(x => x.document_id.ToString() == document_id).ToListAsync();
+                var Party = await _UnitOfWork.LegalDocumentRespositories.GetQueryable().Where(x => x.DocumentId.ToString() == document_id).ToListAsync();
 
                 if (string.IsNullOrEmpty(Party.ToString()))
                 {
@@ -114,9 +122,11 @@ namespace ComplyX_Businesss.Services.Implementation
                 }
 
                 // Remove all related report details
-                _context.LegalDocument.RemoveRange(Party);
+                //_context.LegalDocument.RemoveRange(Party);
 
-                await _context.SaveChangesAsync();
+                //await _context.SaveChangesAsync();
+                _UnitOfWork.LegalDocumentRespositories.RemoveRange(Party);
+                await _UnitOfWork.CommitAsync();
 
                 return new ManagerBaseResponse<bool>
                 {
@@ -134,14 +144,23 @@ namespace ComplyX_Businesss.Services.Implementation
                 };
             }
         }
-        public async Task<ManagerBaseResponse<List<legalDocument>>> GetAlllegalDocumentData(string document_id)
+        public async Task<ManagerBaseResponse<List<LegalDocumentResponseModel>>> GetAlllegalDocumentData(string document_id)
         {
             try
             {
-                var plans = _context.LegalDocument.Where(x => x.document_id.ToString() == document_id).ToList();
+                var plans = _UnitOfWork.LegalDocumentRespositories.GetQueryable().Where(x => x.DocumentId.ToString() == document_id).Select(x => new LegalDocumentResponseModel
+                {
+                    DocumentId = x.DocumentId,
+                    DocumentCode = x.DocumentCode,
+                    DocumentName = x.DocumentName,
+                    ApplicableRegion = x.ApplicableRegion,
+                    Status = x.Status,
+                    CreatedAt = x.CreatedAt,
+                    CreatedBy = x.CreatedBy
+                }).ToList();
 
 
-                return new ManagerBaseResponse<List<legalDocument>>
+                return new ManagerBaseResponse<List<LegalDocumentResponseModel>>
                 {
                     IsSuccess = true,
                     Result = plans,
@@ -151,7 +170,7 @@ namespace ComplyX_Businesss.Services.Implementation
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<List<legalDocument>>
+                return new ManagerBaseResponse<List<LegalDocumentResponseModel>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -159,22 +178,22 @@ namespace ComplyX_Businesss.Services.Implementation
                 };
             }
         }
-        public async Task<ManagerBaseResponse<IEnumerable<legalDocument>>> GetAlllegalDocumentFilter(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<LegalDocument>>> GetAlllegalDocumentFilter(PagedListCriteria PagedListCriteria)
         {
             try
             {
 
-                var query = _context.LegalDocument.AsQueryable();
+                var query = _UnitOfWork.LegalDocumentRespositories.GetQueryable();
                 var searchText = PagedListCriteria.SearchText?.Trim().ToLower();
                 if (!string.IsNullOrWhiteSpace(searchText))
                 {
-                    query = query.Where(x => x.document_name.ToLower().Contains(searchText.ToLower()));
+                    query = query.Where(x => x.DocumentName.ToLower().Contains(searchText.ToLower()));
                 }
 
-                query = query.OrderBy(a => a.document_id);
+                query = query.OrderBy(a => a.DocumentId);
 
-                PageListed<legalDocument> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
-                return new ManagerBaseResponse<IEnumerable<legalDocument>>
+                PageListed<LegalDocument> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+                return new ManagerBaseResponse<IEnumerable<LegalDocument>>
                 {
                     Result = result.Data,
                     Message = "Legal DOcument Retrieved Successfully.",
@@ -191,7 +210,7 @@ namespace ComplyX_Businesss.Services.Implementation
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<IEnumerable<legalDocument>>
+                return new ManagerBaseResponse<IEnumerable<LegalDocument>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -199,14 +218,14 @@ namespace ComplyX_Businesss.Services.Implementation
                 };
             }
         }
-        public async Task<ManagerBaseResponse<bool>> SavelegalDocumentVersionData(legalDocumentVersion legalDocumentVersion, string UserName)
+        public async Task<ManagerBaseResponse<bool>> SavelegalDocumentVersionData(LegalDocumentVersionRequestModel legalDocumentVersion, string UserName)
         {
-            var response = new ManagerBaseResponse<List<legalDocumentVersion>>();
+            var response = new ManagerBaseResponse<List<LegalDocumentVersion>>();
 
             try
             {
 
-                var user = _context.Users.FirstOrDefault(x => x.UserName == UserName);
+                var user = _context.ApplicationUsers.FirstOrDefault(x => x.UserName == UserName);
                 if (user == null)
                 {
                     return new ManagerBaseResponse<bool>
@@ -217,7 +236,7 @@ namespace ComplyX_Businesss.Services.Implementation
                 }
                 else
                 {
-                    var document =  _context.LegalDocument.FirstOrDefault(x => x.document_id == legalDocumentVersion.document_id);
+                    var document =  _UnitOfWork.LegalDocumentRespositories.GetQueryable().FirstOrDefault(x => x.DocumentId == legalDocumentVersion.DocumentId);
                     if (document == null)
                     {
                         return new ManagerBaseResponse<bool>
@@ -228,52 +247,52 @@ namespace ComplyX_Businesss.Services.Implementation
                     }
                     else
                     {
-                        if (legalDocumentVersion.version_id == 0)
+                        if (legalDocumentVersion.VersionId == 0)
                         {
                             // Insert
-                            legalDocumentVersion originalTerm = new legalDocumentVersion();
-                            originalTerm.document_id = legalDocumentVersion.document_id;
-                            originalTerm.version_number = legalDocumentVersion.version_number;
-                            originalTerm.version_type = legalDocumentVersion.version_type;
-                            originalTerm.change_summary = legalDocumentVersion.change_summary;
-                            originalTerm.content_hash = legalDocumentVersion.content_hash;
-                            originalTerm.effective_from_date = DateOnly.FromDateTime(DateTime.Now);
-                            originalTerm.release_date = DateOnly.FromDateTime(DateTime.Now);
-                            originalTerm.expiry_date = legalDocumentVersion.expiry_date;
-                            originalTerm.html_content = legalDocumentVersion.html_content;
-                            originalTerm.legal_basis = legalDocumentVersion.legal_basis;
-                            originalTerm.is_published = legalDocumentVersion.is_published;
-                            originalTerm.is_active = legalDocumentVersion.is_active;
-                            originalTerm.created_at = Util.GetCurrentCSTDateAndTime();
-                            originalTerm.created_by = user.Id;
-                            _context.Add(originalTerm);
-                            await _context.SaveChangesAsync();
+                            LegalDocumentVersion originalTerm = new LegalDocumentVersion();
+                            originalTerm.DocumentId = legalDocumentVersion.DocumentId;
+                            originalTerm.VersionNumber = legalDocumentVersion.VersionNumber;
+                            originalTerm.VersionType = legalDocumentVersion.VersionType;
+                            originalTerm.ChangeSummary = legalDocumentVersion.ChangeSummary;
+                            originalTerm.ContentHash = legalDocumentVersion.ContentHash;
+                            originalTerm.EffectiveFromDate = DateOnly.FromDateTime(DateTime.Now);
+                            originalTerm.ReleaseDate = DateOnly.FromDateTime(DateTime.Now);
+                            originalTerm.ExpiryDate = legalDocumentVersion.ExpiryDate;
+                            originalTerm.HtmlContent = legalDocumentVersion.HtmlContent;
+                            originalTerm.LegalBasis = legalDocumentVersion.LegalBasis;
+                            originalTerm.IsPublished = legalDocumentVersion.IsPublished;
+                            originalTerm.IsActive = legalDocumentVersion.IsActive;
+                            originalTerm.CreatedAt = Util.GetCurrentCSTDateAndTime();
+                            originalTerm.CreatedBy = user.Id;
+                            
+                            await _UnitOfWork.LegalDocumentVersionRespositories.AddAsync(originalTerm);
                         }
                         else
                         {
                             // Update
-                            var originalTerm = _context.LegalDocumentVersion
-                                .Where(x => x.version_id == legalDocumentVersion.version_id)
+                            var originalTerm = _UnitOfWork.LegalDocumentVersionRespositories.GetQueryable()
+                                .Where(x => x.VersionId == legalDocumentVersion.VersionId)
                                 .FirstOrDefault();
-                            originalTerm.version_number = legalDocumentVersion.version_number;
-                            originalTerm.document_id = legalDocumentVersion.document_id;
-                            originalTerm.version_type = legalDocumentVersion.version_type;
-                            originalTerm.change_summary = legalDocumentVersion.change_summary;
-                            originalTerm.content_hash = legalDocumentVersion.content_hash;
-                            originalTerm.effective_from_date = DateOnly.FromDateTime(DateTime.Now);
-                            originalTerm.release_date = DateOnly.FromDateTime(DateTime.Now);
-                            originalTerm.expiry_date = legalDocumentVersion.expiry_date;
-                            originalTerm.html_content = legalDocumentVersion.html_content;
-                            originalTerm.legal_basis = legalDocumentVersion.legal_basis;
-                            originalTerm.is_published = legalDocumentVersion.is_published;
-                            originalTerm.is_active = legalDocumentVersion.is_active;
-                            originalTerm.approved_at = Util.GetCurrentCSTDateAndTime();
-                            originalTerm.approved_by = user.Id;
-                            _context.Update(originalTerm);
-                            _context.SaveChanges();
+                            originalTerm.DocumentId = legalDocumentVersion.DocumentId;
+                            originalTerm.VersionNumber = legalDocumentVersion.VersionNumber;
+                            originalTerm.VersionType = legalDocumentVersion.VersionType;
+                            originalTerm.ChangeSummary = legalDocumentVersion.ChangeSummary;
+                            originalTerm.ContentHash = legalDocumentVersion.ContentHash;
+                            originalTerm.EffectiveFromDate = DateOnly.FromDateTime(DateTime.Now);
+                            originalTerm.ReleaseDate = DateOnly.FromDateTime(DateTime.Now);
+                            originalTerm.ExpiryDate = legalDocumentVersion.ExpiryDate;
+                            originalTerm.HtmlContent = legalDocumentVersion.HtmlContent;
+                            originalTerm.LegalBasis = legalDocumentVersion.LegalBasis;
+                            originalTerm.IsPublished = legalDocumentVersion.IsPublished;
+                            originalTerm.IsActive = legalDocumentVersion.IsActive;
+                            originalTerm.ApprovedAt = Util.GetCurrentCSTDateAndTime();
+                            originalTerm.ApprovedBy = user.Id;
+                            
                         }
                     }
                 }
+                await _UnitOfWork.CommitAsync();
                 return new ManagerBaseResponse<bool>
                 {
                     Result = true,
@@ -295,7 +314,7 @@ namespace ComplyX_Businesss.Services.Implementation
             try
             {
                 // Get all report detail definitions for the given report name
-                var Party = await _context.LegalDocumentVersion.Where(x => x.version_id.ToString() == version_id).ToListAsync();
+                var Party = await _UnitOfWork.LegalDocumentVersionRespositories.GetQueryable().Where(x => x.VersionId.ToString() == version_id).ToListAsync();
 
                 if (string.IsNullOrEmpty(Party.ToString()))
                 {
@@ -307,9 +326,9 @@ namespace ComplyX_Businesss.Services.Implementation
                 }
 
                 // Remove all related report details
-                _context.LegalDocumentVersion.RemoveRange(Party);
+                _UnitOfWork.LegalDocumentVersionRespositories.RemoveRange(Party);
 
-                await _context.SaveChangesAsync();
+                await _UnitOfWork.CommitAsync();
 
                 return new ManagerBaseResponse<bool>
                 {
@@ -327,14 +346,33 @@ namespace ComplyX_Businesss.Services.Implementation
                 };
             }
         }
-        public async Task<ManagerBaseResponse<List<legalDocumentVersion>>> GetAlllegalDocumentVersionData(string version_id)
+        public async Task<ManagerBaseResponse<List<LegalDocumentVersionResponseModel>>> GetAlllegalDocumentVersionData(string version_id)
         {
             try
             {
-                var plans = _context.LegalDocumentVersion.Where(x => x.version_id.ToString() == version_id).ToList();
+                var plans = _UnitOfWork.LegalDocumentVersionRespositories.GetQueryable().Where(x => x.VersionId.ToString() == version_id).Select(x => new LegalDocumentVersionResponseModel
+                {
+                    VersionId = x.VersionId,
+                    DocumentId = x.DocumentId,
+                    VersionNumber = x.VersionNumber,
+                    VersionType = x.VersionType,
+                    HtmlContent = x.HtmlContent,
+                    ContentHash = x.ContentHash,
+                    EffectiveFromDate = x.EffectiveFromDate,
+                    ReleaseDate = x.ReleaseDate,
+                    ExpiryDate = x.ExpiryDate,
+                    ChangeSummary = x.ChangeSummary,
+                    LegalBasis = x.LegalBasis,
+                    IsPublished = x.IsPublished,
+                    IsActive = x.IsActive,
+                    CreatedAt = x.CreatedAt,
+                    CreatedBy = x.CreatedBy,
+                    ApprovedAt = x.ApprovedAt,
+                    ApprovedBy = x.ApprovedBy
+                }).ToList();
 
 
-                return new ManagerBaseResponse<List<legalDocumentVersion>>
+                return new ManagerBaseResponse<List<LegalDocumentVersionResponseModel>>
                 {
                     IsSuccess = true,
                     Result = plans,
@@ -344,7 +382,7 @@ namespace ComplyX_Businesss.Services.Implementation
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<List<legalDocumentVersion>>
+                return new ManagerBaseResponse<List<LegalDocumentVersionResponseModel>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -352,22 +390,22 @@ namespace ComplyX_Businesss.Services.Implementation
                 };
             }
         }
-        public async Task<ManagerBaseResponse<IEnumerable<legalDocumentVersion>>> GetAlllegalDocumentVersionFilter(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<LegalDocumentVersion>>> GetAlllegalDocumentVersionFilter(PagedListCriteria PagedListCriteria)
         {
             try
             {
 
-                var query = _context.LegalDocumentVersion.AsQueryable();
+                var query = _UnitOfWork.LegalDocumentVersionRespositories.GetQueryable();
                 var searchText = PagedListCriteria.SearchText?.Trim().ToLower();
                 if (!string.IsNullOrWhiteSpace(searchText))
                 {
-                    query = query.Where(x => x.version_number.ToLower().Contains(searchText.ToLower()));
+                    query = query.Where(x => x.VersionNumber.ToLower().Contains(searchText.ToLower()));
                 }
 
-                query = query.OrderBy(a => a.version_id);
+                query = query.OrderBy(a => a.VersionId);
 
-                PageListed<legalDocumentVersion> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
-                return new ManagerBaseResponse<IEnumerable<legalDocumentVersion>>
+                PageListed<LegalDocumentVersion> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+                return new ManagerBaseResponse<IEnumerable<LegalDocumentVersion>>
                 {
                     Result = result.Data,
                     Message = "Legal Document version Retrieved Successfully.",
@@ -384,7 +422,7 @@ namespace ComplyX_Businesss.Services.Implementation
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<IEnumerable<legalDocumentVersion>>
+                return new ManagerBaseResponse<IEnumerable<LegalDocumentVersion>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -392,14 +430,14 @@ namespace ComplyX_Businesss.Services.Implementation
                 };
             }
         }
-        public async Task<ManagerBaseResponse<bool>> SavelegalDocumentAcceptanceData(legalDocumentAcceptance legalDocumentAcceptance, string UserName)
+        public async Task<ManagerBaseResponse<bool>> SavelegalDocumentAcceptanceData(LegalDocumentAcceptanceRequestModel legalDocumentAcceptance, string UserName)
         {
-            var response = new ManagerBaseResponse<List<legalDocumentAcceptance>>();
+            var response = new ManagerBaseResponse<List<LegalDocumentAcceptance>>();
 
             try
             {
 
-                var user = _context.Users.FirstOrDefault(x => x.UserName == UserName);
+                var user = _context.ApplicationUsers.FirstOrDefault(x => x.UserName == UserName);
                 if (user == null)
                 {
                     return new ManagerBaseResponse<bool>
@@ -410,7 +448,7 @@ namespace ComplyX_Businesss.Services.Implementation
                 }
                 else 
                 {
-                    var document = _context.LegalDocumentVersion.FirstOrDefault(x => x.document_id == legalDocumentAcceptance.document_id && x.version_id == legalDocumentAcceptance.version_id);
+                    var document = _UnitOfWork.LegalDocumentVersionRespositories.GetQueryable().FirstOrDefault(x => x.DocumentId == legalDocumentAcceptance.DocumentId && x.VersionId == legalDocumentAcceptance.VersionId);
                     if (document == null)
                     {
                         return new ManagerBaseResponse<bool>
@@ -422,40 +460,40 @@ namespace ComplyX_Businesss.Services.Implementation
                     else
                     {
 
-                        if (legalDocumentAcceptance.acceptance_id == 0)
+                        if (legalDocumentAcceptance.AcceptanceId == 0)
                         {
                             // Insert
-                            legalDocumentAcceptance originalTerm = new legalDocumentAcceptance();
-                            originalTerm.version_id = legalDocumentAcceptance.version_id;
-                            originalTerm.document_id = legalDocumentAcceptance.document_id;
-                            originalTerm.accepted_at = legalDocumentAcceptance.accepted_at;
-                            originalTerm.user_id = user.Id;
-                            originalTerm.accepted_device = legalDocumentAcceptance.accepted_device;
-                            originalTerm.acceptance_method = legalDocumentAcceptance.acceptance_method;
-                            originalTerm.consent_proof_hash = legalDocumentAcceptance.consent_proof_hash;
-                            originalTerm.accepted_ip = legalDocumentAcceptance.accepted_ip;
-                            _context.Add(originalTerm);
-                            await _context.SaveChangesAsync();
+                            LegalDocumentAcceptance originalTerm = new LegalDocumentAcceptance();
+                            originalTerm.VersionId = legalDocumentAcceptance.VersionId;
+                            originalTerm.DocumentId = legalDocumentAcceptance.DocumentId;
+                            originalTerm.AcceptedAt = legalDocumentAcceptance.AcceptedAt;
+                            originalTerm.UserId = user.Id;
+                            originalTerm.AcceptedDevice = legalDocumentAcceptance.AcceptedDevice;
+                            originalTerm.AcceptanceMethod = legalDocumentAcceptance.AcceptanceMethod;
+                            originalTerm.ConsentProofHash = legalDocumentAcceptance.ConsentProofHash;
+                            originalTerm.AcceptedIp = legalDocumentAcceptance.AcceptedIp;
+                            
+                            await _UnitOfWork.LegalDocumentAcceptanceRespositories.AddAsync(originalTerm);
                         }
                         else
                         {
                             // Update
-                            var originalTerm = _context.LegalDocumentAcceptance
-                                .Where(x => x.acceptance_id == legalDocumentAcceptance.acceptance_id)
+                            var originalTerm = _UnitOfWork.LegalDocumentAcceptanceRespositories.GetQueryable()
+                                .Where(x => x.AcceptanceId == legalDocumentAcceptance.AcceptanceId)
                                 .FirstOrDefault();
-                            originalTerm.version_id = legalDocumentAcceptance.version_id;
-                            originalTerm.document_id = legalDocumentAcceptance.document_id;
-                            originalTerm.accepted_at = legalDocumentAcceptance.accepted_at;
-                            originalTerm.user_id = user.Id;
-                            originalTerm.accepted_device = legalDocumentAcceptance.accepted_device;
-                            originalTerm.acceptance_method = legalDocumentAcceptance.acceptance_method;
-                            originalTerm.consent_proof_hash = legalDocumentAcceptance.consent_proof_hash;
-                            originalTerm.accepted_ip = legalDocumentAcceptance.accepted_ip;
-                            _context.Update(originalTerm);
-                            _context.SaveChanges();
+                            originalTerm.VersionId = legalDocumentAcceptance.VersionId;
+                            originalTerm.DocumentId = legalDocumentAcceptance.DocumentId;
+                            originalTerm.AcceptedAt = legalDocumentAcceptance.AcceptedAt;
+                            originalTerm.UserId = user.Id;
+                            originalTerm.AcceptedDevice = legalDocumentAcceptance.AcceptedDevice;
+                            originalTerm.AcceptanceMethod = legalDocumentAcceptance.AcceptanceMethod;
+                            originalTerm.ConsentProofHash = legalDocumentAcceptance.ConsentProofHash;
+                            originalTerm.AcceptedIp = legalDocumentAcceptance.AcceptedIp;
+                             
                         }
                     }
                 }
+                await _UnitOfWork.CommitAsync();
                 return new ManagerBaseResponse<bool>
                 {
                     Result = true,
@@ -477,7 +515,7 @@ namespace ComplyX_Businesss.Services.Implementation
             try
             {
                 // Get all report detail definitions for the given report name
-                var Party = await _context.LegalDocumentAcceptance.Where(x => x.acceptance_id.ToString() == Acceptanceid).ToListAsync();
+                var Party = await _UnitOfWork.LegalDocumentAcceptanceRespositories.GetQueryable().Where(x => x.AcceptanceId.ToString() == Acceptanceid).ToListAsync();
 
                 if (string.IsNullOrEmpty(Party.ToString()))
                 {
@@ -489,9 +527,9 @@ namespace ComplyX_Businesss.Services.Implementation
                 }
 
                 // Remove all related report details
-                _context.LegalDocumentAcceptance.RemoveRange(Party);
+                _UnitOfWork.LegalDocumentAcceptanceRespositories.RemoveRange(Party);
 
-                await _context.SaveChangesAsync();
+                await _UnitOfWork.CommitAsync();
 
                 return new ManagerBaseResponse<bool>
                 {
@@ -509,14 +547,25 @@ namespace ComplyX_Businesss.Services.Implementation
                 };
             }
         }
-        public async Task<ManagerBaseResponse<List<legalDocumentAcceptance>>> GetAlllegalDocumentAcceptanceData(string Acceptanceid)
+        public async Task<ManagerBaseResponse<List<LegalDocumentAcceptanceResponseModel>>> GetAlllegalDocumentAcceptanceData(string Acceptanceid)
         {
             try
             {
-                var plans =  _context.LegalDocumentAcceptance.Where(x => x.acceptance_id.ToString() == Acceptanceid).ToList();
+                var plans = _UnitOfWork.LegalDocumentAcceptanceRespositories.GetQueryable().Where(x => x.AcceptanceId.ToString() == Acceptanceid).Select(x => new LegalDocumentAcceptanceResponseModel
+                {
+                    AcceptanceId = x.AcceptanceId,
+                    UserId = x.UserId,
+                    DocumentId = x.DocumentId,
+                    VersionId = x.VersionId,
+                    AcceptedAt = x.AcceptedAt,
+                    AcceptedIp = x.AcceptedIp,
+                    AcceptedDevice = x.AcceptedDevice,
+                    AcceptanceMethod = x.AcceptanceMethod,
+                    ConsentProofHash = x.ConsentProofHash
+                }).ToList();
 
 
-                return new ManagerBaseResponse<List<legalDocumentAcceptance>>
+                return new ManagerBaseResponse<List<LegalDocumentAcceptanceResponseModel>>
                 {
                     IsSuccess = true,
                     Result = plans,
@@ -526,7 +575,7 @@ namespace ComplyX_Businesss.Services.Implementation
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<List<legalDocumentAcceptance>>
+                return new ManagerBaseResponse<List<LegalDocumentAcceptanceResponseModel>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -534,22 +583,22 @@ namespace ComplyX_Businesss.Services.Implementation
                 };
             }
         }
-        public async Task<ManagerBaseResponse<IEnumerable<legalDocumentAcceptance>>> GetAlllegalDocumentAcceptanceFilter(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<LegalDocumentAcceptance>>> GetAlllegalDocumentAcceptanceFilter(PagedListCriteria PagedListCriteria)
         {
             try
             {
 
-                var query = _context.LegalDocumentAcceptance.AsQueryable();
+                var query = _UnitOfWork.LegalDocumentAcceptanceRespositories.GetQueryable();
                 var searchText = PagedListCriteria.SearchText?.Trim().ToLower();
                 if (!string.IsNullOrWhiteSpace(searchText))
                 {
-                    query = query.Where(x => x.accepted_device.ToLower().Contains(searchText.ToLower()));
+                    query = query.Where(x => x.AcceptedDevice.ToLower().Contains(searchText.ToLower()));
                 }
 
-                query = query.OrderBy(a => a.acceptance_id);
+                query = query.OrderBy(a => a.AcceptanceId);
 
-                PageListed<legalDocumentAcceptance> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
-                return new ManagerBaseResponse<IEnumerable<legalDocumentAcceptance>>
+                PageListed<LegalDocumentAcceptance> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+                return new ManagerBaseResponse<IEnumerable<LegalDocumentAcceptance>>
                 {
                     Result = result.Data,
                     Message = "Legal Document Acceptance Retrieved Successfully.",
@@ -566,7 +615,7 @@ namespace ComplyX_Businesss.Services.Implementation
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<IEnumerable<legalDocumentAcceptance>>
+                return new ManagerBaseResponse<IEnumerable<LegalDocumentAcceptance>>
                 {
                     IsSuccess = false,
                     Result = null,

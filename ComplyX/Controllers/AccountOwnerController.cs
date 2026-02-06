@@ -14,6 +14,17 @@ using ComplyX_Businesss.Helper;
 using ComplyX_Businesss.Services.Interface;
 using ComplyX_Businesss.BusinessLogic;
 using AppContext = ComplyX_Businesss.Helper.AppContext;
+using ComplyX.Data.Entities;
+using ComplyX_Businesss.Models.ProductOwner;
+using ComplyX_Businesss.Models.Company;
+using ComplyX_Businesss.Models.Subcontractor;
+using ComplyX_Businesss.Models.Plan;
+using ComplyX_Businesss.Models.SubscriptionInvoices;
+using ComplyX_Businesss.Models.SubscriptionPlan;
+using ComplyX_Businesss.Models.PaymentTransaction;
+using ComplyX_Businesss.Models.CustomerPayments;
+using ComplyX_Businesss.Models.CompanyPartyRole;
+using ComplyX_Businesss.Models.PartyMaster;
 
 namespace ComplyX.Controllers
 {
@@ -86,10 +97,10 @@ namespace ComplyX.Controllers
         /// <response code="200">Product owner data saved successfully.</response>
         /// <response code="400">If there is an error while saving the product owner data.</response>
         [HttpPut("SaveProductOwnerData")]
-        [ProducesResponseType(typeof(ProductOwners), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProductOwnerRequestModel), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> SaveProductOwnerData([FromBody] ProductOwners ProductOwners)
+        public async Task<IActionResult> SaveProductOwnerData([FromBody] ProductOwnerRequestModel ProductOwners)
         {
             return ResponseResult(await _IProductOwnere.SaveProductOwnerData(ProductOwners));
         }
@@ -149,7 +160,7 @@ namespace ComplyX.Controllers
         /// <response code="200">Company data saved successfully.</response>
         /// <response code="400">If there is an error while saving the company data.</response>
         [HttpPut("SaveCompanyData")]
-        public async Task<IActionResult> SaveCompanyData([FromBody] Company company)
+        public async Task<IActionResult> SaveCompanyData([FromBody] CompanyRequestModel company)
         {
             return ResponseResult(await _IProductOwnere.SaveCompanyData(company));
         }
@@ -252,7 +263,7 @@ namespace ComplyX.Controllers
         /// <summary>
         /// Saves or updates user subscription plan data.
         /// </summary>
-        /// <param name="ProductOwnerSubscriptions">
+        /// <param name="ProductOwnerSubscription">
         /// The user subscription plan details to be saved or updated.
         /// </param>
         /// <returns>
@@ -264,7 +275,7 @@ namespace ComplyX.Controllers
         /// <response code="200">User subscription plan data saved successfully.</response>
         /// <response code="400">If there is an error while saving the user subscription plan data.</response>
         [HttpPut("SaveUserSubscriptionData")]
-        public async Task<IActionResult> SaveUserSubscriptionData([FromBody] ProductOwnerSubscriptions ProductOwnerSubscriptions)
+        public async Task<IActionResult> SaveUserSubscriptionData([FromBody] ProductOwnerSubscription ProductOwnerSubscriptions)
         {
             return ResponseResult(await _IProductOwnere.SaveUserSubscriptionData(ProductOwnerSubscriptions));
         }
@@ -328,7 +339,7 @@ namespace ComplyX.Controllers
         /// <response code="200">Subcontractor data saved successfully.</response>
         /// <response code="400">If there is an error while saving the subcontractor data.</response>
         [HttpPut("SaveSubcontractorData")]
-        public async Task<IActionResult> SaveSubcontractorData([FromBody] Subcontractors Subcontractors)
+        public async Task<IActionResult> SaveSubcontractorData([FromBody] SubcontractorRequestModel Subcontractors)
         {
             return ResponseResult(await _IProductOwnere.SaveSubcontractorData(Subcontractors));
         }
@@ -428,7 +439,7 @@ namespace ComplyX.Controllers
         /// <response code="200">Plan data saved successfully.</response>
         /// <response code="400">If there is an error while saving the plan data.</response>
         [HttpPut("SavePlansData")]
-        public async Task<IActionResult> SavePlansData([FromBody] Plans Plans)
+        public async Task<IActionResult> SavePlansData([FromBody] PlanRequestModel Plans)
         {
             return ResponseResult(await _IProductOwnere.SavePlansData(Plans));
         }
@@ -525,7 +536,7 @@ namespace ComplyX.Controllers
         /// <response code="200">Subscription invoice data saved successfully.</response>
         /// <response code="400">If there is an error while saving the subscription invoice data.</response>
         [HttpPut("SaveSubscriptionInvoicesData")]
-        public async Task<IActionResult> SaveSubscriptionInvoicesData([FromBody] SubscriptionInvoices SubscriptionInvoices)
+        public async Task<IActionResult> SaveSubscriptionInvoicesData([FromBody] SubscriptionInvoicesRequestModel SubscriptionInvoices)
         {
             return ResponseResult(await _IProductOwnere.SaveSubscriptionInvoicesData(SubscriptionInvoices));
         }
@@ -622,7 +633,7 @@ namespace ComplyX.Controllers
         /// <response code="200">Subscription plan data saved successfully.</response>
         /// <response code="400">If there is an error while saving the subscription plan data.</response>
         [HttpPut("SaveSubscriptionPlansData")]
-        public async Task<IActionResult> SaveSubscriptionPlansData([FromBody] SubscriptionPlans subscriptionPlans)
+        public async Task<IActionResult> SaveSubscriptionPlansData([FromBody] SubscriptionPlanRequestModel subscriptionPlans)
         {
             return ResponseResult(await _IProductOwnere.SaveSubscriptionPlansData(subscriptionPlans));
         }
@@ -664,7 +675,7 @@ namespace ComplyX.Controllers
         /// <response code="200">Payment transaction data saved successfully.</response>
         /// <response code="400">If there is an error while saving the payment transaction data.</response>
         [HttpPut("SavePaymentTransactionData")]
-        public async Task<IActionResult> SavePaymentTransactionData([FromBody] PaymentTransactions PaymentTransactions)
+        public async Task<IActionResult> SavePaymentTransactionData([FromBody] PaymentTransactionRequestModel PaymentTransactions)
         {
             return ResponseResult(await _IProductOwnere.SavePaymentTransactionData(PaymentTransactions));
         }
@@ -762,7 +773,7 @@ namespace ComplyX.Controllers
         /// <response code="200">Customer payment data saved successfully.</response>
         /// <response code="400">If there is an error while saving the customer payment data.</response>
         [HttpPut("SaveCustomerPaymentsData")]
-        public async Task<IActionResult> SaveCustomerPaymentsData([FromBody] CustomerPayments CustomerPayments)
+        public async Task<IActionResult> SaveCustomerPaymentsData([FromBody] CustomerPaymentsRequestModel CustomerPayments)
         {
             return ResponseResult(await _IProductOwnere.SaveCustomerPaymentsData(CustomerPayments));
         }
@@ -860,7 +871,7 @@ namespace ComplyX.Controllers
         /// <response code="200">Party master data saved successfully.</response>
         /// <response code="400">Error occurred while saving party master data.</response>
         [HttpPut("SavePartyMasterData")]
-        public async Task<IActionResult> SavePartyMasterData([FromBody] PartyMaster PartyMaster)
+        public async Task<IActionResult> SavePartyMasterData([FromBody] PartyMasterRequestModel PartyMaster)
         {
             return ResponseResult(await _IProductOwnere.SavePartyMasterData(PartyMaster, User.Claims.GetUserId()));
         }
@@ -960,7 +971,7 @@ namespace ComplyX.Controllers
         /// <response code="200">Company party role data saved successfully.</response>
         /// <response code="400">Error occurred while saving company party role data.</response>
         [HttpPut("SaveCompanyPartyRoleData")]
-        public async Task<IActionResult> SaveCompanyPartyRoleData([FromBody] CompanyPartyRole CompanyPartyRole)
+        public async Task<IActionResult> SaveCompanyPartyRoleData([FromBody] CompanyPartyRoleRequestModel CompanyPartyRole)
         {
             return ResponseResult(await _IProductOwnere.SaveCompanyPartyRoleData(CompanyPartyRole, User.Claims.GetUserId()));
         }

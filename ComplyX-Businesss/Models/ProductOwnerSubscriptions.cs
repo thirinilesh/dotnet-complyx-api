@@ -18,8 +18,8 @@ namespace ComplyX_Businesss.Models
         public string TransactionId { get; set; } = string.Empty;
         public string Remarks { get; set; } = string.Empty;
         [JsonIgnore]
-        public virtual ProductOwners? ProductOwners { get; set; }
+        public virtual ComplyX.Data.Entities.ProductOwner? ProductOwners { get; set; }
         [JsonIgnore]
-        public virtual SubscriptionPlans SubscriptionPlans { get; set; }
+        public virtual ComplyX.Data.Entities.SubscriptionPlan SubscriptionPlans { get; set; }
     }
 }

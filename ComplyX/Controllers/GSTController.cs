@@ -15,6 +15,12 @@ using Microsoft.EntityFrameworkCore;
 using ComplyX_Businesss.Helper;
 using ComplyX_Businesss.BusinessLogic;
 using AppContext = ComplyX_Businesss.Helper.AppContext;
+using ComplyX_Businesss.Models.GSTHSNSAC;
+using ComplyX_Businesss.Models.GSTHSNMapping;
+using ComplyX_Businesss.Models.GSTInvoiceSeries;
+using ComplyX_Businesss.Models.GSTPurchase;
+using ComplyX_Businesss.Models.GSTReturns;
+using ComplyX_Businesss.Models.GSTSales;
 
 namespace ComplyX.Controllers
 {
@@ -57,7 +63,7 @@ namespace ComplyX.Controllers
         /// <response code="200">The GST HSNSAC data was saved or updated successfully.</response>
         /// <response code="400">If there is an error while saving or updating the GST HSNSAC data.</response>
         [HttpPut("SaveGST_HSNSACData")]
-        public async Task<IActionResult> SaveGST_HSNSACData([FromBody] GST_HSNSAC GST_HSNSAC)
+        public async Task<IActionResult> SaveGST_HSNSACData([FromBody] GSTHSNSACRequestModel GST_HSNSAC)
         {
             return ResponseResult(await _IGSTServices.SaveGST_HSNSACData(GST_HSNSAC));
         }
@@ -129,7 +135,7 @@ namespace ComplyX.Controllers
         /// <response code="200">The GST HSN Mapping data was saved or updated successfully.</response>
         /// <response code="400">If there is an error while saving or updating the GST HSN Mapping data.</response>
         [HttpPut("SaveGST_HSN_MappingData")]
-        public async Task<IActionResult> SaveGST_HSN_MappingData([FromBody] GST_HSN_Mapping GST_HSN_Mapping)
+        public async Task<IActionResult> SaveGST_HSN_MappingData([FromBody] GSTHSNMappingRequestModel GST_HSN_Mapping)
         {
             return ResponseResult(await _IGSTServices.SaveGST_HSN_MappingData(GST_HSN_Mapping));
         }
@@ -202,7 +208,7 @@ namespace ComplyX.Controllers
         /// <response code="200">The GST Invoice Series data was saved or updated successfully.</response>
         /// <response code="400">If there is an error while saving or updating the GST Invoice Series data.</response>
         [HttpPut("SaveGST_InvoiceSeriesData")]
-        public async Task<IActionResult> SaveGST_InvoiceSeriesData([FromBody] GST_InvoiceSeries GST_InvoiceSeries)
+        public async Task<IActionResult> SaveGST_InvoiceSeriesData([FromBody] GstInvoiceSeriesRequestModel GST_InvoiceSeries)
         {
             return ResponseResult(await _IGSTServices.SaveGST_InvoiceSeriesData(GST_InvoiceSeries));
         }
@@ -274,7 +280,7 @@ namespace ComplyX.Controllers
         /// <response code="200">The GST Purchase data was saved or updated successfully.</response>
         /// <response code="400">If there is an error while saving or updating the GST Purchase data.</response>
         [HttpPut("SaveGST_PurchaseData")]
-        public async Task<IActionResult> SaveGST_PurchaseData([FromBody] GST_Purchase GST_Purchase)
+        public async Task<IActionResult> SaveGST_PurchaseData([FromBody] GstPurchaseRequestModel GST_Purchase)
         {
             return ResponseResult(await _IGSTServices.SaveGST_PurchaseData(GST_Purchase));
         }
@@ -347,7 +353,7 @@ namespace ComplyX.Controllers
         /// <response code="200">The GST Returns data was saved or updated successfully.</response>
         /// <response code="400">If there is an error while saving or updating the GST Returns data.</response>
         [HttpPut("SaveGST_ReturnsData")]
-        public async Task<IActionResult> SaveGST_ReturnsData([FromBody] GST_Returns GST_Returns)
+        public async Task<IActionResult> SaveGST_ReturnsData([FromBody] GstReturnRequestModel GST_Returns)
         {
             return ResponseResult(await _IGSTServices.SaveGST_ReturnsData(GST_Returns));
         }
@@ -422,7 +428,7 @@ namespace ComplyX.Controllers
         /// <response code="200">The GST Sales data was saved or updated successfully.</response>
         /// <response code="400">If there is an error while saving or updating the GST Sales data.</response>
         [HttpPut("SaveGST_SalesData")]
-        public async Task<IActionResult> SaveGST_SalesData([FromBody] GST_Sales GST_Sales)
+        public async Task<IActionResult> SaveGST_SalesData([FromBody] GstSaleRequestModel GST_Sales)
         {
             return ResponseResult(await _IGSTServices.SaveGST_SalesData(GST_Sales));
         }

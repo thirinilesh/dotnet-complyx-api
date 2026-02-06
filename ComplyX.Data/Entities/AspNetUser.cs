@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace ComplyX.Data.Entities;
          
-public partial class AspNetUser  
+public partial class AspNetUser  : IdentityUser
 {
     [Key]
     public string Id { get; set; } = null!;

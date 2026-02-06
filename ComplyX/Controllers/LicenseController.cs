@@ -13,6 +13,10 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using ComplyX_Businesss.Helper;
 using AppContext = ComplyX_Businesss.Helper.AppContext;
+using ComplyX_Businesss.Models.LicenseKeyMaster;
+using ComplyX_Businesss.Models.LicenseActivation;
+using ComplyX_Businesss.Models.LicenseAuditLog;
+using ComplyX_Businesss.Models.MachineBinding;
 
 namespace ComplyX.Shared.Controllers
 {
@@ -48,7 +52,7 @@ namespace ComplyX.Shared.Controllers
         /// <response code="200">The License Key data was saved or updated successfully.</response>
         /// <response code="400">If there is an error while saving or updating the License Key data.</response>
         [HttpPut("SaveLicenseKeyMasterData")]
-        public async Task<IActionResult> SaveLicenseKeyMasterData([FromBody] LicenseKeyMaster LicenseKeyMaster)
+        public async Task<IActionResult> SaveLicenseKeyMasterData([FromBody] LicenseKeyMasterRequestModel LicenseKeyMaster)
         {
             return ResponseResult(await _LicenseServices.SaveLicenseKeyMasterData(LicenseKeyMaster));
         }
@@ -84,7 +88,7 @@ namespace ComplyX.Shared.Controllers
         /// <response code="200">The License Key Activation data was saved or updated successfully.</response>
         /// <response code="400">If there is an error while saving or updating the License Key Activation data.</response>
         [HttpPut("SaveLicenseKeyActivationData")]
-        public async Task<IActionResult> SaveLicenseKeyActivationData([FromBody] LicenseActivation LicenseActivation)
+        public async Task<IActionResult> SaveLicenseKeyActivationData([FromBody] LicenseActivationRequestModel LicenseActivation)
         {
             return ResponseResult(await _LicenseServices.SaveLicenseKeyActivationData(LicenseActivation));
         }
@@ -121,7 +125,7 @@ namespace ComplyX.Shared.Controllers
         /// <response code="200">The License Audit Log data was saved or updated successfully.</response>
         /// <response code="400">If there is an error while saving or updating the License Audit Log data.</response>
         [HttpPut("SaveLicenseAuditLogsData")]
-        public async Task<IActionResult> SaveLicenseAuditLogsData([FromBody] LicenseAuditLogs LicenseAuditLogs)
+        public async Task<IActionResult> SaveLicenseAuditLogsData([FromBody] LicenseAuditLogRequestModel LicenseAuditLogs)
         {
             return ResponseResult(await _LicenseServices.SaveLicenseAuditLogsData(LicenseAuditLogs));
         }
@@ -159,7 +163,7 @@ namespace ComplyX.Shared.Controllers
         /// <response code="200">The Machine Binding data was saved or updated successfully.</response>
         /// <response code="400">If there is an error while saving or updating the Machine Binding data.</response>
         [HttpPut("SaveMachineBindingData")]
-        public async Task<IActionResult> SaveMachineBindingData([FromBody] MachineBinding MachineBinding)
+        public async Task<IActionResult> SaveMachineBindingData([FromBody] MachineBindingRequestModel MachineBinding)
         {
             return ResponseResult(await _LicenseServices.SaveMachineBindingData(MachineBinding));
         }

@@ -8,6 +8,18 @@ using NHibernate.Linq;
 using ComplyX.Shared.Data;
 using static ComplyX_Businesss.Helper.Commanfield;
 using AppContext = ComplyX_Businesss.Helper.AppContext;
+using ComplyX.Repositories.UnitOfWork;
+using ComplyX_Businesss.Models.Tdsdeductor;
+using ComplyX.Data.Entities;
+using ComplyX_Businesss.Models.Tdsdeductee;
+using ComplyX_Businesss.Models.Tdsreturn;
+using ComplyX_Businesss.Models.Tdsentry;
+using ComplyX_Businesss.Models.Tdschallan;
+using ComplyX_Businesss.Models.TdsreturnChallan;
+using ComplyX_Businesss.Models.TdsreturnEntry;
+using ComplyX_Businesss.Models.TdschallanAllocation;
+using ComplyX_Businesss.Models.Tdsrate;
+using ComplyX.Data.DbContexts;
 
 namespace ComplyX_Businesss.Services.Implementation
 {
@@ -18,26 +30,28 @@ namespace ComplyX_Businesss.Services.Implementation
             { "name", "Name" }
         };
 
-        private readonly AppContext _context;
+        private readonly AppDbContext _context;
         private readonly Nest.Filter _filter;
-        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly UserManager<ApplicationUsers> _userManager;
         private readonly Commanfield _commanfield;
+        private readonly IUnitOfWork _UnitOfWork;
 
-        public ITTDSCClass(AppContext context, Nest.Filter filter, UserManager<ApplicationUser> userManager, Commanfield commanfield)
+        public ITTDSCClass(AppDbContext context, Nest.Filter filter, UserManager<ApplicationUsers> userManager, Commanfield commanfield, IUnitOfWork unitOfWork)
         {
             _context = context;
             _filter = filter;
             _userManager = userManager;
             _commanfield = commanfield;
+            _UnitOfWork = unitOfWork;
         }
 
-        public async Task<ManagerBaseResponse<bool>> SaveTDSDeductorData(TDSDeductor TDSDeductor, string UserName)
+        public async Task<ManagerBaseResponse<bool>> SaveTDSDeductorData(TdsdeductorRequestModel TDSDeductor, string UserName)
         {
-            var response = new ManagerBaseResponse<List<TDSDeductor>>();
+            var response = new ManagerBaseResponse<List<Tdsdeductor>>();
 
             try
             {
-                var company = _context.Companies.FirstOrDefault(x => x.CompanyID == TDSDeductor.CompanyID);
+                var company = _UnitOfWork.CompanyRepository.GetQueryable().FirstOrDefault(x => x.CompanyId == TDSDeductor.CompanyId);
                 if (company == null)
                 {
                     return new ManagerBaseResponse<bool>
@@ -48,43 +62,42 @@ namespace ComplyX_Businesss.Services.Implementation
                 }
                 else
                 {
-                    var user = _context.Users.FirstOrDefault(x => x.UserName == UserName);
-                    if (TDSDeductor.DeductorID == 0)
+                    var user = _context.ApplicationUsers.FirstOrDefault(x => x.UserName == UserName);
+                    if (TDSDeductor.DeductorId == 0)
                     {
                         // Insert
-                        TDSDeductor originalTerm = new TDSDeductor();
-                        originalTerm.CompanyID = TDSDeductor.CompanyID;
+                        Tdsdeductor originalTerm = new Tdsdeductor();
+                        originalTerm.CompanyId = TDSDeductor.CompanyId;
                         originalTerm.DeductorCategory = TDSDeductor.DeductorCategory;
                         originalTerm.DeductorName = TDSDeductor.DeductorName;
-                        originalTerm.TAN = TDSDeductor.TAN;
-                        originalTerm.PAN = TDSDeductor.PAN;
+                        originalTerm.Tan = TDSDeductor.Tan;
+                        originalTerm.Pan = TDSDeductor.Pan;
                         originalTerm.Address1 = TDSDeductor.Address1;
                         originalTerm.Address2 = TDSDeductor.Address2;
                         originalTerm.City = TDSDeductor.City;
                         originalTerm.State = TDSDeductor.State;
-                        originalTerm.PinCode = TDSDeductor.PinCode;
+                        originalTerm.Pincode = TDSDeductor.Pincode;
                         originalTerm.Phone = TDSDeductor.Phone;
                         originalTerm.Email = TDSDeductor.Email;
-                        originalTerm.AOCode = TDSDeductor.AOCode;
+                        originalTerm.Aocode = TDSDeductor.Aocode;
                         originalTerm.CreatedBy = user.Id;
                         originalTerm.CreatedAt = Util.GetCurrentCSTDateAndTime();
 
-                        _context.Add(originalTerm);
-                        await _context.SaveChangesAsync();
+                        await _UnitOfWork.TdsdeductorRespositories.AddAsync(originalTerm);
                     }
                     else
                     {
                         // Update
-                        var originalTerm = _context.TDSDeductor
-                            .Where(x => x.DeductorID == TDSDeductor.DeductorID)
+                        var originalTerm = _UnitOfWork.TdsdeductorRespositories.GetQueryable()
+                            .Where(x => x.DeductorId == TDSDeductor.DeductorId)
                             .FirstOrDefault();
                         originalTerm.IsActive = TDSDeductor.IsActive;
                         originalTerm.UpdatedAt = Util.GetCurrentCSTDateAndTime();
                         originalTerm.UpdatedBy = user.Id;
-                        _context.Update(originalTerm);
-                        _context.SaveChanges();
+                      
                     }
                 }
+                await _UnitOfWork.CommitAsync();
                 return new ManagerBaseResponse<bool>
                 {
                     Result = true,
@@ -101,14 +114,37 @@ namespace ComplyX_Businesss.Services.Implementation
                 };
             }
         }
-        public async Task<ManagerBaseResponse<List<TDSDeductor>>> GetAllTDSDeductorData(string DeductorID)
+        public async Task<ManagerBaseResponse<List<TdsdeductorResponseModel>>> GetAllTDSDeductorData(string DeductorId)
         {
             try
             {
-                var plans = _context.TDSDeductor.Where(x => x.DeductorID.ToString() == DeductorID).ToList();
+                var plans = _UnitOfWork.TdsdeductorRespositories.GetQueryable().
+                    Where(x => x.DeductorId.ToString() == DeductorId)
+                      .Select(x => new TdsdeductorResponseModel
+                      {
+                          DeductorId = x.DeductorId,
+                          CompanyId = x.CompanyId,
+                          DeductorName = x.DeductorName,
+                          Tan = x.Tan,
+                          Pan = x.Pan,
+                          DeductorCategory = x.DeductorCategory,
+                          Address1 = x.Address1,
+                          Address2 = x.Address2,
+                          City = x.City,
+                          State = x.State,
+                          Pincode = x.Pincode,
+                          Phone = x.Phone,
+                          Email = x.Email,
+                          Aocode = x.Aocode,
+                          IsActive = x.IsActive,
+                          CreatedBy = x.CreatedBy,
+                          CreatedAt = x.CreatedAt,
+                          UpdatedBy = x.UpdatedBy,
+                          UpdatedAt = x.UpdatedAt
+                      }).ToList();
 
 
-                return new ManagerBaseResponse<List<TDSDeductor>>
+                return new ManagerBaseResponse<List<TdsdeductorResponseModel>>
                 {
                     IsSuccess = true,
                     Result = plans,
@@ -118,7 +154,7 @@ namespace ComplyX_Businesss.Services.Implementation
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<List<TDSDeductor>>
+                return new ManagerBaseResponse<List<TdsdeductorResponseModel>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -126,23 +162,23 @@ namespace ComplyX_Businesss.Services.Implementation
                 };
             }
         }
-        public async Task<ManagerBaseResponse<IEnumerable<TDSDeductor>>> GetTDSDeductorFilter(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<Tdsdeductor>>> GetTDSDeductorFilter(PagedListCriteria PagedListCriteria)
         {
             try
             {
 
-                var query = _context.TDSDeductor.AsQueryable();
+                var query = _UnitOfWork.TdsdeductorRespositories.GetQueryable();
                 var searchText = PagedListCriteria.SearchText?.Trim().ToLower();
                 if (!string.IsNullOrWhiteSpace(searchText))
                 {
                     query = query.Where(x => x.DeductorName.ToLower().Contains(searchText.ToLower()));
                 }
 
-                query = query.OrderBy(a => a.DeductorID);
+                query = query.OrderBy(a => a.DeductorId);
 
-                PageListed<TDSDeductor> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+                PageListed<Tdsdeductor> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
 
-                return new ManagerBaseResponse<IEnumerable<TDSDeductor>>
+                return new ManagerBaseResponse<IEnumerable<Tdsdeductor>>
                 {
                     Result = result.Data,
                     Message = "TDS Deductor Data Retrieved Successfully.",
@@ -159,7 +195,7 @@ namespace ComplyX_Businesss.Services.Implementation
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<IEnumerable<TDSDeductor>>
+                return new ManagerBaseResponse<IEnumerable<Tdsdeductor>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -167,36 +203,36 @@ namespace ComplyX_Businesss.Services.Implementation
                 };
             }
         }
-        public Task<ManagerBaseResponse<bool>> SaveTDSDeduteeData(TDSDeductee TDSDedutee, string UserName)
+        public async Task<ManagerBaseResponse<bool>> SaveTDSDeduteeData(TdsdeducteeRequestModel TDSDedutee, string UserName)
         {
-            var response = new ManagerBaseResponse<List<TDSDeductee>>();
+            var response = new ManagerBaseResponse<List<Tdsdeductee>>();
 
             try
             {
-                var company = _context.Companies.FirstOrDefault(x => x.CompanyID == TDSDedutee.CompanyID);
+                var company = _UnitOfWork.CompanyRepository.GetQueryable().FirstOrDefault(x => x.CompanyId == TDSDedutee.CompanyId);
                 if (company == null)
                 {
-                    return Task.FromResult(new ManagerBaseResponse<bool>
+                    return new ManagerBaseResponse<bool>
                     {
                         Result = false,
                         Message = "Company Data not Found."
-                    });
+                    } ;
                 }
                 else
                 {
 
 
-                    var user = _context.Users.FirstOrDefault(x => x.UserName == UserName);
-                    if (TDSDedutee.DeducteeID == 0)
+                    var user = _context.ApplicationUsers.FirstOrDefault(x => x.UserName == UserName);
+                    if (TDSDedutee.DeducteeId == 0)
                     {
                         // Insert
-                        TDSDeductee originalTerm = new TDSDeductee();
-                        originalTerm.CompanyID = TDSDedutee.CompanyID;
+                        Tdsdeductee originalTerm = new Tdsdeductee();
+                        originalTerm.CompanyId = TDSDedutee.CompanyId;
                         originalTerm.DeducteeName = TDSDedutee.DeducteeName;
                         originalTerm.DeducteeType = TDSDedutee.DeducteeType;
                         originalTerm.AadhaarLinked = TDSDedutee.AadhaarLinked;
-                        originalTerm.PANStatus = TDSDedutee.PANStatus;
-                        originalTerm.PAN = TDSDedutee.PAN;
+                        originalTerm.Panstatus = TDSDedutee.Panstatus;
+                        originalTerm.Pan = TDSDedutee.Pan;
                         originalTerm.Mobile = TDSDedutee.Mobile;
                         originalTerm.Email = TDSDedutee.Email;
                         originalTerm.ResidentStatus = TDSDedutee.ResidentStatus;
@@ -204,48 +240,66 @@ namespace ComplyX_Businesss.Services.Implementation
                         originalTerm.CreatedBy = user.Id;
                         originalTerm.CreatedAt = Util.GetCurrentCSTDateAndTime();
 
-                        _context.Add(originalTerm);
-                        _context.SaveChanges();
+                     await  _UnitOfWork.TdsdeducteeRespositories.AddAsync(originalTerm);
                     }
                     else
                     {
                         // Update
-                        var originalTerm = _context.TDSDeductee
-                            .Where(x => x.DeducteeID == TDSDedutee.DeducteeID)
+                        var originalTerm = _UnitOfWork.TdsdeducteeRespositories.GetQueryable()
+                            .Where(x => x.DeducteeId == TDSDedutee.DeducteeId)
                             .FirstOrDefault();
                         originalTerm.IsActive = TDSDedutee.IsActive;
-                        originalTerm.PANStatus = TDSDedutee.PANStatus;
+                        originalTerm.Panstatus = TDSDedutee.Panstatus;
                         originalTerm.DeducteeType = TDSDedutee.DeducteeType;
                         originalTerm.DeducteeName = TDSDedutee.DeducteeName;
                         originalTerm.ResidentStatus = TDSDedutee.ResidentStatus;
                         originalTerm.UpdatedAt = Util.GetCurrentCSTDateAndTime();
                         originalTerm.UpdatedBy = user.Id;
-                        _context.Update(originalTerm);
-                        _context.SaveChanges();
+                       
                     }
                 }
-                return Task.FromResult(new ManagerBaseResponse<bool>
+                await _UnitOfWork.CommitAsync();
+                return new ManagerBaseResponse<bool>
                 {
                     Result = true,
                     Message = "TDS Dedutee Saved Successfully."
-                });
+                } ;
             }
             catch (Exception e)
             {
-                return Task.FromResult(new ManagerBaseResponse<bool>
+                return  new ManagerBaseResponse<bool>
                 {
                     Result = false,
                     Message = e.Message
-                });
+                } ;
             }
         }
-        public async Task<ManagerBaseResponse<List<TDSDeductee>>> GetAllTDSDeduteeData(string DeduteeID)
+        public async Task<ManagerBaseResponse<List<TdsdeducteeResponseModel>>> GetAllTDSDeduteeData(string DeduteeId)
         {
             try
             {
-                var plans = _context.TDSDeductee.Where(x => x.DeducteeID.ToString() == DeduteeID).ToList();
+                var plans = _UnitOfWork.TdsdeducteeRespositories.GetQueryable()
+                    .Where(x => x.DeducteeId.ToString() == DeduteeId)
+                        .Select(x => new TdsdeducteeResponseModel
+                        {
+                            DeducteeId = x.DeducteeId,
+                            CompanyId = x.CompanyId,
+                            DeducteeType = x.DeducteeType,
+                            DeducteeName = x.DeducteeName,
+                            Pan = x.Pan,
+                            Panstatus = x.Panstatus,
+                            AadhaarLinked = x.AadhaarLinked,
+                            ResidentStatus = x.ResidentStatus,
+                            Email = x.Email,
+                            Mobile = x.Mobile,
+                            IsActive = x.IsActive,
+                            CreatedBy = x.CreatedBy,
+                            CreatedAt = x.CreatedAt,
+                            UpdatedBy = x.UpdatedBy,
+                            UpdatedAt = x.UpdatedAt
+                        }).ToList();
 
-                return new ManagerBaseResponse<List<TDSDeductee>>
+                return new ManagerBaseResponse<List<TdsdeducteeResponseModel>>
                 {
                     IsSuccess = true,
                     Result = plans,
@@ -255,7 +309,7 @@ namespace ComplyX_Businesss.Services.Implementation
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<List<TDSDeductee>>
+                return new ManagerBaseResponse<List<TdsdeducteeResponseModel>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -263,23 +317,23 @@ namespace ComplyX_Businesss.Services.Implementation
                 };
             }
         }
-        public async Task<ManagerBaseResponse<IEnumerable<TDSDeductee>>> GetTDSDeduteeFilter(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<Tdsdeductee>>> GetTDSDeduteeFilter(PagedListCriteria PagedListCriteria)
         {
             try
             {
 
-                var query = _context.TDSDeductee.AsQueryable();
+                var query = _UnitOfWork.TdsdeducteeRespositories.GetQueryable();
                 var searchText = PagedListCriteria.SearchText?.Trim().ToLower();
                 if (!string.IsNullOrWhiteSpace(searchText))
                 {
                     query = query.Where(x => x.DeducteeName.ToLower().Contains(searchText.ToLower()));
                 }
 
-                query = query.OrderBy(a => a.DeducteeID);
+                query = query.OrderBy(a => a.DeducteeId);
 
-                PageListed<TDSDeductee> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+                PageListed<Tdsdeductee> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
 
-                return new ManagerBaseResponse<IEnumerable<TDSDeductee>>
+                return new ManagerBaseResponse<IEnumerable<Tdsdeductee>>
                 {
                     Result = result.Data,
                     Message = "TDS Dedutee Data Retrieved Successfully.",
@@ -296,19 +350,19 @@ namespace ComplyX_Businesss.Services.Implementation
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<IEnumerable<TDSDeductee>>
-                {
+                return new ManagerBaseResponse<IEnumerable<Tdsdeductee>>
+                { 
                     IsSuccess = false,
                     Result = null,
                     Message = ex.Message
                 };
             }
         }
-        public async Task<ManagerBaseResponse<bool>> SaveSyncTDSDeducteeData(int CompanyID, string UserName)
+        public async Task<ManagerBaseResponse<bool>> SaveSyncTDSDeducteeData(int CompanyId, string UserName)
         {
             try
             {
-                var user = _context.Users.FirstOrDefault(x => x.UserName == UserName);
+                var user = _context.ApplicationUsers.FirstOrDefault(x => x.UserName == UserName);
                 if (user == null)
                 {
                     return new ManagerBaseResponse<bool>
@@ -318,11 +372,11 @@ namespace ComplyX_Businesss.Services.Implementation
                     };
                 }
                 var data = (
-                                             from e in _context.Employees
-                                             join d in _context.Companies
-                                                 on e.CompanyID
-                                                 equals d.CompanyID
-                                             where e.CompanyID == CompanyID
+                                             from e in _UnitOfWork.EmployeeRespositories.GetQueryable()
+                                             join d in _UnitOfWork.CompanyRepository.GetQueryable()
+                                                 on e.CompanyId
+                                                 equals d.CompanyId
+                                             where e.CompanyId == CompanyId
                                              select new { Deductee = d, Employee = e }
                                          ).ToList();
                 if (data == null || data.Count == 0)
@@ -331,15 +385,15 @@ namespace ComplyX_Businesss.Services.Implementation
                     {
                         IsSuccess = false,
                         Result = false,
-                        Message = "Company ID is not Found",
+                        Message = "Company Id is not Found",
                     };
                 }
                 else
                 {
                     foreach (var item in data)
                     {
-                        TDSDeductee originalTerm = new TDSDeductee();
-                        var deducteename = _context.TDSDeductee.FirstOrDefault(x => x.DeducteeName == item.Employee.FirstName + " " + item.Employee.LastName);
+                        Tdsdeductee originalTerm = new Tdsdeductee();
+                        var deducteename = _UnitOfWork.TdsdeducteeRespositories.GetQueryable().FirstOrDefault(x => x.DeducteeName == item.Employee.FirstName + " " + item.Employee.LastName);
 
                         if (deducteename != null)
                         {
@@ -348,24 +402,25 @@ namespace ComplyX_Businesss.Services.Implementation
 
                         else
                         {
-                            originalTerm.CompanyID = item.Employee.CompanyID;
+                            originalTerm.CompanyId = (int)item.Employee.CompanyId;
                             originalTerm.DeducteeType = _commanfield.GetDeducteeType(deducteename.DeducteeType);
                             originalTerm.DeducteeName = item.Employee.FirstName + " " + item.Employee.LastName;
-                            originalTerm.PAN = item.Employee.PAN;
-                            originalTerm.PANStatus = string.IsNullOrEmpty(item.Employee.PAN) ? PANStatus.NOT_AVAILABLE.ToString() : _commanfield.IsValidPAN(item.Employee.PAN) ? PANStatus.VALID.ToString() : PANStatus.INVALID.ToString();
+                            originalTerm.Pan = item.Employee.Pan;
+                            originalTerm.Panstatus = string.IsNullOrEmpty(item.Employee.Pan) ? PANStatus.NOT_AVAILABLE.ToString() : _commanfield.IsValidPAN(item.Employee.Pan) ? PANStatus.VALID.ToString() : PANStatus.INVALID.ToString();
                             originalTerm.AadhaarLinked = !string.IsNullOrEmpty(item.Employee.Aadhaar) ? true : false;
-                            originalTerm.ResidentStatus = item.Employee.Nationality == "Indian" ? "RESIDENT" : "NON_RESIDENT";
+                            originalTerm.ResidentStatus = item.Employee.Nationality == "Indian" ? "RESIdENT" : "NON_RESIdENT";
                             originalTerm.Email = item.Employee.Email;
                             originalTerm.Mobile = item.Employee.Mobile;
-                            originalTerm.IsActive = item.Employee.ActiveStatus;
+                            originalTerm.IsActive = (bool)item.Employee.ActiveStatus;
                             originalTerm.CreatedAt = Util.GetCurrentCSTDateAndTime();
                             originalTerm.CreatedBy = user.Id;
-                            _context.TDSDeductee.Add(originalTerm);
-                            await _context.SaveChangesAsync();
+                            
+                            await _UnitOfWork.TdsdeducteeRespositories.AddAsync(originalTerm);
 
                         }
                     }
                 }
+                await _UnitOfWork.CommitAsync();
                 return new ManagerBaseResponse<bool>
                 {
                     IsSuccess = true,
@@ -384,11 +439,11 @@ namespace ComplyX_Businesss.Services.Implementation
                 };
             }
         }
-        public async Task<ManagerBaseResponse<bool>> SaveSyncTDSDeductorData(int CompanyID, string UserName)
+        public async Task<ManagerBaseResponse<bool>> SaveSyncTDSDeductorData(int CompanyId, string UserName)
         {
             try
             {
-                var user = _context.Users.FirstOrDefault(x => x.UserName == UserName);
+                var user = _context.ApplicationUsers.FirstOrDefault(x => x.UserName == UserName);
                 if (user == null)
                 {
                     return new ManagerBaseResponse<bool>
@@ -398,13 +453,13 @@ namespace ComplyX_Businesss.Services.Implementation
                     };
                 }
                 var data = (
-                                             from d in _context.Companies
-                                             join e in _context.ProductOwners
+                                             from d in _UnitOfWork.CompanyRepository.GetQueryable()
+                                             join e in _UnitOfWork.ProductOwnerRepositories.GetQueryable()
                                                  on d.ProductOwnerId
                                                  equals e.ProductOwnerId
 
                                              where d.ProductOwnerId == e.ProductOwnerId
-                                           && d.CompanyID == CompanyID
+                                           && d.CompanyId == CompanyId
                                              select new { Company = d, product = e }
                                          ).ToList();
                 if (data == null || data.Count == 0)
@@ -413,7 +468,7 @@ namespace ComplyX_Businesss.Services.Implementation
                     {
                         IsSuccess = false,
                         Result = false,
-                        Message = "Company ID is not Found",
+                        Message = "Company Id is not Found",
                     };
                 }
                 else
@@ -424,8 +479,8 @@ namespace ComplyX_Businesss.Services.Implementation
                         string address = item.product.Address;
                         string[] parts = address.Split(',');
 
-                        TDSDeductor originalTerm = new TDSDeductor();
-                        var deducteename = _context.TDSDeductor.FirstOrDefault(x => x.DeductorName == item.product.OwnerName);
+                        Tdsdeductor originalTerm = new Tdsdeductor();
+                        var deducteename = _UnitOfWork.TdsdeductorRespositories.GetQueryable().FirstOrDefault(x => x.DeductorName == item.product.OwnerName);
 
                         if (deducteename != null)
                         {
@@ -434,28 +489,28 @@ namespace ComplyX_Businesss.Services.Implementation
 
                         else
                         {
-                            originalTerm.CompanyID = item.Company.CompanyID;
+                            originalTerm.CompanyId = item.Company.CompanyId;
                             originalTerm.DeductorName = item.product.OwnerName;
-                            originalTerm.TAN = null;
-                            originalTerm.PAN = item.Company.PAN;
+                            originalTerm.Tan = null;
+                            originalTerm.Pan = item.Company.Pan;
                             originalTerm.DeductorCategory = "Company";
                             originalTerm.Address1 = parts[0];
                             originalTerm.Address2 = parts[1];
                             originalTerm.City = parts.Length > 1 ? parts[2] : parts[1];
                             originalTerm.State = item.product.State;
-                            originalTerm.PinCode = item.product.Pincode;
+                            originalTerm.Pincode = item.product.Pincode;
                             originalTerm.Email = item.product.Email;
                             originalTerm.Phone = item.product.Mobile;
-                            originalTerm.IsActive = item.product.IsActive;
+                            originalTerm.IsActive = (bool)item.product.IsActive;
                             originalTerm.CreatedAt = Util.GetCurrentCSTDateAndTime();
                             originalTerm.CreatedBy = user.Id;
-                            _context.TDSDeductor.Add(originalTerm);
-                            await _context.SaveChangesAsync();
+                           await _UnitOfWork.TdsdeductorRespositories.AddAsync(originalTerm);
                         }
                     }
 
 
                 }
+                await _UnitOfWork.CommitAsync();
                 return new ManagerBaseResponse<bool>
                 {
                     IsSuccess = true,
@@ -474,13 +529,13 @@ namespace ComplyX_Businesss.Services.Implementation
                 };
             }
         }
-        public async Task<ManagerBaseResponse<bool>> SaveTDSReturnData(TDSReturn TDSReturn, string UserName)
+        public async Task<ManagerBaseResponse<bool>> SaveTDSReturnData(TdsreturnRequestModel TDSReturn, string UserName)
         {
-            var response = new ManagerBaseResponse<List<TDSReturn>>();
+            var response = new ManagerBaseResponse<List<Tdsreturn>>();
 
             try
             {
-                var Deductor = _context.TDSDeductor.FirstOrDefault(x => x.DeductorID == TDSReturn.DeductorID);
+                var Deductor = _UnitOfWork.TdsdeductorRespositories.GetQueryable().FirstOrDefault(x => x.DeductorId == TDSReturn.DeductorId);
                 if (Deductor == null)
                 {
                     return new ManagerBaseResponse<bool>
@@ -491,47 +546,46 @@ namespace ComplyX_Businesss.Services.Implementation
                 }
                 else
                 {
-                    var user = _context.Users.FirstOrDefault(x => x.UserName == UserName);
-                    if (TDSReturn.ReturnID == 0)
+                    var user = _context.ApplicationUsers.FirstOrDefault(x => x.UserName == UserName);
+                    if (TDSReturn.ReturnId == 0)
                     {
                         // Insert
-                        TDSReturn originalTerm = new TDSReturn();
-                        originalTerm.DeductorID = Deductor.DeductorID;
+                        Tdsreturn originalTerm = new Tdsreturn();
+                        originalTerm.DeductorId = Deductor.DeductorId;
                         originalTerm.FormType = _commanfield.FormType(TDSReturn.FormType);
                         originalTerm.FinancialYear = _commanfield.FinancialYear(TDSReturn.FinancialYear);
                         originalTerm.Quarter = TDSReturn.Quarter;
                         originalTerm.ReturnType = TDSReturn.ReturnType;
                         originalTerm.OriginalTokenNo = TDSReturn.ReturnType == "CORRECTION" ? TDSReturn.OriginalTokenNo : null;
                         originalTerm.Status = TDSReturn.Status;
-                        originalTerm.FVUVersion = TDSReturn.FVUVersion;
-                        originalTerm.RPUVersion = TDSReturn.RPUVersion;
+                        originalTerm.Fvuversion = TDSReturn.Fvuversion;
+                        originalTerm.Rpuversion = TDSReturn.Rpuversion;
                         originalTerm.CreatedBy = user.Id;
                         originalTerm.CreatedAt = Util.GetCurrentCSTDateAndTime();
 
-                        _context.Add(originalTerm);
-                        await _context.SaveChangesAsync();
+                       await _UnitOfWork.TDSReturnRespositories.AddAsync(originalTerm);
                     }
                     else
                     {
                         // Update
-                        var originalTerm = _context.TDSReturn
-                            .Where(x => x.ReturnID == TDSReturn.ReturnID)
+                        var originalTerm = _UnitOfWork.TDSReturnRespositories.GetQueryable()
+                            .Where(x => x.ReturnId == TDSReturn.ReturnId)
                             .FirstOrDefault();
-                        originalTerm.DeductorID = Deductor.DeductorID;
+                        originalTerm.DeductorId = Deductor.DeductorId;
                         originalTerm.FormType = _commanfield.FormType(TDSReturn.FormType);
                         originalTerm.FinancialYear = _commanfield.FinancialYear(TDSReturn.FinancialYear);
                         originalTerm.Quarter = TDSReturn.Quarter;
                         originalTerm.ReturnType = TDSReturn.ReturnType;
                         originalTerm.OriginalTokenNo = TDSReturn.ReturnType == "CORRECTION" ? TDSReturn.OriginalTokenNo : null;
                         originalTerm.Status = TDSReturn.Status;
-                        originalTerm.FVUVersion = TDSReturn.FVUVersion;
-                        originalTerm.RPUVersion = TDSReturn.RPUVersion;
+                        originalTerm.Fvuversion = TDSReturn.Fvuversion;
+                        originalTerm.Rpuversion = TDSReturn.Rpuversion;
                         originalTerm.UpdatedAt = Util.GetCurrentCSTDateAndTime();
                         originalTerm.UpdatedBy = user.Id;
-                        _context.Update(originalTerm);
-                        _context.SaveChanges();
+                         
                     }
                 }
+                await _UnitOfWork.CommitAsync();
                 return new ManagerBaseResponse<bool>
                 {
                     Result = true,
@@ -548,14 +602,31 @@ namespace ComplyX_Businesss.Services.Implementation
                 };
             }
         }
-        public async Task<ManagerBaseResponse<List<TDSReturn>>> GetAllTDSReturnData(string ReturnID)
+        public async Task<ManagerBaseResponse<List<TdsreturnResponseModel>>> GetAllTDSReturnData(string ReturnId)
         {
             try
             {
-                var plans = _context.TDSReturn.Where(x => x.ReturnID.ToString() == ReturnID).ToList();
+                var plans = _UnitOfWork.TDSReturnRespositories.GetQueryable().Where(x => x.ReturnId.ToString() == ReturnId)
+                    .Select(x => new TdsreturnResponseModel
+                    {
+                        ReturnId = x.ReturnId,
+                        DeductorId = x.DeductorId,
+                        FormType = x.FormType,
+                        FinancialYear = x.FinancialYear,
+                        Quarter = x.Quarter,
+                        ReturnType = x.ReturnType,
+                        OriginalTokenNo = x.OriginalTokenNo,
+                        Status = x.Status,
+                        Fvuversion = x.Fvuversion,
+                        Rpuversion = x.Rpuversion,
+                        CreatedBy = x.CreatedBy,
+                        CreatedAt = x.CreatedAt,
+                        UpdatedBy = x.UpdatedBy,
+                        UpdatedAt = x.UpdatedAt
+                    }).ToList();
 
 
-                return new ManagerBaseResponse<List<TDSReturn>>
+                return new ManagerBaseResponse<List<TdsreturnResponseModel>>
                 {
                     IsSuccess = true,
                     Result = plans,
@@ -565,7 +636,7 @@ namespace ComplyX_Businesss.Services.Implementation
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<List<TDSReturn>>
+                return new ManagerBaseResponse<List<TdsreturnResponseModel>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -573,23 +644,23 @@ namespace ComplyX_Businesss.Services.Implementation
                 };
             }
         }
-        public async Task<ManagerBaseResponse<IEnumerable<TDSReturn>>> GetTDSReturnFilter(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<Tdsreturn>>> GetTDSReturnFilter(PagedListCriteria PagedListCriteria)
         {
             try
             {
 
-                var query = _context.TDSReturn.AsQueryable();
+                var query = _UnitOfWork.TDSReturnRespositories.GetQueryable();
                 var searchText = PagedListCriteria.SearchText?.Trim().ToLower();
                 if (!string.IsNullOrWhiteSpace(searchText))
                 {
                     query = query.Where(x => x.ReturnType.ToLower().Contains(searchText.ToLower()));
                 }
 
-                query = query.OrderBy(a => a.ReturnID);
+                query = query.OrderBy(a => a.ReturnId);
 
-                PageListed<TDSReturn> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+                PageListed<Tdsreturn> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
 
-                return new ManagerBaseResponse<IEnumerable<TDSReturn>>
+                return new ManagerBaseResponse<IEnumerable<Tdsreturn>>
                 {
                     Result = result.Data,
                     Message = "TDS Return Data Retrieved Successfully.",
@@ -606,7 +677,7 @@ namespace ComplyX_Businesss.Services.Implementation
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<IEnumerable<TDSReturn>>
+                return new ManagerBaseResponse<IEnumerable<Tdsreturn>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -614,14 +685,14 @@ namespace ComplyX_Businesss.Services.Implementation
                 };
             }
         }
-        public async Task<ManagerBaseResponse<bool>> SaveTDSEntryData(TDSEntry TDSEntry, string UserName)
+        public async Task<ManagerBaseResponse<bool>> SaveTDSEntryData(TdsentryRequestModel TDSEntry, string UserName)
         {
-            var response = new ManagerBaseResponse<List<TDSEntry>>();
+            var response = new ManagerBaseResponse<List<Tdsentry>>();
 
             try
             {
-                var Deductor = _context.TDSDeductor.FirstOrDefault(x => x.DeductorID == TDSEntry.DeductorID);
-                var Deductee = _context.TDSDeductee.FirstOrDefault(x => x.DeducteeID == TDSEntry.DeducteeID);
+                var Deductor = _UnitOfWork.TdsdeductorRespositories.GetQueryable().FirstOrDefault(x => x.DeductorId == TDSEntry.DeductorId);
+                var Deductee = _UnitOfWork.TdsdeducteeRespositories.GetQueryable().FirstOrDefault(x => x.DeducteeId == TDSEntry.DeducteeId);
                 if (Deductor == null || Deductee == null)
                 {
                     return new ManagerBaseResponse<bool>
@@ -632,55 +703,54 @@ namespace ComplyX_Businesss.Services.Implementation
                 }
                 else
                 {
-                    var user = _context.Users.FirstOrDefault(x => x.UserName == UserName);
-                    if (TDSEntry.EntryID == 0)
+                    var user = _context.ApplicationUsers.FirstOrDefault(x => x.UserName == UserName);
+                    if (TDSEntry.EntryId == 0)
                     {
                         // Insert
-                        TDSEntry _model = new TDSEntry();
-                        _model.DeductorID = TDSEntry.DeductorID;
-                        _model.DeducteeID = TDSEntry.DeducteeID;
+                        Tdsentry _model = new Tdsentry();
+                        _model.DeductorId = TDSEntry.DeductorId;
+                        _model.DeducteeId = TDSEntry.DeducteeId;
                         _model.SectionCode = TDSEntry.SectionCode;
                         _model.PaymentDate = TDSEntry.PaymentDate;
                         _model.AmountPaid = TDSEntry.AmountPaid;
                         _model.TaxableAmount = TDSEntry.TaxableAmount;
-                        _model.TDSRate = TDSEntry.TDSRate;
-                        _model.TDSAmount = TDSEntry.TDSAmount;
+                        _model.Tdsrate = TDSEntry.Tdsrate;
+                        _model.Tdsamount = TDSEntry.Tdsamount;
                         _model.Surcharge = TDSEntry.Surcharge;
                         _model.Cess = TDSEntry.Cess;
-                        _model.TotalTDS = TDSEntry.TDSAmount + TDSEntry.Surcharge + TDSEntry.Cess;
+                        _model.TotalTds = TDSEntry.Tdsamount + TDSEntry.Surcharge + TDSEntry.Cess;
                         _model.HigherRateApplied = TDSEntry.HigherRateApplied;
                         _model.HigherRateReason = TDSEntry.HigherRateReason;
                         _model.IsMappedToReturn = TDSEntry.IsMappedToReturn;
                         _model.CreatedAt = Util.GetCurrentCSTDateAndTime();
 
-                        _context.Add(_model);
-                        await _context.SaveChangesAsync();
+                      await _UnitOfWork.TdsentryRespositories.AddAsync(_model);
                     }
                     else
                     {
                         // Update
-                        var originalTerm = _context.TDSEntry
-                            .Where(x => x.EntryID == TDSEntry.EntryID)
+                        var originalTerm = _UnitOfWork.TdsentryRespositories.GetQueryable()
+                            .Where(x => x.EntryId == TDSEntry.EntryId)
                             .FirstOrDefault();
-                        originalTerm.DeductorID = TDSEntry.DeductorID;
-                        originalTerm.DeducteeID = TDSEntry.DeducteeID;
+                        originalTerm.DeductorId = TDSEntry.DeductorId;
+                        originalTerm.DeducteeId = TDSEntry.DeducteeId;
                         originalTerm.SectionCode = TDSEntry.SectionCode;
                         originalTerm.PaymentDate = TDSEntry.PaymentDate;
                         originalTerm.AmountPaid = TDSEntry.AmountPaid;
                         originalTerm.TaxableAmount = TDSEntry.TaxableAmount;
-                        originalTerm.TDSRate = TDSEntry.TDSRate;
-                        originalTerm.TDSAmount = TDSEntry.TDSAmount;
+                        originalTerm.Tdsrate = TDSEntry.Tdsrate;
+                        originalTerm.Tdsamount = TDSEntry.Tdsamount;
                         originalTerm.Surcharge = TDSEntry.Surcharge;
                         originalTerm.Cess = TDSEntry.Cess;
-                        originalTerm.TotalTDS = TDSEntry.TDSAmount + TDSEntry.Surcharge + TDSEntry.Cess;
+                        originalTerm.TotalTds = TDSEntry.Tdsamount + TDSEntry.Surcharge + TDSEntry.Cess;
                         originalTerm.HigherRateApplied = TDSEntry.HigherRateApplied;
                         originalTerm.HigherRateReason = TDSEntry.HigherRateReason;
                         originalTerm.IsMappedToReturn = TDSEntry.IsMappedToReturn;
                         originalTerm.CreatedAt = Util.GetCurrentCSTDateAndTime();
-                        _context.Update(originalTerm);
-                        _context.SaveChanges();
+                        
                     }
                 }
+                await _UnitOfWork.CommitAsync();
                 return new ManagerBaseResponse<bool>
                 {
                     Result = true,
@@ -697,14 +767,33 @@ namespace ComplyX_Businesss.Services.Implementation
                 };
             }
         }
-        public async Task<ManagerBaseResponse<List<TDSEntry>>> GetAllTDSEntryData(string EntryID)
+        public async Task<ManagerBaseResponse<List<TdsentryResponseModel>>> GetAllTDSEntryData(string EntryId)
         {
             try
             {
-                var plans = _context.TDSEntry.Where(x => x.EntryID.ToString() == EntryID).ToList();
+                var plans = _UnitOfWork.TdsentryRespositories.GetQueryable().Where(x => x.EntryId.ToString() == EntryId)
+                     .Select(x => new TdsentryResponseModel
+                     {
+                         EntryId = x.EntryId,
+                         DeductorId = x.DeductorId,
+                         DeducteeId = x.DeducteeId,
+                         SectionCode = x.SectionCode,
+                         PaymentDate = x.PaymentDate,
+                         AmountPaid = x.AmountPaid,
+                         TaxableAmount = x.TaxableAmount,
+                         Tdsrate = x.Tdsrate,
+                         Tdsamount = x.Tdsamount,
+                         Surcharge = x.Surcharge,
+                         Cess = x.Cess,
+                         TotalTds = x.TotalTds,
+                         HigherRateApplied = x.HigherRateApplied,
+                         HigherRateReason = x.HigherRateReason,
+                         IsMappedToReturn = x.IsMappedToReturn,
+                         CreatedAt = x.CreatedAt
+                     }).ToList();
 
 
-                return new ManagerBaseResponse<List<TDSEntry>>
+                return new ManagerBaseResponse<List<TdsentryResponseModel>>
                 {
                     IsSuccess = true,
                     Result = plans,
@@ -714,7 +803,7 @@ namespace ComplyX_Businesss.Services.Implementation
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<List<TDSEntry>>
+                return new ManagerBaseResponse<List<TdsentryResponseModel>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -722,23 +811,23 @@ namespace ComplyX_Businesss.Services.Implementation
                 };
             }
         }
-        public async Task<ManagerBaseResponse<IEnumerable<TDSEntry>>> GetTDSEntryFilter(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<Tdsentry>>> GetTDSEntryFilter(PagedListCriteria PagedListCriteria)
         {
             try
             {
 
-                var query = _context.TDSEntry.AsQueryable();
+                var query = _UnitOfWork.TdsentryRespositories.GetQueryable();
                 var searchText = PagedListCriteria.SearchText?.Trim().ToLower();
                 if (!string.IsNullOrWhiteSpace(searchText))
                 {
                     query = query.Where(x => x.SectionCode.ToLower().Contains(searchText.ToLower()));
                 }
 
-                query = query.OrderBy(a => a.EntryID);
+                query = query.OrderBy(a => a.EntryId);
 
-                PageListed<TDSEntry> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+                PageListed<Tdsentry> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
 
-                return new ManagerBaseResponse<IEnumerable<TDSEntry>>
+                return new ManagerBaseResponse<IEnumerable<Tdsentry>>
                 {
                     Result = result.Data,
                     Message = "TDS Entry Data Retrieved Successfully.",
@@ -755,7 +844,7 @@ namespace ComplyX_Businesss.Services.Implementation
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<IEnumerable<TDSEntry>>
+                return new ManagerBaseResponse<IEnumerable<Tdsentry>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -763,13 +852,13 @@ namespace ComplyX_Businesss.Services.Implementation
                 };
             }
         }
-        public async Task<ManagerBaseResponse<bool>> SaveTDSChallanData(TDSChallan TDSChallan, string UserName)
+        public async Task<ManagerBaseResponse<bool>> SaveTDSChallanData(TdschallanRequestModel TDSChallan, string UserName)
         {
-            var response = new ManagerBaseResponse<List<TDSChallan>>();
+            var response = new ManagerBaseResponse<List<Tdschallan>>();
 
             try
             {
-                var Deductor = _context.TDSDeductor.FirstOrDefault(x => x.DeductorID == TDSChallan.DeductorID);
+                var Deductor = _UnitOfWork.TdsdeductorRespositories.GetQueryable().FirstOrDefault(x => x.DeductorId == TDSChallan.DeductorId);
                 if (Deductor == null)
                 {
                     return new ManagerBaseResponse<bool>
@@ -780,13 +869,13 @@ namespace ComplyX_Businesss.Services.Implementation
                 }
                 else
                 {
-                    var user = _context.Users.FirstOrDefault(x => x.UserName == UserName);
-                    if (TDSChallan.ChallanID == 0)
+                    var user = _context.ApplicationUsers.FirstOrDefault(x => x.UserName == UserName);
+                    if (TDSChallan.ChallanId == 0)
                     {
                         // Insert
-                        TDSChallan _model = new TDSChallan();
-                        _model.DeductorID = Deductor.DeductorID;
-                        _model.BSRCode = TDSChallan.BSRCode;
+                        Tdschallan _model = new Tdschallan();
+                        _model.DeductorId = Deductor.DeductorId;
+                        _model.Bsrcode = TDSChallan.Bsrcode;
                         _model.ChallanDate = TDSChallan.ChallanDate;
                         _model.ChallanSerialNo = TDSChallan.ChallanSerialNo;
                         _model.SectionCode = TDSChallan.SectionCode;
@@ -795,21 +884,21 @@ namespace ComplyX_Businesss.Services.Implementation
                         _model.LateFeeAmount = TDSChallan.LateFeeAmount;
                         _model.OtherAmount = TDSChallan.OtherAmount;
                         _model.TotalAmount = TDSChallan.TaxAmount + TDSChallan.InterestAmount + TDSChallan.LateFeeAmount + TDSChallan.OtherAmount;
-                        _model.MatchedWithOLTAS = TDSChallan.MatchedWithOLTAS;
+                        _model.MatchedWithOltas = TDSChallan.MatchedWithOltas;
                         _model.IsMappedToReturn = TDSChallan.IsMappedToReturn;
                         _model.CreatedAt = Util.GetCurrentCSTDateAndTime();
 
-                        _context.Add(_model);
-                        await _context.SaveChangesAsync();
+                      
+                        await  _UnitOfWork.TdschallanRespositories.AddAsync(_model);
                     }
                     else
                     {
                         // Update
-                        var originalTerm = _context.TDSChallan
-                            .Where(x => x.ChallanID == TDSChallan.ChallanID)
+                        var originalTerm = _UnitOfWork.TdschallanRespositories.GetQueryable()
+                            .Where(x => x.ChallanId == TDSChallan.ChallanId)
                             .FirstOrDefault();
-                        originalTerm.DeductorID = Deductor.DeductorID;
-                        originalTerm.BSRCode = TDSChallan.BSRCode;
+                        originalTerm.DeductorId = Deductor.DeductorId;
+                        originalTerm.Bsrcode = TDSChallan.Bsrcode;
                         originalTerm.ChallanDate = TDSChallan.ChallanDate;
                         originalTerm.ChallanSerialNo = TDSChallan.ChallanSerialNo;
                         originalTerm.SectionCode = TDSChallan.SectionCode;
@@ -818,13 +907,14 @@ namespace ComplyX_Businesss.Services.Implementation
                         originalTerm.LateFeeAmount = TDSChallan.LateFeeAmount;
                         originalTerm.OtherAmount = TDSChallan.OtherAmount;
                         originalTerm.TotalAmount = TDSChallan.TaxAmount + TDSChallan.InterestAmount + TDSChallan.LateFeeAmount + TDSChallan.OtherAmount;
-                        originalTerm.MatchedWithOLTAS = TDSChallan.MatchedWithOLTAS;
+                        originalTerm.MatchedWithOltas = TDSChallan.MatchedWithOltas;
                         originalTerm.IsMappedToReturn = TDSChallan.IsMappedToReturn;
                         originalTerm.CreatedAt = Util.GetCurrentCSTDateAndTime();
-                        _context.Update(originalTerm);
-                        _context.SaveChanges();
+                         
+                      
                     }
                 }
+                await _UnitOfWork.CommitAsync();
                 return new ManagerBaseResponse<bool>
                 {
                     Result = true,
@@ -841,14 +931,31 @@ namespace ComplyX_Businesss.Services.Implementation
                 };
             }
         }
-        public async Task<ManagerBaseResponse<List<TDSChallan>>> GetAllTDSChallanData(string ChallanID)
+        public async Task<ManagerBaseResponse<List<TdschallanResponseModel>>> GetAllTDSChallanData(string ChallanId)
         {
             try
             {
-                var plans = _context.TDSChallan.Where(x => x.ChallanID.ToString() == ChallanID).ToList();
+                var plans =_UnitOfWork.TdschallanRespositories.GetQueryable().Where(x => x.ChallanId.ToString() == ChallanId)
+                    .Select(x => new TdschallanResponseModel
+                    {
+                        ChallanId = x.ChallanId,
+                        DeductorId = x.DeductorId,
+                        Bsrcode = x.Bsrcode,
+                        ChallanDate = x.ChallanDate,
+                        ChallanSerialNo = x.ChallanSerialNo,
+                        SectionCode = x.SectionCode,
+                        TaxAmount = x.TaxAmount,
+                        InterestAmount = x.InterestAmount,
+                        LateFeeAmount = x.LateFeeAmount,
+                        OtherAmount = x.OtherAmount,
+                        TotalAmount = x.TotalAmount,
+                        MatchedWithOltas = x.MatchedWithOltas,
+                        IsMappedToReturn = x.IsMappedToReturn,
+                        CreatedAt = x.CreatedAt
+                    }).ToList();
 
 
-                return new ManagerBaseResponse<List<TDSChallan>>
+                return new ManagerBaseResponse<List<TdschallanResponseModel>>
                 {
                     IsSuccess = true,
                     Result = plans,
@@ -858,7 +965,7 @@ namespace ComplyX_Businesss.Services.Implementation
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<List<TDSChallan>>
+                return new ManagerBaseResponse<List<TdschallanResponseModel>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -866,23 +973,23 @@ namespace ComplyX_Businesss.Services.Implementation
                 };
             }
         }
-        public async Task<ManagerBaseResponse<IEnumerable<TDSChallan>>> GetTDSChallanFilter(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<Tdschallan>>> GetTDSChallanFilter(PagedListCriteria PagedListCriteria)
         {
             try
             {
 
-                var query = _context.TDSChallan.AsQueryable();
+                var query = _UnitOfWork.TdschallanRespositories.GetQueryable();
                 var searchText = PagedListCriteria.SearchText?.Trim().ToLower();
                 if (!string.IsNullOrWhiteSpace(searchText))
                 {
-                    query = query.Where(x => x.BSRCode.ToLower().Contains(searchText.ToLower()));
+                    query = query.Where(x => x.Bsrcode.ToLower().Contains(searchText.ToLower()));
                 }
 
-                query = query.OrderBy(a => a.ChallanID);
+                query = query.OrderBy(a => a.ChallanId);
 
-                PageListed<TDSChallan> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+                PageListed<Tdschallan> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
 
-                return new ManagerBaseResponse<IEnumerable<TDSChallan>>
+                return new ManagerBaseResponse<IEnumerable<Tdschallan>>
                 {
                     Result = result.Data,
                     Message = "TDS Challan Data Retrieved Successfully.",
@@ -899,7 +1006,7 @@ namespace ComplyX_Businesss.Services.Implementation
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<IEnumerable<TDSChallan>>
+                return new ManagerBaseResponse<IEnumerable<Tdschallan>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -907,14 +1014,14 @@ namespace ComplyX_Businesss.Services.Implementation
                 };
             }
         }
-        public async Task<ManagerBaseResponse<bool>> SaveTDSReturnChallanData(TDSReturnChallan TDSReturnChallan, string UserName)
+        public async Task<ManagerBaseResponse<bool>> SaveTDSReturnChallanData(TdsreturnChallanRequsetModel TDSReturnChallan, string UserName)
         {
-            var response = new ManagerBaseResponse<List<TDSReturnChallan>>();
+            var response = new ManagerBaseResponse<List<TdsreturnChallan>>();
 
             try
             {
-                var Return = _context.TDSReturn.FirstOrDefault(x => x.ReturnID == TDSReturnChallan.ReturnID);
-                var Challan = _context.TDSChallan.FirstOrDefault(x => x.ChallanID == TDSReturnChallan.ChallanID);
+                var Return = _UnitOfWork.TDSReturnRespositories.GetQueryable().FirstOrDefault(x => x.ReturnId == TDSReturnChallan.ReturnId);
+                var Challan = _UnitOfWork.TdschallanRespositories.GetQueryable().FirstOrDefault(x => x.ChallanId == TDSReturnChallan.ChallanId);
 
                 if (Return == null || Challan == null)
                 {
@@ -926,43 +1033,43 @@ namespace ComplyX_Businesss.Services.Implementation
                 }
                 else
                 {
-                    var user = _context.Users.FirstOrDefault(x => x.UserName == UserName);
-                    var data = _context.TDsReturnChallan.FirstOrDefault(x => x.ChallanID == TDSReturnChallan.ChallanID && x.ReturnID == TDSReturnChallan.ReturnID);
+                    var user = _context.ApplicationUsers.FirstOrDefault(x => x.UserName == UserName);
+                    var data = _UnitOfWork.TdsreturnChallanRespositories.GetQueryable().FirstOrDefault(x => x.ChallanId == TDSReturnChallan.ChallanId && x.ReturnId == TDSReturnChallan.ReturnId);
                     if (data != null)
                     {
                         return new ManagerBaseResponse<bool>
                         {
                             Result = false,
-                            Message = "Return ID and Challan ID are already Exits."
+                            Message = "Return Id and Challan Id are already Exits."
                         };
                     }
                     else
                     {
 
 
-                        if (TDSReturnChallan.ReturnChallanID == 0)
+                        if (TDSReturnChallan.ReturnChallanId == 0)
                         {
                             // Insert
-                            TDSReturnChallan _model = new TDSReturnChallan();
-                            _model.ReturnID = TDSReturnChallan.ReturnID;
-                            _model.ChallanID = TDSReturnChallan.ChallanID;
+                            TdsreturnChallan _model = new TdsreturnChallan();
+                            _model.ReturnId = TDSReturnChallan.ReturnId;
+                            _model.ChallanId = TDSReturnChallan.ChallanId;
 
-                            _context.Add(_model);
-                            await _context.SaveChangesAsync();
+                            
+                            await _UnitOfWork.TdsreturnChallanRespositories.AddAsync(_model);
                         }
                         else
                         {
                             // Update
-                            var originalTerm = _context.TDsReturnChallan
-                                .Where(x => x.ReturnChallanID == TDSReturnChallan.ReturnChallanID)
+                            var originalTerm = _UnitOfWork.TdsreturnChallanRespositories.GetQueryable()
+                                .Where(x => x.ReturnChallanId == TDSReturnChallan.ReturnChallanId)
                                 .FirstOrDefault();
-                            originalTerm.ReturnID = TDSReturnChallan.ReturnID;
-                            originalTerm.ChallanID = TDSReturnChallan.ChallanID;
-                            _context.Update(originalTerm);
-                            _context.SaveChanges();
+                            originalTerm.ReturnId = TDSReturnChallan.ReturnId;
+                            originalTerm.ChallanId = TDSReturnChallan.ChallanId;
+                             
                         }
                     }
                 }
+                await _UnitOfWork.CommitAsync();
                 return new ManagerBaseResponse<bool>
                 {
                     Result = true,
@@ -979,14 +1086,20 @@ namespace ComplyX_Businesss.Services.Implementation
                 };
             }
         }
-        public async Task<ManagerBaseResponse<List<TDSReturnChallan>>> GetAllTDSReturnChallanData(string TDSReturnChallanID)
+        public async Task<ManagerBaseResponse<List<TdsreturnChallanResponseModel>>> GetAllTDSReturnChallanData(string TDSReturnChallanId)
         {
             try
             {
-                var plans = _context.TDsReturnChallan.Where(x => x.ReturnChallanID.ToString() == TDSReturnChallanID).ToList();
+                var plans = _UnitOfWork.TdsreturnChallanRespositories.GetQueryable().Where(x => x.ReturnChallanId.ToString() == TDSReturnChallanId)
+                      .Select(x => new TdsreturnChallanResponseModel
+                      {
+                          ReturnChallanId = x.ReturnChallanId,
+                          ReturnId = x.ReturnId,
+                          ChallanId = x.ChallanId
+                      }).ToList();
 
 
-                return new ManagerBaseResponse<List<TDSReturnChallan>>
+                return new ManagerBaseResponse<List<TdsreturnChallanResponseModel>>
                 {
                     IsSuccess = true,
                     Result = plans,
@@ -996,7 +1109,7 @@ namespace ComplyX_Businesss.Services.Implementation
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<List<TDSReturnChallan>>
+                return new ManagerBaseResponse<List<TdsreturnChallanResponseModel>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -1004,23 +1117,23 @@ namespace ComplyX_Businesss.Services.Implementation
                 };
             }
         }
-        public async Task<ManagerBaseResponse<IEnumerable<TDSReturnChallan>>> GetTDSReturnChallanFilter(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<TdsreturnChallan>>> GetTDSReturnChallanFilter(PagedListCriteria PagedListCriteria)
         {
             try
             {
 
-                var query = _context.TDsReturnChallan.AsQueryable();
+                var query = _UnitOfWork.TdsreturnChallanRespositories.GetQueryable();
                 //var searchText = PagedListCriteria.SearchText?.Trim().ToLower();
                 //if (!string.IsNullOrWhiteSpace(searchText))
                 //{
                 //    query = query.Where(x => x..ToLower().Contains(searchText.ToLower()));
                 //}
 
-                query = query.OrderBy(a => a.ReturnChallanID);
+                query = query.OrderBy(a => a.ReturnChallanId);
 
-                PageListed<TDSReturnChallan> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+                PageListed<TdsreturnChallan> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
 
-                return new ManagerBaseResponse<IEnumerable<TDSReturnChallan>>
+                return new ManagerBaseResponse<IEnumerable<TdsreturnChallan>>
                 {
                     Result = result.Data,
                     Message = "TDS Return and Challan Data Retrieved Successfully.",
@@ -1037,7 +1150,7 @@ namespace ComplyX_Businesss.Services.Implementation
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<IEnumerable<TDSReturnChallan>>
+                return new ManagerBaseResponse<IEnumerable<TdsreturnChallan>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -1045,14 +1158,14 @@ namespace ComplyX_Businesss.Services.Implementation
                 };
             }
         }
-        public async Task<ManagerBaseResponse<bool>> SaveTDSReturnEntryData(TDSReturnEntry TDSReturnEntry, string UserName)
+        public async Task<ManagerBaseResponse<bool>> SaveTDSReturnEntryData(TdsreturnEntryRequestModel TDSReturnEntry, string UserName)
         {
-            var response = new ManagerBaseResponse<List<TDSReturnEntry>>();
+            var response = new ManagerBaseResponse<List<TdsreturnEntry>>();
 
             try
             {
-                var Return = _context.TDSReturn.FirstOrDefault(x => x.ReturnID == TDSReturnEntry.ReturnID);
-                var Entry = _context.TDSEntry.FirstOrDefault(x => x.EntryID == TDSReturnEntry.EntryID);
+                var Return = _UnitOfWork.TDSReturnRespositories.GetQueryable().FirstOrDefault(x => x.ReturnId == TDSReturnEntry.ReturnId);
+                var Entry = _UnitOfWork.TdsentryRespositories.GetQueryable().FirstOrDefault(x => x.EntryId == TDSReturnEntry.EntryId);
 
                 if (Return == null || Entry == null)
                 {
@@ -1064,14 +1177,14 @@ namespace ComplyX_Businesss.Services.Implementation
                 }
                 else
                 {
-                    var user = _context.Users.FirstOrDefault(x => x.UserName == UserName);
-                    var data = _context.TDSReturnEntry.FirstOrDefault(x => x.ReturnID == TDSReturnEntry.ReturnID && x.EntryID == TDSReturnEntry.EntryID);
+                    var user = _context.ApplicationUsers.FirstOrDefault(x => x.UserName == UserName);
+                    var data = _UnitOfWork.TdsreturnEntryRespositories.GetQueryable().FirstOrDefault(x => x.ReturnId == TDSReturnEntry.ReturnId && x.EntryId == TDSReturnEntry.EntryId);
                     if (data != null)
                     {
                         return new ManagerBaseResponse<bool>
                         {
                             Result = false,
-                            Message = "Return ID and Entry ID are already Exits."
+                            Message = "Return Id and Entry Id are already Exits."
                         };
                     }
                     else
@@ -1081,26 +1194,25 @@ namespace ComplyX_Businesss.Services.Implementation
                         if (TDSReturnEntry.ReturnEntryId == 0)
                         {
                             // Insert
-                            TDSReturnEntry _model = new TDSReturnEntry();
-                            _model.ReturnID = TDSReturnEntry.ReturnID;
-                            _model.EntryID = TDSReturnEntry.EntryID;
+                            TdsreturnEntry _model = new TdsreturnEntry();
+                            _model.ReturnId = TDSReturnEntry.ReturnId;
+                            _model.EntryId = TDSReturnEntry.EntryId;
 
-                            _context.Add(_model);
-                            await _context.SaveChangesAsync();
+                            await _UnitOfWork.TdsreturnEntryRespositories.AddAsync(_model);
                         }
                         else
                         {
                             // Update
-                            var originalTerm = _context.TDSReturnEntry
+                            var originalTerm = _UnitOfWork.TdsreturnEntryRespositories.GetQueryable()
                                 .Where(x => x.ReturnEntryId == TDSReturnEntry.ReturnEntryId)
                                 .FirstOrDefault();
-                            originalTerm.ReturnID = TDSReturnEntry.ReturnID;
-                            originalTerm.EntryID = TDSReturnEntry.EntryID;
-                            _context.Update(originalTerm);
-                            _context.SaveChanges();
+                            originalTerm.ReturnId = TDSReturnEntry.ReturnId;
+                            originalTerm.EntryId = TDSReturnEntry.EntryId;
+                            
                         }
                     }
                 }
+                await _UnitOfWork.CommitAsync();
                 return new ManagerBaseResponse<bool>
                 {
                     Result = true,
@@ -1117,14 +1229,20 @@ namespace ComplyX_Businesss.Services.Implementation
                 };
             }
         }
-        public async Task<ManagerBaseResponse<List<TDSReturnEntry>>> GetAllTDSReturnEntryData(string TDSReturnEntryID)
+        public async Task<ManagerBaseResponse<List<TdsreturnEntryResponseModel>>> GetAllTDSReturnEntryData(string TDSReturnEntryId)
         {
             try
             {
-                var plans = _context.TDSReturnEntry.Where(x => x.ReturnEntryId.ToString() == TDSReturnEntryID).ToList();
+                var plans =_UnitOfWork.TdsreturnEntryRespositories.GetQueryable().Where(x => x.ReturnEntryId.ToString() == TDSReturnEntryId)
+                      .Select(x => new TdsreturnEntryResponseModel
+                      {
+                          ReturnEntryId = x.ReturnEntryId,
+                          ReturnId = x.ReturnId,
+                          EntryId = x.EntryId
+                      }).ToList();
 
 
-                return new ManagerBaseResponse<List<TDSReturnEntry>>
+                return new ManagerBaseResponse<List<TdsreturnEntryResponseModel>>
                 {
                     IsSuccess = true,
                     Result = plans,
@@ -1134,7 +1252,7 @@ namespace ComplyX_Businesss.Services.Implementation
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<List<TDSReturnEntry>>
+                return new ManagerBaseResponse<List<TdsreturnEntryResponseModel>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -1142,12 +1260,12 @@ namespace ComplyX_Businesss.Services.Implementation
                 };
             }
         }
-        public async Task<ManagerBaseResponse<IEnumerable<TDSReturnEntry>>> GetTDSReturnEntryFilter(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<TdsreturnEntry>>> GetTDSReturnEntryFilter(PagedListCriteria PagedListCriteria)
         {
             try
             {
 
-                var query = _context.TDSReturnEntry.AsQueryable();
+                var query = _UnitOfWork.TdsreturnEntryRespositories.GetQueryable();
                 //var searchText = PagedListCriteria.SearchText?.Trim().ToLower();
                 //if (!string.IsNullOrWhiteSpace(searchText))
                 //{
@@ -1156,9 +1274,9 @@ namespace ComplyX_Businesss.Services.Implementation
 
                 query = query.OrderBy(a => a.ReturnEntryId);
 
-                PageListed<TDSReturnEntry> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+                PageListed<TdsreturnEntry> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
 
-                return new ManagerBaseResponse<IEnumerable<TDSReturnEntry>>
+                return new ManagerBaseResponse<IEnumerable<TdsreturnEntry>>
                 {
                     Result = result.Data,
                     Message = "TDS Return and Entry Data Retrieved Successfully.",
@@ -1175,7 +1293,7 @@ namespace ComplyX_Businesss.Services.Implementation
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<IEnumerable<TDSReturnEntry>>
+                return new ManagerBaseResponse<IEnumerable<TdsreturnEntry>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -1183,14 +1301,14 @@ namespace ComplyX_Businesss.Services.Implementation
                 };
             }
         }
-        public async Task<ManagerBaseResponse<bool>> SaveTDSChallanAllocationData(TDSChallanAllocation TDSChallanAllocation, string UserName)
+        public async Task<ManagerBaseResponse<bool>> SaveTDSChallanAllocationData(TdschallanAllocationRequestModel TDSChallanAllocation, string UserName)
         {
-            var response = new ManagerBaseResponse<List<TDSChallanAllocation>>();
+            var response = new ManagerBaseResponse<List<TdschallanAllocation>>();
 
             try
             {
-                var Challan = _context.TDSChallan.FirstOrDefault(x => x.ChallanID == TDSChallanAllocation.ChallanID);
-                var Entry = _context.TDSEntry.FirstOrDefault(x => x.EntryID == TDSChallanAllocation.EntryID);
+                var Challan =_UnitOfWork.TdschallanRespositories.GetQueryable().FirstOrDefault(x => x.ChallanId == TDSChallanAllocation.ChallanId);
+                var Entry = _UnitOfWork.TdsentryRespositories.GetQueryable().FirstOrDefault(x => x.EntryId == TDSChallanAllocation.EntryId);
 
                 if (Challan == null || Entry == null)
                 {
@@ -1202,49 +1320,49 @@ namespace ComplyX_Businesss.Services.Implementation
                 }
                 else
                 {
-                    var user = _context.Users.FirstOrDefault(x => x.UserName == UserName);
-                    var data = _context.TDSChallanAllocation.FirstOrDefault(x => x.EntryID == TDSChallanAllocation.EntryID);
+                    var user = _context.ApplicationUsers.FirstOrDefault(x => x.UserName == UserName);
+                    var data = _UnitOfWork.TdschallanAllocationRespostories.GetQueryable().FirstOrDefault(x => x.EntryId == TDSChallanAllocation.EntryId);
                     if (data != null)
                     {
                         return new ManagerBaseResponse<bool>
                         {
                             Result = false,
-                            Message = "Entry ID are already Exits."
+                            Message = "Entry Id are already Exits."
                         };
                     }
                     else
                     {
 
 
-                        if (TDSChallanAllocation.AllocationID == 0)
+                        if (TDSChallanAllocation.AllocationId == 0)
                         {
                             // Insert
-                            TDSChallanAllocation _model = new TDSChallanAllocation();
-                            _model.ChallanID = TDSChallanAllocation.ChallanID;
-                            _model.EntryID = TDSChallanAllocation.EntryID;
-                            _model.AllocatedTDSAmount = TDSChallanAllocation.AllocatedTDSAmount;
+                            TdschallanAllocation _model = new TdschallanAllocation();
+                            _model.ChallanId = TDSChallanAllocation.ChallanId;
+                            _model.EntryId = TDSChallanAllocation.EntryId;
+                            _model.AllocatedTdsamount = TDSChallanAllocation.AllocatedTdsamount;
                             _model.CreatedAt = Util.GetCurrentCSTDateAndTime();
                             _model.CreatedBy = user.Id;
 
-                            _context.Add(_model);
-                            await _context.SaveChangesAsync();
+
+                            await _UnitOfWork.TdschallanAllocationRespostories.AddAsync(_model);
                         }
                         else
                         {
                             // Update
-                            var originalTerm = _context.TDSChallanAllocation
-                                .Where(x => x.AllocationID == TDSChallanAllocation.AllocationID)
+                            var originalTerm = _UnitOfWork.TdschallanAllocationRespostories.GetQueryable()
+                                .Where(x => x.AllocationId == TDSChallanAllocation.AllocationId)
                                 .FirstOrDefault();
-                            originalTerm.ChallanID = TDSChallanAllocation.ChallanID;
-                            originalTerm.EntryID = TDSChallanAllocation.EntryID;
-                            originalTerm.AllocatedTDSAmount = TDSChallanAllocation.AllocatedTDSAmount;
+                            originalTerm.ChallanId = TDSChallanAllocation.ChallanId;
+                            originalTerm.EntryId = TDSChallanAllocation.EntryId;
+                            originalTerm.AllocatedTdsamount = TDSChallanAllocation.AllocatedTdsamount;
                             originalTerm.CreatedAt = Util.GetCurrentCSTDateAndTime();
                             originalTerm.CreatedBy = user.Id;
-                            _context.Update(originalTerm);
-                            _context.SaveChanges();
+                            
                         }
                     }
                 }
+                await _UnitOfWork.CommitAsync();
                 return new ManagerBaseResponse<bool>
                 {
                     Result = true,
@@ -1261,14 +1379,23 @@ namespace ComplyX_Businesss.Services.Implementation
                 };
             }
         }
-        public async Task<ManagerBaseResponse<List<TDSChallanAllocation>>> GetAllTDSChallanAllocationData(string TDSChallanAllocatinoID)
+        public async Task<ManagerBaseResponse<List<TdschallanAllocationResponseModel>>> GetAllTDSChallanAllocationData(string TDSChallanAllocatinoId)
         {
             try
             {
-                var plans = _context.TDSChallanAllocation.Where(x => x.AllocationID.ToString() == TDSChallanAllocatinoID).ToList();
+                var plans = _UnitOfWork.TdschallanAllocationRespostories.GetQueryable().Where(x => x.AllocationId.ToString() == TDSChallanAllocatinoId)
+                      .Select(x => new TdschallanAllocationResponseModel
+                      {
+                          AllocationId = x.AllocationId,
+                          ChallanId = x.ChallanId,
+                          EntryId = x.EntryId,
+                          AllocatedTdsamount = x.AllocatedTdsamount,
+                          CreatedAt = x.CreatedAt,
+                          CreatedBy = x.CreatedBy
+                      }).ToList();
 
 
-                return new ManagerBaseResponse<List<TDSChallanAllocation>>
+                return new ManagerBaseResponse<List<TdschallanAllocationResponseModel>>
                 {
                     IsSuccess = true,
                     Result = plans,
@@ -1278,7 +1405,7 @@ namespace ComplyX_Businesss.Services.Implementation
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<List<TDSChallanAllocation>>
+                return new ManagerBaseResponse<List<TdschallanAllocationResponseModel>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -1286,23 +1413,23 @@ namespace ComplyX_Businesss.Services.Implementation
                 };
             }
         }
-        public async Task<ManagerBaseResponse<IEnumerable<TDSChallanAllocation>>> GetTDSChallanAllocationFilter(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<TdschallanAllocation>>> GetTDSChallanAllocationFilter(PagedListCriteria PagedListCriteria)
         {
             try
             {
 
-                var query = _context.TDSChallanAllocation.AsQueryable();
+                var query = _UnitOfWork.TdschallanAllocationRespostories.GetQueryable();
                 //var searchText = PagedListCriteria.SearchText?.Trim().ToLower();
                 //if (!string.IsNullOrWhiteSpace(searchText))
                 //{
                 //    query = query.Where(x => x..ToLower().Contains(searchText.ToLower()));
                 //}
 
-                query = query.OrderBy(a => a.AllocationID);
+                query = query.OrderBy(a => a.AllocationId);
 
-                PageListed<TDSChallanAllocation> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+                PageListed<TdschallanAllocation> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
 
-                return new ManagerBaseResponse<IEnumerable<TDSChallanAllocation>>
+                return new ManagerBaseResponse<IEnumerable<TdschallanAllocation>>
                 {
                     Result = result.Data,
                     Message = "TDS Challan and Entry Data Retrieved Successfully.",
@@ -1319,7 +1446,7 @@ namespace ComplyX_Businesss.Services.Implementation
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<IEnumerable<TDSChallanAllocation>>
+                return new ManagerBaseResponse<IEnumerable<TdschallanAllocation>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -1327,14 +1454,14 @@ namespace ComplyX_Businesss.Services.Implementation
                 };
             }
         }
-        public async Task<ManagerBaseResponse<bool>> SaveTDSRatesData(TDSRates TDSRates, string UserName)
+        public async Task<ManagerBaseResponse<bool>> SaveTDSRatesData(TdsrateRequestModel TDSRates, string UserName)
         {
-            var response = new ManagerBaseResponse<List<TDSRates>>();
+            var response = new ManagerBaseResponse<List<Tdsrate>>();
 
             try
             {
                 
-                    var user = _context.Users.FirstOrDefault(x => x.UserName == UserName);
+                    var user = _context.ApplicationUsers.FirstOrDefault(x => x.UserName == UserName);
                     
                     if (user == null)
                     {
@@ -1348,10 +1475,10 @@ namespace ComplyX_Businesss.Services.Implementation
                     {
 
 
-                        if (TDSRates.TaxID == 0)
+                        if (TDSRates.TaxId == 0)
                         {
                             // Insert
-                            TDSRates _model = new TDSRates();
+                            Tdsrate _model = new Tdsrate();
                             _model.TaxName = TDSRates.TaxName;
                         _model.Rate = TDSRates.Rate;
                         _model.TaxType = TDSRates.TaxType;
@@ -1359,14 +1486,14 @@ namespace ComplyX_Businesss.Services.Implementation
                             _model.CreatedAt = Util.GetCurrentCSTDateAndTime();
                             _model.CreatedBy = user.Id;
 
-                            _context.Add(_model);
-                            await _context.SaveChangesAsync();
+                            
+                            await _UnitOfWork.TdsrateRespostories.AddAsync(_model);
                         }
                         else
                         {
                             // Update
-                            var originalTerm = _context.TDSRates
-                                .Where(x => x.TaxID == TDSRates.TaxID)
+                            var originalTerm = _UnitOfWork.TdsrateRespostories.GetQueryable()
+                                .Where(x => x.TaxId == TDSRates.TaxId)
                                 .FirstOrDefault();
                         originalTerm.TaxName = TDSRates.TaxName;
                         originalTerm.Rate = TDSRates.Rate;
@@ -1374,10 +1501,10 @@ namespace ComplyX_Businesss.Services.Implementation
                         originalTerm.IsActive = TDSRates.IsActive;
                         originalTerm.UpdatedAt = Util.GetCurrentCSTDateAndTime();
                         originalTerm.UpdatedBy = user.Id;
-                        _context.Update(originalTerm);
-                            _context.SaveChanges();
-                        }
+                        
                     }
+                    }
+                    await _UnitOfWork.CommitAsync();
                 return new ManagerBaseResponse<bool>
                 {
                     Result = true,
@@ -1394,14 +1521,25 @@ namespace ComplyX_Businesss.Services.Implementation
                 };
             }
         }
-        public async Task<ManagerBaseResponse<List<TDSRates>>> GetAllTDSRatesData(string TaxID)
+        public async Task<ManagerBaseResponse<List<TdsrateResponseModel>>> GetAllTDSRatesData(string TaxId)
         {
             try
             {
-                var plans = _context.TDSRates.Where(x => x.TaxID.ToString() == TaxID).ToList();
+                var plans = _UnitOfWork.TdsrateRespostories.GetQueryable().Where(x => x.TaxId.ToString() == TaxId).Select(x => new TdsrateResponseModel
+                {
+                    TaxId = x.TaxId,
+                    TaxName = x.TaxName,
+                    Rate = x.Rate,
+                    TaxType = x.TaxType,
+                    IsActive = x.IsActive,
+                    CreatedAt = x.CreatedAt,
+                    CreatedBy = x.CreatedBy,
+                    UpdatedAt = x.UpdatedAt,
+                    UpdatedBy = x.UpdatedBy
+                }).ToList();
 
 
-                return new ManagerBaseResponse<List<TDSRates>>
+                return new ManagerBaseResponse<List<TdsrateResponseModel>>
                 {
                     IsSuccess = true,
                     Result = plans,
@@ -1411,7 +1549,7 @@ namespace ComplyX_Businesss.Services.Implementation
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<List<TDSRates>>
+                return new ManagerBaseResponse<List<TdsrateResponseModel>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -1419,23 +1557,23 @@ namespace ComplyX_Businesss.Services.Implementation
                 };
             }
         }
-        public async Task<ManagerBaseResponse<IEnumerable<TDSRates>>> GetTDSRatesFilter(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<Tdsrate>>> GetTDSRatesFilter(PagedListCriteria PagedListCriteria)
         {
             try
             {
 
-                var query = _context.TDSRates.AsQueryable();
+                var query = _UnitOfWork.TdsrateRespostories.GetQueryable();
                 var searchText = PagedListCriteria.SearchText?.Trim().ToLower();
                 if (!string.IsNullOrWhiteSpace(searchText))
                 {
                     query = query.Where(x => x.TaxName.ToLower().Contains(searchText.ToLower()));
                 }
 
-                query = query.OrderBy(a => a.TaxID);
+                query = query.OrderBy(a => a.TaxId);
 
-                PageListed<TDSRates> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+                PageListed<Tdsrate> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
 
-                return new ManagerBaseResponse<IEnumerable<TDSRates>>
+                return new ManagerBaseResponse<IEnumerable<Tdsrate>>
                 {
                     Result = result.Data,
                     Message = "TDS Rates Data Retrieved Successfully.",
@@ -1452,7 +1590,7 @@ namespace ComplyX_Businesss.Services.Implementation
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<IEnumerable<TDSRates>>
+                return new ManagerBaseResponse<IEnumerable<Tdsrate>>
                 {
                     IsSuccess = false,
                     Result = null,

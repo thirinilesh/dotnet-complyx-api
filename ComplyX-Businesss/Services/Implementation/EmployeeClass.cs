@@ -16,6 +16,13 @@ using ComplyX_Businesss.Helper;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.EntityFrameworkCore.Metadata;
 using AppContext = ComplyX_Businesss.Helper.AppContext;
+using ComplyX_Businesss.Models.Employee;
+using ComplyX.Data.Entities;
+using ComplyX.Repositories.UnitOfWork;
+using AutoMapper;
+using ComplyX_Businesss.Models.GratuityPolicy;
+using ComplyX_Businesss.Models.GratuityTransaction;
+using ComplyX_Businesss.Models.FnFCalculation;
 
 namespace ComplyX.BusinessLogic
 {
@@ -27,366 +34,42 @@ namespace ComplyX.BusinessLogic
             { "name", "Name" }
         };
 
+        private readonly IMapper _mapper;
         private readonly AppContext _context;
+        private readonly IUnitOfWork _UnitOfWork;
 
-        public EmployeeClass(AppContext context)
+        public EmployeeClass(AppContext context, IUnitOfWork unitOfWork, IMapper mapper)
         {
             _context = context;
+            _UnitOfWork = unitOfWork;
+            _mapper = mapper;
         }
-        public Task<ManagerBaseResponse<bool>> SaveEmployeeData(Employees Employee)
+        public async Task<ManagerBaseResponse<bool>> SaveEmployeeData(EmployeeRequestModel Employee)
         {
-            var response = new ManagerBaseResponse<List<Employees>>();
+            var response = new ManagerBaseResponse<List<Employee>>();
 
             try
             {
-                if (Employee.CompanyID == 0 && Employee.CompanyID.ToString() == null)
-                {
-                    return Task.FromResult(new ManagerBaseResponse<bool>
-                    {
-                        Result = false,
-                        Message = "Company ID is required."
-                    });
-                }
-                else if (Employee.SubcontractorID == null)
-                {
-                    var varsub = _context.Subcontractors.AsQueryable().Where(x => x.CompanyID == Employee.CompanyID).ToList();
-                    if (varsub.Count == 0)
-                    {
-                        var varemployee = _context.Subcontractors.AsQueryable().Where(x => x.SubcontractorID == Employee.SubcontractorID).ToList();
-                        if (varemployee != null || varemployee.Count != 0)
-                        {
-                            if (Employee.EmployeeID == 0)
-                            {
-                                // Insert
-                                Employees _model = new Employees();
-                                _model.CompanyID = Employee.CompanyID;
-                                _model.SubcontractorID = Employee.SubcontractorID;
-                                _model.EmployeeCode = Employee.EmployeeCode;
-                                _model.FirstName = Employee.FirstName;
-                                _model.LastName = Employee.LastName;
-                                _model.FatherSpouseName = Employee.FatherSpouseName;
-                                _model.DOB = Employee.DOB;
-                                _model.Gender = Employee.Gender;
-                                _model.MaritalStatus = Employee.MaritalStatus;
-                                _model.Nationality = Employee.Nationality;
-                                _model.PAN = Employee.PAN;
-                                _model.Aadhaar = Employee.Aadhaar;
-                                _model.Email = Employee.Email;
-                                _model.Mobile = Employee.Mobile;
-                                _model.PresentAddress = Employee.PresentAddress;
-                                _model.PermanentAddress = Employee.PermanentAddress;
-                                _model.State = Employee.State;
-                                _model.City = Employee.City;
-                                _model.PinCode = Employee.PinCode;
-                                _model.DOJ = Employee.DOJ;
-                                _model.ConfirmationDate = Employee.ConfirmationDate;
-                                _model.Department = Employee.Department;
-                                _model.Designation = Employee.Designation;
-                                _model.Grade = Employee.Grade;
-                                _model.EmploymentType = Employee.EmploymentType;
-                                _model.WorkLocation = Employee.WorkLocation;
-                                _model.ReportingManager = Employee.ReportingManager;
-                                _model.ExitDate = Employee.ExitDate;
-                                _model.ExitReason = Employee.ExitReason;
-                                _model.ExitType = Employee.ExitType;
-                                _model.UAN = Employee.UAN;
-                                _model.PFAccountNumber = Employee.PFAccountNumber;
-                                _model.ESIC_IP = Employee.ESIC_IP;
-                                _model.PTState = Employee.PTState;
-                                _model.ActiveStatus = Employee.ActiveStatus;
-                                _model.IsDeleted = Employee.IsDeleted;
+                var baemployee = _mapper.Map<Employee>(Employee);
 
-                                _context.Add(_model);
-                                _context.SaveChanges();
-                            }
-                            else
-                            {
-                                // Update
-                                var originalTerm = _context.Employees
-                                    .Where(x => x.EmployeeID == Employee.EmployeeID)
-                                    .FirstOrDefault();
-                                originalTerm.CompanyID = Employee.CompanyID;
-                                originalTerm.SubcontractorID = Employee.SubcontractorID;
-                                originalTerm.EmployeeCode = Employee.EmployeeCode;
-                                originalTerm.FirstName = Employee.FirstName;
-                                originalTerm.LastName = Employee.LastName;
-                                originalTerm.FatherSpouseName = Employee.FatherSpouseName;
-                                originalTerm.DOB = Employee.DOB;
-                                originalTerm.Gender = Employee.Gender;
-                                originalTerm.MaritalStatus = Employee.MaritalStatus;
-                                originalTerm.Nationality = Employee.Nationality;
-                                originalTerm.PAN = Employee.PAN;
-                                originalTerm.Aadhaar = Employee.Aadhaar;
-                                originalTerm.Email = Employee.Email;
-                                originalTerm.Mobile = Employee.Mobile;
-                                originalTerm.PresentAddress = Employee.PresentAddress;
-                                originalTerm.PermanentAddress = Employee.PermanentAddress;
-                                originalTerm.State = Employee.State;
-                                originalTerm.City = Employee.City;
-                                originalTerm.PinCode = Employee.PinCode;
-                                originalTerm.DOJ = Employee.DOJ;
-                                originalTerm.ConfirmationDate = Employee.ConfirmationDate;
-                                originalTerm.Department = Employee.Department;
-                                originalTerm.Designation = Employee.Designation;
-                                originalTerm.Grade = Employee.Grade;
-                                originalTerm.EmploymentType = Employee.EmploymentType;
-                                originalTerm.WorkLocation = Employee.WorkLocation;
-                                originalTerm.ReportingManager = Employee.ReportingManager;
-                                originalTerm.ExitDate = Employee.ExitDate;
-                                originalTerm.ExitReason = Employee.ExitReason;
-                                originalTerm.ExitType = Employee.ExitType;
-                                originalTerm.UAN = Employee.UAN;
-                                originalTerm.PFAccountNumber = Employee.PFAccountNumber;
-                                originalTerm.ESIC_IP = Employee.ESIC_IP;
-                                originalTerm.PTState = Employee.PTState;
-                                originalTerm.ActiveStatus = Employee.ActiveStatus;
-                                originalTerm.IsDeleted = Employee.IsDeleted;
+                await _UnitOfWork.EmployeeRespositories.AddAsync(baemployee);
+                await _UnitOfWork.CommitAsync();
 
-
-                                _context.Update(originalTerm);
-                                _context.SaveChanges();
-                            }
-                            return Task.FromResult(new ManagerBaseResponse<bool>
-                            {
-                                Result = true,
-                                Message = "Employee Details Saved Successfully."
-                            });
-                        }
-                        else
-                        {
-
-                            return Task.FromResult(new ManagerBaseResponse<bool>
-                            {
-                                Result = false,
-                                Message = "Subcontractor ID is null."
-                            });
-                        }
-                    }
-                    else
-                    {
-                        return Task.FromResult(new ManagerBaseResponse<bool>
-                        {
-                            Result = false,
-                            Message = "Company ID and Subcontractor ID do not match."
-                        });
-                    }
-                }
-                else if (Employee.CompanyID != 0 && Employee.SubcontractorID != null)
-                {
-                    var varemployee = _context.Subcontractors.AsQueryable().Where(x => x.SubcontractorID == Employee.SubcontractorID && x.CompanyID == Employee.CompanyID).ToList();
-                    if (varemployee == null || varemployee.Count == 0)
-                    {
-
-                        return Task.FromResult(new ManagerBaseResponse<bool>
-                        {
-                            Result = false,
-                            Message = "Company ID and Subcontractor ID do not match."
-                        });
-                    }
-                    else
-                    {
-                        if (Employee.EmployeeID == 0)
-                        {
-                            // Insert
-                            Employees _model = new Employees();
-                            _model.CompanyID = Employee.CompanyID;
-                            _model.SubcontractorID = Employee.SubcontractorID;
-                            _model.EmployeeCode = Employee.EmployeeCode;
-                            _model.FirstName = Employee.FirstName;
-                            _model.LastName = Employee.LastName;
-                            _model.FatherSpouseName = Employee.FatherSpouseName;
-                            _model.DOB = Employee.DOB;
-                            _model.Gender = Employee.Gender;
-                            _model.MaritalStatus = Employee.MaritalStatus;
-                            _model.Nationality = Employee.Nationality;
-                            _model.PAN = Employee.PAN;
-                            _model.Aadhaar = Employee.Aadhaar;
-                            _model.Email = Employee.Email;
-                            _model.Mobile = Employee.Mobile;
-                            _model.PresentAddress = Employee.PresentAddress;
-                            _model.PermanentAddress = Employee.PermanentAddress;
-                            _model.State = Employee.State;
-                            _model.City = Employee.City;
-                            _model.PinCode = Employee.PinCode;
-                            _model.DOJ = Employee.DOJ;
-                            _model.ConfirmationDate = Employee.ConfirmationDate;
-                            _model.Department = Employee.Department;
-                            _model.Designation = Employee.Designation;
-                            _model.Grade = Employee.Grade;
-                            _model.EmploymentType = Employee.EmploymentType;
-                            _model.WorkLocation = Employee.WorkLocation;
-                            _model.ReportingManager = Employee.ReportingManager;
-                            _model.ExitDate = Employee.ExitDate;
-                            _model.ExitReason = Employee.ExitReason;
-                            _model.ExitType = Employee.ExitType;
-                            _model.UAN = Employee.UAN;
-                            _model.PFAccountNumber = Employee.PFAccountNumber;
-                            _model.ESIC_IP = Employee.ESIC_IP;
-                            _model.PTState = Employee.PTState;
-                            _model.ActiveStatus = Employee.ActiveStatus;
-                            _model.IsDeleted = Employee.IsDeleted;
-
-                            _context.Add(_model);
-                            _context.SaveChanges();
-                        }
-                        else
-                        {
-                            // Update
-                            var originalTerm = _context.Employees
-                                .Where(x => x.EmployeeID == Employee.EmployeeID)
-                                .FirstOrDefault();
-                            originalTerm.CompanyID = Employee.CompanyID;
-                            originalTerm.SubcontractorID = Employee.SubcontractorID;
-                            originalTerm.EmployeeCode = Employee.EmployeeCode;
-                            originalTerm.FirstName = Employee.FirstName;
-                            originalTerm.LastName = Employee.LastName;
-                            originalTerm.FatherSpouseName = Employee.FatherSpouseName;
-                            originalTerm.DOB = Employee.DOB;
-                            originalTerm.Gender = Employee.Gender;
-                            originalTerm.MaritalStatus = Employee.MaritalStatus;
-                            originalTerm.Nationality = Employee.Nationality;
-                            originalTerm.PAN = Employee.PAN;
-                            originalTerm.Aadhaar = Employee.Aadhaar;
-                            originalTerm.Email = Employee.Email;
-                            originalTerm.Mobile = Employee.Mobile;
-                            originalTerm.PresentAddress = Employee.PresentAddress;
-                            originalTerm.PermanentAddress = Employee.PermanentAddress;
-                            originalTerm.State = Employee.State;
-                            originalTerm.City = Employee.City;
-                            originalTerm.PinCode = Employee.PinCode;
-                            originalTerm.DOJ = Employee.DOJ;
-                            originalTerm.ConfirmationDate = Employee.ConfirmationDate;
-                            originalTerm.Department = Employee.Department;
-                            originalTerm.Designation = Employee.Designation;
-                            originalTerm.Grade = Employee.Grade;
-                            originalTerm.EmploymentType = Employee.EmploymentType;
-                            originalTerm.WorkLocation = Employee.WorkLocation;
-                            originalTerm.ReportingManager = Employee.ReportingManager;
-                            originalTerm.ExitDate = Employee.ExitDate;
-                            originalTerm.ExitReason = Employee.ExitReason;
-                            originalTerm.ExitType = Employee.ExitType;
-                            originalTerm.UAN = Employee.UAN;
-                            originalTerm.PFAccountNumber = Employee.PFAccountNumber;
-                            originalTerm.ESIC_IP = Employee.ESIC_IP;
-                            originalTerm.PTState = Employee.PTState;
-                            originalTerm.ActiveStatus = Employee.ActiveStatus;
-                            originalTerm.IsDeleted = Employee.IsDeleted;
-
-
-                            _context.Update(originalTerm);
-                            _context.SaveChanges();
-                        }
-                    }
-                }
-                else
-                {
-                    if (Employee.EmployeeID == 0)
-                    {
-                        // Insert
-                        Employees _model = new Employees();
-                        _model.CompanyID = Employee.CompanyID;
-                        _model.SubcontractorID = Employee.SubcontractorID;
-                        _model.EmployeeCode = Employee.EmployeeCode;
-                        _model.FirstName = Employee.FirstName;
-                        _model.LastName = Employee.LastName;
-                        _model.FatherSpouseName = Employee.FatherSpouseName;
-                        _model.DOB = Employee.DOB;
-                        _model.Gender = Employee.Gender;
-                        _model.MaritalStatus = Employee.MaritalStatus;
-                        _model.Nationality = Employee.Nationality;
-                        _model.PAN = Employee.PAN;
-                        _model.Aadhaar = Employee.Aadhaar;
-                        _model.Email = Employee.Email;
-                        _model.Mobile = Employee.Mobile;
-                        _model.PresentAddress = Employee.PresentAddress;
-                        _model.PermanentAddress = Employee.PermanentAddress;
-                        _model.State = Employee.State;
-                        _model.City = Employee.City;
-                        _model.PinCode = Employee.PinCode;
-                        _model.DOJ = Employee.DOJ;
-                        _model.ConfirmationDate = Employee.ConfirmationDate;
-                        _model.Department = Employee.Department;
-                        _model.Designation = Employee.Designation;
-                        _model.Grade = Employee.Grade;
-                        _model.EmploymentType = Employee.EmploymentType;
-                        _model.WorkLocation = Employee.WorkLocation;
-                        _model.ReportingManager = Employee.ReportingManager;
-                        _model.ExitDate = Employee.ExitDate;
-                        _model.ExitReason = Employee.ExitReason;
-                        _model.ExitType = Employee.ExitType;
-                        _model.UAN = Employee.UAN;
-                        _model.PFAccountNumber = Employee.PFAccountNumber;
-                        _model.ESIC_IP = Employee.ESIC_IP;
-                        _model.PTState = Employee.PTState;
-                        _model.ActiveStatus = Employee.ActiveStatus;
-                        _model.IsDeleted = Employee.IsDeleted;
-
-                        _context.Add(_model);
-                        _context.SaveChanges();
-                    }
-                    else
-                    {
-                        // Update
-                        var originalTerm = _context.Employees
-                            .Where(x => x.EmployeeID == Employee.EmployeeID)
-                            .FirstOrDefault();
-                        originalTerm.CompanyID = Employee.CompanyID;
-                        originalTerm.SubcontractorID = Employee.SubcontractorID;
-                        originalTerm.EmployeeCode = Employee.EmployeeCode;
-                        originalTerm.FirstName = Employee.FirstName;
-                        originalTerm.LastName = Employee.LastName;
-                        originalTerm.FatherSpouseName = Employee.FatherSpouseName;
-                        originalTerm.DOB = Employee.DOB;
-                        originalTerm.Gender = Employee.Gender;
-                        originalTerm.MaritalStatus = Employee.MaritalStatus;
-                        originalTerm.Nationality = Employee.Nationality;
-                        originalTerm.PAN = Employee.PAN;
-                        originalTerm.Aadhaar = Employee.Aadhaar;
-                        originalTerm.Email = Employee.Email;
-                        originalTerm.Mobile = Employee.Mobile;
-                        originalTerm.PresentAddress = Employee.PresentAddress;
-                        originalTerm.PermanentAddress = Employee.PermanentAddress;
-                        originalTerm.State = Employee.State;
-                        originalTerm.City = Employee.City;
-                        originalTerm.PinCode = Employee.PinCode;
-                        originalTerm.DOJ = Employee.DOJ;
-                        originalTerm.ConfirmationDate = Employee.ConfirmationDate;
-                        originalTerm.Department = Employee.Department;
-                        originalTerm.Designation = Employee.Designation;
-                        originalTerm.Grade = Employee.Grade;
-                        originalTerm.EmploymentType = Employee.EmploymentType;
-                        originalTerm.WorkLocation = Employee.WorkLocation;
-                        originalTerm.ReportingManager = Employee.ReportingManager;
-                        originalTerm.ExitDate = Employee.ExitDate;
-                        originalTerm.ExitReason = Employee.ExitReason;
-                        originalTerm.ExitType = Employee.ExitType;
-                        originalTerm.UAN = Employee.UAN;
-                        originalTerm.PFAccountNumber = Employee.PFAccountNumber;
-                        originalTerm.ESIC_IP = Employee.ESIC_IP;
-                        originalTerm.PTState = Employee.PTState;
-                        originalTerm.ActiveStatus = Employee.ActiveStatus;
-                        originalTerm.IsDeleted = Employee.IsDeleted;
-
-
-                        _context.Update(originalTerm);
-                        _context.SaveChanges();
-                    }
-                }
-                
-                
-                return Task.FromResult(new ManagerBaseResponse<bool>
+                var responses = _mapper.Map<EmployeeResponseModel>(baemployee);
+                return new ManagerBaseResponse<bool>
                 {
                     Result = true,
-                    Message = "Employee Details Saved Successfully."
-                });
+                    Message = "Employee Data Saved Successfully."
+                } ;
+
             }
             catch (Exception e)
             {
-                return Task.FromResult(new ManagerBaseResponse<bool>
+                return  new ManagerBaseResponse<bool>
                 {
                     Result = false,
                     Message = e.Message
-                });
+                } ;
             }
         }
         public async Task<ManagerBaseResponse<bool>> RemoveEmployeeData(string EmployeeID)
@@ -394,7 +77,7 @@ namespace ComplyX.BusinessLogic
             try
             {
                 // Get all report detail definitions for the given report name
-                var Employee = await _context.Employees.Where(x => x.EmployeeID.ToString() == EmployeeID).ToListAsync();
+                var Employee = await _UnitOfWork.EmployeeRespositories.GetQueryable().Where(x => x.EmployeeId.ToString() == EmployeeID).ToListAsync();
 
                 if (string.IsNullOrEmpty(Employee.ToString()))
                 {
@@ -406,9 +89,8 @@ namespace ComplyX.BusinessLogic
                 }
 
                 // Remove all related report details
-                _context.Employees.RemoveRange(Employee);
-
-                await _context.SaveChangesAsync();
+                _UnitOfWork.EmployeeRespositories.RemoveRange(Employee);
+                await _UnitOfWork.CommitAsync();
 
                 return new ManagerBaseResponse<bool>
                 {
@@ -427,13 +109,53 @@ namespace ComplyX.BusinessLogic
             }
 
         }
-        public async Task<ManagerBaseResponse<List<Employees>>> GetEmployeesByCompany(string CompanyID)
+        public async Task<ManagerBaseResponse<List<EmployeeResponseModel>>> GetEmployeesByCompany(string CompanyID)
         {
             try
             {
-                var Employee = await _context.Employees.AsQueryable().OrderBy(x => x.CompanyID).ToListAsync();
+                var Employee = await _UnitOfWork.EmployeeRespositories.GetQueryable().OrderBy(x => x.CompanyId)
+                      .Select(x => new EmployeeResponseModel
+                      {
+                          EmployeeId = x.EmployeeId,
+                          CompanyId = x.CompanyId,
+                          SubcontractorId = x.SubcontractorId,
+                          EmployeeCode = x.EmployeeCode,
+                          FirstName = x.FirstName,
+                          LastName = x.LastName,
+                          FatherSpouseName = x.FatherSpouseName,
+                          Dob = x.Dob,
+                          Gender = x.Gender,
+                          MaritalStatus = x.MaritalStatus,
+                          Nationality = x.Nationality,
+                          Pan = x.Pan,
+                          Aadhaar = x.Aadhaar,
+                          Mobile = x.Mobile,
+                          Email = x.Email,
+                          PresentAddress = x.PresentAddress,
+                          PermanentAddress = x.PermanentAddress,
+                          City = x.City,
+                          State = x.State,
+                          Pincode = x.Pincode,
+                          Doj = x.Doj,
+                          ConfirmationDate = x.ConfirmationDate,
+                          Designation = x.Designation,
+                          Department = x.Department,
+                          Grade = x.Grade,
+                          EmploymentType = x.EmploymentType,
+                          WorkLocation = x.WorkLocation,
+                          ReportingManager = x.ReportingManager,
+                          ExitDate = x.ExitDate,
+                          ExitType = x.ExitType,
+                          ExitReason = x.ExitReason,
+                          Uan = x.Uan,
+                          PfaccountNumber = x.PfaccountNumber,
+                          EsicIp = x.EsicIp,
+                          Ptstate = x.Ptstate,
+                          ActiveStatus = x.ActiveStatus,
+                          IsDeleted = x.IsDeleted
+                      }).ToListAsync();
 
-                return new ManagerBaseResponse<List<Employees>>
+                return new ManagerBaseResponse<List<EmployeeResponseModel>>
                 {
                     IsSuccess = true,
                     Result = Employee,
@@ -443,7 +165,7 @@ namespace ComplyX.BusinessLogic
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<List<Employees>>
+                return new ManagerBaseResponse<List<EmployeeResponseModel>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -451,16 +173,56 @@ namespace ComplyX.BusinessLogic
                 };
             }
         }
-        public async Task<ManagerBaseResponse<List<Employees>>> GetEmployeesByCompanySubcontractor(string CompanyID, string SubcontractorID)
+        public async Task<ManagerBaseResponse<List<EmployeeResponseModel>>> GetEmployeesByCompanySubcontractor(string CompanyID, string SubcontractorID)
         {
             try
             {
-                var Employee = await _context.Employees.AsQueryable().Where(x => x.CompanyID.ToString() == CompanyID && x.SubcontractorID.ToString() == SubcontractorID).ToListAsync();
+                var Employee = await _UnitOfWork.EmployeeRespositories.GetQueryable().Where(x => x.CompanyId.ToString() == CompanyID && x.SubcontractorId.ToString() == SubcontractorID)
+                      .Select(x => new EmployeeResponseModel
+                      {
+                          EmployeeId = x.EmployeeId,
+                          CompanyId = x.CompanyId,
+                          SubcontractorId = x.SubcontractorId,
+                          EmployeeCode = x.EmployeeCode,
+                          FirstName = x.FirstName,
+                          LastName = x.LastName,
+                          FatherSpouseName = x.FatherSpouseName,
+                          Dob = x.Dob,
+                          Gender = x.Gender,
+                          MaritalStatus = x.MaritalStatus,
+                          Nationality = x.Nationality,
+                          Pan = x.Pan,
+                          Aadhaar = x.Aadhaar,
+                          Mobile = x.Mobile,
+                          Email = x.Email,
+                          PresentAddress = x.PresentAddress,
+                          PermanentAddress = x.PermanentAddress,
+                          City = x.City,
+                          State = x.State,
+                          Pincode = x.Pincode,
+                          Doj = x.Doj,
+                          ConfirmationDate = x.ConfirmationDate,
+                          Designation = x.Designation,
+                          Department = x.Department,
+                          Grade = x.Grade,
+                          EmploymentType = x.EmploymentType,
+                          WorkLocation = x.WorkLocation,
+                          ReportingManager = x.ReportingManager,
+                          ExitDate = x.ExitDate,
+                          ExitType = x.ExitType,
+                          ExitReason = x.ExitReason,
+                          Uan = x.Uan,
+                          PfaccountNumber = x.PfaccountNumber,
+                          EsicIp = x.EsicIp,
+                          Ptstate = x.Ptstate,
+                          ActiveStatus = x.ActiveStatus,
+                          IsDeleted = x.IsDeleted
+                      }).ToListAsync();
 
                 if (Employee == null)
                 {
 
-                    return new ManagerBaseResponse<List<Employees>>
+                    return new ManagerBaseResponse<List<EmployeeResponseModel>>
                     {
                         IsSuccess = false,
                         Result = null,
@@ -469,7 +231,7 @@ namespace ComplyX.BusinessLogic
                 }
                 else
                 {
-                    return new ManagerBaseResponse<List<Employees>>
+                    return new ManagerBaseResponse<List<EmployeeResponseModel>>
                     {
                         IsSuccess = true,
                         Result = Employee,
@@ -480,7 +242,7 @@ namespace ComplyX.BusinessLogic
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<List<Employees>>
+                return new ManagerBaseResponse<List<EmployeeResponseModel>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -488,16 +250,56 @@ namespace ComplyX.BusinessLogic
                 };
             }
         }
-        public async Task<ManagerBaseResponse<List<Employees>>> GetEmployeesByCompanyEmployee(string CompanyID, string EmployeeID)
+        public async Task<ManagerBaseResponse<List<EmployeeResponseModel>>> GetEmployeesByCompanyEmployee(string CompanyID, string EmployeeID)
         {
             try
             {
-                var Employee = await _context.Employees.AsQueryable().Where(x => x.CompanyID.ToString() == CompanyID && x.EmployeeID.ToString() == EmployeeID).ToListAsync();
+                var Employee = await _UnitOfWork.EmployeeRespositories.GetQueryable().Where(x => x.CompanyId.ToString() == CompanyID && x.EmployeeId.ToString() == EmployeeID)
+                      .Select(x => new EmployeeResponseModel
+                      {
+                          EmployeeId = x.EmployeeId,
+                          CompanyId = x.CompanyId,
+                          SubcontractorId = x.SubcontractorId,
+                          EmployeeCode = x.EmployeeCode,
+                          FirstName = x.FirstName,
+                          LastName = x.LastName,
+                          FatherSpouseName = x.FatherSpouseName,
+                          Dob = x.Dob,
+                          Gender = x.Gender,
+                          MaritalStatus = x.MaritalStatus,
+                          Nationality = x.Nationality,
+                          Pan = x.Pan,
+                          Aadhaar = x.Aadhaar,
+                          Mobile = x.Mobile,
+                          Email = x.Email,
+                          PresentAddress = x.PresentAddress,
+                          PermanentAddress = x.PermanentAddress,
+                          City = x.City,
+                          State = x.State,
+                          Pincode = x.Pincode,
+                          Doj = x.Doj,
+                          ConfirmationDate = x.ConfirmationDate,
+                          Designation = x.Designation,
+                          Department = x.Department,
+                          Grade = x.Grade,
+                          EmploymentType = x.EmploymentType,
+                          WorkLocation = x.WorkLocation,
+                          ReportingManager = x.ReportingManager,
+                          ExitDate = x.ExitDate,
+                          ExitType = x.ExitType,
+                          ExitReason = x.ExitReason,
+                          Uan = x.Uan,
+                          PfaccountNumber = x.PfaccountNumber,
+                          EsicIp = x.EsicIp,
+                          Ptstate = x.Ptstate,
+                          ActiveStatus = x.ActiveStatus,
+                          IsDeleted = x.IsDeleted
+                      }).ToListAsync();
 
                 if (Employee == null)
                 {
 
-                    return new ManagerBaseResponse<List<Employees>>
+                    return new ManagerBaseResponse<List<EmployeeResponseModel>>
                     {
                         IsSuccess = false,
                         Result = null,
@@ -506,7 +308,7 @@ namespace ComplyX.BusinessLogic
                 }
                 else
                 {
-                    return new ManagerBaseResponse<List<Employees>>
+                    return new ManagerBaseResponse<List<EmployeeResponseModel>>
                     {
                         IsSuccess = true,
                         Result = Employee,
@@ -517,7 +319,7 @@ namespace ComplyX.BusinessLogic
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<List<Employees>>
+                return new ManagerBaseResponse<List<EmployeeResponseModel>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -525,22 +327,22 @@ namespace ComplyX.BusinessLogic
                 };
             }
         }
-        public async Task<ManagerBaseResponse<IEnumerable<Employees>>> GetEmployeeDataFilter(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<Employee>>> GetEmployeeDataFilter(PagedListCriteria PagedListCriteria)
         {
             try
             {
 
-                var query = _context.Employees.AsQueryable();
+                var query = _UnitOfWork.EmployeeRespositories.GetQueryable();
                 var searchText = PagedListCriteria.SearchText?.Trim().ToLower();
                 if (!string.IsNullOrWhiteSpace(searchText))
                 {
                     query = query.Where(x => x.FirstName.ToLower().Contains(searchText.ToLower()));
                 }
 
-                query = query.OrderBy(a => a.EmployeeID);
+                query = query.OrderBy(a => a.EmployeeId);
 
-                PageListed<Employees> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
-                return new ManagerBaseResponse<IEnumerable<Employees>>
+                PageListed<Employee> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+                return new ManagerBaseResponse<IEnumerable<Employee>>
                 {
                     Result = result.Data,
                     Message = "Employee Data Retrieved Successfully.",
@@ -557,7 +359,7 @@ namespace ComplyX.BusinessLogic
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<IEnumerable<Employees>>
+                return new ManagerBaseResponse<IEnumerable<Employee>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -565,13 +367,13 @@ namespace ComplyX.BusinessLogic
                 };
             }
         }
-        public async Task<ManagerBaseResponse<bool>> SaveGratuity_PolicyData(Gratuity_Policy Gratuity_Policy)
+        public async Task<ManagerBaseResponse<bool>> SaveGratuity_PolicyData(GratuityPolicyRequestModel Gratuity_Policy)
         {
-            var response = new ManagerBaseResponse<List<Gratuity_Policy>>();
+            var response = new ManagerBaseResponse<List<GratuityPolicy>>();
 
             try
             {
-                var Company = await _context.Companies.FirstOrDefaultAsync(x => x.CompanyID == Gratuity_Policy.CompanyID);
+                var Company = await _UnitOfWork.CompanyRepository.GetQueryable().FirstOrDefaultAsync(x => x.CompanyId == Gratuity_Policy.CompanyId);
 
                 if (Company == null)
                 {
@@ -584,40 +386,39 @@ namespace ComplyX.BusinessLogic
                 else
                 {
 
-                    if (Gratuity_Policy.PolicyID == Guid.Empty)
+                    if (Gratuity_Policy.PolicyId == Guid.Empty)
                     {
                         // Insert
-                        Gratuity_Policy _model = new Gratuity_Policy();
+                        GratuityPolicy _model = new GratuityPolicy();
                          
-                            _model.PolicyID = Guid.NewGuid();
+                            _model.PolicyId = Guid.NewGuid();
                        
-                        _model.CompanyID = Gratuity_Policy.CompanyID;
+                        _model.CompanyId = Gratuity_Policy.CompanyId;
                         _model.MinimumServiceYears = Gratuity_Policy.MinimumServiceYears;
                         _model.Formula = Gratuity_Policy.Formula;
                         _model.MaxGratuityAmount = Gratuity_Policy.MaxGratuityAmount;
                         _model.Eligible = Gratuity_Policy.Eligible;
                         _model.CreatedAt = Util.GetCurrentCSTDateAndTime();
 
-                        _context.Add(_model);
-                        _context.SaveChanges();
+                        await _UnitOfWork.GratuityPolicyRespositories.AddAsync(_model);
                     }
                     else
                     {
                         // Update
-                        var originalTerm = _context.Gratuity_Policy
-                            .Where(x => x.PolicyID == Gratuity_Policy.PolicyID)
+                        var originalTerm = _UnitOfWork.GratuityPolicyRespositories.GetQueryable()
+                            .Where(x => x.PolicyId == Gratuity_Policy.PolicyId)
                                 .FirstOrDefault();
-                        originalTerm.CompanyID = Gratuity_Policy.CompanyID;
+                        originalTerm.CompanyId = Gratuity_Policy.CompanyId;
                         originalTerm.MinimumServiceYears = Gratuity_Policy.MinimumServiceYears;
                         originalTerm.Formula = Gratuity_Policy.Formula;
                         originalTerm.MaxGratuityAmount = Gratuity_Policy.MaxGratuityAmount;
                         originalTerm.Eligible = Gratuity_Policy.Eligible;
                         originalTerm.UpdatedAt = Util.GetCurrentCSTDateAndTime();
 
-                        _context.Update(originalTerm);
-                        _context.SaveChanges();
+                        
                     }
                 }
+                await _UnitOfWork.CommitAsync();
                 return new ManagerBaseResponse<bool>
                 {
                     Result = true,
@@ -638,7 +439,7 @@ namespace ComplyX.BusinessLogic
             try
             {
                 // Get all report detail definitions for the given report name
-                var Gratuity_Policy = await _context.Gratuity_Policy.Where(x => x.PolicyID.ToString() == PolicyID).ToListAsync();
+                var Gratuity_Policy = await _UnitOfWork.GratuityPolicyRespositories.GetQueryable().Where(x => x.PolicyId.ToString() == PolicyID).ToListAsync();
 
                 if (string.IsNullOrEmpty(Gratuity_Policy.ToString()))
                 {
@@ -650,9 +451,8 @@ namespace ComplyX.BusinessLogic
                 }
 
                 // Remove all related report details
-                _context.Gratuity_Policy.RemoveRange(Gratuity_Policy);
-
-                await _context.SaveChangesAsync();
+                _UnitOfWork.GratuityPolicyRespositories.RemoveRange(Gratuity_Policy);
+                await _UnitOfWork.CommitAsync();
 
                 return new ManagerBaseResponse<bool>
                 {
@@ -671,13 +471,23 @@ namespace ComplyX.BusinessLogic
             }
 
         }
-        public async Task<ManagerBaseResponse<List<Gratuity_Policy>>> GetGratuity_Policy(string PolicyID)
+        public async Task<ManagerBaseResponse<List<GratuityPolicyResponseModel>>> GetGratuity_Policy(string PolicyID)
         {
             try
             {
-                var Gratuity_Policy = await _context.Gratuity_Policy.AsQueryable().OrderBy(x => x.PolicyID).ToListAsync();
+                var Gratuity_Policy = await _UnitOfWork.GratuityPolicyRespositories.GetQueryable().OrderBy(x => x.PolicyId).Select(x => new GratuityPolicyResponseModel
+                {
+                    PolicyId = x.PolicyId,
+                    MinimumServiceYears = x.MinimumServiceYears,
+                    Formula = x.Formula,
+                    MaxGratuityAmount = x.MaxGratuityAmount,
+                    Eligible = x.Eligible,
+                    CreatedAt = x.CreatedAt,
+                    UpdatedAt = x.UpdatedAt,
+                    CompanyId = x.CompanyId
+                }).ToListAsync();
 
-                return new ManagerBaseResponse<List<Gratuity_Policy>>
+                return new ManagerBaseResponse<List<GratuityPolicyResponseModel>>
                 {
                     IsSuccess = true,
                     Result = Gratuity_Policy,
@@ -687,7 +497,7 @@ namespace ComplyX.BusinessLogic
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<List<Gratuity_Policy>>
+                return new ManagerBaseResponse<List<GratuityPolicyResponseModel>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -695,22 +505,22 @@ namespace ComplyX.BusinessLogic
                 };
             }
         }
-        public async Task<ManagerBaseResponse<IEnumerable<Gratuity_Policy>>> GetGratuity_PolicyFilter(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<GratuityPolicy>>> GetGratuity_PolicyFilter(PagedListCriteria PagedListCriteria)
         {
             try
             {
 
-                var query = _context.Gratuity_Policy.AsQueryable();
+                var query = _UnitOfWork.GratuityPolicyRespositories.GetQueryable();
                 var searchText = PagedListCriteria.SearchText?.Trim().ToLower();
                 if (!string.IsNullOrWhiteSpace(searchText))
                 {
                     query = query.Where(x => x.Formula.ToLower().Contains(searchText.ToLower()));
                 }
 
-                query = query.OrderBy(a => a.PolicyID);
+                query = query.OrderBy(a => a.PolicyId);
 
-                PageListed<Gratuity_Policy> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
-                return new ManagerBaseResponse<IEnumerable<Gratuity_Policy>>
+                PageListed<GratuityPolicy> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+                return new ManagerBaseResponse<IEnumerable<GratuityPolicy>>
                 {
                     Result = result.Data,
                     Message = "Gratuity Policy Data Retrieved Successfully.",
@@ -727,7 +537,7 @@ namespace ComplyX.BusinessLogic
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<IEnumerable<Gratuity_Policy>>
+                return new ManagerBaseResponse<IEnumerable<GratuityPolicy>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -735,13 +545,13 @@ namespace ComplyX.BusinessLogic
                 };
             }
         }
-        public async Task<ManagerBaseResponse<bool>> SaveGratuity_TransactionsData(Gratuity_Transactions Gratuity_Transactions)
+        public async Task<ManagerBaseResponse<bool>> SaveGratuity_TransactionsData(GratuityTransactionRequestModel Gratuity_Transactions)
         {
-            var response = new ManagerBaseResponse<List<Gratuity_Transactions>>();
+            var response = new ManagerBaseResponse<List<GratuityTransaction>>();
 
             try
             {
-                var Employee = await _context.Employees.FirstOrDefaultAsync(x => x.EmployeeID == Gratuity_Transactions.EmployeeID && x.CompanyID == Gratuity_Transactions.CompanyID);
+                var Employee = await _UnitOfWork.GratuityTransactionRespositories.GetQueryable().FirstOrDefaultAsync(x => x.EmployeeId == Gratuity_Transactions.EmployeeId && x.CompanyId == Gratuity_Transactions.CompanyId);
 
                 if (Employee == null)
                 {
@@ -753,13 +563,13 @@ namespace ComplyX.BusinessLogic
                 }
                 else
                 {
-                    if (Gratuity_Transactions.GratuityID == Guid.Empty)
+                    if (Gratuity_Transactions.GratuityId == Guid.Empty)
                     {
                         // Insert
-                        Gratuity_Transactions _model = new Gratuity_Transactions();
-                        _model.GratuityID = Guid.NewGuid();
-                        _model.EmployeeID = Employee.EmployeeID;
-                        _model.CompanyID = Employee.CompanyID;
+                        GratuityTransaction _model = new GratuityTransaction();
+                        _model.GratuityId = Guid.NewGuid();
+                        _model.EmployeeId = Employee.EmployeeId;
+                        _model.CompanyId = Employee.CompanyId;
                         _model.LastDrawnSalary  =  Gratuity_Transactions.LastDrawnSalary;
                         _model.YearsOfService = Gratuity_Transactions.YearsOfService;
                         _model.GratuityAmount = Gratuity_Transactions.GratuityAmount;
@@ -768,17 +578,16 @@ namespace ComplyX.BusinessLogic
                         _model.ApprovedBy = Guid.NewGuid();
                         _model.CreatedAt = Util.GetCurrentCSTDateAndTime();
 
-                        _context.Add(_model);
-                        _context.SaveChanges();
+                       await  _UnitOfWork.GratuityTransactionRespositories.AddAsync( _model );
                     }
                     else
                     {
                         // Update
-                        var originalTerm = _context.Gratuity_Transactions
-                            .Where(x => x.GratuityID == Gratuity_Transactions.GratuityID)
+                        var originalTerm = _UnitOfWork.GratuityTransactionRespositories.GetQueryable()
+                            .Where(x => x.GratuityId == Gratuity_Transactions.GratuityId)
                                 .FirstOrDefault();
-                        originalTerm.EmployeeID = Employee.EmployeeID;
-                        originalTerm.CompanyID = Employee.CompanyID;
+                        originalTerm.EmployeeId = Employee.EmployeeId;
+                        originalTerm.CompanyId = Employee.CompanyId;
                         originalTerm.LastDrawnSalary = Gratuity_Transactions.LastDrawnSalary;
                         originalTerm.YearsOfService = Gratuity_Transactions.YearsOfService;
                         originalTerm.GratuityAmount = Gratuity_Transactions.GratuityAmount;
@@ -787,10 +596,10 @@ namespace ComplyX.BusinessLogic
                         originalTerm.ApprovedBy = Gratuity_Transactions.ApprovedBy;
                         originalTerm.UpdatedAt = Util.GetCurrentCSTDateAndTime();
 
-                        _context.Update(originalTerm);
-                        _context.SaveChanges();
+                       
                     }
                 }
+                await _UnitOfWork.CommitAsync();
                 return new ManagerBaseResponse<bool>
                 {
                     Result = true,
@@ -811,7 +620,7 @@ namespace ComplyX.BusinessLogic
             try
             {
                 // Get all report detail definitions for the given report name
-                var Gratuity_Transactions = await _context.Gratuity_Transactions.Where(x => x.GratuityID.ToString() == GratuityID).ToListAsync();
+                var Gratuity_Transactions = await _UnitOfWork.GratuityTransactionRespositories.GetQueryable().Where(x => x.GratuityId.ToString() == GratuityID).ToListAsync();
 
                 if (string.IsNullOrEmpty(Gratuity_Transactions.ToString()))
                 {
@@ -823,10 +632,9 @@ namespace ComplyX.BusinessLogic
                 }
 
                 // Remove all related report details
-                _context.Gratuity_Transactions.RemoveRange(Gratuity_Transactions);
+                _UnitOfWork.GratuityTransactionRespositories.RemoveRange(Gratuity_Transactions);
 
-                await _context.SaveChangesAsync();
-
+           await _UnitOfWork.CommitAsync();
                 return new ManagerBaseResponse<bool>
                 {
                     Result = true,
@@ -844,13 +652,27 @@ namespace ComplyX.BusinessLogic
             }
 
         }
-        public async Task<ManagerBaseResponse<List<Gratuity_Transactions>>> GetGratuity_Transactions(string GratuityID)
+        public async Task<ManagerBaseResponse<List<GratuityTransactionResponseModel>>> GetGratuity_Transactions(string GratuityID)
         {
             try
             {
-                var Gratuity_Transactions = await _context.Gratuity_Transactions.AsQueryable().OrderBy(x => x.GratuityID).ToListAsync();
+                var Gratuity_Transactions = await _UnitOfWork.GratuityTransactionRespositories.GetQueryable().OrderBy(x => x.GratuityId)
+                     .Select(x => new GratuityTransactionResponseModel
+                     {
+                         GratuityId = x.GratuityId,
+                         LastDrawnSalary = x.LastDrawnSalary,
+                         YearsOfService = x.YearsOfService,
+                         GratuityAmount = x.GratuityAmount,
+                         PaymentStatus = x.PaymentStatus,
+                         PaidDate = x.PaidDate,
+                         ApprovedBy = x.ApprovedBy,
+                         CreatedAt = x.CreatedAt,
+                         UpdatedAt = x.UpdatedAt,
+                         EmployeeId = x.EmployeeId,
+                         CompanyId = x.CompanyId
+                     }).ToListAsync();
 
-                return new ManagerBaseResponse<List<Gratuity_Transactions>>
+                return new ManagerBaseResponse<List<GratuityTransactionResponseModel>>
                 {
                     IsSuccess = true,
                     Result = Gratuity_Transactions,
@@ -860,7 +682,7 @@ namespace ComplyX.BusinessLogic
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<List<Gratuity_Transactions>>
+                return new ManagerBaseResponse<List<GratuityTransactionResponseModel>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -868,22 +690,22 @@ namespace ComplyX.BusinessLogic
                 };
             }
         }
-        public async Task<ManagerBaseResponse<IEnumerable<Gratuity_Transactions>>> GetGratuity_TransactionsFilter(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<GratuityTransaction>>> GetGratuity_TransactionsFilter(PagedListCriteria PagedListCriteria)
         {
             try
             {
 
-                var query = _context.Gratuity_Transactions.AsQueryable();
+                var query = _UnitOfWork.GratuityTransactionRespositories.GetQueryable();
                 var searchText = PagedListCriteria.SearchText?.Trim().ToLower();
                 if (!string.IsNullOrWhiteSpace(searchText))
                 {
                     query = query.Where(x => x.PaymentStatus.ToLower().Contains(searchText.ToLower()));
                 }
 
-                query = query.OrderBy(a => a.GratuityID);
+                query = query.OrderBy(a => a.GratuityId);
 
-                PageListed<Gratuity_Transactions> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
-                return new ManagerBaseResponse<IEnumerable<Gratuity_Transactions>>
+                PageListed<GratuityTransaction> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+                return new ManagerBaseResponse<IEnumerable<GratuityTransaction>>
                 {
                     Result = result.Data,
                     Message = "Gratuity Transactions Data Retrieved Successfully.",
@@ -900,7 +722,7 @@ namespace ComplyX.BusinessLogic
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<IEnumerable<Gratuity_Transactions>>
+                return new ManagerBaseResponse<IEnumerable<GratuityTransaction>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -908,13 +730,13 @@ namespace ComplyX.BusinessLogic
                 };
             }
         }
-        public async Task<ManagerBaseResponse<bool>> SaveFnF_CalculationsData(FnF_Calculations FnF_Calculations)
+        public async Task<ManagerBaseResponse<bool>> SaveFnF_CalculationsData(FnFCalculationRequestModel FnF_Calculations)
         {
-            var response = new ManagerBaseResponse<List<FnF_Calculations>>();
+            var response = new ManagerBaseResponse<List<FnFCalculation>>();
 
             try
             {
-                var Employee = await _context.Employees.FirstOrDefaultAsync(x => x.EmployeeID == FnF_Calculations.EmployeeID && x.CompanyID == FnF_Calculations.CompanyID);
+                var Employee = await _UnitOfWork.EmployeeRespositories.GetQueryable().FirstOrDefaultAsync(x => x.EmployeeId == FnF_Calculations.EmployeeId && x.CompanyId == FnF_Calculations.CompanyId);
 
                 if (Employee == null)
                 {
@@ -926,13 +748,13 @@ namespace ComplyX.BusinessLogic
                 }
                 else
                 {
-                    if (FnF_Calculations.FnFID == Guid.Empty)
+                    if (FnF_Calculations.FnFid == Guid.Empty)
                     {
                         // Insert
-                        FnF_Calculations _model = new FnF_Calculations();
-                        _model.FnFID = Guid.NewGuid();
-                        _model.EmployeeID = FnF_Calculations.EmployeeID;
-                        _model.CompanyID = FnF_Calculations.CompanyID;
+                        FnFCalculation _model = new FnFCalculation();
+                        _model.FnFid = Guid.NewGuid();
+                        _model.EmployeeId = FnF_Calculations.EmployeeId;
+                        _model.CompanyId = FnF_Calculations.CompanyId;
                         _model.ResignationDate = FnF_Calculations.ResignationDate;
                         _model.LastWorkingDate = FnF_Calculations.LastWorkingDate;
                         _model.NoticePeriodServedDays = FnF_Calculations.NoticePeriodServedDays;
@@ -948,17 +770,16 @@ namespace ComplyX.BusinessLogic
                         _model.Remarks = FnF_Calculations.Remarks;
                         _model.CreatedAt = Util.GetCurrentCSTDateAndTime();
 
-                        _context.Add(_model);
-                        _context.SaveChanges();
+                       await _UnitOfWork.FCalculationRespositories.AddAsync(_model);
                     }
                     else
                     {
                         // Update
-                        var originalTerm = _context.FnF_Calculations
-                            .Where(x => x.FnFID == FnF_Calculations.FnFID)
+                        var originalTerm = _UnitOfWork.FCalculationRespositories.GetQueryable()
+                            .Where(x => x.FnFid == FnF_Calculations.FnFid)
                                 .FirstOrDefault();
-                        originalTerm.EmployeeID = FnF_Calculations.EmployeeID;
-                        originalTerm.CompanyID = FnF_Calculations.CompanyID;
+                        originalTerm.EmployeeId = FnF_Calculations.EmployeeId;
+                        originalTerm.CompanyId = FnF_Calculations.CompanyId;
                         originalTerm.ResignationDate = FnF_Calculations.ResignationDate;
                         originalTerm.LastWorkingDate = FnF_Calculations.LastWorkingDate;
                         originalTerm.NoticePeriodServedDays = FnF_Calculations.NoticePeriodServedDays;
@@ -974,10 +795,10 @@ namespace ComplyX.BusinessLogic
                         originalTerm.Remarks = FnF_Calculations.Remarks;
                         originalTerm.UpdatedAt = Util.GetCurrentCSTDateAndTime();
 
-                        _context.Update(originalTerm);
-                        _context.SaveChanges();
+                        
                     }
                 }
+                await _UnitOfWork.CommitAsync();
                 return new ManagerBaseResponse<bool>
                 {
                     Result = true,
@@ -998,7 +819,7 @@ namespace ComplyX.BusinessLogic
             try
             {
                 // Get all report detail definitions for the given report name
-                var FnF_Calculations = await _context.FnF_Calculations.Where(x => x.FnFID.ToString() == FnFID).ToListAsync();
+                var FnF_Calculations = await _UnitOfWork.FCalculationRespositories.GetQueryable().Where(x => x.FnFid.ToString() == FnFID).ToListAsync();
 
                 if (string.IsNullOrEmpty(FnF_Calculations.ToString()))
                 {
@@ -1010,9 +831,9 @@ namespace ComplyX.BusinessLogic
                 }
 
                 // Remove all related report details
-                _context.FnF_Calculations.RemoveRange(FnF_Calculations);
+                _UnitOfWork.FCalculationRespositories.RemoveRange(FnF_Calculations);
 
-                await _context.SaveChangesAsync();
+                await _UnitOfWork.CommitAsync();
 
                 return new ManagerBaseResponse<bool>
                 {
@@ -1031,13 +852,34 @@ namespace ComplyX.BusinessLogic
             }
 
         }
-        public async Task<ManagerBaseResponse<List<FnF_Calculations >>> GetFnF_Calculations(string FnFID)
+        public async Task<ManagerBaseResponse<List<FnFCalculationResponseModel >>> GetFnF_Calculations(string FnFID)
         {
             try
             {
-                var FnF_Calculations = await _context.FnF_Calculations.AsQueryable().OrderBy(x => x.FnFID).ToListAsync();
+                var FnF_Calculations = await _UnitOfWork.FCalculationRespositories.GetQueryable().OrderBy(x => x.FnFid)
+                    .Select(x => new FnFCalculationResponseModel
+                    {
+                        FnFid = x.FnFid,
+                        ResignationDate = x.ResignationDate,
+                        LastWorkingDate = x.LastWorkingDate,
+                        NoticePeriodServedDays = x.NoticePeriodServedDays,
+                        SalaryDue = x.SalaryDue,
+                        LeaveEncashmentAmount = x.LeaveEncashmentAmount,
+                        GratuityAmount = x.GratuityAmount,
+                        Bonus = x.Bonus,
+                        Deductions = x.Deductions,
+                        NetPayable = x.NetPayable,
+                        ProcessedBy = x.ProcessedBy,
+                        PaymentStatus = x.PaymentStatus,
+                        ProcessedDate = x.ProcessedDate,
+                        Remarks = x.Remarks,
+                        CreatedAt = x.CreatedAt,
+                        UpdatedAt = x.UpdatedAt,
+                        EmployeeId = x.EmployeeId,
+                        CompanyId = x.CompanyId
+                    }).ToListAsync();
 
-                return new ManagerBaseResponse<List<FnF_Calculations>>
+                return new ManagerBaseResponse<List<FnFCalculationResponseModel>>
                 {
                     IsSuccess = true,
                     Result = FnF_Calculations,
@@ -1047,7 +889,7 @@ namespace ComplyX.BusinessLogic
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<List<FnF_Calculations>>
+                return new ManagerBaseResponse<List<FnFCalculationResponseModel>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -1055,22 +897,22 @@ namespace ComplyX.BusinessLogic
                 };
             }
         }
-        public async Task<ManagerBaseResponse<IEnumerable<FnF_Calculations>>> GetFnF_CalculationsFilter(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<FnFCalculation>>> GetFnF_CalculationsFilter(PagedListCriteria PagedListCriteria)
         {
             try
             {
 
-                var query = _context.FnF_Calculations.AsQueryable();
+                var query = _UnitOfWork.FCalculationRespositories.GetQueryable();
                 var searchText = PagedListCriteria.SearchText?.Trim().ToLower();
                 if (!string.IsNullOrWhiteSpace(searchText))
                 {
                     query = query.Where(x => x.PaymentStatus.ToLower().Contains(searchText.ToLower()));
                 }
 
-                query = query.OrderBy(a => a.FnFID);
+                query = query.OrderBy(a => a.FnFid);
 
-                PageListed<FnF_Calculations> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
-                return new ManagerBaseResponse<IEnumerable<FnF_Calculations>>
+                PageListed<FnFCalculation> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+                return new ManagerBaseResponse<IEnumerable<FnFCalculation>>
                 {
                     Result = result.Data,
                     Message = "FnF Calculations Data Retrieved Successfully.",
@@ -1087,7 +929,7 @@ namespace ComplyX.BusinessLogic
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<IEnumerable<FnF_Calculations>>
+                return new ManagerBaseResponse<IEnumerable<FnFCalculation>>
                 {
                     IsSuccess = false,
                     Result = null,

@@ -26,9 +26,11 @@ using ComplyX.Repositories.UnitOfWork;
 using ComplyX.Repositories.Repositories.Abstractions;
 using ComplyX.Repositories.Repositories;
 using AppContext = ComplyX_Businesss.Helper.AppContext;
+using ComplyX.Data.Entities;
+using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
-
+builder.Services.AddAcaBusinessAutoMapper(ServiceLifetime.Scoped);
 // Add DbContext
 builder.Services.AddDbContext< AppDbContext >(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
@@ -37,7 +39,7 @@ builder.Services.AddDbContext<AppContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
 // Add Identity
-builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+builder.Services.AddIdentity<ApplicationUsers, IdentityRole>()
     .AddEntityFrameworkStores< AppDbContext >()
     .AddDefaultTokenProviders();
 
@@ -46,7 +48,7 @@ builder.Services.AddScoped<IUserService, UserClass>();
 builder.Services.AddScoped<IProductOwner, AccountOwnerLogic>();
 builder.Services.AddScoped<IEmployeeServices, EmployeeClass>();
 builder.Services.AddScoped<IPayrollServices, PayrollClass>();
-builder.Services.AddScoped<ImportServices, ImportClass>();
+//builder.Services.AddScoped<ImportServices, ImportClass>();
 builder.Services.AddScoped<LicenseServices, LicenseClass>();
 builder.Services.AddScoped<EPFOServices, EPFOClass>();
 builder.Services.AddScoped<IGSTServices, GSTClass>();
@@ -55,7 +57,7 @@ builder.Services.AddScoped<ITTDSServices, ITTDSCClass>();
 builder.Services.AddScoped<ComplianceMgmtService, ComplianceMgmtCLass>();
 builder.Services.AddScoped<DocumentService, DocumentClass>();
 builder.Services.AddScoped<IUnitOfWork,UnitOfWork>();
-builder.Services.AddScoped<IProductOwnerRepositories, ProductOwnerRespositories>();
+builder.Services.AddRepositories();
 builder.Services.AddScoped<AccountOwnerLogic>();
 builder.Services.AddScoped<Commanfield>();
 builder.Services.AddScoped<Nest.Filter>();
@@ -95,6 +97,8 @@ builder.Services.AddControllers()
       });
 
 // Swagger
+
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(o =>
 {

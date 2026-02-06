@@ -7,7 +7,6 @@ using System.Web;
 using System.Security.Claims;
 using BCrypt.Net;
 using Microsoft.AspNetCore.Mvc;
- 
 using ComplyX_Businesss.Services;
 using System.Security.Principal;
 using Microsoft.EntityFrameworkCore;
@@ -23,23 +22,31 @@ using System.Text.RegularExpressions;
 using ComplyX_Businesss.Helper;
 using ComplyX.Shared.Data;
 using AppContext = ComplyX_Businesss.Helper.AppContext;
+using ComplyX.Data.Entities;
+using RegisterUser = ComplyX.Data.Entities.RegisterUser;
+using ComplyX.Repositories.UnitOfWork;
+using ComplyX_Businesss.Models.Logins;
+
 
 namespace ComplyX.BusinessLogic
 {
     public class UserClass : IUserService
     {
  
-        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly UserManager<ApplicationUsers> _userManager;
         private readonly JwtTokenService _tokenService;
         private readonly AppContext _context;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IUnitOfWork _UnitOfWork;
 
-        public UserClass(AppContext context, UserManager<ApplicationUser> userManager, JwtTokenService tokenservice, RoleManager<IdentityRole> roleManager)
+        public UserClass(AppContext context, UserManager<ApplicationUsers> userManager, 
+            IUnitOfWork unitOfWork ,JwtTokenService tokenservice, RoleManager<IdentityRole> roleManager)
         {
             _context = context;
             _userManager = userManager;
             _tokenService = tokenservice;
             _roleManager = roleManager;
+            _UnitOfWork = unitOfWork;
         }
 
         public async Task<ManagerBaseResponse<RegisterUser>> Register(RegisterUser RegisterUser)
@@ -178,7 +185,7 @@ namespace ComplyX.BusinessLogic
                         });
                     }
 
-                    var user = new ApplicationUser()
+                    var user = new ApplicationUsers()
                     {
                         UserName = RegisterUser.UserName,
                         Email = RegisterUser.Email,
@@ -203,14 +210,14 @@ namespace ComplyX.BusinessLogic
                         _model.Phone = RegisterUser.Phone;
                         _model.Address = RegisterUser.Address;
                         _model.State = RegisterUser.State;
-                        _model.GSTIN = RegisterUser.GSTIN;
-                        _model.PAN = RegisterUser.PAN;
-                      
+                        _model.Gstin = RegisterUser.Gstin;
+                        _model.Pan = RegisterUser.Pan;
 
-                        _context.Add(_model);
-                        _context.SaveChanges();
+
+                      await  _UnitOfWork.RegisterRespositories.AddAsync(_model);
 
                     }
+                    await _UnitOfWork.CommitAsync();
                     var response = new RegisterUser();
                      
                     return (new ManagerBaseResponse<RegisterUser>()
@@ -233,41 +240,50 @@ namespace ComplyX.BusinessLogic
             }
         }
 
-        public async Task<ManagerBaseResponse<Login>> Login(Login Login)
+        public async Task<ManagerBaseResponse<LoginResponseModel>> Login(ComplyX_Businesss.Models.Logins.LoginRequestModel Login)
         {
            // var inputpass = Convert.ToBase64String(Encoding.UTF8.GetBytes(Login.Password));
             // Replace with real authentication logic
-            var user = await _context.RegisterUser
+            var user = await _UnitOfWork.RegisterRespositories.GetQueryable()
                     .FirstOrDefaultAsync(x => x.UserName == Login.Username);
+            if (user == null)
+            {
+                return new ManagerBaseResponse<LoginResponseModel>()
+                {
+                    Result = null,
+                    Message = "Invalid Username or Password.",
+                    StatusCode = 401
+                };
+            }
             bool inputpass = BCrypt.Net.BCrypt.Verify(Login.Password, user.Password);
 
-            if (user != null && inputpass == true)
+            if (inputpass == true)
             {
                 // Login success
                 var token = _tokenService.GenerateToken(Login.Username);
-                var response = new Login
+                var response = new LoginResponseModel
                 {
 
                     token = token
                 };
 
-                return (new ManagerBaseResponse<Login>()
+                return  new ManagerBaseResponse<LoginResponseModel>()
                 {
                     Result =  response,
                     Message = "Username and Password is vaild.",
                     StatusCode = 200
-                });
+                } ;
             }
             else
             {
                 // Invalid username/password
-                return (new ManagerBaseResponse<Login>()
+                return new ManagerBaseResponse<LoginResponseModel>()
                 {
                     Result = null,
                     IsSuccess= false,
                     Message = "Invalid username/password",
                     StatusCode = 401
-                });
+                };
             }
 
         }

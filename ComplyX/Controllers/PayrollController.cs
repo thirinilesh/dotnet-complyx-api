@@ -12,6 +12,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ComplyX_Businesss.Helper;
+using ComplyX_Businesss.Models.PayrollData;
+using ComplyX_Businesss.Models.LeaveEncashmentPolicy;
+using ComplyX_Businesss.Models.LeaveEncashmentTransaction;
 
 namespace ComplyX.Controllers
 {
@@ -47,7 +50,7 @@ namespace ComplyX.Controllers
         /// <response code="200">The Payroll data was saved or updated successfully.</response>
         /// <response code="400">If there is an error while saving or updating the Payroll data.</response>
         [HttpPut("SavePayrollData")]
-        public async Task<IActionResult> SavePayrollData([FromBody] PayrollData Payroll)
+        public async Task<IActionResult> SavePayrollData([FromBody] PayrollDataRequestModel Payroll)
         {
             return ResponseResult(await _IPayrollServices.SavePayrollData(Payroll));
         }
@@ -128,7 +131,7 @@ namespace ComplyX.Controllers
         /// <response code="200">The Payroll data was updated successfully.</response>
         /// <response code="400">If there is an error while editing the Payroll data, such as invalid IDs or validation failures.</response>
         [HttpPut("EditPayrollDataByCompanyIDEmployeeID")]
-        public async Task<IActionResult> EditPayrollDataByCompanyIDEmployeeID([FromBody]PayrollData data, string CompanyID, string EmployeeID, string PayrollID)
+        public async Task<IActionResult> EditPayrollDataByCompanyIDEmployeeID([FromBody]PayrollDataRequestModel data, string CompanyID, string EmployeeID, string PayrollID)
         {
             return ResponseResult(await _IPayrollServices.EditPayrollDataByCompanyIDEmployeeID(data,CompanyID, EmployeeID,PayrollID));
         }
@@ -166,7 +169,7 @@ namespace ComplyX.Controllers
         /// <response code="200">The Leave Encashment Policy was saved or updated successfully.</response>
         /// <response code="400">If there is an error while saving or updating the policy.</response>
         [HttpPut("SaveLeaveEncashmentPolicyData")]
-        public async Task<IActionResult> SaveLeave_Encashment_PolicyData([FromBody] Leave_Encashment_Policy Leave_Encashment_Policy)
+        public async Task<IActionResult> SaveLeave_Encashment_PolicyData([FromBody] LeaveEncashmentPolicyRequestModel Leave_Encashment_Policy)
         {
             return ResponseResult(await _IPayrollServices.SaveLeave_Encashment_PolicyData(Leave_Encashment_Policy));
         }
@@ -241,7 +244,7 @@ namespace ComplyX.Controllers
         /// <response code="200">The Leave Encashment Transaction was saved or updated successfully.</response>
         /// <response code="400">If there is an error while saving or updating the transaction.</response>
         [HttpPut("SaveLeaveEncashmentTransactionData")]
-        public async Task<IActionResult> SaveLeave_Encashment_TransactionData([FromBody] Leave_Encashment_Transactions Leave_Encashment_Transactions)
+        public async Task<IActionResult> SaveLeave_Encashment_TransactionData([FromBody] LeaveEncashmentTransactionRequestModel Leave_Encashment_Transactions)
         {
             return ResponseResult(await _IPayrollServices.SaveLeave_Encashment_TransactionData(Leave_Encashment_Transactions));
         }

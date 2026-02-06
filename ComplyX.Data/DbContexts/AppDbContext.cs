@@ -16,7 +16,7 @@ public partial class AppDbContext :IdentityDbContext<ApplicationUsers>
         : base(options)
     {
     }
-
+    public virtual DbSet<ApplicationUsers> ApplicationUsers { get; set; }
     public virtual DbSet<AccountOwner> AccountOwners { get; set; }
 
     //public virtual DbSet<AspNetRole> AspNetRoles { get; set; }
@@ -113,7 +113,7 @@ public partial class AppDbContext :IdentityDbContext<ApplicationUsers>
 
     public virtual DbSet<ProductOwnerSubscription> ProductOwnerSubscriptions { get; set; }
 
-    public virtual DbSet<RegisterUser> RegisterUsers { get; set; }
+    public virtual DbSet<RegisterUser> RegisterUser { get; set; }
 
     public virtual DbSet<Subcontractor> Subcontractors { get; set; }
 
@@ -674,8 +674,11 @@ public partial class AppDbContext :IdentityDbContext<ApplicationUsers>
                 .HasConstraintName("FK_EPFOPeriod_Company");
 
             entity.HasOne(d => d.CreatedByUser).WithMany(p => p.EpfoperiodCreatedByUsers)
-                .HasForeignKey(d => d.CreatedByUserId)
-                .HasConstraintName("FK_EPFOPeriod_AspNetUsers");
+             .HasForeignKey(d => d.CreatedByUserId)
+                   .HasPrincipalKey(u => u.Id)
+                   .OnDelete(DeleteBehavior.Restrict);
+            //.HasForeignKey(d => d.CreatedByUserId)
+            //.HasConstraintName("FK_EPFOPeriod_AspNetUsers");
 
             entity.HasOne(d => d.LockedByUser).WithMany(p => p.EpfoperiodLockedByUsers)
                 .HasForeignKey(d => d.LockedByUserId)

@@ -1,7 +1,10 @@
 ﻿using ComplyX.Shared.Helper;
-using ComplyX_Businesss.Models;
+using ComplyX.Data.Entities;
 using ComplyX.BusinessLogic;
 using Microsoft.AspNetCore.Mvc;
+using ComplyX_Businesss.Models;
+using RegisterUser = ComplyX.Data.Entities.RegisterUser;
+using ComplyX_Businesss.Models.Logins;
 
 namespace ComplyX.Services
 {
@@ -10,7 +13,7 @@ namespace ComplyX.Services
     {
        
         Task<ManagerBaseResponse<RegisterUser>> Register(RegisterUser RegisterUser);
-        Task<ManagerBaseResponse<Login>> Login(Login Login);
+        Task<ManagerBaseResponse<LoginResponseModel>> Login(LoginRequestModel Login);
         Task<AuthRequestModel> Authenticate(AuthRequestModel request);
         Task<ManagerBaseResponse<ForgotPasswordVerifyModel>> ForgotPassword([FromBody] ForgotPasswordVerifyModel request);
         Task<ManagerBaseResponse<ResetPasswordRequestModel>> ResetPassword([FromBody] ResetPasswordRequestModel request);

@@ -7,6 +7,15 @@ using Microsoft.EntityFrameworkCore;
 using ComplyX_Businesss.Helper;
 using Elasticsearch.Net;
 using AppContext = ComplyX_Businesss.Helper.AppContext;
+using ComplyX_Businesss.Models.GSTHSNSAC;
+using ComplyX.Data.Entities;
+using AutoMapper;
+using ComplyX.Repositories.UnitOfWork;
+using ComplyX_Businesss.Models.GSTHSNMapping;
+using ComplyX_Businesss.Models.GSTInvoiceSeries;
+using ComplyX_Businesss.Models.GSTPurchase;
+using ComplyX_Businesss.Models.GSTReturns;
+using ComplyX_Businesss.Models.GSTSales;
 
 namespace ComplyX_Businesss.Services.Implementation
 {
@@ -14,6 +23,8 @@ namespace ComplyX_Businesss.Services.Implementation
     {
         private readonly AppContext _context;
         private readonly Nest.Filter _filter;
+        private readonly IMapper _mapper;
+        private readonly IUnitOfWork _UnitOfWork;
 
 
         private readonly Dictionary<string, string> orderByTranslations = new Dictionary<string, string>
@@ -21,58 +32,38 @@ namespace ComplyX_Businesss.Services.Implementation
             { "name", "Name" }
         };
 
-        public GSTClass(AppContext context, Nest.Filter filter)
+        public GSTClass(AppContext context, Nest.Filter filter, IMapper mapper, IUnitOfWork unitOfWork)
         {
             _context = context;
             _filter = filter;
-
+            _mapper = mapper;
+            _UnitOfWork = unitOfWork;
         }
-        public Task<ManagerBaseResponse<bool>> SaveGST_HSNSACData(GST_HSNSAC GST_HSNSAC)
+        public async Task<ManagerBaseResponse<bool>> SaveGST_HSNSACData(GSTHSNSACRequestModel GST_HSNSAC)
         {
-            var response = new ManagerBaseResponse<List<GST_HSNSAC>>();
+            var response = new ManagerBaseResponse<List<GstHsnsac>>();
 
             try
             {
-                if (GST_HSNSAC.CodeID == 0)
-                {
-                    // Insert
-                    GST_HSNSAC originalTerm = new GST_HSNSAC();
-                   originalTerm.CodeType = GST_HSNSAC.CodeType;
-                    originalTerm.Code = GST_HSNSAC.Code;
-                    originalTerm.Description = GST_HSNSAC.Description;
-                    originalTerm.GST_Rate =   GST_HSNSAC.GST_Rate;
+                var baemployee = _mapper.Map<GstHsnsac>(GST_HSNSAC);
 
-                    _context.Add(originalTerm);
-                    _context.SaveChanges();
-                }
-                else
-                {
-                    // Update
-                    var originalTerm = _context.GST_HSNSAC
-                        .Where(x => x.CodeID == GST_HSNSAC.CodeID)
-                        .FirstOrDefault();
-                    originalTerm.CodeType = GST_HSNSAC.CodeType;
-                    originalTerm.Code = GST_HSNSAC.Code;
-                    originalTerm.Description = GST_HSNSAC.Description;
-                    originalTerm.GST_Rate = GST_HSNSAC.GST_Rate;
+                await  _UnitOfWork.GSTHSNSACRespositories.AddAsync(baemployee);
+                await _UnitOfWork.CommitAsync();
+                 
 
-                    _context.Update(originalTerm);
-                    _context.SaveChanges();
-                }
-
-                return Task.FromResult(new ManagerBaseResponse<bool>
+                return  new ManagerBaseResponse<bool>
                 {
                     Result = true,
                     Message = "GST HSNSAC Details Saved Successfully."
-                });
+                } ;
             }
             catch (Exception e)
             {
-                return Task.FromResult(new ManagerBaseResponse<bool>
+                return  new ManagerBaseResponse<bool>
                 {
                     Result = false,
                     Message = e.Message
-                });
+                } ;
             }
         }
         public async Task<ManagerBaseResponse<bool>> RemoveGST_HSNSACData(string CodeID)
@@ -80,7 +71,7 @@ namespace ComplyX_Businesss.Services.Implementation
             try
             {
                 // Get all report detail definitions for the given report name
-                var GST_HSNSAC = await _context.GST_HSNSAC.Where(x => x.CodeID.ToString() == CodeID).ToListAsync();
+                var GST_HSNSAC = await _UnitOfWork.GSTHSNSACRespositories.GetQueryable().Where(x => x.CodeId.ToString() == CodeID).ToListAsync();
 
                 if (string.IsNullOrEmpty(GST_HSNSAC.ToString()))
                 {
@@ -92,9 +83,8 @@ namespace ComplyX_Businesss.Services.Implementation
                 }
 
                 // Remove all related report details
-                _context.GST_HSNSAC.RemoveRange(GST_HSNSAC);
-
-                await _context.SaveChangesAsync();
+                _UnitOfWork.GSTHSNSACRespositories.RemoveRange(GST_HSNSAC);
+                await _UnitOfWork.CommitAsync();
 
                 return new ManagerBaseResponse<bool>
                 {
@@ -112,13 +102,21 @@ namespace ComplyX_Businesss.Services.Implementation
                 };
             }
         }
-        public async Task<ManagerBaseResponse<List<GST_HSNSAC>>> GetGST_HSNSACData()
+        public async Task<ManagerBaseResponse<List<GSTHSNSACResponseModel>>> GetGST_HSNSACData()
         {
             try
             {
-                var plans = await _context.GST_HSNSAC.AsQueryable().OrderBy(x => x.CodeID).ToListAsync();
+                var plans = await _UnitOfWork.GSTHSNSACRespositories.GetQueryable().OrderBy(x => x.CodeId)
+                     .Select(x => new GSTHSNSACResponseModel
+                     {
+                         CodeId = x.CodeId,
+                         CodeType = x.CodeType,
+                         Code = x.Code,
+                         Description = x.Description,
+                         GstRate = x.GstRate
+                     }).ToListAsync();
 
-                return new ManagerBaseResponse<List<GST_HSNSAC>>
+                return new ManagerBaseResponse<List<GSTHSNSACResponseModel>>
                 {
                     IsSuccess = true,
                     Result = plans,
@@ -128,7 +126,7 @@ namespace ComplyX_Businesss.Services.Implementation
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<List<GST_HSNSAC>>
+                return new ManagerBaseResponse<List<GSTHSNSACResponseModel>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -136,23 +134,23 @@ namespace ComplyX_Businesss.Services.Implementation
                 };
             }
         }
-        public async Task<ManagerBaseResponse<IEnumerable<GST_HSNSAC>>> GetGST_HSNSACFilter(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<GstHsnsac>>> GetGST_HSNSACFilter(PagedListCriteria PagedListCriteria)
         {
             try
             {
 
-                var query = _context.GST_HSNSAC.AsQueryable();
+                var query = _UnitOfWork.GSTHSNSACRespositories.GetQueryable();
                 var searchText = PagedListCriteria.SearchText?.Trim().ToLower();
                 if (!string.IsNullOrWhiteSpace(searchText))
                 {
                     query = query.Where(x => x.Description.ToLower().Contains(searchText.ToLower()));
                 }
 
-                query = query.OrderBy(a => a.CodeID);
+                query = query.OrderBy(a => a.CodeId);
 
-                PageListed<GST_HSNSAC> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+                PageListed<GstHsnsac> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
 
-                return new ManagerBaseResponse<IEnumerable<GST_HSNSAC>>
+                return new ManagerBaseResponse<IEnumerable<GstHsnsac>>
                 {
                     Result = result.Data,
                     Message = "GST HSNSAC Data Retrieved Successfully.",
@@ -169,7 +167,7 @@ namespace ComplyX_Businesss.Services.Implementation
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<IEnumerable<GST_HSNSAC>>
+                return new ManagerBaseResponse<IEnumerable<GstHsnsac>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -177,13 +175,13 @@ namespace ComplyX_Businesss.Services.Implementation
                 };
             }
         }
-        public async Task<ManagerBaseResponse<bool>> SaveGST_HSN_MappingData(GST_HSN_Mapping GST_HSN_Mapping)
+        public async Task<ManagerBaseResponse<bool>> SaveGST_HSN_MappingData(GSTHSNMappingRequestModel GST_HSN_Mapping)
         {
-            var response = new ManagerBaseResponse<List<GST_HSN_Mapping>>();
+            var response = new ManagerBaseResponse<List<GstHsnMapping>>();
 
             try
             {
-                var Company = await  _context.Companies.FirstOrDefaultAsync(x => x.CompanyID == GST_HSN_Mapping.CompanyID);
+                var Company = await _UnitOfWork.GSTHSNMappingRespositories.GetQueryable().FirstOrDefaultAsync(x => x.CompanyId == GST_HSN_Mapping.CompanyId);
 
                 if (Company == null)
                 {
@@ -196,8 +194,8 @@ namespace ComplyX_Businesss.Services.Implementation
                 }
                 else
                 {
-                    var code = await _context.GST_HSNSAC.AnyAsync(x => x.Code == GST_HSN_Mapping.SACCode);
-                    if (GST_HSN_Mapping.SACCode == "")
+                    var code = await _UnitOfWork.GSTHSNSACRespositories.GetQueryable().AnyAsync(x => x.Code == GST_HSN_Mapping.Saccode);
+                    if (GST_HSN_Mapping.Saccode == "")
                     {
                         return new ManagerBaseResponse<bool>
                         {
@@ -208,14 +206,14 @@ namespace ComplyX_Businesss.Services.Implementation
                         };
                     }
 
-                    if (GST_HSN_Mapping.MappingID == 0)
+                    if (GST_HSN_Mapping.MappingId == 0)
                 {
                     // Insert
-                    GST_HSN_Mapping originalTerm = new GST_HSN_Mapping();
-                        originalTerm.CompanyID = GST_HSN_Mapping.CompanyID;
-                        originalTerm.HSNCode=GST_HSN_Mapping.HSNCode;
-                        originalTerm.ItemID = GST_HSN_Mapping.ItemID;
-                        if(!code && GST_HSN_Mapping.SACCode != null)
+                    GstHsnMapping originalTerm = new GstHsnMapping();
+                        originalTerm.CompanyId = GST_HSN_Mapping.CompanyId;
+                        originalTerm.Hsncode=GST_HSN_Mapping.Hsncode;
+                        originalTerm.ItemId = GST_HSN_Mapping.ItemId;
+                        if(!code && GST_HSN_Mapping.Saccode != null)
                         {
                             return new ManagerBaseResponse<bool>
                             {
@@ -225,22 +223,21 @@ namespace ComplyX_Businesss.Services.Implementation
                                 Message = "SAC Code is not found in Master Table.",
                             };
                         }                       
-                        originalTerm.SACCode = GST_HSN_Mapping.SACCode;
-                        originalTerm.GST_Rate = GST_HSN_Mapping.GST_Rate;
+                        originalTerm.Saccode = GST_HSN_Mapping.Saccode;
+                        originalTerm.GstRate = GST_HSN_Mapping.GstRate;
 
-                    _context.Add(originalTerm);
-                    _context.SaveChanges();
+                   await _UnitOfWork.GSTHSNMappingRespositories.AddAsync(originalTerm);
                 }
                 else
                 {
                     // Update
-                    var originalTerm = _context.GST_HSN_Mapping
-                        .Where(x => x.MappingID == GST_HSN_Mapping.MappingID)
+                    var originalTerm = _UnitOfWork.GSTHSNMappingRespositories.GetQueryable()
+                        .Where(x => x.MappingId == GST_HSN_Mapping.MappingId)
                         .FirstOrDefault();
-                        originalTerm.CompanyID = GST_HSN_Mapping.CompanyID;
-                        originalTerm.HSNCode = GST_HSN_Mapping.HSNCode;
-                        originalTerm.ItemID = GST_HSN_Mapping.ItemID;
-                        if (!code && GST_HSN_Mapping.SACCode != null)
+                        originalTerm.CompanyId = GST_HSN_Mapping.CompanyId;
+                        originalTerm.Hsncode = GST_HSN_Mapping.Hsncode;
+                        originalTerm.ItemId = GST_HSN_Mapping.ItemId;
+                        if (!code && GST_HSN_Mapping.Saccode != null)
                         {
                             return new ManagerBaseResponse<bool>
                             {
@@ -250,13 +247,13 @@ namespace ComplyX_Businesss.Services.Implementation
                                 Message = "SAC Code is not found in Master Table.",
                             };
                         }
-                        originalTerm.SACCode = GST_HSN_Mapping.SACCode;
-                        originalTerm.GST_Rate = GST_HSN_Mapping.GST_Rate;
+                        originalTerm.Saccode = GST_HSN_Mapping.Saccode;
+                        originalTerm.GstRate = GST_HSN_Mapping.GstRate;
 
-                        _context.Update(originalTerm);
-                    _context.SaveChanges();
+                      
                 }
                 }
+                await _UnitOfWork.CommitAsync();
                 return new ManagerBaseResponse<bool>
                 {
                     Result = true,
@@ -277,7 +274,7 @@ namespace ComplyX_Businesss.Services.Implementation
             try
             {
                 // Get all report detail definitions for the given report name
-                var GST_HSN_Mappings = await _context.GST_HSN_Mapping.Where(x => x.MappingID.ToString() == MappingID).ToListAsync();
+                var GST_HSN_Mappings = await _UnitOfWork.GSTHSNMappingRespositories.GetQueryable().Where(x => x.MappingId.ToString() == MappingID).ToListAsync();
 
                 if (string.IsNullOrEmpty(GST_HSN_Mappings.ToString()))
                 {
@@ -289,10 +286,8 @@ namespace ComplyX_Businesss.Services.Implementation
                 }
 
                 // Remove all related report details
-                _context.GST_HSN_Mapping.RemoveRange(GST_HSN_Mappings);
-
-                await _context.SaveChangesAsync();
-
+                _UnitOfWork.GSTHSNMappingRespositories.RemoveRange(GST_HSN_Mappings);
+                await _UnitOfWork.CommitAsync();
                 return new ManagerBaseResponse<bool>
                 {
                     Result = true,
@@ -309,13 +304,22 @@ namespace ComplyX_Businesss.Services.Implementation
                 };
             }
         }
-        public async Task<ManagerBaseResponse<List<GST_HSN_Mapping>>> GetGST_HSN_MappingData()
+        public async Task<ManagerBaseResponse<List<GSTHSNMappingResponseModel>>> GetGST_HSN_MappingData()
         {
             try
             {
-                var plans = await _context.GST_HSN_Mapping.AsQueryable().OrderBy(x => x.MappingID).ToListAsync();
+                var plans = await _UnitOfWork.GSTHSNMappingRespositories.GetQueryable().OrderBy(x => x.MappingId)
+                     .Select(x => new GSTHSNMappingResponseModel
+                     {
+                         MappingId = x.MappingId,
+                         CompanyId = x.CompanyId,
+                         ItemId = x.ItemId,
+                         Hsncode = x.Hsncode,
+                         Saccode = x.Saccode,
+                         GstRate = x.GstRate
+                     }).ToListAsync();
 
-                return new ManagerBaseResponse<List<GST_HSN_Mapping>>
+                return new ManagerBaseResponse<List<GSTHSNMappingResponseModel>>
                 {
                     IsSuccess = true,
                     Result = plans,
@@ -325,7 +329,7 @@ namespace ComplyX_Businesss.Services.Implementation
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<List<GST_HSN_Mapping>>
+                return new ManagerBaseResponse<List<GSTHSNMappingResponseModel>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -333,23 +337,23 @@ namespace ComplyX_Businesss.Services.Implementation
                 };
             }
         }
-        public async Task<ManagerBaseResponse<IEnumerable<GST_HSN_Mapping>>> GetGST_HSN_MappingFilter(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<GstHsnMapping>>> GetGST_HSN_MappingFilter(PagedListCriteria PagedListCriteria)
         {
             try
             {
 
-                var query = _context.GST_HSN_Mapping.AsQueryable();
+                var query = _UnitOfWork.GSTHSNMappingRespositories.GetQueryable();
                 var searchText = PagedListCriteria.SearchText?.Trim().ToLower();
                 if (!string.IsNullOrWhiteSpace(searchText))
                 {
-                    query = query.Where(x => x.HSNCode.ToLower().Contains(searchText.ToLower()));
+                    query = query.Where(x => x.Hsncode.ToLower().Contains(searchText.ToLower()));
                 }
 
-                query = query.OrderBy(a => a.MappingID);
+                query = query.OrderBy(a => a.MappingId);
 
-                PageListed<GST_HSN_Mapping> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+                PageListed<GstHsnMapping> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
 
-                return new ManagerBaseResponse<IEnumerable<GST_HSN_Mapping>>
+                return new ManagerBaseResponse<IEnumerable<GstHsnMapping>>
                 {
                     Result = result.Data,
                     Message = "GST HSN Mapping Data Retrieved Successfully.",
@@ -366,7 +370,7 @@ namespace ComplyX_Businesss.Services.Implementation
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<IEnumerable<GST_HSN_Mapping>>
+                return new ManagerBaseResponse<IEnumerable<GstHsnMapping>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -374,17 +378,17 @@ namespace ComplyX_Businesss.Services.Implementation
                 };
             }
         }
-        public async Task<ManagerBaseResponse<bool>> SaveGST_InvoiceSeriesData(GST_InvoiceSeries GST_InvoiceSeries)
+        public async Task<ManagerBaseResponse<bool>> SaveGST_InvoiceSeriesData(GstInvoiceSeriesRequestModel GST_InvoiceSeries)
         {
-            var response = new ManagerBaseResponse<List<GST_InvoiceSeries>>();
+            var response = new ManagerBaseResponse<List<GstInvoiceSeries>>();
 
             try
             {
-                var Company = await _context.Companies.FirstOrDefaultAsync(x => x.CompanyID == GST_InvoiceSeries.CompanyID);
+                var Company = await _UnitOfWork.CompanyRepository.GetQueryable().FirstOrDefaultAsync(x => x.CompanyId == GST_InvoiceSeries.CompanyId);
 
                 if (Company == null)
                 {
-                    return  new ManagerBaseResponse<bool>
+                    return new ManagerBaseResponse<bool>
                     {
                         Result = false,
                         Message = "Company is not found.",
@@ -393,42 +397,41 @@ namespace ComplyX_Businesss.Services.Implementation
                 }
                 else
                 {
-                    if (GST_InvoiceSeries.SeriesID == 0)
+                    if (GST_InvoiceSeries.SeriesId == 0)
                     {
                         // Insert
-                        GST_InvoiceSeries originalTerm = new GST_InvoiceSeries();
-                        originalTerm.CompanyID = GST_InvoiceSeries.CompanyID;
+                        GstInvoiceSeries originalTerm = new GstInvoiceSeries();
+                        originalTerm.CompanyId = GST_InvoiceSeries.CompanyId;
                         originalTerm.FinancialYear = GST_InvoiceSeries.FinancialYear;
                         originalTerm.Prefix = GST_InvoiceSeries.Prefix;
                         originalTerm.CurrentNumber = GST_InvoiceSeries.CurrentNumber;
                         originalTerm.Suffix = GST_InvoiceSeries.Suffix;
                         originalTerm.LastUpdated = GST_InvoiceSeries.LastUpdated;
 
-                        _context.Add(originalTerm);
-                        _context.SaveChanges();
+                        await _UnitOfWork.InvoiceSeriesRespositories.AddAsync(originalTerm);
                     }
                     else
                     {
                         // Update
-                        var originalTerm = _context.GST_InvoiceSeries
-                            .Where(x => x.SeriesID == GST_InvoiceSeries.SeriesID)
+                        var originalTerm = _UnitOfWork.InvoiceSeriesRespositories.GetQueryable()
+                            .Where(x => x.SeriesId == GST_InvoiceSeries.SeriesId)
                             .FirstOrDefault();
-                        originalTerm.CompanyID =  GST_InvoiceSeries .CompanyID;
-                        originalTerm.CurrentNumber = GST_InvoiceSeries .CurrentNumber;
-                        originalTerm.Prefix = GST_InvoiceSeries .Prefix;
+                        originalTerm.CompanyId = GST_InvoiceSeries.CompanyId;
                         originalTerm.CurrentNumber = GST_InvoiceSeries.CurrentNumber;
-                        originalTerm.Suffix = GST_InvoiceSeries .Suffix;
-                        originalTerm.LastUpdated = GST_InvoiceSeries .LastUpdated;
+                        originalTerm.Prefix = GST_InvoiceSeries.Prefix;
+                        originalTerm.CurrentNumber = GST_InvoiceSeries.CurrentNumber;
+                        originalTerm.Suffix = GST_InvoiceSeries.Suffix;
+                        originalTerm.LastUpdated = GST_InvoiceSeries.LastUpdated;
 
-                        _context.Update(originalTerm);
-                        _context.SaveChanges();
+                       
                     }
+                    await _UnitOfWork.CommitAsync();
+                    return new ManagerBaseResponse<bool>
+                    {
+                        Result = true,
+                        Message = "GST InvoiceSeries Details Saved Successfully."
+                    };
                 }
-                return new ManagerBaseResponse<bool>
-                {
-                    Result = true,
-                    Message = "GST InvoiceSeries Details Saved Successfully."
-                };
             }
             catch (Exception e)
             {
@@ -444,7 +447,7 @@ namespace ComplyX_Businesss.Services.Implementation
             try
             {
                 // Get all report detail definitions for the given report name
-                var GST_Invoic = await _context.GST_InvoiceSeries.Where(x => x.SeriesID.ToString() == SeriesID).ToListAsync();
+                var GST_Invoic = await _UnitOfWork.InvoiceSeriesRespositories.GetQueryable().Where(x => x.SeriesId.ToString() == SeriesID).ToListAsync();
 
                 if (string.IsNullOrEmpty(GST_Invoic.ToString()))
                 {
@@ -456,9 +459,9 @@ namespace ComplyX_Businesss.Services.Implementation
                 }
 
                 // Remove all related report details
-                _context.GST_InvoiceSeries.RemoveRange(GST_Invoic);
+                _UnitOfWork.InvoiceSeriesRespositories.RemoveRange(GST_Invoic);
 
-                await _context.SaveChangesAsync();
+                await _UnitOfWork.CommitAsync();
 
                 return new ManagerBaseResponse<bool>
                 {
@@ -476,13 +479,23 @@ namespace ComplyX_Businesss.Services.Implementation
                 };
             }
         }
-        public async Task<ManagerBaseResponse<List<GST_InvoiceSeries>>> GetGST_InvoiceSeriesData()
+        public async Task<ManagerBaseResponse<List<GstInvoiceSeriesResponseModel>>> GetGST_InvoiceSeriesData()
         {
             try
             {
-                var plans = await _context.GST_InvoiceSeries.AsQueryable().OrderBy(x => x.SeriesID).ToListAsync();
+                var plans = await _UnitOfWork.InvoiceSeriesRespositories.GetQueryable().OrderBy(x => x.SeriesId)
+                     .Select(x => new GstInvoiceSeriesResponseModel
+                     {
+                         SeriesId = x.SeriesId,
+                         CompanyId = x.CompanyId,
+                         FinancialYear = x.FinancialYear,
+                         Prefix = x.Prefix,
+                         CurrentNumber = x.CurrentNumber,
+                         Suffix = x.Suffix,
+                         LastUpdated = x.LastUpdated
+                     }).ToListAsync();
 
-                return new ManagerBaseResponse<List<GST_InvoiceSeries>>
+                return new ManagerBaseResponse<List<GstInvoiceSeriesResponseModel>>
                 {
                     IsSuccess = true,
                     Result = plans,
@@ -492,7 +505,7 @@ namespace ComplyX_Businesss.Services.Implementation
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<List<GST_InvoiceSeries>>
+                return new ManagerBaseResponse<List<GstInvoiceSeriesResponseModel>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -500,23 +513,23 @@ namespace ComplyX_Businesss.Services.Implementation
                 };
             }
         }
-        public async Task<ManagerBaseResponse<IEnumerable<GST_InvoiceSeries>>> GetGST_InvoiceSeriesFilter(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<GstInvoiceSeries>>> GetGST_InvoiceSeriesFilter(PagedListCriteria PagedListCriteria)
         {
             try
             {
 
-                var query = _context.GST_InvoiceSeries.AsQueryable();
+                var query = _UnitOfWork.InvoiceSeriesRespositories.GetQueryable();
                 var searchText = PagedListCriteria.SearchText?.Trim().ToLower();
                 if (!string.IsNullOrWhiteSpace(searchText))
                 {
                     query = query.Where(x => x.FinancialYear.ToLower().Contains(searchText.ToLower()));
                 }
 
-                query = query.OrderBy(a => a.SeriesID);
+                query = query.OrderBy(a => a.SeriesId);
 
-                PageListed<GST_InvoiceSeries> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+                PageListed<GstInvoiceSeries> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
 
-                return new ManagerBaseResponse<IEnumerable<GST_InvoiceSeries>>
+                return new ManagerBaseResponse<IEnumerable<GstInvoiceSeries>>
                 {
                     Result = result.Data,
                     Message = "GST InvoiceSeries Data Retrieved Successfully.",
@@ -533,7 +546,7 @@ namespace ComplyX_Businesss.Services.Implementation
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<IEnumerable<GST_InvoiceSeries>>
+                return new ManagerBaseResponse<IEnumerable<GstInvoiceSeries>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -541,13 +554,13 @@ namespace ComplyX_Businesss.Services.Implementation
                 };
             }
         }
-        public async Task<ManagerBaseResponse<bool>> SaveGST_PurchaseData(GST_Purchase GST_Purchase)
+        public async Task<ManagerBaseResponse<bool>> SaveGST_PurchaseData(GstPurchaseRequestModel GST_Purchase)
         {
-            var response = new ManagerBaseResponse<List<GST_Purchase>>();
+            var response = new ManagerBaseResponse<List<GstPurchase>>();
 
             try
             {
-                var Company =await _context.Companies.FirstOrDefaultAsync(x => x.CompanyID == GST_Purchase.CompanyID);
+                var Company =await _UnitOfWork.PurchaseRespositories.GetQueryable().FirstOrDefaultAsync(x => x.CompanyId == GST_Purchase.CompanyId);
                  if (Company == null)
                 {
                     return new ManagerBaseResponse<bool>
@@ -559,8 +572,8 @@ namespace ComplyX_Businesss.Services.Implementation
                 }
                 else
                 {
-                    var code = await _context.GST_HSNSAC.AnyAsync(x => x.Code == GST_Purchase.SACCode);
-                    if (GST_Purchase.SACCode == "")
+                    var code = await _UnitOfWork.GSTHSNSACRespositories.GetQueryable().AnyAsync(x => x.Code == GST_Purchase.Saccode);
+                    if (GST_Purchase.Saccode == "")
                     {
                         return new ManagerBaseResponse<bool>
                         {
@@ -570,18 +583,18 @@ namespace ComplyX_Businesss.Services.Implementation
                             Message = "SAC Code is not allow blank."
                         };
                     }
-                    if (GST_Purchase.PurchaseID == 0)
+                    if (GST_Purchase.PurchaseId == 0)
                     {
                         // Insert
-                        GST_Purchase originalTerm = new GST_Purchase();
-                        originalTerm.CompanyID = GST_Purchase.CompanyID;
-                       originalTerm.HSNCode = GST_Purchase.HSNCode;
+                        GstPurchase originalTerm = new GstPurchase();
+                        originalTerm.CompanyId = GST_Purchase.CompanyId;
+                       originalTerm.Hsncode = GST_Purchase.Hsncode;
                         originalTerm.BillNo = GST_Purchase.BillNo;
                         originalTerm.BillDate = GST_Purchase.BillDate;
                         originalTerm.SupplierName = GST_Purchase.SupplierName;
-                        originalTerm.SupplierGSTIN    = GST_Purchase.SupplierGSTIN;
+                        originalTerm.SupplierGstin    = GST_Purchase.SupplierGstin;
 
-                        if (!code && GST_Purchase.SACCode != null)
+                        if (!code && GST_Purchase.Saccode != null)
                         {
                             return new ManagerBaseResponse<bool>
                             {
@@ -591,32 +604,31 @@ namespace ComplyX_Businesss.Services.Implementation
                                 Message = "SAC Code is not found in Master Table.",
                             };
                         }
-                        originalTerm.SACCode = GST_Purchase.SACCode;
+                        originalTerm.Saccode = GST_Purchase.Saccode;
                         originalTerm.TaxableValue = GST_Purchase.TaxableValue;
-                        originalTerm.CGST = GST_Purchase.CGST;
-                        originalTerm.SGST = GST_Purchase.SGST;
-                        originalTerm.IGST = GST_Purchase.IGST;
-                        originalTerm.PLaceOfSupply = GST_Purchase.PLaceOfSupply;
+                        originalTerm.Cgst = GST_Purchase.Cgst;
+                        originalTerm.Sgst = GST_Purchase.Sgst;
+                        originalTerm.Igst = GST_Purchase.Igst;
+                        originalTerm.PlaceOfSupply = GST_Purchase.PlaceOfSupply;
                         originalTerm.TotalBillValue = GST_Purchase.TotalBillValue;
                         originalTerm.CreatedOn = GST_Purchase.CreatedOn;
                         originalTerm.CreatedBy = GST_Purchase.CreatedBy;
 
-                        _context.Add(originalTerm);
-                        _context.SaveChanges();
+                       await _UnitOfWork.PurchaseRespositories.AddAsync(originalTerm);
                     }
                     else
                     {
                         // Update
-                        var originalTerm = _context.GST_Purchase
-                            .Where(x => x.PurchaseID == GST_Purchase.PurchaseID)
+                        var originalTerm = _UnitOfWork.PurchaseRespositories.GetQueryable()
+                            .Where(x => x.PurchaseId == GST_Purchase.PurchaseId)
                             .FirstOrDefault();
-                        originalTerm.CompanyID = GST_Purchase.CompanyID;
-                        originalTerm.HSNCode = GST_Purchase.HSNCode;
+                        originalTerm.CompanyId = GST_Purchase.CompanyId;
+                        originalTerm.Hsncode = GST_Purchase.Hsncode;
                         originalTerm.BillNo = GST_Purchase.BillNo;
                         originalTerm.BillDate = GST_Purchase.BillDate;
                         originalTerm.SupplierName = GST_Purchase.SupplierName;
-                        originalTerm.SupplierGSTIN = GST_Purchase.SupplierGSTIN;
-                        if (!code && GST_Purchase.SACCode != null)
+                        originalTerm.SupplierGstin = GST_Purchase.SupplierGstin;
+                        if (!code && GST_Purchase.Saccode != null)
                         {
                             return new ManagerBaseResponse<bool>
                             {
@@ -626,20 +638,20 @@ namespace ComplyX_Businesss.Services.Implementation
                                 Message = "SAC Code is not found in Master Table.",
                             };
                         }
-                        originalTerm.SACCode = GST_Purchase.SACCode;
+                        originalTerm.Saccode = GST_Purchase.Saccode;
                         originalTerm.TaxableValue = GST_Purchase.TaxableValue;
-                        originalTerm.CGST = GST_Purchase.CGST;
-                        originalTerm.SGST = GST_Purchase.SGST;
-                        originalTerm.IGST = GST_Purchase.IGST;
-                        originalTerm.PLaceOfSupply = GST_Purchase.PLaceOfSupply;
+                        originalTerm.Cgst = GST_Purchase.Cgst;
+                        originalTerm.Sgst = GST_Purchase.Sgst;
+                        originalTerm.Igst = GST_Purchase.Igst;
+                        originalTerm.PlaceOfSupply = GST_Purchase.PlaceOfSupply;
                         originalTerm.TotalBillValue = GST_Purchase.TotalBillValue;
                         originalTerm.CreatedOn = GST_Purchase.CreatedOn;
                         originalTerm.CreatedBy = GST_Purchase.CreatedBy;
 
-                        _context.Update(originalTerm);
-                        _context.SaveChanges();
+                      
                     }
                 }
+                 await _UnitOfWork.CommitAsync();
                 return  new ManagerBaseResponse<bool>
                 {
                     Result = true,
@@ -660,7 +672,7 @@ namespace ComplyX_Businesss.Services.Implementation
             try
             {
                 // Get all report detail definitions for the given report name
-                var Purchase = await _context.GST_Purchase.Where(x => x.PurchaseID.ToString() == PurchaseID).ToListAsync();
+                var Purchase = await _UnitOfWork.PurchaseRespositories.GetQueryable().Where(x => x.PurchaseId.ToString() == PurchaseID).ToListAsync();
 
                 if (string.IsNullOrEmpty(PurchaseID.ToString()))
                 {
@@ -672,9 +684,8 @@ namespace ComplyX_Businesss.Services.Implementation
                 }
 
                 // Remove all related report details
-                _context.GST_Purchase.RemoveRange(Purchase);
-
-                await _context.SaveChangesAsync();
+                _UnitOfWork.PurchaseRespositories.RemoveRange(Purchase);
+                await _UnitOfWork.CommitAsync();
 
                 return new ManagerBaseResponse<bool>
                 {
@@ -692,13 +703,32 @@ namespace ComplyX_Businesss.Services.Implementation
                 };
             }
         }
-        public async Task<ManagerBaseResponse<List<GST_Purchase>>> GetGST_PurchaseData()
+        public async Task<ManagerBaseResponse<List<GstPurchaseResponseModel>>> GetGST_PurchaseData()
         {
             try
             {
-                var plans = await _context.GST_Purchase.AsQueryable().OrderBy(x => x.PurchaseID).ToListAsync();
+                var plans = await _UnitOfWork.PurchaseRespositories.GetQueryable().OrderBy(x => x.PurchaseId)
+                   .Select(x => new GstPurchaseResponseModel
+                   {
+                       PurchaseId = x.PurchaseId,
+                       CompanyId = x.CompanyId,
+                       BillNo = x.BillNo,
+                       BillDate = x.BillDate,
+                       SupplierName = x.SupplierName,
+                       SupplierGstin = x.SupplierGstin,
+                       PlaceOfSupply = x.PlaceOfSupply,
+                       Hsncode = x.Hsncode,
+                       Saccode = x.Saccode,
+                       TaxableValue = x.TaxableValue,
+                       Cgst = x.Cgst,
+                       Sgst = x.Sgst,
+                       Igst = x.Igst,
+                       TotalBillValue = x.TotalBillValue,
+                       CreatedOn = x.CreatedOn,
+                       CreatedBy = x.CreatedBy
+                   }).ToListAsync();
 
-                return new ManagerBaseResponse<List<GST_Purchase>>
+                return new ManagerBaseResponse<List<GstPurchaseResponseModel>>
                 {
                     IsSuccess = true,
                     Result = plans,
@@ -708,7 +738,7 @@ namespace ComplyX_Businesss.Services.Implementation
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<List<GST_Purchase>>
+                return new ManagerBaseResponse<List<GstPurchaseResponseModel>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -716,23 +746,23 @@ namespace ComplyX_Businesss.Services.Implementation
                 };
             }
         }
-        public async Task<ManagerBaseResponse<IEnumerable<GST_Purchase>>> GetGST_PurchaseFilter(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<GstPurchase>>> GetGST_PurchaseFilter(PagedListCriteria PagedListCriteria)
         {
             try
             {
 
-                var query = _context.GST_Purchase.AsQueryable();
+                var query = _UnitOfWork.PurchaseRespositories.GetQueryable();
                 var searchText = PagedListCriteria.SearchText?.Trim().ToLower();
                 if (!string.IsNullOrWhiteSpace(searchText))
                 {
                     query = query.Where(x => x.SupplierName.ToLower().Contains(searchText.ToLower()));
                 }
 
-                query = query.OrderBy(a => a.PurchaseID);
+                query = query.OrderBy(a => a.PurchaseId);
 
-                PageListed<GST_Purchase> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+                PageListed<GstPurchase> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
 
-                return new ManagerBaseResponse<IEnumerable<GST_Purchase>>
+                return new ManagerBaseResponse<IEnumerable<GstPurchase>>
                 {
                     Result = result.Data,
                     Message = "GST Purchase Data Retrieved Successfully.",
@@ -749,7 +779,7 @@ namespace ComplyX_Businesss.Services.Implementation
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<IEnumerable<GST_Purchase>>
+                return new ManagerBaseResponse<IEnumerable<GstPurchase>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -757,13 +787,13 @@ namespace ComplyX_Businesss.Services.Implementation
                 };
             }
         }
-        public async Task<ManagerBaseResponse<bool>> SaveGST_ReturnsData(GST_Returns GST_Returns)
+        public async Task<ManagerBaseResponse<bool>> SaveGST_ReturnsData(GstReturnRequestModel GST_Returns)
         {
-            var response = new ManagerBaseResponse<List<GST_Returns>>();
+            var response = new ManagerBaseResponse<List<GstReturn>>();
 
             try
             {
-                var Company = await _context.Companies.FirstOrDefaultAsync(x => x.CompanyID == GST_Returns.CompanyID);
+                var Company = await _UnitOfWork.ReturnRespositories.GetQueryable().FirstOrDefaultAsync(x => x.CompanyId == GST_Returns.CompanyId);
                 if (Company == null)
                 {
                     return new ManagerBaseResponse<bool>
@@ -775,11 +805,11 @@ namespace ComplyX_Businesss.Services.Implementation
                 }
                 else
                 {
-                    if (GST_Returns.ReturnID == 0)
+                    if (GST_Returns.ReturnId == 0)
                     {
                         // Insert
-                        GST_Returns originalTerm = new GST_Returns();
-                        originalTerm.CompanyID = GST_Returns.CompanyID;
+                        GstReturn originalTerm = new GstReturn();
+                        originalTerm.CompanyId = GST_Returns.CompanyId;
                         originalTerm.ReturnType = GST_Returns.ReturnType;
                         originalTerm.PeriodMonth = GST_Returns.PeriodMonth;
                         originalTerm.PeriodYear = GST_Returns.PeriodYear;
@@ -790,16 +820,15 @@ namespace ComplyX_Businesss.Services.Implementation
                         originalTerm.Status = GST_Returns.Status;
                         originalTerm.CreatedOn = GST_Returns.CreatedOn;
 
-                        _context.Add(originalTerm);
-                        _context.SaveChanges();
+                       await _UnitOfWork.ReturnRespositories.AddAsync(originalTerm);
                     }
                     else
                     {
                         // Update
-                        var originalTerm = _context.GST_Returns
-                            .Where(x => x.ReturnID == GST_Returns.ReturnID)
+                        var originalTerm = _UnitOfWork.ReturnRespositories.GetQueryable()
+                            .Where(x => x.ReturnId == GST_Returns.ReturnId)
                             .FirstOrDefault();
-                        originalTerm.CompanyID = GST_Returns.CompanyID;
+                        originalTerm.CompanyId = GST_Returns.CompanyId;
                         originalTerm.ReturnType = GST_Returns.ReturnType;
                         originalTerm.PeriodMonth = GST_Returns.PeriodMonth;
                         originalTerm.PeriodYear = GST_Returns.PeriodYear;
@@ -810,10 +839,10 @@ namespace ComplyX_Businesss.Services.Implementation
                         originalTerm.Status = GST_Returns.Status;
                         originalTerm.CreatedOn = GST_Returns.CreatedOn;
 
-                        _context.Update(originalTerm);
-                        _context.SaveChanges();
+                        
                     }
                 }
+                await _UnitOfWork.CommitAsync();
                 return new ManagerBaseResponse<bool>
                 {
                     Result = true,
@@ -835,7 +864,7 @@ namespace ComplyX_Businesss.Services.Implementation
             try
             {
                 // Get all report detail definitions for the given report name
-                var Return = await _context.GST_Returns.Where(x => x.ReturnID.ToString() == ReturnID).ToListAsync();
+                var Return = await _UnitOfWork.ReturnRespositories.GetQueryable().Where(x => x.ReturnId.ToString() == ReturnID).ToListAsync();
 
                 if (string.IsNullOrEmpty(Return.ToString()))
                 {
@@ -847,9 +876,8 @@ namespace ComplyX_Businesss.Services.Implementation
                 }
 
                 // Remove all related report details
-                _context.GST_Returns.RemoveRange(Return);
-
-                await _context.SaveChangesAsync();
+                _UnitOfWork.ReturnRespositories.RemoveRange(Return);
+                await _UnitOfWork.CommitAsync();
 
                 return new ManagerBaseResponse<bool>
                 {
@@ -867,13 +895,28 @@ namespace ComplyX_Businesss.Services.Implementation
                 };
             }
         }
-        public async Task<ManagerBaseResponse<List<GST_Returns>>> GetGST_ReturnsData()
+        public async Task<ManagerBaseResponse<List<GstReturnResponseModel>>> GetGST_ReturnsData()
         {
             try
             {
-                var plans = await _context.GST_Returns.AsQueryable().OrderBy(x => x.ReturnID).ToListAsync();
+                var plans = await _UnitOfWork.ReturnRespositories.GetQueryable().OrderBy(x => x.ReturnId)
+                      .Select(x => new GstReturnResponseModel
+                      {
+                          ReturnId = x.ReturnId,
+                          CompanyId = x.CompanyId,
+                          ReturnType = x.ReturnType,
+                          PeriodMonth = x.PeriodMonth,
+                          PeriodYear = x.PeriodYear,
+                          TotalSales = x.TotalSales,
+                          TotalPurchases = x.TotalPurchases,
+                          TotalTaxPayable = x.TotalTaxPayable,
+                          TotalTaxPaid = x.TotalTaxPaid,
+                          FilingDate = x.FilingDate,
+                          Status = x.Status,
+                          CreatedOn = x.CreatedOn
+                      }).ToListAsync();
 
-                return new ManagerBaseResponse<List<GST_Returns>>
+                return new ManagerBaseResponse<List<GstReturnResponseModel>>
                 {
                     IsSuccess = true,
                     Result = plans,
@@ -883,7 +926,7 @@ namespace ComplyX_Businesss.Services.Implementation
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<List<GST_Returns>>
+                return new ManagerBaseResponse<List<GstReturnResponseModel>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -891,23 +934,23 @@ namespace ComplyX_Businesss.Services.Implementation
                 };
             }
         }
-        public async Task<ManagerBaseResponse<IEnumerable<GST_Returns>>> GetGST_ReturnsFilter(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<GstReturn>>> GetGST_ReturnsFilter(PagedListCriteria PagedListCriteria)
         {
             try
             {
 
-                var query = _context.GST_Returns.AsQueryable();
+                var query = _UnitOfWork.ReturnRespositories.GetQueryable();
                 var searchText = PagedListCriteria.SearchText?.Trim().ToLower();
                 if (!string.IsNullOrWhiteSpace(searchText))
                 {
                     query = query.Where(x => x.ReturnType.ToLower().Contains(searchText.ToLower()));
                 }
 
-                query = query.OrderBy(a => a.ReturnID);
+                query = query.OrderBy(a => a.ReturnId);
 
-                PageListed<GST_Returns> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+                PageListed<GstReturn> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
 
-                return new ManagerBaseResponse<IEnumerable<GST_Returns>>
+                return new ManagerBaseResponse<IEnumerable<GstReturn>>
                 {
                     Result = result.Data,
                     Message = "GST Returns Data Retrieved Successfully.",
@@ -924,7 +967,7 @@ namespace ComplyX_Businesss.Services.Implementation
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<IEnumerable<GST_Returns>>
+                return new ManagerBaseResponse<IEnumerable<GstReturn>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -932,13 +975,13 @@ namespace ComplyX_Businesss.Services.Implementation
                 };
             }
         }
-        public async Task<ManagerBaseResponse<bool>> SaveGST_SalesData(GST_Sales GST_Sales)
+        public async Task<ManagerBaseResponse<bool>> SaveGST_SalesData(GstSaleRequestModel GST_Sales)
         {
-            var response = new ManagerBaseResponse<List<GST_Sales>>();
+            var response = new ManagerBaseResponse<List<GstSale>>();
 
             try
             {
-                var Company =await _context.Companies.FirstOrDefaultAsync(x => x.CompanyID == GST_Sales.CompanyID);
+                var Company =await _UnitOfWork.CompanyRepository.GetQueryable().FirstOrDefaultAsync(x => x.CompanyId == GST_Sales.CompanyId);
                 
 
                 if (Company == null)
@@ -952,8 +995,8 @@ namespace ComplyX_Businesss.Services.Implementation
                 }
                 else
                 {
-                    var code = await _context.GST_HSNSAC.AnyAsync(x => x.Code == GST_Sales.SACCode);
-                    if(GST_Sales.SACCode == "")
+                    var code = await _UnitOfWork.GSTHSNSACRespositories.GetQueryable().AnyAsync(x => x.Code == GST_Sales.Saccode);
+                    if(GST_Sales.Saccode == "")
                     {
                         return new ManagerBaseResponse<bool>
                         {
@@ -963,18 +1006,18 @@ namespace ComplyX_Businesss.Services.Implementation
                             Message = "SAC Code is not allow blank."
                         };
                     }
-                    if (GST_Sales.SaleID == 0)
+                    if (GST_Sales.SaleId == 0)
                     {
                         // Insert
-                        GST_Sales originalTerm = new GST_Sales();
-                        originalTerm.CompanyID = GST_Sales.CompanyID;
+                        GstSale originalTerm = new GstSale();
+                        originalTerm.CompanyId = GST_Sales.CompanyId;
                         originalTerm.InvoiceNo = GST_Sales.InvoiceNo;
                         originalTerm.InvoiceDate = GST_Sales.InvoiceDate;
                         originalTerm.CustomerName = GST_Sales.CustomerName;
-                        originalTerm.CustomerGSTIN =  GST_Sales.CustomerGSTIN;
-                        originalTerm.PLaceOfSupply = GST_Sales.PLaceOfSupply;
-                        originalTerm.HSNCode = GST_Sales.HSNCode;
-                        if (!code && GST_Sales.SACCode != null)
+                        originalTerm.CustomerGstin =  GST_Sales.CustomerGstin;
+                        originalTerm.PlaceOfSupply = GST_Sales.PlaceOfSupply;
+                        originalTerm.Hsncode = GST_Sales.Hsncode;
+                        if (!code && GST_Sales.Saccode != null)
                         {
                             return new ManagerBaseResponse<bool>
                             {
@@ -984,32 +1027,31 @@ namespace ComplyX_Businesss.Services.Implementation
                                 Message = "SAC Code is not found in Master Table.",
                             };
                         }
-                        originalTerm.SACCode = GST_Sales.SACCode;
+                        originalTerm.Saccode = GST_Sales.Saccode;
                         originalTerm.TaxableValue = GST_Sales.TaxableValue;
-                        originalTerm.CGST = GST_Sales.CGST;
-                        originalTerm.SGST = GST_Sales.SGST;
-                        originalTerm.IGST = GST_Sales.IGST;
+                        originalTerm.Cgst = GST_Sales.Cgst;
+                        originalTerm.Sgst = GST_Sales.Sgst;
+                        originalTerm.Igst = GST_Sales.Igst;
                         originalTerm.TotalInvoiceValue = GST_Sales.TotalInvoiceValue;
                         originalTerm.CreatedOn = GST_Sales.CreatedOn;
                         originalTerm.CreatedBy = GST_Sales.CreatedBy;
 
-                        _context.Add(originalTerm);
-                        _context.SaveChanges();
+                       await _UnitOfWork.GgstSaleRespositories.AddAsync(originalTerm);
                     }
                     else
                     {
                         // Update
-                        var originalTerm = _context.GST_Sales
-                            .Where(x => x.SaleID == GST_Sales.SaleID)
+                        var originalTerm = _UnitOfWork.GgstSaleRespositories.GetQueryable()
+                            .Where(x => x.SaleId == GST_Sales.SaleId)
                             .FirstOrDefault();
-                        originalTerm.CompanyID = GST_Sales.CompanyID;
+                        originalTerm.CompanyId = GST_Sales.CompanyId;
                         originalTerm.InvoiceNo = GST_Sales.InvoiceNo;
                         originalTerm.InvoiceDate = GST_Sales.InvoiceDate;
                         originalTerm.CustomerName = GST_Sales.CustomerName;
-                        originalTerm.CustomerGSTIN = GST_Sales.CustomerGSTIN;
-                        originalTerm.PLaceOfSupply = GST_Sales.PLaceOfSupply;
-                        originalTerm.HSNCode = GST_Sales.HSNCode;
-                        if (!code && GST_Sales.SACCode != null)
+                        originalTerm.CustomerGstin = GST_Sales.CustomerGstin;
+                        originalTerm.PlaceOfSupply = GST_Sales.PlaceOfSupply;
+                        originalTerm.Hsncode = GST_Sales.Hsncode;
+                        if (!code && GST_Sales.Saccode != null)
                         {
                             return new ManagerBaseResponse<bool>
                             {
@@ -1019,20 +1061,19 @@ namespace ComplyX_Businesss.Services.Implementation
                                 Message = "SAC Code is not found in Master Table.",
                             };
                         }
-                        originalTerm.SACCode =  GST_Sales.SACCode;
-                        originalTerm.SACCode = GST_Sales.SACCode;
+                        originalTerm.Saccode =  GST_Sales.Saccode;
                         originalTerm.TaxableValue = GST_Sales.TaxableValue;
-                        originalTerm.CGST = GST_Sales.CGST;
-                        originalTerm.SGST = GST_Sales.SGST;
-                        originalTerm.IGST = GST_Sales.IGST;
+                        originalTerm.Cgst = GST_Sales.Cgst;
+                        originalTerm.Sgst = GST_Sales.Sgst;
+                        originalTerm.Igst = GST_Sales.Igst;
                         originalTerm.TotalInvoiceValue = GST_Sales.TotalInvoiceValue;
                         originalTerm.CreatedOn = GST_Sales.CreatedOn;
                         originalTerm.CreatedBy = GST_Sales.CreatedBy;
 
-                        _context.Update(originalTerm);
-                        _context.SaveChanges();
+                         
                     }
                 }
+                await _UnitOfWork.CommitAsync();
                 return  new ManagerBaseResponse<bool>
                 {
                     Result = true,
@@ -1053,7 +1094,7 @@ namespace ComplyX_Businesss.Services.Implementation
             try
             {
                 // Get all report detail definitions for the given report name
-                var Sales = await _context.GST_Sales.Where(x => x.SaleID.ToString() == SaleID).ToListAsync();
+                var Sales = await _UnitOfWork.GgstSaleRespositories.GetQueryable().Where(x => x.SaleId.ToString() == SaleID).ToListAsync();
 
                 if (string.IsNullOrEmpty(Sales.ToString()))
                 {
@@ -1065,9 +1106,8 @@ namespace ComplyX_Businesss.Services.Implementation
                 }
 
                 // Remove all related report details
-                _context.GST_Sales.RemoveRange(Sales);
-
-                await _context.SaveChangesAsync();
+                _UnitOfWork.GgstSaleRespositories.RemoveRange(Sales);
+                await _UnitOfWork.CommitAsync();
 
                 return new ManagerBaseResponse<bool>
                 {
@@ -1085,13 +1125,32 @@ namespace ComplyX_Businesss.Services.Implementation
                 };
             }
         }
-        public async Task<ManagerBaseResponse<List<GST_Sales>>> GetGST_SalesData()
+        public async Task<ManagerBaseResponse<List<GstSaleResponseModel>>> GetGST_SalesData()
         {
             try
             {
-                var plans = await _context.GST_Sales.AsQueryable().OrderBy(x => x.SaleID).ToListAsync();
+                var plans = await _UnitOfWork.GgstSaleRespositories.GetQueryable().OrderBy(x => x.SaleId)
+                     .Select(x => new GstSaleResponseModel
+                     {
+                         SaleId = x.SaleId,
+                         CompanyId = x.CompanyId,
+                         InvoiceNo = x.InvoiceNo,
+                         InvoiceDate = x.InvoiceDate,
+                         CustomerName = x.CustomerName,
+                         CustomerGstin = x.CustomerGstin,
+                         PlaceOfSupply = x.PlaceOfSupply,
+                         Hsncode = x.Hsncode,
+                         Saccode = x.Saccode,
+                         TaxableValue = x.TaxableValue,
+                         Cgst = x.Cgst,
+                         Sgst = x.Sgst,
+                         Igst = x.Igst,
+                         TotalInvoiceValue = x.TotalInvoiceValue,
+                         CreatedOn = x.CreatedOn,
+                         CreatedBy = x.CreatedBy
+                     }).ToListAsync();
 
-                return new ManagerBaseResponse<List<GST_Sales>>
+                return new ManagerBaseResponse<List<GstSaleResponseModel>>
                 {
                     IsSuccess = true,
                     Result = plans,
@@ -1101,7 +1160,7 @@ namespace ComplyX_Businesss.Services.Implementation
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<List<GST_Sales>>
+                return new ManagerBaseResponse<List<GstSaleResponseModel>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -1109,23 +1168,23 @@ namespace ComplyX_Businesss.Services.Implementation
                 };
             }
         }
-        public async Task<ManagerBaseResponse<IEnumerable<GST_Sales>>> GetGST_SalesFilter(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<GstSale>>> GetGST_SalesFilter(PagedListCriteria PagedListCriteria)
         {
             try
             {
 
-                var query = _context.GST_Sales.AsQueryable();
+                var query = _UnitOfWork.GgstSaleRespositories.GetQueryable();
                 var searchText = PagedListCriteria.SearchText?.Trim().ToLower();
                 if (!string.IsNullOrWhiteSpace(searchText))
                 {
                     query = query.Where(x => x.CustomerName.ToLower().Contains(searchText.ToLower()));
                 }
 
-                query = query.OrderBy(a => a.SaleID);
+                query = query.OrderBy(a => a.SaleId);
 
-                PageListed<GST_Sales> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+                PageListed<GstSale> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
 
-                return new ManagerBaseResponse<IEnumerable<GST_Sales>>
+                return new ManagerBaseResponse<IEnumerable<GstSale>>
                 {
                     Result = result.Data,
                     Message = "GST Sales Data Retrieved Successfully.",
@@ -1142,7 +1201,7 @@ namespace ComplyX_Businesss.Services.Implementation
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<IEnumerable<GST_Sales>>
+                return new ManagerBaseResponse<IEnumerable<GstSale>>
                 {
                     IsSuccess = false,
                     Result = null,

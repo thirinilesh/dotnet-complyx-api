@@ -1,5 +1,9 @@
-﻿using ComplyX.Shared.Helper;
+﻿using ComplyX.Data.Entities;
+using ComplyX.Shared.Helper;
 using ComplyX_Businesss.Models;
+using ComplyX_Businesss.Models.EmploymentTypes;
+using ComplyX_Businesss.Models.ExitTypes;
+using ComplyX_Businesss.Models.FilingStatus;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,17 +14,17 @@ namespace ComplyX_Businesss.Services.Interface
 {
     public interface MasterServices
     {
-        Task<ManagerBaseResponse<bool>> SaveEmploymentTypesData(EmploymentTypes EmploymentTypes);
+        Task<ManagerBaseResponse<bool>> SaveEmploymentTypesData(EmploymentTypeRequestModel EmploymentTypes);
         Task<ManagerBaseResponse<bool>> RemoveEmploymentTypesData(string EmploymentTypesID);
-        Task<ManagerBaseResponse<List<EmploymentTypes>>> GetEmploymentTypesData(string EmploymentTypesID);
-        Task<ManagerBaseResponse<IEnumerable<EmploymentTypes>>> GetEmploymentTypesFilter(PagedListCriteria PagedListCriteria);
-        Task<ManagerBaseResponse<bool>> SaveExitTypesData(ExitTypes ExitTypes);
+        Task<ManagerBaseResponse<List<EmploymentTypeResponseModel>>> GetEmploymentTypesData(string EmploymentTypesID);
+        Task<ManagerBaseResponse<IEnumerable<EmploymentType>>> GetEmploymentTypesFilter(PagedListCriteria PagedListCriteria);
+        Task<ManagerBaseResponse<bool>> SaveExitTypesData(ExitTypeRequestModel ExitTypes);
         Task<ManagerBaseResponse<bool>> RemoveExitTypesData(string ExitTypesID);
-        Task<ManagerBaseResponse<List<ExitTypes>>> GetExitTypesData(string ExitTypeID);
-        Task<ManagerBaseResponse<IEnumerable<ExitTypes>>> GetExitTypesFilter(PagedListCriteria PagedListCriteria);
-        Task<ManagerBaseResponse<bool>> SaveFillingStatusesData(FilingStatuses FilingStatuses);
+        Task<ManagerBaseResponse<List<ExitTypeResponseModel>>> GetExitTypesData(string ExitTypeID);
+        Task<ManagerBaseResponse<IEnumerable<ExitType>>> GetExitTypesFilter(PagedListCriteria PagedListCriteria);
+        Task<ManagerBaseResponse<bool>> SaveFillingStatusesData(FilingsStatusRequestModel FilingStatuses);
         Task<ManagerBaseResponse<bool>> RemoveFillingStatusesData(string FilingStatusesID);
-        Task<ManagerBaseResponse<List<FilingStatuses>>> GetFillingStatusesData(string FilingStatusesID);
-        Task<ManagerBaseResponse<IEnumerable<FilingStatuses>>> GetFillingStatusesFilter(PagedListCriteria PagedListCriteria);
+        Task<ManagerBaseResponse<List<FilingsStatusResponseModel>>> GetFillingStatusesData(string FilingStatusesID);
+        Task<ManagerBaseResponse<IEnumerable<FilingStatus>>> GetFillingStatusesFilter(PagedListCriteria PagedListCriteria);
     }
 }

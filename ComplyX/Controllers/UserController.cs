@@ -8,7 +8,9 @@ using ComplyX.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using Lakshmi.Aca.Api.Controllers;
 using ComplyX.Shared.Data;
+using ComplyX.Data.Entities;
 using Azure.Core;
+using ComplyX.Data.Entities;
 
 namespace ComplyX.Controllers
 {
@@ -23,13 +25,13 @@ namespace ComplyX.Controllers
     public class UserController : BaseController
     {
         private readonly IUserService _IUserService;
-        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly UserManager<ApplicationUsers> _userManager;
         /// <summary>
         /// Initializes a new instance of the <see cref="UserController"/> class.
         /// </summary>
         /// <param name="IUserService">The service used to manage user operations.</param>
         /// <param name="userManager">The user manager for handling application users.</param>
-        public UserController(IUserService IUserService, UserManager<ApplicationUser> userManager)
+        public UserController(IUserService IUserService, UserManager<ApplicationUsers> userManager)
         {
             _IUserService = IUserService;
             _userManager = userManager;
@@ -47,7 +49,7 @@ namespace ComplyX.Controllers
         /// <response code="400">If there is an error during registration, such as validation failures or duplicate email.</response>
 
         [HttpPost("Register")]
-        public async Task<IActionResult> Register([FromBody] RegisterUser RegisterUser)
+        public async Task<IActionResult> Register([FromBody] Data.Entities.RegisterUser RegisterUser)
         {
             return ResponseResult(await _IUserService.Register(RegisterUser));
         }
@@ -63,7 +65,7 @@ namespace ComplyX.Controllers
         /// <response code="200">The user was authenticated successfully and a token is returned.</response>
         /// <response code="400">If the credentials are invalid or there is an error during authentication.</response>
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] Login dto)
+        public async Task<IActionResult> Login([FromBody]ComplyX_Businesss.Models.Logins.LoginRequestModel dto)
         {
             return ResponseResult(await _IUserService.Login(dto));
         }

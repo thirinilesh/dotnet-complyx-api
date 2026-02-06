@@ -11,9 +11,9 @@ using System.Threading.Tasks;
 
 namespace ComplyX.Repositories.Repositories
 {
-    public class ProductOwnerRespositories : BaseRespostories<ProductOwner, int>, IProductOwnerRepositories
+    public class ProductOwnerRespositories : BaseRespostories<ProductOwner, int>, IProductOwnerRespositories
     {
-        public ProductOwnerRespositories(ComplyX.Data.DbContexts.AppDbContext dbContext) : base(dbContext)
+        public ProductOwnerRespositories(AppDbContext dbContext) : base(dbContext)
         {
         }
     }

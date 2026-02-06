@@ -15,6 +15,9 @@ using Microsoft.EntityFrameworkCore;
 using Lakshmi.Aca.Api.Controllers;
 using ComplyX_Businesss.Helper;
 using AppContext = ComplyX_Businesss.Helper.AppContext;
+using ComplyX_Businesss.Models.EmploymentTypes;
+using ComplyX_Businesss.Models.ExitTypes;
+using ComplyX_Businesss.Models.FilingStatus;
 
 namespace ComplyX.Controllers
 {
@@ -62,7 +65,7 @@ namespace ComplyX.Controllers
         /// <response code="200">Employment type data saved successfully.</response>
         /// <response code="400">If there is an error while saving the employment type data.</response>
         [HttpPost("SaveEmploymentTypesData")]
-        public async Task<IActionResult> SaveEmploymentTypesData([FromBody] EmploymentTypes EmploymentTypes)
+        public async Task<IActionResult> SaveEmploymentTypesData([FromBody] EmploymentTypeRequestModel EmploymentTypes)
         {
             return ResponseResult(await _MasterServices.SaveEmploymentTypesData(EmploymentTypes));
         }
@@ -142,7 +145,7 @@ namespace ComplyX.Controllers
         /// <response code="200">Exit type data saved successfully.</response>
         /// <response code="400">If there is an error while saving the exit type data.</response>
         [HttpPost("SaveExitTypesData")]
-        public async Task<IActionResult> SaveExitTypesData([FromBody] ExitTypes ExitTypes)
+        public async Task<IActionResult> SaveExitTypesData([FromBody] ExitTypeRequestModel ExitTypes)
         {
             return ResponseResult(await _MasterServices.SaveExitTypesData(ExitTypes));
         }
@@ -223,7 +226,7 @@ namespace ComplyX.Controllers
         /// <response code="200">Filing status data saved successfully.</response>
         /// <response code="400">If there is an error while saving the filing status data.</response>
         [HttpPost("SaveFillingStatusesData")]
-        public async Task<IActionResult> SaveFillingStatusesData([FromBody] FilingStatuses FilingStatuses)
+        public async Task<IActionResult> SaveFillingStatusesData([FromBody] FilingsStatusRequestModel FilingStatuses)
         {
             return ResponseResult(await _MasterServices.SaveFillingStatusesData(FilingStatuses));
         }

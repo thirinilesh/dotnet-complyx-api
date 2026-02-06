@@ -4,18 +4,18 @@
     {
         public int? ProductOwnerId { get; set; }
         public int? PlanId { get; set; }
-        public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
-        public string PaymentMode { get; set; } = string.Empty;
-        public decimal AmountPaid { get; set; }
-        public string TransactionId { get; set; } = string.Empty;
-        public string Remarks { get; set; } = string.Empty;
-        public bool IsTrial { get; set; } = false;
+        public DateOnly StartDate { get; set; }
+        public DateOnly EndDate { get; set; }
+        public string? PaymentMode { get; set; } = string.Empty;
+        public decimal? AmountPaid { get; set; }
+        public string? TransactionId { get; set; } = string.Empty;
+        public string? Remarks { get; set; } = string.Empty;
+        public bool? IsTrial { get; set; } = false;
         public string PlanName { get; set; } = string.Empty;
         public string PlanCode { get; set; } = string.Empty;
-        public string Description { get; set; } = string.Empty;
-        public decimal PriceMonthly { get; set; }
-        public decimal PriceYearly { get; set; }
+        public string? Description { get; set; } = string.Empty;
+        public decimal? PriceMonthly { get; set; }
+        public decimal? PriceYearly { get; set; }
         public string OwnerName { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
     }

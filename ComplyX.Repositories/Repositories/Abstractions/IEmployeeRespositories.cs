@@ -1,0 +1,13 @@
+﻿using ComplyX.Data.Entities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ComplyX.Repositories.Repositories.Abstractions
+{
+    public  interface IEmployeeRespositories : IBaseRespostories<Employee, int>
+    {
+    }
+}

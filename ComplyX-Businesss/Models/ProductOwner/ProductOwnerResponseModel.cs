@@ -13,32 +13,49 @@ namespace ComplyX_Businesss.Models.ProductOwner
         public int ProductOwnerId { get; set; }
         public string OwnerName { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
-        public string Mobile { get; set; } = string.Empty;
-        public string OrganizationName { get; set; } = string.Empty;
-        public string LegalName { get; set; } = string.Empty;
-        public string RegistrationId { get; set; } = string.Empty;
-        public string OrganizationType { get; set; } = string.Empty;
-        public string Address { get; set; } = string.Empty;
-        public string City { get; set; } = string.Empty;
-        public string Pincode { get; set; } = string.Empty;
-        public string State { get; set; } = string.Empty;
-        public string Country { get; set; } = string.Empty;
-        public int CreatedBy { get; set; }
-        public int UpdatedBy { get; set; }
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-        public DateTime UpdatedAt { get; set; }
-        public bool IsActive { get; set; }
+        public string? Mobile { get; set; }
+
+        public string? OrganizationName { get; set; }
+
+        public string? LegalName { get; set; }
+
+        public string? RegistrationId { get; set; }
+
+        public string? OrganizationType { get; set; }
+
+        public string? Address { get; set; }
+
+        public string? City { get; set; }
+
+        public string? Pincode { get; set; }
+
+        public string? State { get; set; }
+
+        public string? Country { get; set; }
+
+        public int? CreatedBy { get; set; }
+
+        public int? UpdatedBy { get; set; }
+        public DateTime? CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime? UpdatedAt { get; set; }
+        public bool? IsActive { get; set; }
         public string SubscriptionPlan { get; set; } = string.Empty;
-        public DateTime SubscriptionStart { get; set; } = DateTime.UtcNow;
-        public DateTime SubscriptionExpiry { get; set; } = DateTime.UtcNow;
+        public DateOnly SubscriptionStart { get; set; } 
+        public DateOnly SubscriptionExpiry { get; set; } 
         public int MaxCompanies { get; set; }
         public int MaxUsers { get; set; }
-        public int MaxStorageMB { get; set; }
-        public bool AllowCloudBackup { get; set; }
-        public bool AllowGSTModule { get; set; }
-        public bool AllowTDSModule { get; set; }
-        public bool AllowCLRAModule { get; set; }
-        public bool AllowPayrollModule { get; set; }
-        public bool AllowDSCSigning { get; set; }
+        public int MaxStorageMb { get; set; }
+        public bool? AllowCloudBackup { get; set; }
+
+        public bool? AllowGstmodule { get; set; }
+
+        public bool? AllowTdsmodule { get; set; }
+
+        public bool? AllowClramodule { get; set; }
+
+        public bool? AllowPayrollModule { get; set; }
+
+        public bool? AllowDscsigning { get; set; }
+
     }
 }

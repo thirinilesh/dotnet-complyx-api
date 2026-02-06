@@ -13,6 +13,9 @@ using Microsoft.EntityFrameworkCore;
 using ComplyX_Businesss.Services.Interface;
 using ComplyX_Businesss.Helper;
 using AppContext = ComplyX_Businesss.Helper.AppContext;
+using ComplyX_Businesss.Models.ComplianceDeadline;
+using ComplyX_Businesss.Models.ComplianceFiling;
+using ComplyX_Businesss.Models.ComplianceSchedule;
 
 namespace ComplyX.Controllers
 {
@@ -57,7 +60,7 @@ namespace ComplyX.Controllers
         /// <response code="200">Compliance management data saved successfully.</response>
         /// <response code="400">Invalid request or error occurred while saving the compliance management data.</response>
         [HttpPost("SaveComplianceMgmtData")]
-        public async Task<IActionResult> SaveComplianceMgmtData([FromBody] ComplianceDeadlines ComplianceDeadlines)
+        public async Task<IActionResult> SaveComplianceMgmtData([FromBody] ComplianceDeadlineRequestModel ComplianceDeadlines)
         {
             return ResponseResult(await _ComplianceMgmtService.SaveComplianceMgmtData(ComplianceDeadlines));
         }
@@ -135,7 +138,7 @@ namespace ComplyX.Controllers
         /// <response code="200">Compliance schedule data saved successfully.</response>
         /// <response code="400">Invalid request or error occurred while saving the compliance schedule data.</response>
         [HttpPost("SaveComplianceSchedulesData")]
-        public async Task<IActionResult> SaveComplianceSchedulesData([FromBody] ComplianceSchedules ComplianceSchedules)
+        public async Task<IActionResult> SaveComplianceSchedulesData([FromBody] ComplianceScheduleRequestModel ComplianceSchedules)
         {
             return ResponseResult(await _ComplianceMgmtService.SaveComplianceSchedulesData(ComplianceSchedules));
         }
@@ -216,7 +219,7 @@ namespace ComplyX.Controllers
         /// <response code="200">Compliance filing data saved successfully.</response>
         /// <response code="400">Invalid request or error occurred while saving the compliance filing data.</response>
         [HttpPost("SaveComplianceFilingsData")]
-        public async Task<IActionResult> SaveComplianceFilingsData([FromBody] ComplianceFilings ComplianceFilings)
+        public async Task<IActionResult> SaveComplianceFilingsData([FromBody] ComplianceFilingRequestModel ComplianceFilings)
         {
             return ResponseResult(await _ComplianceMgmtService.SaveComplianceFilingsData(ComplianceFilings));
         }

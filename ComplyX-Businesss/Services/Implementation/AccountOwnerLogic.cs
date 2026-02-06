@@ -1,30 +1,23 @@
-﻿using ComplyX;
-using ComplyX_Businesss.Models;
-using ComplyX.Services;
+﻿//using ComplyX_Businesss.Models;
 using ComplyX_Businesss.Helper;
 using ComplyX_Businesss.Models.ProductOwner;
 using ComplyX.Shared.Helper;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.ComponentModel.Design;
-using System.Linq;
-using System.Runtime.InteropServices;
-using ComplyX.Data.DbContexts;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
-using static System.Net.Mime.MediaTypeNames;
-using Microsoft.Extensions.Logging;
-using Nest;
-using EF = Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions;
-using ComplyX_Businesss.Helper;
-using System.Collections.Immutable;
 using X.PagedList;
-using AutoMapper.Configuration.Annotations;
 using ComplyX_Businesss.Services;
-using AppDbContext = ComplyX_Businesss.Helper.AppContext;
 using ComplyX.Repositories.UnitOfWork;
-using ComplyX.Repositories.Repositories.Abstractions;
-using System.Collections;
 using AppContext = ComplyX_Businesss.Helper.AppContext;
+using ComplyX.Data.Entities;
+using ComplyX_Businesss.Models;
+using ComplyX_Businesss.Models.Company;
+using ComplyX_Businesss.Models.SubscriptionPlan;
+using ComplyX_Businesss.Models.Subcontractor;
+using ComplyX_Businesss.Models.Plan;
+using ComplyX_Businesss.Models.SubscriptionInvoices;
+using ComplyX_Businesss.Models.PaymentTransaction;
+using ComplyX_Businesss.Models.CustomerPayments;
+using ComplyX_Businesss.Models.PartyMaster;
+using ComplyX_Businesss.Models.CompanyPartyRole;
 //using NHibernate.Linq;
 
 
@@ -50,11 +43,11 @@ namespace ComplyX_Businesss.BusinessLogic
             _UnitOfWork = UnitOfWork;
             _appDbContext = appDbContext;
         }
-        public async Task<List<ProductOwners>> GetAllAsync()
+        public async Task<List<ProductOwner>> GetAllAsync()
         {
             try
             {
-                var result = await _context.ProductOwners.AsQueryable()
+                var result = await _UnitOfWork.ProductOwnerRepositories.GetQueryable()
                                      .OrderByDescending(x => x.ProductOwnerId)
                                      .ToListAsync();
                 return result;
@@ -76,7 +69,32 @@ namespace ComplyX_Businesss.BusinessLogic
                             OwnerName = x.OwnerName,
                             Email = x.Email,
                             Mobile = x.Mobile,
-                            OrganizationName = x.OrganizationName
+                            OrganizationName = x.OrganizationName,
+                            LegalName = x.LegalName,
+                            RegistrationId = x.RegistrationId,
+                            OrganizationType = x.OrganizationType,
+                            Address = x.Address,
+                            City = x.City,
+                            Pincode = x.Pincode,
+                            State = x.State,
+                            Country = x.Country,
+                            CreatedBy = x.CreatedBy,
+                            UpdatedBy = x.UpdatedBy,
+                            CreatedAt = x.CreatedAt,
+                            UpdatedAt = x.UpdatedAt,
+                            IsActive = x.IsActive,
+                            SubscriptionPlan = x.SubscriptionPlan,
+                            SubscriptionStart = x.SubscriptionStart,
+                            SubscriptionExpiry = x.SubscriptionExpiry,
+                            MaxCompanies = x.MaxCompanies,
+                            MaxUsers = x.MaxUsers,
+                            MaxStorageMb = x.MaxStorageMb,
+                            AllowCloudBackup = x.AllowCloudBackup,
+                            AllowGstmodule = x.AllowGstmodule,
+                            AllowTdsmodule = x.AllowTdsmodule,
+                            AllowClramodule = x.AllowClramodule,
+                            AllowPayrollModule = x.AllowPayrollModule,
+                            AllowDscsigning = x.AllowDscsigning
                         })
                         .ToListAsync();
 
@@ -99,16 +117,16 @@ namespace ComplyX_Businesss.BusinessLogic
                 };
             }
         }
-        public Task<ManagerBaseResponse<bool>> SaveProductOwnerData(ProductOwners ProductOwners)
+        public async Task<ManagerBaseResponse<bool>> SaveProductOwnerData(ProductOwnerRequestModel ProductOwners)
         {
-            var response = new ManagerBaseResponse<List<ProductOwners>>();
+            var response = new ManagerBaseResponse<List<ProductOwner>>();
 
             try
             {
                 if (ProductOwners.ProductOwnerId == 0)
                 {
                     // Insert
-                    ProductOwners _model = new ProductOwners();
+                    ProductOwner _model = new ProductOwner();
                     _model.OwnerName = ProductOwners.OwnerName;
                     _model.Email = ProductOwners.Email;
                     _model.Mobile = ProductOwners.Mobile;
@@ -130,23 +148,24 @@ namespace ComplyX_Businesss.BusinessLogic
                     _model.SubscriptionStart = ProductOwners.SubscriptionStart;
                     _model.SubscriptionExpiry = ProductOwners.SubscriptionExpiry;
                     _model.MaxCompanies = ProductOwners.MaxCompanies;
-                    _model.MaxStorageMB = ProductOwners.MaxStorageMB;
+                    _model.MaxStorageMb = ProductOwners.MaxStorageMb;
                     _model.MaxUsers = ProductOwners.MaxUsers;
                     _model.AllowCloudBackup = ProductOwners.AllowCloudBackup;
-                    _model.AllowTDSModule = ProductOwners.AllowTDSModule;
-                    _model.AllowGSTModule = ProductOwners.AllowGSTModule;
-                    _model.AllowCLRAModule = ProductOwners.AllowCLRAModule;
+                    _model.AllowTdsmodule = ProductOwners.AllowTdsmodule;
+                    _model.AllowGstmodule = ProductOwners.AllowGstmodule;
+                    _model.AllowClramodule = ProductOwners.AllowClramodule;
                     _model.AllowPayrollModule = ProductOwners.AllowPayrollModule;
-                    _model.AllowDSCSigning = ProductOwners.AllowDSCSigning;
+                    _model.AllowDscsigning = ProductOwners.AllowDscsigning;
 
-                    _context.Add(_model);
-                    _context.SaveChanges();
+                    //_context.Add(_model);
+                    //_context.SaveChanges();
+
+                  await    _UnitOfWork.ProductOwnerRepositories.AddAsync(_model);
                 }
                 else
                 {
                     // Update
-                    var originalTerm = _context.ProductOwners
-                        .Where(x => x.ProductOwnerId == ProductOwners.ProductOwnerId)
+                    var originalTerm = _UnitOfWork.ProductOwnerRepositories.GetQueryable(x => x.ProductOwnerId == ProductOwners.ProductOwnerId)
                         .FirstOrDefault();
                     originalTerm.OwnerName = ProductOwners.OwnerName;
                     originalTerm.Email = ProductOwners.Email;
@@ -168,32 +187,33 @@ namespace ComplyX_Businesss.BusinessLogic
                     originalTerm.SubscriptionStart = ProductOwners.SubscriptionStart;
                     originalTerm.SubscriptionExpiry = ProductOwners.SubscriptionExpiry;
                     originalTerm.MaxCompanies = ProductOwners.MaxCompanies;
-                    originalTerm.MaxStorageMB = ProductOwners.MaxStorageMB;
+                    originalTerm.MaxStorageMb = ProductOwners.MaxStorageMb;
                     originalTerm.MaxUsers = ProductOwners.MaxUsers;
                     originalTerm.AllowCloudBackup = ProductOwners.AllowCloudBackup;
-                    originalTerm.AllowTDSModule = ProductOwners.AllowTDSModule;
-                    originalTerm.AllowGSTModule = ProductOwners.AllowGSTModule;
-                    originalTerm.AllowCLRAModule = ProductOwners.AllowCLRAModule;
+                    originalTerm.AllowTdsmodule = ProductOwners.AllowTdsmodule;
+                    originalTerm.AllowGstmodule = ProductOwners.AllowGstmodule;
+                    originalTerm.AllowClramodule = ProductOwners.AllowClramodule;
                     originalTerm.AllowPayrollModule = ProductOwners.AllowPayrollModule;
-                    originalTerm.AllowDSCSigning = ProductOwners.AllowDSCSigning;
+                    originalTerm.AllowDscsigning = ProductOwners.AllowDscsigning;
 
-                    _context.Update(originalTerm);
-                    _context.SaveChanges();
+                    //_context.Update(originalTerm);
+                    //_context.SaveChanges();
+                //  await   _UnitOfWork.ProductOwnerRepositories.UpdateRange(originalTerm);
                 }
-
-                return Task.FromResult(new ManagerBaseResponse<bool> 
+                await  _UnitOfWork.CommitAsync();
+                return new ManagerBaseResponse<bool> 
                 {
                     Result = true,
                     Message = "Product Details Saved Successfully."
-                });
+                } ;
             }
             catch (Exception e)
             {
-                return Task.FromResult(new ManagerBaseResponse<bool>
+                return  new ManagerBaseResponse<bool>
                 {
                     Result = false,
                     Message = e.Message
-                });
+                } ;
             }
         }
         public async Task<ManagerBaseResponse<bool>> RemoveProductOwnerData(string ProductOwnerId)
@@ -201,8 +221,8 @@ namespace ComplyX_Businesss.BusinessLogic
             try
             {
                 // Get all report detail definitions for the given report name
-                var product = await _context.ProductOwners.Where(x => x.ProductOwnerId.ToString() == ProductOwnerId).ToListAsync();
-
+                // var product = await _context.ProductOwners.Where(x => x.ProductOwnerId.ToString() == ProductOwnerId).ToListAsync();
+                var product = await _UnitOfWork.ProductOwnerRepositories.GetQueryable(x => x.ProductOwnerId.ToString() == ProductOwnerId).ToListAsync();
                 if (string.IsNullOrEmpty(product.ToString()))
                 {
                     return new ManagerBaseResponse<bool>
@@ -213,9 +233,9 @@ namespace ComplyX_Businesss.BusinessLogic
                 }
 
                 // Remove all related report details
-                _context.ProductOwners.RemoveRange(product);
-
-                await _context.SaveChangesAsync();
+                //   _context.ProductOwners.RemoveRange(product);
+                _UnitOfWork.ProductOwnerRepositories.RemoveRange(product);
+                await _UnitOfWork.CommitAsync();
 
                 return new ManagerBaseResponse<bool>
                 {
@@ -233,12 +253,13 @@ namespace ComplyX_Businesss.BusinessLogic
                 };
             }
         }
-        public async Task<ManagerBaseResponse<IEnumerable<ProductOwners>>> GetAllProductOwnerFilter(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<ProductOwner>>> GetAllProductOwnerFilter(PagedListCriteria PagedListCriteria)
         {
             try
             {
 
-                var query = _context.ProductOwners.AsQueryable();
+                //var query = _context.ProductOwners.AsQueryable();
+                var query = _UnitOfWork.ProductOwnerRepositories.GetQueryable();
                 var searchText = PagedListCriteria.SearchText?.Trim().ToLower();
                 if (!string.IsNullOrWhiteSpace(searchText))
                 {
@@ -247,9 +268,9 @@ namespace ComplyX_Businesss.BusinessLogic
 
                 query = query.OrderBy(a => a.ProductOwnerId);
 
-                PageListed<ProductOwners> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+                PageListed<ProductOwner> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
 
-                return new ManagerBaseResponse<IEnumerable<ProductOwners>>
+                return new ManagerBaseResponse<IEnumerable<ProductOwner>>
                 {
                     Result = result.Data,
                     Message = "Product Owner Data Retrieved Successfully.",
@@ -266,7 +287,7 @@ namespace ComplyX_Businesss.BusinessLogic
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<IEnumerable<ProductOwners>>
+                return new ManagerBaseResponse<IEnumerable<ProductOwner>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -274,13 +295,13 @@ namespace ComplyX_Businesss.BusinessLogic
                 };
             }
         }
-        public async Task<ManagerBaseResponse<bool>> SaveCompanyData(Company company)
+        public async Task<ManagerBaseResponse<bool>> SaveCompanyData(CompanyRequestModel company)
         {
             var response = new ManagerBaseResponse<List<Company>>();
 
             try
             {
-                var accountid = await _context.ProductOwners.FirstOrDefaultAsync(x => x.ProductOwnerId == company.ProductOwnerId);
+                var accountid = await _UnitOfWork.CompanyRepository.GetQueryable().FirstOrDefaultAsync(x => x.ProductOwnerId == company.ProductOwnerId);
 
                 if (accountid == null)
                 {
@@ -292,7 +313,7 @@ namespace ComplyX_Businesss.BusinessLogic
                 }
                 else
                 {
-                    if (company.CompanyID == 0)
+                    if (company.CompanyId == 0)
                     {
                         // Insert
                         Company _model = new Company();
@@ -302,38 +323,37 @@ namespace ComplyX_Businesss.BusinessLogic
                         _model.ContactPhone = company.ContactPhone;
                         _model.Address = company.Address;
                         _model.State = company.State;
-                        _model.PAN = company.PAN;
-                        _model.GSTIN = company.GSTIN;
+                        _model.Pan = company.Pan;
+                        _model.Gstin = company.Gstin;
                         _model.IsActive = company.IsActive;
                         _model.CreatedAt = Util.GetCurrentCSTDateAndTime();
                         _model.ProductOwnerId = accountid.ProductOwnerId;
 
-                        _context.Add(_model);
-                        _context.SaveChanges();
+                        //_context.Add(_model);
+                        //_context.SaveChanges();
+                      await  _UnitOfWork.CompanyRepository.AddAsync(_model);
                     }
                     else
                     {
                         // Update
-                        var originalTerm = _context.Companies
-                            .Where(x => x.CompanyID == company.CompanyID)
-                            .FirstOrDefault();
+                        var originalTerm = _UnitOfWork.CompanyRepository.GetQueryable(x => x.CompanyId == company.CompanyId).FirstOrDefault();
+                         
                         originalTerm.Name = company.Name;
                         originalTerm.Domain = company.Domain;
                         originalTerm.ContactEmail = company.ContactEmail;
                         originalTerm.ContactPhone = company.ContactPhone;
                         originalTerm.Address = company.Address;
                         originalTerm.State = company.State;
-                        originalTerm.PAN = company.PAN;
-                        originalTerm.GSTIN = company.GSTIN;
+                        originalTerm.Pan = company.Pan;
+                        originalTerm.Gstin = company.Gstin;
                         originalTerm.IsActive = company.IsActive;
                         originalTerm.CreatedAt = Util.GetCurrentCSTDateAndTime();
                         originalTerm.ProductOwnerId = accountid.ProductOwnerId;
 
-                        _context.Update(originalTerm);
-                        _context.SaveChanges();
+                       
                     }
                 }
-
+                await _UnitOfWork.CommitAsync();
                 return   new ManagerBaseResponse<bool>
                 {
                     Result = true,
@@ -354,22 +374,23 @@ namespace ComplyX_Businesss.BusinessLogic
             try
             {
                 // Get all report detail definitions for the given report name
-                var Company = await _context.Companies.Where(x => x.CompanyID.ToString() == CompanyId).ToListAsync();
+                var Company = await _UnitOfWork.CompanyRepository.GetQueryable(x => x.CompanyId.ToString() == CompanyId).ToListAsync();
 
                 if (string.IsNullOrEmpty(Company.ToString()))
                 {
                     return new ManagerBaseResponse<bool>
                     {
                         Result = false,
-                        Message = "Product Id is not Vaild",
+                        Message = "Company Id is not Vaild",
                     };
                 }
 
                 // Remove all related report details
-                _context.Companies.RemoveRange(Company);
+                //_context.Companies.RemoveRange(Company);
 
-                await _context.SaveChangesAsync();
 
+                 _UnitOfWork.CompanyRepository.RemoveRange(Company);
+                await _UnitOfWork.CommitAsync();
                 return new ManagerBaseResponse<bool>
                 {
                     Result = true,
@@ -391,14 +412,14 @@ namespace ComplyX_Businesss.BusinessLogic
             try
             {
 
-                var query = _context.Companies.AsQueryable();
+                var query = _UnitOfWork.CompanyRepository.GetQueryable();
                 var searchText = PagedListCriteria.SearchText?.Trim().ToLower();
                 if (!string.IsNullOrWhiteSpace(searchText))
                 {
                     query = query.Where(x => x.Name.ToLower().Contains(searchText.ToLower()));
                 }
 
-                query = query.OrderBy(a => a.CompanyID);
+                query = query.OrderBy(a => a.CompanyId);
 
                 PageListed<Company> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
 
@@ -427,13 +448,36 @@ namespace ComplyX_Businesss.BusinessLogic
                 };
             }
         }
-        public async Task<ManagerBaseResponse<List<SubscriptionPlans>>> GetSubscriptionPlans()
+        public async Task<ManagerBaseResponse<List<SubscriptionPlanResponseModel>>> GetSubscriptionPlans()
         {
             try
             {
-                var  plans = await _context.SubscriptionPlans.AsQueryable().OrderBy(x => x.PlanId) .ToListAsync();
+                var  plans = await _UnitOfWork.SubscriptionPlanRepository.GetQueryable().OrderBy(x => x.PlanId)
+                    .Select(x => new SubscriptionPlanResponseModel
+                {
+                        PlanId = x.PlanId,
+                        PlanCode = x.PlanCode,
+                        PlanName = x.PlanName,
+                        Description = x.Description,
+                        PriceMonthly = x.PriceMonthly,
+                        PriceYearly = x.PriceYearly,
+                        MaxCompanies = x.MaxCompanies,
+                        MaxUsers = x.MaxUsers,
+                        MaxStorageMb = x.MaxStorageMb,
+                        AllowEpfo = x.AllowEpfo,
+                        AllowEsic = x.AllowEsic,
+                        AllowGst = x.AllowGst,
+                        AllowTds = x.AllowTds,
+                        AllowClra = x.AllowClra,
+                        AllowLwf = x.AllowLwf,
+                        AllowPt = x.AllowPt,
+                        AllowPayroll = x.AllowPayroll,
+                        AllowDscsigning = x.AllowDscsigning,
+                        AllowCloudBackup = x.AllowCloudBackup,
+                        IsActive = x.IsActive
+                    }).ToListAsync();
 
-                return new ManagerBaseResponse<List<SubscriptionPlans>>
+                return new ManagerBaseResponse<List<SubscriptionPlanResponseModel>>
                 {
                     IsSuccess = true,
                     Result = plans,
@@ -443,7 +487,7 @@ namespace ComplyX_Businesss.BusinessLogic
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<List<SubscriptionPlans>>
+                return new ManagerBaseResponse<List<SubscriptionPlanResponseModel>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -451,12 +495,12 @@ namespace ComplyX_Businesss.BusinessLogic
                 };
             }            
         }
-        public async Task<ManagerBaseResponse<IEnumerable<SubscriptionPlans>>> GetSubscriptionPlansByFilter(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<SubscriptionPlan>>> GetSubscriptionPlansByFilter(PagedListCriteria PagedListCriteria)
         {
             try
             {
 
-                var query = _context.SubscriptionPlans.AsQueryable();
+                var query = _UnitOfWork.SubscriptionPlanRepository.GetQueryable();
                 var searchText = PagedListCriteria.SearchText?.Trim().ToLower();
                 if (!string.IsNullOrWhiteSpace(searchText))
                 {
@@ -465,9 +509,9 @@ namespace ComplyX_Businesss.BusinessLogic
 
                 query = query.OrderBy(a => a.PlanId);
 
-                PageListed<SubscriptionPlans> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+                PageListed<SubscriptionPlan> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
 
-                return new ManagerBaseResponse<IEnumerable<SubscriptionPlans>>
+                return new ManagerBaseResponse<IEnumerable<SubscriptionPlan>>
                 {
                     Result = result.Data,
                     Message = "SubscriptionPlans Data Retrieved Successfully.",
@@ -484,7 +528,7 @@ namespace ComplyX_Businesss.BusinessLogic
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<IEnumerable<SubscriptionPlans>>
+                return new ManagerBaseResponse<IEnumerable<SubscriptionPlan>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -492,12 +536,12 @@ namespace ComplyX_Businesss.BusinessLogic
                 };
             }
         }
-        public async Task<ManagerBaseResponse<List<SubscriptionPlans>>> GetSubscriptionPlanFilter(SubscriptionPlansFilterRequest request)
+        public async Task<ManagerBaseResponse<List<SubscriptionPlan>>> GetSubscriptionPlanFilter(SubscriptionPlansFilterRequest request)
         {
             try
             {
-                List<SubscriptionPlans> result = _context.SubscriptionPlans.AsQueryable().ToList();
-                List <SubscriptionPlans> query = new List<SubscriptionPlans>();
+                List<SubscriptionPlan> result = _UnitOfWork.SubscriptionPlanRepository.GetQueryable().ToList();
+                List <SubscriptionPlan> query = new List<SubscriptionPlan>();
 
                 if (request.PlanId != null && request.PlanId != 0 )
                 {
@@ -518,7 +562,7 @@ namespace ComplyX_Businesss.BusinessLogic
 
 
 
-                return new ManagerBaseResponse<List<SubscriptionPlans>>
+                return new ManagerBaseResponse<List<SubscriptionPlan>>
                 {
                     IsSuccess = true,
                     Result = query,
@@ -528,7 +572,7 @@ namespace ComplyX_Businesss.BusinessLogic
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<List<SubscriptionPlans>>
+                return new ManagerBaseResponse<List<SubscriptionPlan>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -536,19 +580,19 @@ namespace ComplyX_Businesss.BusinessLogic
                 };
             }
         }
-        public async Task<ManagerBaseResponse<bool>> SaveUserSubscriptionData(ProductOwnerSubscriptions ProductOwnerSubscriptions)
+        public async Task<ManagerBaseResponse<bool>> SaveUserSubscriptionData(ProductOwnerSubscription ProductOwnerSubscriptions)
         {
-            var response = new ManagerBaseResponse<List<ProductOwnerSubscriptions>>();
+            var response = new ManagerBaseResponse<List<ProductOwnerSubscription>>();
 
             try
             {
-                var plan = _context.ProductOwnerSubscriptions.AsQueryable().Where(x => x.ProductOwnerId == ProductOwnerSubscriptions.ProductOwnerId && x.PlanId == ProductOwnerSubscriptions.PlanId); 
+                var plan =_UnitOfWork.ProductOwnerSubscriptions.GetQueryable().Where(x => x.ProductOwnerId == ProductOwnerSubscriptions.ProductOwnerId && x.PlanId == ProductOwnerSubscriptions.PlanId); 
                 if(plan == null)               
                 {               
                     if (ProductOwnerSubscriptions.SubscriptionId == 0)
                     {
                         // Insert
-                        ProductOwnerSubscriptions _model = new ProductOwnerSubscriptions();
+                        ProductOwnerSubscription _model = new ProductOwnerSubscription();
                         _model.StartDate = ProductOwnerSubscriptions.StartDate;
                         _model.EndDate = ProductOwnerSubscriptions.EndDate;
                         _model.IsTrial = ProductOwnerSubscriptions.IsTrial;
@@ -559,13 +603,13 @@ namespace ComplyX_Businesss.BusinessLogic
                         _model.ProductOwnerId = ProductOwnerSubscriptions.ProductOwnerId;
                         _model.PlanId = ProductOwnerSubscriptions.PlanId;
 
-                        _context.Add(_model);
-                        await _context.SaveChangesAsync();
+                        await _UnitOfWork.ProductOwnerSubscriptions.AddAsync(_model);
+
                     }
                     else
                     {
                         // Update
-                        var originalTerm =  _context.ProductOwnerSubscriptions
+                        var originalTerm =  _UnitOfWork.ProductOwnerSubscriptions.GetQueryable()
                             .Where(x => x.PlanId == ProductOwnerSubscriptions.PlanId && x.ProductOwnerId == ProductOwnerSubscriptions.ProductOwnerId)
                             .FirstOrDefault();
                         originalTerm.StartDate = ProductOwnerSubscriptions.StartDate;
@@ -578,10 +622,10 @@ namespace ComplyX_Businesss.BusinessLogic
                         originalTerm.ProductOwnerId = ProductOwnerSubscriptions.ProductOwnerId;
                         originalTerm.PlanId = ProductOwnerSubscriptions.PlanId;
 
-                        _context.Update(originalTerm);
-                        _context.SaveChanges();
+                        
+                      
                     }
-
+                    await _UnitOfWork.CommitAsync();
                     return new ManagerBaseResponse<bool>
                     {
                         Result = true,
@@ -613,10 +657,10 @@ namespace ComplyX_Businesss.BusinessLogic
             {
                  
                 var  result = await (
-                                        from p in _context.ProductOwnerSubscriptions
-                                        join s in _context.SubscriptionPlans
+                                        from p in _UnitOfWork.ProductOwnerSubscriptions.GetQueryable()
+                                        join s in _UnitOfWork.SubscriptionPlanRepository.GetQueryable()
                                             on p.PlanId equals s.PlanId
-                                        join o in _context.ProductOwners
+                                        join o in _UnitOfWork.ProductOwnerRepositories.GetQueryable()
                                             on p.ProductOwnerId equals o.ProductOwnerId
                                         select new ProductOwnerSubscriptionDto
                                         {
@@ -667,8 +711,8 @@ namespace ComplyX_Businesss.BusinessLogic
                 if (ProductOwnerId != 0)
                 {
                     var result = await (
-                                            from p in _context.ProductOwnerSubscriptions
-                                            join s in _context.SubscriptionPlans
+                                            from p in _UnitOfWork.ProductOwnerSubscriptions.GetQueryable()
+                                            join s in _UnitOfWork.SubscriptionPlanRepository.GetQueryable()
                                                 on p.PlanId equals s.PlanId
 
                                             select new ProductOwnerSubscriptionDto
@@ -722,13 +766,13 @@ namespace ComplyX_Businesss.BusinessLogic
 
             }
         }
-        public async Task<ManagerBaseResponse<bool>> SaveSubcontractorData(Subcontractors Subcontractors)
+        public async Task<ManagerBaseResponse<bool>> SaveSubcontractorData(SubcontractorRequestModel Subcontractors)
         {
-            var response = new ManagerBaseResponse<List<Subcontractors>>();
+            var response = new ManagerBaseResponse<List<Subcontractor>>();
 
             try
             {
-                var accountid = await _context.Companies.FirstOrDefaultAsync(x => x.CompanyID == Subcontractors.CompanyID);
+                var accountid = await _UnitOfWork.CompanyRepository.GetQueryable().FirstOrDefaultAsync(x => x.CompanyId == Subcontractors.CompanyID);
 
                 if (accountid == null)
                 {
@@ -743,39 +787,37 @@ namespace ComplyX_Businesss.BusinessLogic
                     if (Subcontractors.SubcontractorID == 0)
                     {
                         // Insert
-                        Subcontractors _model = new Subcontractors();
+                        Subcontractor _model = new Subcontractor();
                         _model.Name = Subcontractors.Name;
                         _model.ContactEmail = Subcontractors.ContactEmail;
                         _model.ContactPhone = Subcontractors.ContactPhone;
-                        _model.PAN = Subcontractors.PAN;
-                        _model.GSTIN = Subcontractors.GSTIN;
+                        _model.Pan = Subcontractors.PAN;
+                        _model.Gstin = Subcontractors.GSTIN;
                         _model.Address = Subcontractors.Address;
                         _model.CreatedAt = Util.GetCurrentCSTDateAndTime();
-                        _model.CompanyID = accountid.CompanyID;
+                        _model.CompanyId = accountid.CompanyId;
 
-                        _context.Add(_model);
-                        _context.SaveChanges();
+                       await _UnitOfWork.SubcontractorRepository.AddAsync(_model);
                     }
                     else
                     {
                         // Update
-                        var originalTerm = _context.Subcontractors
-                            .Where(x => x.SubcontractorID == Subcontractors.SubcontractorID)
+                        var originalTerm = _UnitOfWork.SubcontractorRepository.GetQueryable()
+                            .Where(x => x.SubcontractorId == Subcontractors.SubcontractorID)
                             .FirstOrDefault();
                         originalTerm.Name = Subcontractors.Name;
                         originalTerm.ContactEmail = Subcontractors.ContactEmail;
                         originalTerm.ContactPhone = Subcontractors.ContactPhone;
                         originalTerm.Address = Subcontractors.Address;
-                        originalTerm.PAN = Subcontractors.PAN;
-                        originalTerm.GSTIN = Subcontractors.GSTIN;
+                        originalTerm.Pan = Subcontractors.PAN;
+                        originalTerm.Gstin = Subcontractors.GSTIN;
                         originalTerm.CreatedAt = Util.GetCurrentCSTDateAndTime();
-                        originalTerm.CompanyID = accountid.CompanyID;
+                        originalTerm.CompanyId = accountid.CompanyId;
 
-                        _context.Update(originalTerm);
-                        _context.SaveChanges();
+                      
                     }
                 }
-
+                await _UnitOfWork.CommitAsync();
                 return new ManagerBaseResponse<bool>
                 {
                     Result = true,
@@ -796,7 +838,7 @@ namespace ComplyX_Businesss.BusinessLogic
             try
             {
                 // Get all report detail definitions for the given report name
-                var Subcontractors = await _context.Subcontractors.Where(x => x.SubcontractorID.ToString() == SubcontractorsID).ToListAsync();
+                var Subcontractors = await _UnitOfWork.SubcontractorRepository.GetQueryable().Where(x => x.SubcontractorId.ToString() == SubcontractorsID).ToListAsync();
 
                 if (string.IsNullOrEmpty(Subcontractors.ToString()))
                 {
@@ -808,10 +850,12 @@ namespace ComplyX_Businesss.BusinessLogic
                 }
 
                 // Remove all related report details
-                _context.Subcontractors.RemoveRange(Subcontractors);
+                //_context.Subcontractors.RemoveRange(Subcontractors);
 
-                await _context.SaveChangesAsync();
+                //  await _context.SaveChangesAsync();
 
+                _UnitOfWork.SubcontractorRepository.RemoveRange(Subcontractors);
+                await _UnitOfWork.CommitAsync();
                 return new ManagerBaseResponse<bool>
                 {
                     Result = true,
@@ -828,21 +872,21 @@ namespace ComplyX_Businesss.BusinessLogic
                 };
             }
         }
-        public async Task<ManagerBaseResponse<List<SubcontractorsRequest>>> GetSubcontractors(int CompanyId)
+        public async Task<ManagerBaseResponse<List<SubcontractorResponseModel>>> GetSubcontractors(int CompanyId)
         {
             try
             {
                 if (CompanyId != 0)
                 {
                     var result = await (
-                                            from p in _context.Subcontractors
-                                            join s in _context.Companies
-                                                on p.CompanyID equals s.CompanyID
+                                            from p in _UnitOfWork.SubcontractorRepository.GetQueryable()
+                                            join s in _UnitOfWork.CompanyRepository.GetQueryable()
+                                                on p.CompanyId equals s.CompanyId
 
-                                            select new SubcontractorsRequest
+                                            select new SubcontractorResponseModel
                                             {
-                                                SubcontractorID = p.SubcontractorID,
-                                                CompanyID = p.CompanyID,
+                                                SubcontractorID = p.SubcontractorId,
+                                                CompanyID = p.CompanyId,
                                                 CompanyName = s.Name,
                                                 CompanyEmail = s.ContactEmail,
                                                 CompanyPhone = s.ContactPhone,
@@ -851,14 +895,15 @@ namespace ComplyX_Businesss.BusinessLogic
                                                 ContactEmail = p.ContactEmail,
                                                 ContactPhone = p.ContactPhone,
                                                 Address = p.Address,
-                                                GSTIN = p.GSTIN,
-                                                PAN = p.PAN,
+                                                GSTIN = p.Gstin,
+                                                PAN = p.Pan,
                                                 CreatedAt = p.CreatedAt
+
 
                                             }
                                         ).Where(t => t.CompanyID == CompanyId).ToListAsync();
 
-                    return new ManagerBaseResponse<List<SubcontractorsRequest>>
+                    return new ManagerBaseResponse<List<SubcontractorResponseModel>>
                     {
                         IsSuccess = true,
                         Result = result,
@@ -867,7 +912,7 @@ namespace ComplyX_Businesss.BusinessLogic
                 }
                 else
                 {
-                    return new ManagerBaseResponse<List<SubcontractorsRequest>>
+                    return new ManagerBaseResponse<List<SubcontractorResponseModel>>
                     {
                         IsSuccess = true,
                         Result = null,
@@ -878,7 +923,7 @@ namespace ComplyX_Businesss.BusinessLogic
             }
             catch (Exception ex)
             {
-                return new ManagerBaseResponse<List<SubcontractorsRequest>>
+                return new ManagerBaseResponse<List<SubcontractorResponseModel>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -887,23 +932,23 @@ namespace ComplyX_Businesss.BusinessLogic
 
             }
         }
-        public async Task<ManagerBaseResponse<IEnumerable<Subcontractors>>> GetSubcontractorsFilter(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<Subcontractor>>> GetSubcontractorsFilter(PagedListCriteria PagedListCriteria)
         {
             try
             {
 
-                var query = _context.Subcontractors.AsQueryable();
+                var query = _UnitOfWork.SubcontractorRepository.GetQueryable();
                 var searchText = PagedListCriteria.SearchText?.Trim().ToLower();
                 if (!string.IsNullOrWhiteSpace(searchText))
                 {
                     query = query.Where(x => x.Name.ToLower().Contains(searchText.ToLower()));
                 }
 
-                query = query.OrderBy(a => a.SubcontractorID);
+                query = query.OrderBy(a => a.SubcontractorId);
 
-                PageListed<Subcontractors> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+                PageListed<Subcontractor> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
 
-                return new ManagerBaseResponse<IEnumerable<Subcontractors>>
+                return new ManagerBaseResponse<IEnumerable<Subcontractor>>
                 {
                     Result = result.Data,
                     Message = "Subcontractors Data Retrieved Successfully.",
@@ -920,7 +965,7 @@ namespace ComplyX_Businesss.BusinessLogic
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<IEnumerable<Subcontractors>>
+                return new ManagerBaseResponse<IEnumerable<Subcontractor>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -928,22 +973,22 @@ namespace ComplyX_Businesss.BusinessLogic
                 };
             }
         }
-        public async Task<ManagerBaseResponse<List<SubcontractorsRequest>>> GetProductOwnerSubcontractorsDetails(int ProductOwnerId)
+        public async Task<ManagerBaseResponse<List<SubcontractorResponseModel>>> GetProductOwnerSubcontractorsDetails(int ProductOwnerId)
         {
             try
             {
                 if (ProductOwnerId != 0)
                 {
                     var result = await (
-                                            from p in _context.Subcontractors
-                                            join s in _context.Companies
-                                                on p.CompanyID equals s.CompanyID
-                                            join c in _context.ProductOwners on  s.ProductOwnerId equals c.ProductOwnerId  
+                                            from p in _UnitOfWork.SubcontractorRepository.GetQueryable()
+                                            join s in _UnitOfWork.CompanyRepository.GetQueryable()
+                                                on p.CompanyId equals s.CompanyId
+                                            join c in _UnitOfWork.ProductOwnerRepositories.GetQueryable() on  s.ProductOwnerId equals c.ProductOwnerId  
 
-                                            select new SubcontractorsRequest
+                                            select new SubcontractorResponseModel
                                             {
-                                                SubcontractorID = p.SubcontractorID,
-                                                CompanyID = p.CompanyID,
+                                                SubcontractorID = p.SubcontractorId,
+                                                CompanyID = p.CompanyId,
                                                 CompanyName = s.Name,
                                                 CompanyEmail = s.ContactEmail,
                                                 CompanyPhone = s.ContactPhone,
@@ -952,8 +997,8 @@ namespace ComplyX_Businesss.BusinessLogic
                                                 ContactEmail = p.ContactEmail,
                                                 ContactPhone = p.ContactPhone,
                                                 Address = p.Address,
-                                                GSTIN = p.GSTIN,
-                                                PAN = p.PAN,
+                                                GSTIN = p.Gstin,
+                                                PAN = p.Pan,
                                                 CreatedAt = p.CreatedAt,
                                                 ProductOwnerId = s.ProductOwnerId,
                                                 OwnerName = c.OwnerName,
@@ -964,7 +1009,7 @@ namespace ComplyX_Businesss.BusinessLogic
                                             }
                                         ).Where(t => t.ProductOwnerId == ProductOwnerId).ToListAsync();
 
-                    return new ManagerBaseResponse<List<SubcontractorsRequest>>
+                    return new ManagerBaseResponse<List<SubcontractorResponseModel>>
                     {
                         IsSuccess = true,
                         Result = result,
@@ -973,7 +1018,7 @@ namespace ComplyX_Businesss.BusinessLogic
                 }
                 else
                 {
-                    return new ManagerBaseResponse<List<SubcontractorsRequest>>
+                    return new ManagerBaseResponse<List<SubcontractorResponseModel>>
                     {
                         IsSuccess = true,
                         Result = null,
@@ -984,7 +1029,7 @@ namespace ComplyX_Businesss.BusinessLogic
             }
             catch (Exception ex)
             {
-                return new ManagerBaseResponse<List<SubcontractorsRequest>>
+                return new ManagerBaseResponse<List<SubcontractorResponseModel>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -993,16 +1038,16 @@ namespace ComplyX_Businesss.BusinessLogic
 
             }
         }
-        public async Task<ManagerBaseResponse<bool>> SavePlansData(Plans Plans)
+        public async Task<ManagerBaseResponse<bool>> SavePlansData(PlanRequestModel Plans)
         {
-            var response = new ManagerBaseResponse<List<Plans>>();
+            var response = new ManagerBaseResponse<List<Plan>>();
 
             try
             {              
                     if (Plans.PlanId == 0)
                     {
                         // Insert
-                        Plans _model = new Plans();
+                        Plan _model = new Plan();
                         _model.Name =Plans.Name;
                         _model.Description =Plans.Description;
                         _model.MaxEmployees = Plans.MaxEmployees;
@@ -1011,13 +1056,12 @@ namespace ComplyX_Businesss.BusinessLogic
                         _model.BillingCycle = Plans.BillingCycle;   
                         _model.CreatedAt = Util.GetCurrentCSTDateAndTime();
 
-                        _context.Add(_model);
-                    await _context.SaveChangesAsync();
+                   await _UnitOfWork.PlanRespositories.AddAsync(_model);
                 }
                     else
                     {
                         // Update
-                        var originalTerm = _context.Plans
+                        var originalTerm =_UnitOfWork.PlanRespositories.GetQueryable()
                             .Where(x => x.PlanId == Plans.PlanId)
                                 .FirstOrDefault();
                         originalTerm.Name = Plans.Name;
@@ -1028,10 +1072,9 @@ namespace ComplyX_Businesss.BusinessLogic
                         originalTerm.BillingCycle = Plans.BillingCycle;
                         originalTerm.CreatedAt = Util.GetCurrentCSTDateAndTime();
 
-                        _context.Update(originalTerm);
-                        _context.SaveChanges();
+                      
                     }
-           
+           await _UnitOfWork.CommitAsync();
 
                 return new ManagerBaseResponse<bool>
                 {
@@ -1053,7 +1096,7 @@ namespace ComplyX_Businesss.BusinessLogic
             try
             {
                 // Get all report detail definitions for the given report name
-                var Plans = await _context.Plans.Where(x => x.PlanId.ToString() == PlanID).ToListAsync();
+                var Plans = await _UnitOfWork.PlanRespositories.GetQueryable().Where(x => x.PlanId.ToString() == PlanID).ToListAsync();
 
                 if (string.IsNullOrEmpty(Plans.ToString()))
                 {
@@ -1065,9 +1108,9 @@ namespace ComplyX_Businesss.BusinessLogic
                 }
 
                 // Remove all related report details
-                _context.Plans.RemoveRange(Plans);
+                _UnitOfWork.PlanRespositories.RemoveRange(Plans);
 
-                await _context.SaveChangesAsync();
+                await _UnitOfWork.CommitAsync();
 
                 return new ManagerBaseResponse<bool>
                 {
@@ -1085,13 +1128,23 @@ namespace ComplyX_Businesss.BusinessLogic
                 };
             }
         }
-        public async Task<ManagerBaseResponse<List<Plans>>> GetAllPlansData()
+        public async Task<ManagerBaseResponse<List<PlanResponseModel>>> GetAllPlansData()
         {
             try
             {
-                var plans = await _context.Plans.AsQueryable().OrderBy(x => x.PlanId).ToListAsync();
+                var plans = await _UnitOfWork.PlanRespositories.GetQueryable().OrderBy(x => x.PlanId).Select(x => new PlanResponseModel
+                {
+                    PlanId = x.PlanId,
+                    Name = x.Name,                  
+                    Description = x.Description,
+                    MaxEmployees = x.MaxEmployees,         
+                    MultiOrg = x.MultiOrg,            
+                    Price = x.Price,            
+                    BillingCycle = "Monthly",         
+                    CreatedAt = x.CreatedAt
+                }).ToListAsync();
 
-                return new ManagerBaseResponse<List<Plans>>
+                return new ManagerBaseResponse<List<PlanResponseModel>>
                 {
                     IsSuccess = true,
                     Result = plans,
@@ -1101,7 +1154,7 @@ namespace ComplyX_Businesss.BusinessLogic
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<List<Plans>>
+                return new ManagerBaseResponse<List<PlanResponseModel>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -1109,13 +1162,23 @@ namespace ComplyX_Businesss.BusinessLogic
                 };
             }
         }
-        public async Task<ManagerBaseResponse<List<Plans>>> GetAllPlansDataByID(string PlanID)
+        public async Task<ManagerBaseResponse<List<PlanResponseModel>>> GetAllPlansDataByID(string PlanID)
         {
             try
             {
-                var plans = await _context.Plans.Where(x => x.PlanId.ToString() == PlanID).ToListAsync();
+                var plans = await _UnitOfWork.PlanRespositories.GetQueryable().Where(x => x.PlanId.ToString() == PlanID).Select(x => new PlanResponseModel
+                {
+                    PlanId = x.PlanId,
+                    Name = x.Name,
+                    Description = x.Description,
+                    MaxEmployees = x.MaxEmployees,
+                    MultiOrg = x.MultiOrg,
+                    Price = x.Price,
+                    BillingCycle = "Monthly",
+                    CreatedAt = x.CreatedAt
+                }).ToListAsync();
 
-                return new ManagerBaseResponse<List<Plans>>
+                return new ManagerBaseResponse<List<PlanResponseModel>>
                 {
                     IsSuccess = true,
                     Result = plans,
@@ -1125,7 +1188,7 @@ namespace ComplyX_Businesss.BusinessLogic
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<List<Plans>>
+                return new ManagerBaseResponse<List<PlanResponseModel>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -1133,12 +1196,12 @@ namespace ComplyX_Businesss.BusinessLogic
                 };
             }
         }
-        public async Task<ManagerBaseResponse<IEnumerable<Plans>>> GetAllPlansDataFilter(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<Plan>>> GetAllPlansDataFilter(PagedListCriteria PagedListCriteria)
         {
             try
             {
        
-                var query =   _context.Plans.AsQueryable();
+                var query =   _UnitOfWork.PlanRespositories.GetQueryable();
                 var searchText = PagedListCriteria.SearchText?.Trim().ToLower();
                 if (!string.IsNullOrWhiteSpace(searchText))
                 {
@@ -1147,9 +1210,9 @@ namespace ComplyX_Businesss.BusinessLogic
 
                 query = query.OrderBy(a => a.PlanId);
 
-               PageListed<Plans> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+               PageListed<Plan> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
 
-                return new ManagerBaseResponse<IEnumerable<Plans>>
+                return new ManagerBaseResponse<IEnumerable<Plan>>
                 {
                     Result = result.Data,
                     Message = "Plans Data Retrieved Successfully.",
@@ -1166,7 +1229,7 @@ namespace ComplyX_Businesss.BusinessLogic
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse< IEnumerable < Plans>>
+                return new ManagerBaseResponse< IEnumerable < Plan>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -1174,13 +1237,13 @@ namespace ComplyX_Businesss.BusinessLogic
                 };
             }
         }
-        public async Task<ManagerBaseResponse<bool>> SaveSubscriptionInvoicesData(SubscriptionInvoices subscriptionInvoices)
+        public async Task<ManagerBaseResponse<bool>> SaveSubscriptionInvoicesData(SubscriptionInvoicesRequestModel subscriptionInvoices)
         {
-            var response = new ManagerBaseResponse<List<SubscriptionInvoices>>();
+            var response = new ManagerBaseResponse<List<SubscriptionInvoice>>();
 
             try
             {
-                var Company = await _context.Companies.FirstOrDefaultAsync(x => x.CompanyID == subscriptionInvoices.CompanyID);
+                var Company = await _UnitOfWork.CompanyRepository.GetQueryable().FirstOrDefaultAsync(x => x.CompanyId == subscriptionInvoices.CompanyId);
 
                 if (Company == null)
                 {
@@ -1193,12 +1256,12 @@ namespace ComplyX_Businesss.BusinessLogic
                 else
                 {
 
-                    if (subscriptionInvoices.InvoiceID == 0)
+                    if (subscriptionInvoices.InvoiceId == 0)
                     {
                         // Insert
-                        SubscriptionInvoices _model = new SubscriptionInvoices();
-                        _model.CompanyID = subscriptionInvoices.CompanyID;
-                        _model.PaymentID = subscriptionInvoices.PaymentID;
+                        SubscriptionInvoice _model = new SubscriptionInvoice();
+                        _model.CompanyId = subscriptionInvoices.CompanyId;
+                        _model.PaymentId = subscriptionInvoices.PaymentId;
                         _model.PeriodStart = subscriptionInvoices.PeriodStart;
                         _model.PeriodEnd = subscriptionInvoices.PeriodEnd;
                         _model.Amount = subscriptionInvoices.Amount;
@@ -1207,17 +1270,16 @@ namespace ComplyX_Businesss.BusinessLogic
                         _model.Status = subscriptionInvoices.Status;
                         _model.CreatedAt = Util.GetCurrentCSTDateAndTime();
 
-                        _context.Add(_model);
-                        _context.SaveChanges();
+                       await  _UnitOfWork.SubscriptionInvoices.AddAsync(_model);
                     }
                     else
                     {
                         // Update
-                        var originalTerm = _context.SubscriptionInvoices
-                            .Where(x => x.InvoiceID == subscriptionInvoices.InvoiceID)
+                        var originalTerm = _UnitOfWork.SubscriptionInvoices.GetQueryable()
+                            .Where(x => x.InvoiceId == subscriptionInvoices.InvoiceId)
                                 .FirstOrDefault();
-                        originalTerm.CompanyID = subscriptionInvoices.CompanyID;
-                        originalTerm.PaymentID = subscriptionInvoices.PaymentID;
+                        originalTerm.CompanyId = subscriptionInvoices.CompanyId;
+                        originalTerm.PaymentId = subscriptionInvoices.PaymentId;
                         originalTerm.PeriodStart = subscriptionInvoices.PeriodStart;
                         originalTerm.PeriodEnd = subscriptionInvoices.PeriodEnd;
                         originalTerm.Amount = subscriptionInvoices.Amount;
@@ -1226,10 +1288,9 @@ namespace ComplyX_Businesss.BusinessLogic
                         originalTerm.Status = subscriptionInvoices.Status;
                         originalTerm.CreatedAt = Util.GetCurrentCSTDateAndTime();
 
-                        _context.Update(originalTerm);
-                        _context.SaveChanges();
+                        
                     }
-
+                    await _UnitOfWork.CommitAsync();
                 }
                 return new ManagerBaseResponse<bool>
                 {
@@ -1251,7 +1312,7 @@ namespace ComplyX_Businesss.BusinessLogic
             try
             {
                 // Get all report detail definitions for the given report name
-                var SubscriptionInvoices = await _context.SubscriptionInvoices.Where(x => x.InvoiceID.ToString() == InvoiceID).ToListAsync();
+                var SubscriptionInvoices = await _UnitOfWork.SubscriptionInvoices.GetQueryable().Where(x => x.InvoiceId.ToString() == InvoiceID).ToListAsync();
 
                 if (string.IsNullOrEmpty(SubscriptionInvoices.ToString()))
                 {
@@ -1263,9 +1324,8 @@ namespace ComplyX_Businesss.BusinessLogic
                 }
 
                 // Remove all related report details
-                _context.SubscriptionInvoices.RemoveRange(SubscriptionInvoices);
-
-                await _context.SaveChangesAsync();
+                _UnitOfWork.SubscriptionInvoices.RemoveRange(SubscriptionInvoices);
+                await _UnitOfWork.CommitAsync();
 
                 return new ManagerBaseResponse<bool>
                 {
@@ -1283,13 +1343,25 @@ namespace ComplyX_Businesss.BusinessLogic
                 };
             }
         }
-        public async Task<ManagerBaseResponse<List<SubscriptionInvoices>>> GetAllSubscriptionInvoicesData()
+        public async Task<ManagerBaseResponse<List<SubscriptionInvoicesResponseModel>>> GetAllSubscriptionInvoicesData()
         {
             try
             {
-                var SubscriptionInvoices = await _context.SubscriptionInvoices.AsQueryable().OrderBy(x => x.InvoiceID).ToListAsync();
+                var SubscriptionInvoices = await _UnitOfWork.SubscriptionInvoices.GetQueryable().OrderBy(x => x.InvoiceId).Select(x => new SubscriptionInvoicesResponseModel
+                {
+                    InvoiceId = x.InvoiceId,
+                    CompanyId = x.CompanyId,
+                    PaymentId = x.PaymentId,
+                    PeriodStart = x.PeriodStart,
+                    PeriodEnd = x.PeriodEnd,
+                    Amount = x.Amount,
+                    Currency = x.Currency,
+                    PaidOn = x.PaidOn,
+                    Status = x.Status,
+                    CreatedAt = x.CreatedAt
+                }).ToListAsync();
 
-                return new ManagerBaseResponse<List<SubscriptionInvoices>>
+                return new ManagerBaseResponse<List<SubscriptionInvoicesResponseModel>>
                 {
                     IsSuccess = true,
                     Result = SubscriptionInvoices,
@@ -1299,7 +1371,7 @@ namespace ComplyX_Businesss.BusinessLogic
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<List<SubscriptionInvoices>>
+                return new ManagerBaseResponse<List<SubscriptionInvoicesResponseModel>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -1307,13 +1379,25 @@ namespace ComplyX_Businesss.BusinessLogic
                 };
             }
         }
-        public async Task<ManagerBaseResponse<List<SubscriptionInvoices>>> GetAllSubscriptionInvoicesDataByID(string InvoiceID)
+        public async Task<ManagerBaseResponse<List<SubscriptionInvoicesResponseModel>>> GetAllSubscriptionInvoicesDataByID(string InvoiceID)
         {
             try
             {
-                var SubscriptionInvoices = await _context.SubscriptionInvoices.Where(x => x.InvoiceID.ToString() == InvoiceID ).ToListAsync();
+                var SubscriptionInvoices = await _UnitOfWork.SubscriptionInvoices.GetQueryable().Where(x => x.InvoiceId.ToString() == InvoiceID).Select(x => new SubscriptionInvoicesResponseModel
+                {
+                    InvoiceId = x.InvoiceId,
+                    CompanyId = x.CompanyId,
+                    PaymentId = x.PaymentId,
+                    PeriodStart = x.PeriodStart,
+                    PeriodEnd = x.PeriodEnd,
+                    Amount = x.Amount,
+                    Currency = x.Currency,
+                    PaidOn = x.PaidOn,
+                    Status = x.Status,
+                    CreatedAt = x.CreatedAt
+                }).ToListAsync();
 
-                return new ManagerBaseResponse<List<SubscriptionInvoices>>
+                return new ManagerBaseResponse<List<SubscriptionInvoicesResponseModel>>
                 {
                     IsSuccess = true,
                     Result = SubscriptionInvoices,
@@ -1323,7 +1407,7 @@ namespace ComplyX_Businesss.BusinessLogic
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<List<SubscriptionInvoices>>
+                return new ManagerBaseResponse<List<SubscriptionInvoicesResponseModel>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -1331,21 +1415,21 @@ namespace ComplyX_Businesss.BusinessLogic
                 };
             }
         }
-        public async Task<ManagerBaseResponse<IEnumerable<SubscriptionInvoices>>> GetAllSubscriptionInvoicesFilter(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<SubscriptionInvoice>>> GetAllSubscriptionInvoicesFilter(PagedListCriteria PagedListCriteria)
         {
             try
             {
-                var query = _context.SubscriptionInvoices.AsQueryable();
+                var query = _UnitOfWork.SubscriptionInvoices.GetQueryable();
                 var searchText = PagedListCriteria.SearchText?.Trim().ToLower();
                 if (!string.IsNullOrWhiteSpace(searchText))
                 {
                     query = query.Where(x => x.Status.ToLower().Contains(searchText.ToLower()));
                 }
 
-                query = query.OrderBy(a => a.InvoiceID);
+                query = query.OrderBy(a => a.InvoiceId);
 
-                PageListed<SubscriptionInvoices> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
-                return new ManagerBaseResponse<IEnumerable<SubscriptionInvoices>>
+                PageListed<SubscriptionInvoice> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+                return new ManagerBaseResponse<IEnumerable<SubscriptionInvoice>>
                 {
                     Result = result.Data,
                     Message = "Subscription Invoice Data Retrieved Successfully.",
@@ -1362,7 +1446,7 @@ namespace ComplyX_Businesss.BusinessLogic
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<IEnumerable<SubscriptionInvoices>>
+                return new ManagerBaseResponse<IEnumerable<SubscriptionInvoice>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -1370,16 +1454,16 @@ namespace ComplyX_Businesss.BusinessLogic
                 };
             }
         }
-        public async Task<ManagerBaseResponse<bool>> SaveSubscriptionPlansData(SubscriptionPlans subscriptionPlans)
+        public async Task<ManagerBaseResponse<bool>> SaveSubscriptionPlansData(SubscriptionPlanRequestModel subscriptionPlans)
         {
-            var response = new ManagerBaseResponse<List<SubscriptionPlans>>();
+            var response = new ManagerBaseResponse<List<SubscriptionPlan>>();
 
             try
             {
                 if (subscriptionPlans.PlanId == 0)
                 {
                     // Insert
-                    SubscriptionPlans _model = new SubscriptionPlans();
+                    SubscriptionPlan _model = new SubscriptionPlan();
                     _model.PlanCode = subscriptionPlans.PlanCode;
                     _model.PlanName = subscriptionPlans.PlanName;
                     _model.Description = subscriptionPlans.Description;
@@ -1387,26 +1471,25 @@ namespace ComplyX_Businesss.BusinessLogic
                     _model.PriceYearly = subscriptionPlans.PriceYearly;
                     _model.MaxCompanies = subscriptionPlans.MaxCompanies;
                     _model.MaxUsers = subscriptionPlans.MaxUsers;
-                    _model.MaxStorageMB = subscriptionPlans.MaxStorageMB;
-                    _model.AllowEPFO = subscriptionPlans.AllowEPFO;
-                    _model.AllowESIC = subscriptionPlans.AllowESIC;
-                    _model.AllowGST = subscriptionPlans.AllowGST;
-                    _model.AllowTDS = subscriptionPlans.AllowTDS;
-                    _model.AllowCLRA = subscriptionPlans.AllowCLRA;
-                    _model.AllowLWF = subscriptionPlans.AllowLWF;
-                    _model.AllowPT  =   subscriptionPlans.AllowPT;
+                    _model.MaxStorageMb = subscriptionPlans.MaxStorageMb;
+                    _model.AllowEpfo = subscriptionPlans.AllowEpfo;
+                    _model.AllowEsic = subscriptionPlans.AllowEsic;
+                    _model.AllowGst = subscriptionPlans.AllowGst;
+                    _model.AllowTds = subscriptionPlans.AllowTds;
+                    _model.AllowClra = subscriptionPlans.AllowClra;
+                    _model.AllowLwf = subscriptionPlans.AllowLwf;
+                    _model.AllowPt =   subscriptionPlans.AllowPt;
                     _model.AllowCloudBackup = subscriptionPlans.AllowCloudBackup;
                     _model.AllowPayroll = subscriptionPlans.AllowPayroll;
-                    _model.AllowDSCSigning = subscriptionPlans.AllowDSCSigning;
+                    _model.AllowDscsigning = subscriptionPlans.AllowDscsigning;
                     _model.IsActive = subscriptionPlans.IsActive;
 
-                    _context.Add(_model);
-                    await _context.SaveChangesAsync();
+                  await  _UnitOfWork.SubscriptionPlanRepository.AddAsync(_model);
                 }
                 else
                 {
                     // Update
-                    var originalTerm = _context.SubscriptionPlans
+                    var originalTerm = _UnitOfWork.SubscriptionPlanRepository.GetQueryable()
                         .Where(x => x.PlanId == subscriptionPlans.PlanId)
                             .FirstOrDefault();
                     originalTerm.PlanCode = subscriptionPlans.PlanCode;
@@ -1416,23 +1499,22 @@ namespace ComplyX_Businesss.BusinessLogic
                     originalTerm.PriceYearly = subscriptionPlans.PriceYearly;
                     originalTerm.MaxCompanies = subscriptionPlans.MaxCompanies;
                     originalTerm.MaxUsers = subscriptionPlans.MaxUsers;
-                    originalTerm.MaxStorageMB = subscriptionPlans.MaxStorageMB;
-                    originalTerm.AllowEPFO = subscriptionPlans.AllowEPFO;
-                    originalTerm.AllowESIC = subscriptionPlans.AllowESIC;
-                    originalTerm.AllowGST = subscriptionPlans.AllowGST;
-                    originalTerm.AllowTDS = subscriptionPlans.AllowTDS;
-                    originalTerm.AllowCLRA = subscriptionPlans.AllowCLRA;
-                    originalTerm.AllowLWF = subscriptionPlans.AllowLWF;
-                    originalTerm.AllowPT = subscriptionPlans.AllowPT;
+                    originalTerm.MaxStorageMb = subscriptionPlans.MaxStorageMb;
+                    originalTerm.AllowEpfo = subscriptionPlans.AllowEpfo;
+                    originalTerm.AllowEsic = subscriptionPlans.AllowEsic;
+                    originalTerm.AllowGst = subscriptionPlans.AllowGst;
+                    originalTerm.AllowTds = subscriptionPlans.AllowTds;
+                    originalTerm.AllowClra = subscriptionPlans.AllowClra;
+                    originalTerm.AllowLwf = subscriptionPlans.AllowLwf;
+                    originalTerm.AllowPt = subscriptionPlans.AllowPt;
                     originalTerm.AllowCloudBackup = subscriptionPlans.AllowCloudBackup;
                     originalTerm.AllowPayroll = subscriptionPlans.AllowPayroll;
-                    originalTerm.AllowDSCSigning = subscriptionPlans.AllowDSCSigning;
+                    originalTerm.AllowDscsigning = subscriptionPlans.AllowDscsigning;
                     originalTerm.IsActive = subscriptionPlans.IsActive;
 
-                    _context.Update(originalTerm);
-                    _context.SaveChanges();
+                   
                 }
-
+                await _UnitOfWork.CommitAsync();
 
                 return new ManagerBaseResponse<bool>
                 {
@@ -1454,7 +1536,7 @@ namespace ComplyX_Businesss.BusinessLogic
             try
             {
                 // Get all report detail definitions for the given report name
-                var SubscriptionPlans = await _context.SubscriptionPlans.Where(x => x.PlanId.ToString() == PlanID).ToListAsync();
+                var SubscriptionPlans = await _UnitOfWork.SubscriptionPlanRepository.GetQueryable().Where(x => x.PlanId.ToString() == PlanID).ToListAsync();
 
                 if (string.IsNullOrEmpty(SubscriptionPlans.ToString()))
                 {
@@ -1466,9 +1548,8 @@ namespace ComplyX_Businesss.BusinessLogic
                 }
 
                 // Remove all related report details
-                _context.SubscriptionPlans.RemoveRange(SubscriptionPlans);
-
-                await _context.SaveChangesAsync();
+                _UnitOfWork.SubscriptionPlanRepository.RemoveRange(SubscriptionPlans);
+                await _UnitOfWork.CommitAsync();
 
                 return new ManagerBaseResponse<bool>
                 {
@@ -1486,17 +1567,17 @@ namespace ComplyX_Businesss.BusinessLogic
                 };
             }
         }
-        public async Task<ManagerBaseResponse<bool>> SavePaymentTransactionData(PaymentTransactions paymentTransactions)
+        public async Task<ManagerBaseResponse<bool>> SavePaymentTransactionData(PaymentTransactionRequestModel paymentTransactions)
         {
-            var response = new ManagerBaseResponse<List<PaymentTransactions>>();
+            var response = new ManagerBaseResponse<List<PaymentTransaction>>();
 
             try
             {
-                if (paymentTransactions.TransactionID == 0)
+                if (paymentTransactions.TransactionId == 0)
                 {
                     // Insert
-                    PaymentTransactions _model = new PaymentTransactions();
-                    _model.PaymentID = paymentTransactions.PaymentID;
+                    PaymentTransaction _model = new PaymentTransaction();
+                    _model.PaymentId = paymentTransactions.PaymentId;
                     _model.Gateway =  paymentTransactions.Gateway;
                     _model.GatewayPaymentId = paymentTransactions.GatewayPaymentId;
                     _model.Amount = paymentTransactions.Amount;
@@ -1504,17 +1585,17 @@ namespace ComplyX_Businesss.BusinessLogic
                     _model.Status =  paymentTransactions.Status;
                     _model.ResponsePayload =  paymentTransactions.ResponsePayload;
                     _model.CreatedAt = Util.GetCurrentCSTDateAndTime();
-
-                    _context.Add(_model);
-                    await _context.SaveChangesAsync();
+ 
+                   await  _UnitOfWork.PaymentTransactionRespositories.AddAsync(_model);
+                    
                 }
                 else
                 {
                     // Update
-                    var originalTerm = _context.PaymentTransactions
-                        .Where(x => x.TransactionID == paymentTransactions.TransactionID)
+                    var originalTerm = _UnitOfWork.PaymentTransactionRespositories.GetQueryable()
+                        .Where(x => x.TransactionId == paymentTransactions.TransactionId)
                             .FirstOrDefault();
-                    originalTerm.PaymentID = paymentTransactions.PaymentID;
+                    originalTerm.PaymentId = paymentTransactions.PaymentId;
                     originalTerm.Gateway = paymentTransactions.Gateway;
                     originalTerm.GatewayPaymentId = paymentTransactions.GatewayPaymentId;
                     originalTerm.Amount = paymentTransactions.Amount;
@@ -1523,10 +1604,9 @@ namespace ComplyX_Businesss.BusinessLogic
                     originalTerm.ResponsePayload = paymentTransactions.ResponsePayload;
                     originalTerm.CreatedAt = Util.GetCurrentCSTDateAndTime();
 
-                    _context.Update(originalTerm);
-                    _context.SaveChanges();
+                   
                 }
-
+                await _UnitOfWork.CommitAsync();
                 return new ManagerBaseResponse<bool>
                 {
                     Result = true,
@@ -1547,7 +1627,7 @@ namespace ComplyX_Businesss.BusinessLogic
             try
             {
                 // Get all report detail definitions for the given report name
-                var PaymentTransactions = await _context.PaymentTransactions.Where(x => x.TransactionID.ToString() == TransactionID).ToListAsync();
+                var PaymentTransactions = await _UnitOfWork.PaymentTransactionRespositories.GetQueryable().Where(x => x.TransactionId.ToString() == TransactionID).ToListAsync();
 
                 if (string.IsNullOrEmpty(PaymentTransactions.ToString()))
                 {
@@ -1559,9 +1639,8 @@ namespace ComplyX_Businesss.BusinessLogic
                 }
 
                 // Remove all related report details
-                _context.PaymentTransactions.RemoveRange(PaymentTransactions);
-
-                await _context.SaveChangesAsync();
+                _UnitOfWork.PaymentTransactionRespositories.RemoveRange(PaymentTransactions);
+                await _UnitOfWork.CommitAsync();
 
                 return new ManagerBaseResponse<bool>
                 {
@@ -1579,13 +1658,24 @@ namespace ComplyX_Businesss.BusinessLogic
                 };
             }
         }
-        public async Task<ManagerBaseResponse<List<PaymentTransactions>>> GetAllPaymentTransactionData()
+        public async Task<ManagerBaseResponse<List<PaymentTransactionRequestModel>>> GetAllPaymentTransactionData()
         {
             try
             {
-                var PaymentTransactions = await _context.PaymentTransactions.AsQueryable().OrderBy(x => x.TransactionID).ToListAsync();
+                var PaymentTransactions = await _UnitOfWork.PaymentTransactionRespositories.GetQueryable().OrderBy(x => x.TransactionId).Select(x => new PaymentTransactionRequestModel
+                {
+                    TransactionId = x.TransactionId,
+                    PaymentId = x.PaymentId,
+                    Gateway = x.Gateway,
+                    GatewayPaymentId = x.GatewayPaymentId,
+                    Amount = x.Amount,
+                    Fees = x.Fees,
+                    Status = x.Status,
+                    ResponsePayload = x.ResponsePayload,
+                    CreatedAt = x.CreatedAt
+                }).ToListAsync();
 
-                return new ManagerBaseResponse<List<PaymentTransactions>>
+                return new ManagerBaseResponse<List<PaymentTransactionRequestModel>>
                 {
                     IsSuccess = true,
                     Result = PaymentTransactions,
@@ -1595,7 +1685,7 @@ namespace ComplyX_Businesss.BusinessLogic
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<List<PaymentTransactions>>
+                return new ManagerBaseResponse<List<PaymentTransactionRequestModel>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -1603,13 +1693,24 @@ namespace ComplyX_Businesss.BusinessLogic
                 };
             }
         }
-        public async Task<ManagerBaseResponse<List<PaymentTransactions>>> GetAllPaymentTransactionDataByID(string TransactionID)
+        public async Task<ManagerBaseResponse<List<PaymentTransactionRequestModel>>> GetAllPaymentTransactionDataByID(string TransactionID)
         {
             try
             {
-                var PaymentTransactions = await _context.PaymentTransactions.Where(x => x.TransactionID.ToString() == TransactionID).ToListAsync();
+                var PaymentTransactions = await _UnitOfWork.PaymentTransactionRespositories.GetQueryable().Where(x => x.TransactionId.ToString() == TransactionID).Select(x => new PaymentTransactionRequestModel
+                {
+                    TransactionId = x.TransactionId,
+                    PaymentId = x.PaymentId,
+                    Gateway = x.Gateway,
+                    GatewayPaymentId = x.GatewayPaymentId,
+                    Amount = x.Amount,
+                    Fees = x.Fees,
+                    Status = x.Status,
+                    ResponsePayload = x.ResponsePayload,
+                    CreatedAt = x.CreatedAt
+                }).ToListAsync();
 
-                return new ManagerBaseResponse<List<PaymentTransactions>>
+                return new ManagerBaseResponse<List<PaymentTransactionRequestModel>>
                 {
                     IsSuccess = true,
                     Result = PaymentTransactions,
@@ -1619,7 +1720,7 @@ namespace ComplyX_Businesss.BusinessLogic
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<List<PaymentTransactions>>
+                return new ManagerBaseResponse<List<PaymentTransactionRequestModel>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -1627,21 +1728,21 @@ namespace ComplyX_Businesss.BusinessLogic
                 };
             }
         }
-        public async Task<ManagerBaseResponse<IEnumerable<PaymentTransactions>>> GetAllPaymentTransactionFilter(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<PaymentTransaction>>> GetAllPaymentTransactionFilter(PagedListCriteria PagedListCriteria)
         {
             try
             {
-                var query = _context.PaymentTransactions.AsQueryable();
+                var query = _UnitOfWork.PaymentTransactionRespositories.GetQueryable();
                 var searchText = PagedListCriteria.SearchText?.Trim().ToLower();
                 if (!string.IsNullOrWhiteSpace(searchText))
                 {
                     query = query.Where(x => x.Status.ToLower().Contains(searchText.ToLower()));
                 }
 
-                query = query.OrderBy(a => a.TransactionID);
+                query = query.OrderBy(a => a.TransactionId);
 
-                PageListed<PaymentTransactions> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
-                return new ManagerBaseResponse<IEnumerable<PaymentTransactions>>
+                PageListed<PaymentTransaction> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+                return new ManagerBaseResponse<IEnumerable<PaymentTransaction>>
                 {
                     Result = result.Data,
                     Message = "Payment Transactions Data Retrieved Successfully.",
@@ -1658,7 +1759,7 @@ namespace ComplyX_Businesss.BusinessLogic
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<IEnumerable<PaymentTransactions>>
+                return new ManagerBaseResponse<IEnumerable<PaymentTransaction>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -1666,13 +1767,13 @@ namespace ComplyX_Businesss.BusinessLogic
                 };
             }
         }
-        public async Task<ManagerBaseResponse<bool>> SaveCustomerPaymentsData(CustomerPayments CustomerPayments)
+        public async Task<ManagerBaseResponse<bool>> SaveCustomerPaymentsData(CustomerPaymentsRequestModel CustomerPayments)
         {
-            var response = new ManagerBaseResponse<List<CustomerPayments>>();
+            var response = new ManagerBaseResponse<List<CustomerPayment>>();
 
             try
             {
-                var Company = await _context.Companies.FirstOrDefaultAsync(x => x.CompanyID == CustomerPayments.CompanyID);
+                var Company = await _UnitOfWork.CompanyRepository.GetQueryable().FirstOrDefaultAsync(x => x.CompanyId == CustomerPayments.CompanyId);
 
                 if (Company == null)
                 {
@@ -1684,39 +1785,39 @@ namespace ComplyX_Businesss.BusinessLogic
                 }
                 else
                 {
-                    if (CustomerPayments.PaymentID == 0)
+                    if (CustomerPayments.PaymentId == 0)
                     {
                         // Insert
-                        CustomerPayments _model = new CustomerPayments();
-                        _model.CompanyID = CustomerPayments.CompanyID;
+                        CustomerPayment _model = new CustomerPayment();
+                        _model.CompanyId = CustomerPayments.CompanyId;
                         _model.CustomerIdentifier = CustomerPayments.CustomerIdentifier;
-                        _model.PlanID = CustomerPayments.PlanID;
+                        _model.PlanId = CustomerPayments.PlanId;
                         _model.Amount = CustomerPayments.Amount;
                         _model.Currency = CustomerPayments.Currency;
                         _model.Status = CustomerPayments.Status;                       
                         _model.CreatedAt = Util.GetCurrentCSTDateAndTime();
 
-                        _context.Add(_model);
-                        _context.SaveChanges();
+                        await _UnitOfWork.CustomerPayments.AddAsync(_model);
                     }
                     else
                     {
                         // Update
-                        var originalTerm = _context.CustomerPayments
-                            .Where(x => x.PaymentID == CustomerPayments.PaymentID)
+                        var originalTerm = _UnitOfWork.CustomerPayments.GetQueryable()
+                            .Where(x => x.PaymentId == CustomerPayments.PaymentId)
                                 .FirstOrDefault();
-                        originalTerm.CompanyID = CustomerPayments.CompanyID;
+                        originalTerm.CompanyId = CustomerPayments.CompanyId;
                         originalTerm.CustomerIdentifier = CustomerPayments.CustomerIdentifier;
-                        originalTerm.PlanID = CustomerPayments.PlanID;
+                        originalTerm.PlanId = CustomerPayments.PlanId;
                         originalTerm.Amount = CustomerPayments.Amount;
                         originalTerm.Currency = CustomerPayments.Currency;
                         originalTerm.Status = CustomerPayments.Status;
                         originalTerm.UpdatedAt = Util.GetCurrentCSTDateAndTime();
 
-                        _context.Update(originalTerm);
-                        _context.SaveChanges();
+                      
+
                     }
                 }
+                await _UnitOfWork.CommitAsync();
                 return new ManagerBaseResponse<bool>
                 {
                     Result = true,
@@ -1737,7 +1838,7 @@ namespace ComplyX_Businesss.BusinessLogic
             try
             {
                 // Get all report detail definitions for the given report name
-                var CustomerPayment = await _context.CustomerPayments.Where(x => x.PaymentID.ToString() == PaymentID).ToListAsync();
+                var CustomerPayment = await _UnitOfWork.CustomerPayments.GetQueryable().Where(x => x.PaymentId.ToString() == PaymentID).ToListAsync();
 
                 if (string.IsNullOrEmpty(CustomerPayment.ToString()))
                 {
@@ -1749,9 +1850,8 @@ namespace ComplyX_Businesss.BusinessLogic
                 }
 
                 // Remove all related report details
-                _context.CustomerPayments.RemoveRange(CustomerPayment);
-
-                await _context.SaveChangesAsync();
+                _UnitOfWork.CustomerPayments.RemoveRange(CustomerPayment);
+                await _UnitOfWork.CommitAsync();
 
                 return new ManagerBaseResponse<bool>
                 {
@@ -1769,13 +1869,24 @@ namespace ComplyX_Businesss.BusinessLogic
                 };
             }
         }
-        public async Task<ManagerBaseResponse<List<CustomerPayments>>> GetAllCustomerPaymentsData()
+        public async Task<ManagerBaseResponse<List<CustomerPaymentsResponseModel>>> GetAllCustomerPaymentsData()
         {
             try
             {
-                var CustomerPayments = await _context.CustomerPayments.AsQueryable().OrderBy(x => x.PaymentID).ToListAsync();
+                var CustomerPayments = await _UnitOfWork.CustomerPayments.GetQueryable().OrderBy(x => x.PaymentId).Select(x => new CustomerPaymentsResponseModel
+                {
+                    PaymentId = x.PaymentId,
+                    CompanyId = x.CompanyId,
+                    CustomerIdentifier = x.CustomerIdentifier,
+                    PlanId = x.PlanId,
+                    Amount = x.Amount,
+                    Currency = x.Currency,
+                    Status = x.Status,
+                    CreatedAt = x.CreatedAt,
+                    UpdatedAt = x.UpdatedAt
+                }).ToListAsync();
 
-                return new ManagerBaseResponse<List<CustomerPayments>>
+                return new ManagerBaseResponse<List<CustomerPaymentsResponseModel>>
                 {
                     IsSuccess = true,
                     Result = CustomerPayments,
@@ -1785,7 +1896,7 @@ namespace ComplyX_Businesss.BusinessLogic
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<List<CustomerPayments>>
+                return new ManagerBaseResponse<List<CustomerPaymentsResponseModel>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -1793,13 +1904,24 @@ namespace ComplyX_Businesss.BusinessLogic
                 };
             }
         }
-        public async Task<ManagerBaseResponse<List<CustomerPayments>>> GetAllCustomerPaymentDataByID(string PaymentID)
+        public async Task<ManagerBaseResponse<List<CustomerPaymentsResponseModel>>> GetAllCustomerPaymentDataByID(string PaymentID)
         {
             try
             {
-                var customerPayments = await _context.CustomerPayments.Where(x => x.PaymentID.ToString() == PaymentID).ToListAsync();
+                var customerPayments = await _UnitOfWork.CustomerPayments.GetQueryable().Where(x => x.PaymentId.ToString() == PaymentID).Select(x => new CustomerPaymentsResponseModel
+                {
+                    PaymentId = x.PaymentId,
+                    CompanyId = x.CompanyId,
+                    CustomerIdentifier = x.CustomerIdentifier,
+                    PlanId = x.PlanId,
+                    Amount = x.Amount,
+                    Currency = x.Currency,
+                    Status = x.Status,
+                    CreatedAt = x.CreatedAt,
+                    UpdatedAt = x.UpdatedAt
+                }).ToListAsync();
 
-                return new ManagerBaseResponse<List<CustomerPayments>>
+                return new ManagerBaseResponse<List<CustomerPaymentsResponseModel>>
                 {
                     IsSuccess = true,
                     Result = customerPayments,
@@ -1809,7 +1931,7 @@ namespace ComplyX_Businesss.BusinessLogic
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<List<CustomerPayments>>
+                return new ManagerBaseResponse<List<CustomerPaymentsResponseModel>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -1817,22 +1939,22 @@ namespace ComplyX_Businesss.BusinessLogic
                 };
             }
         }
-        public async Task<ManagerBaseResponse<IEnumerable<CustomerPayments>>> GetAllCustomerPaymentFilter(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<CustomerPayment>>> GetAllCustomerPaymentFilter(PagedListCriteria PagedListCriteria)
         {
             try
             {
                 
-                var query = _context.CustomerPayments.AsQueryable();
+                var query = _UnitOfWork.CustomerPayments.GetQueryable();
                 var searchText = PagedListCriteria.SearchText?.Trim().ToLower();
                 if (!string.IsNullOrWhiteSpace(searchText))
                 {
                     query = query.Where(x => x.CustomerIdentifier.ToLower().Contains(searchText.ToLower()));
                 }
 
-                query = query.OrderBy(a => a.PaymentID);
+                query = query.OrderBy(a => a.PaymentId);
 
-                PageListed<CustomerPayments> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
-                return new ManagerBaseResponse<IEnumerable<CustomerPayments>>
+                PageListed<CustomerPayment> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+                return new ManagerBaseResponse<IEnumerable<CustomerPayment>>
                 {
                     Result = result.Data,
                     Message = "Customer Payments Retrieved Successfully.",
@@ -1849,7 +1971,7 @@ namespace ComplyX_Businesss.BusinessLogic
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<IEnumerable<CustomerPayments>>
+                return new ManagerBaseResponse<IEnumerable<CustomerPayment>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -1857,7 +1979,7 @@ namespace ComplyX_Businesss.BusinessLogic
                 };
             }
         }
-        public async Task<ManagerBaseResponse<bool>> SavePartyMasterData(PartyMaster PartyMaster, string UserName)
+        public async Task<ManagerBaseResponse<bool>> SavePartyMasterData(PartyMasterRequestModel PartyMaster, string UserName)
         {
             var response = new ManagerBaseResponse<List<PartyMaster>>();
 
@@ -1875,53 +1997,53 @@ namespace ComplyX_Businesss.BusinessLogic
                 else
                 {
 
-                    if (PartyMaster.PartyID == 0)
+                    if (PartyMaster.PartyId == 0)
                     {
                         // Insert
                         PartyMaster _model = new PartyMaster();
                         _model.PartyType =  PartyMaster.PartyType;
                         _model.PartyName = PartyMaster.PartyName;
-                        _model.PAN = PartyMaster.PAN;
-                        _model.GSTIN = PartyMaster.GSTIN;
+                        _model.Pan = PartyMaster.Pan;
+                        _model.Gstin = PartyMaster.Gstin;
                         _model.Address1 = PartyMaster.Address1;
                         _model.Address2 = PartyMaster.Address2;
                         _model.City = PartyMaster.City;
                         _model.StateCode = PartyMaster.StateCode;
-                        _model.PinCode = PartyMaster.PinCode;
+                        _model.Pincode = PartyMaster.Pincode;
                         _model.Email = PartyMaster.Email;
                         _model.Phone = PartyMaster.Phone;
                         _model.IsActive = PartyMaster.IsActive; 
                         _model.CreatedAt = Util.GetCurrentCSTDateAndTime();
                         _model.CreatedBy = user.Id;
 
-                        _context.Add(_model);
-                        await _context.SaveChangesAsync();
+                       
+                        await _UnitOfWork.PartyMasterRepositories.AddAsync(_model);
                     }
                     else
                     {
                         // Update
-                        var originalTerm = _context.PartyMaster
-                            .Where(x => x.PartyID    == PartyMaster.PartyID)
+                        var originalTerm = _UnitOfWork.PartyMasterRepositories.GetQueryable()
+                            .Where(x => x.PartyId    == PartyMaster.PartyId)
                                 .FirstOrDefault();
                         originalTerm.PartyType = PartyMaster.PartyType;
                         originalTerm.PartyName = PartyMaster.PartyName;
-                        originalTerm.PAN = PartyMaster.PAN;
-                        originalTerm.GSTIN = PartyMaster.GSTIN;
+                        originalTerm.Pan = PartyMaster.Pan;
+                        originalTerm.Gstin = PartyMaster.Gstin;
                         originalTerm.Address1 = PartyMaster.Address1;
                         originalTerm.Address2 = PartyMaster.Address2;
                         originalTerm.City = PartyMaster.City;
                         originalTerm.StateCode = PartyMaster.StateCode;
-                        originalTerm.PinCode = PartyMaster.PinCode;
+                        originalTerm.Pincode = PartyMaster.Pincode;
                         originalTerm.Email = PartyMaster.Email;
                         originalTerm.Phone = PartyMaster.Phone;
                         originalTerm.IsActive = PartyMaster.IsActive;
                         originalTerm.CreatedAt = Util.GetCurrentCSTDateAndTime();
                         originalTerm.CreatedBy = user.Id;
 
-                        _context.Update(originalTerm);
-                        _context.SaveChanges();
+                       
                     }
                 }
+                await _UnitOfWork.CommitAsync();
                 return new ManagerBaseResponse<bool>
                 {
                     Result = true,
@@ -1942,7 +2064,7 @@ namespace ComplyX_Businesss.BusinessLogic
             try
             {
                 // Get all report detail definitions for the given report name
-                var Party = await _context.PartyMaster.Where(x => x.PartyID.ToString() == PartyID).ToListAsync();
+                var Party = await _UnitOfWork.PartyMasterRepositories.GetQueryable().Where(x => x.PartyId.ToString() == PartyID).ToListAsync();
 
                 if (string.IsNullOrEmpty(Party.ToString()))
                 {
@@ -1954,9 +2076,9 @@ namespace ComplyX_Businesss.BusinessLogic
                 }
 
                 // Remove all related report details
-                _context.PartyMaster.RemoveRange(Party);
 
-                await _context.SaveChangesAsync();
+                _UnitOfWork.PartyMasterRepositories.RemoveRange(Party);
+                await _UnitOfWork.CommitAsync();
 
                 return new ManagerBaseResponse<bool>
                 {
@@ -1974,13 +2096,30 @@ namespace ComplyX_Businesss.BusinessLogic
                 };
             }
         }
-        public async Task<ManagerBaseResponse<List<PartyMaster>>> GetAllPartyMasterData()
+        public async Task<ManagerBaseResponse<List<PartyMasterResponseModel>>> GetAllPartyMasterData()
         {
             try
             {
-                var Party = await _context.PartyMaster.AsQueryable().OrderBy(x => x.PartyID).ToListAsync();
+                var Party = await _UnitOfWork.PartyMasterRepositories.GetQueryable().OrderBy(x => x.PartyId).Select(x => new PartyMasterResponseModel
+                {
+                    PartyId = x.PartyId,
+                    PartyName = x.PartyName,
+                    Pan = x.Pan,
+                    Gstin = x.Gstin,
+                    PartyType = x.PartyType,
+                    Address1 = x.Address1,
+                    Address2 = x.Address2,
+                    City = x.City,
+                    StateCode = x.StateCode,
+                    Pincode = x.Pincode,
+                    Email = x.Email,
+                    Phone = x.Phone,
+                    IsActive = x.IsActive,
+                    CreatedAt = x.CreatedAt,
+                    CreatedBy = x.CreatedBy
+                }).ToListAsync();
 
-                return new ManagerBaseResponse<List<PartyMaster>>
+                return new ManagerBaseResponse<List<PartyMasterResponseModel>>
                 {
                     IsSuccess = true,
                     Result = Party,
@@ -1990,7 +2129,7 @@ namespace ComplyX_Businesss.BusinessLogic
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<List<PartyMaster>>
+                return new ManagerBaseResponse<List<PartyMasterResponseModel>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -1998,13 +2137,30 @@ namespace ComplyX_Businesss.BusinessLogic
                 };
             }
         }
-        public async Task<ManagerBaseResponse<List<PartyMaster>>> GetAllPartyMasterDataByID(string PartyID)
+        public async Task<ManagerBaseResponse<List<PartyMasterResponseModel>>> GetAllPartyMasterDataByID(string PartyID)
         {
             try
             {
-                var PartyMaster = await _context.PartyMaster.Where(x => x.PartyID.ToString() == PartyID).ToListAsync();
+                var PartyMaster = await _UnitOfWork.PartyMasterRepositories.GetQueryable().Where(x => x.PartyId.ToString() == PartyID).Select(x => new PartyMasterResponseModel
+                {
+                    PartyId = x.PartyId,
+                    PartyName = x.PartyName,
+                    Pan = x.Pan,
+                    Gstin = x.Gstin,
+                    PartyType = x.PartyType,
+                    Address1 = x.Address1,
+                    Address2 = x.Address2,
+                    City = x.City,
+                    StateCode = x.StateCode,
+                    Pincode = x.Pincode,
+                    Email = x.Email,
+                    Phone = x.Phone,
+                    IsActive = x.IsActive,
+                    CreatedAt = x.CreatedAt,
+                    CreatedBy = x.CreatedBy
+                }).ToListAsync();
 
-                return new ManagerBaseResponse<List<PartyMaster>>
+                return new ManagerBaseResponse<List<PartyMasterResponseModel>>
                 {
                     IsSuccess = true,
                     Result = PartyMaster,
@@ -2014,7 +2170,7 @@ namespace ComplyX_Businesss.BusinessLogic
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<List<PartyMaster>>
+                return new ManagerBaseResponse<List<PartyMasterResponseModel>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -2027,14 +2183,14 @@ namespace ComplyX_Businesss.BusinessLogic
             try
             {
 
-                var query = _context.PartyMaster.AsQueryable();
+                var query = _UnitOfWork.PartyMasterRepositories.GetQueryable();
                 var searchText = PagedListCriteria.SearchText?.Trim().ToLower();
                 if (!string.IsNullOrWhiteSpace(searchText))
                 {
                     query = query.Where(x => x.PartyName.ToLower().Contains(searchText.ToLower()));
                 }
 
-                query = query.OrderBy(a => a.PartyID);
+                query = query.OrderBy(a => a.PartyId);
 
                 PageListed<PartyMaster> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
                 return new ManagerBaseResponse<IEnumerable<PartyMaster>>
@@ -2062,15 +2218,15 @@ namespace ComplyX_Businesss.BusinessLogic
                 };
             }
         }
-        public async Task<ManagerBaseResponse<bool>> SaveCompanyPartyRoleData(CompanyPartyRole CompanyPartyRole, string UserName)
+        public async Task<ManagerBaseResponse<bool>> SaveCompanyPartyRoleData(CompanyPartyRoleRequestModel CompanyPartyRole, string UserName)
         {
             var response = new ManagerBaseResponse<List<CompanyPartyRole>>();
 
             try
             {
                 var user = _context.Users.FirstOrDefault(x => x.UserName == UserName);
-                var Party = _context.PartyMaster.FirstOrDefault(x => x.PartyID == CompanyPartyRole.PartyID);
-                var Company = _context.Companies.FirstOrDefault(x => x.CompanyID == CompanyPartyRole.CompanyID);
+                var Party = _UnitOfWork.PartyMasterRepositories.GetQueryable().FirstOrDefault(x => x.PartyId == CompanyPartyRole.PartyID);
+                var Company = _UnitOfWork.CompanyRepository.GetQueryable().FirstOrDefault(x => x.CompanyId == CompanyPartyRole.CompanyID);
                 if (user == null)
                 {
                     return new ManagerBaseResponse<bool>
@@ -2092,7 +2248,8 @@ namespace ComplyX_Businesss.BusinessLogic
                     }
                     else
                     {
-                        var Data = _context.CompanyPartyRole.FirstOrDefault(x => x.CompanyID == CompanyPartyRole.CompanyID && x.PartyID == CompanyPartyRole.PartyID);
+                        var Data = _UnitOfWork.CompanyPartyRoleRepositories.GetQueryable().FirstOrDefault(x => x.CompanyId == CompanyPartyRole.CompanyID && 
+                        x.PartyId == CompanyPartyRole.PartyID);
 
                         if (Data != null)
                         {
@@ -2109,35 +2266,34 @@ namespace ComplyX_Businesss.BusinessLogic
                             {
                                 // Insert
                                 CompanyPartyRole _model = new CompanyPartyRole();
-                                _model.PartyID = CompanyPartyRole.PartyID;
-                                _model.CompanyID = CompanyPartyRole.CompanyID;
+                                _model.PartyId = CompanyPartyRole.PartyID;
+                                _model.CompanyId = CompanyPartyRole.CompanyID;
                                 _model.RoleType = CompanyPartyRole.RoleType;
                                 _model.IsActive = CompanyPartyRole.IsActive;
                                 _model.CreatedAt = Util.GetCurrentCSTDateAndTime();
                                 _model.CreatedBy = user.Id;
 
-                                _context.Add(_model);
-                                await _context.SaveChangesAsync();
+                               await _UnitOfWork.CompanyPartyRoleRepositories.AddAsync(_model);
                             }
                             else
                             {
                                 // Update
-                                var originalTerm = _context.CompanyPartyRole
-                                    .Where(x => x.CompanyPartyRoleID == CompanyPartyRole.CompanyPartyRoleID)
+                                var originalTerm = _UnitOfWork.CompanyPartyRoleRepositories.GetQueryable()
+                                    .Where(x => x.CompanyPartyRoleId == CompanyPartyRole.CompanyPartyRoleID)
                                         .FirstOrDefault();
-                                originalTerm.PartyID = CompanyPartyRole.PartyID;
-                                originalTerm.CompanyID = CompanyPartyRole.CompanyID;
+                                originalTerm.PartyId = CompanyPartyRole.PartyID;
+                                originalTerm.CompanyId= CompanyPartyRole.CompanyID;
                                 originalTerm.RoleType = CompanyPartyRole.RoleType;
                                 originalTerm.IsActive = CompanyPartyRole.IsActive;
                                 originalTerm.CreatedAt = Util.GetCurrentCSTDateAndTime();
                                 originalTerm.CreatedBy = user.Id;
 
-                                _context.Update(originalTerm);
-                                _context.SaveChanges();
+                               
                             }
                         }
                     }
                 }
+                await _UnitOfWork.CommitAsync();
                 return new ManagerBaseResponse<bool>
                 {
                     Result = true,
@@ -2158,7 +2314,7 @@ namespace ComplyX_Businesss.BusinessLogic
             try
             {
                 // Get all report detail definitions for the given report name
-                var Party = await _context.CompanyPartyRole.Where(x => x.CompanyPartyRoleID.ToString() == CompanyPartyRoleID).ToListAsync();
+                var Party = await _UnitOfWork.CompanyPartyRoleRepositories.GetQueryable().Where(x => x.CompanyPartyRoleId.ToString() == CompanyPartyRoleID).ToListAsync();
 
                 if (string.IsNullOrEmpty(Party.ToString()))
                 {
@@ -2170,10 +2326,9 @@ namespace ComplyX_Businesss.BusinessLogic
                 }
 
                 // Remove all related report details
-                _context.CompanyPartyRole.RemoveRange(Party);
+                _UnitOfWork.CompanyPartyRoleRepositories.RemoveRange(Party);
 
-                await _context.SaveChangesAsync();
-
+                await _UnitOfWork.CommitAsync();
                 return new ManagerBaseResponse<bool>
                 {
                     Result = true,
@@ -2190,13 +2345,22 @@ namespace ComplyX_Businesss.BusinessLogic
                 };
             }
         }
-        public async Task<ManagerBaseResponse<List<CompanyPartyRole>>> GetAllCompanyPartyRoleData()
+        public async Task<ManagerBaseResponse<List<CompanyPartyRoleResponseModel>>> GetAllCompanyPartyRoleData()
         {
             try
             {
-                var Party = await _context.CompanyPartyRole.AsQueryable().OrderBy(x => x.CompanyPartyRoleID).ToListAsync();
+                var Party = await _UnitOfWork.CompanyPartyRoleRepositories.GetQueryable().OrderBy(x => x.CompanyPartyRoleId).Select(x => new CompanyPartyRoleResponseModel
+                {
+                    CompanyPartyRoleID = x.CompanyPartyRoleId,
+                    CompanyID = x.CompanyId,
+                    PartyID = x.PartyId,
+                    RoleType = x.RoleType,
+                    IsActive = x.IsActive,
+                    CreatedAt = x.CreatedAt,
+                    CreatedBy = x.CreatedBy
+                }).ToListAsync();
 
-                return new ManagerBaseResponse<List<CompanyPartyRole>>
+                return new ManagerBaseResponse<List<CompanyPartyRoleResponseModel>>
                 {
                     IsSuccess = true,
                     Result = Party,
@@ -2206,7 +2370,7 @@ namespace ComplyX_Businesss.BusinessLogic
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<List<CompanyPartyRole>>
+                return new ManagerBaseResponse<List<CompanyPartyRoleResponseModel>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -2214,13 +2378,22 @@ namespace ComplyX_Businesss.BusinessLogic
                 };
             }
         }
-        public async Task<ManagerBaseResponse<List<CompanyPartyRole>>> GetAllCompanyPartyRoleDataByID(string CompanyPartyRoleID)
+        public async Task<ManagerBaseResponse<List<CompanyPartyRoleResponseModel>>> GetAllCompanyPartyRoleDataByID(string CompanyPartyRoleID)
         {
             try
             {
-                var PartyMaster = await _context.CompanyPartyRole.Where(x => x.CompanyPartyRoleID.ToString() == CompanyPartyRoleID).ToListAsync();
+                var PartyMaster = await _UnitOfWork.CompanyPartyRoleRepositories.GetQueryable().Where(x => x.CompanyPartyRoleId.ToString() == CompanyPartyRoleID).Select(x => new CompanyPartyRoleResponseModel
+                {
+                    CompanyPartyRoleID = x.CompanyPartyRoleId,
+                    CompanyID = x.CompanyId,
+                    PartyID = x.PartyId,
+                    RoleType = x.RoleType,
+                    IsActive = x.IsActive,
+                    CreatedAt = x.CreatedAt,
+                    CreatedBy = x.CreatedBy
+                }).ToListAsync();
 
-                return new ManagerBaseResponse<List<CompanyPartyRole>>
+                return new ManagerBaseResponse<List<CompanyPartyRoleResponseModel>>
                 {
                     IsSuccess = true,
                     Result = PartyMaster,
@@ -2230,7 +2403,7 @@ namespace ComplyX_Businesss.BusinessLogic
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<List<CompanyPartyRole>>
+                return new ManagerBaseResponse<List<CompanyPartyRoleResponseModel>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -2243,14 +2416,14 @@ namespace ComplyX_Businesss.BusinessLogic
             try
             {
 
-                var query = _context.CompanyPartyRole.AsQueryable();
+                var query = _UnitOfWork.CompanyPartyRoleRepositories.GetQueryable();
                 var searchText = PagedListCriteria.SearchText?.Trim().ToLower();
                 if (!string.IsNullOrWhiteSpace(searchText))
                 {
                     query = query.Where(x => x.RoleType.ToLower().Contains(searchText.ToLower()));
                 }
 
-                query = query.OrderBy(a => a.CompanyPartyRoleID);
+                query = query.OrderBy(a => a.CompanyPartyRoleId);
 
                 PageListed<CompanyPartyRole> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
                 return new ManagerBaseResponse<IEnumerable<CompanyPartyRole>>
