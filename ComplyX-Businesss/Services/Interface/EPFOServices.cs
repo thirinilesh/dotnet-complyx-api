@@ -16,23 +16,23 @@ namespace ComplyX_Businesss.Services
         Task<ManagerBaseResponse<bool>> SaveCompanyEPFOData(CompanyEPFORequestModel CompanyEPFO);
 
         Task<ManagerBaseResponse<bool>> RemoveCompanyEPFOData(string CompanyEPFOId);
-        Task<ManagerBaseResponse<IEnumerable<CompanyEpfo>>> GetAllCompanyEPFOFilter(PagedListCriteria PagedListCriteria);
+        Task<ManagerBaseResponse<IEnumerable<CompanyEPFOResponseModel>>> GetAllCompanyEPFOFilter(PagedListCriteria PagedListCriteria);
         Task<ManagerBaseResponse<bool>> SaveEmployeeEPFOData(EmployeeEPFORequestModel EmployeeEPFO);
 
         Task<ManagerBaseResponse<bool>> RemoveEmployeeEPFOData(string EmployeeEPFOId);
-        Task<ManagerBaseResponse<IEnumerable<EmployeeEpfo>>> GetAllEmployeeEPFOFilter(PagedListCriteria PagedListCriteria);
+        Task<ManagerBaseResponse<IEnumerable<EmployeeEPFOResponseModel>>> GetAllEmployeeEPFOFilter(PagedListCriteria PagedListCriteria);
         Task<ManagerBaseResponse<bool>> SaveEPFOECRData(EPFOECRFileRequestModel EPFOECRFile);
 
         Task<ManagerBaseResponse<bool>> RemoveEPFOECRData(string ECRFileId);
-        Task<ManagerBaseResponse<IEnumerable<Epfoecrfile>>> GetEPFOECRDataFilter(PagedListCriteria PagedListCriteria);
+        Task<ManagerBaseResponse<IEnumerable<EPFOECRFileResponseModel>>> GetEPFOECRDataFilter(PagedListCriteria PagedListCriteria);
         Task<ManagerBaseResponse<bool>> SaveEPFOPeriodData(EPFOPeriodRequestModel EPFOPeriod , string UserID);
 
         Task<ManagerBaseResponse<bool>> RemoveEPFOPeriodData(string EPFOPeriodId);
-        Task<ManagerBaseResponse<IEnumerable<Epfoperiod>>> GetEPFOPeriodDataFilter(PagedListCriteria PagedListCriteria);
+        Task<ManagerBaseResponse<IEnumerable<EPFOPeriodResponseModel>>> GetEPFOPeriodDataFilter(PagedListCriteria PagedListCriteria);
 
         Task<ManagerBaseResponse<bool>> SaveEPFOMonthlyWageData(EPFOMonthWageRequestModel EPFOMonthlyWage);
 
         Task<ManagerBaseResponse<bool>> RemoveEPFOMonthlyWageData(string WageId);
-        Task<ManagerBaseResponse<IEnumerable<EpfomonthlyWage>>> GetAllEPFOMonthlyWageFilter(PagedListCriteria PagedListCriteria);
+        Task<ManagerBaseResponse<IEnumerable<EPFOMonthWageResponseModel>>> GetAllEPFOMonthlyWageFilter(PagedListCriteria PagedListCriteria);
     }
 }

@@ -21,12 +21,12 @@ namespace ComplyX_Businesss.Services
         Task<ManagerBaseResponse<bool>> SaveProductOwnerData(ProductOwnerRequestModel ProductOwners);
         Task<ManagerBaseResponse<bool>> RemoveProductOwnerData(string ProductOwnerId);
         Task<ManagerBaseResponse<IEnumerable<ProductOwnerResponseModel>>> GetAllProductOwnerData();
-        Task<ManagerBaseResponse<IEnumerable<ProductOwner>>> GetAllProductOwnerFilter(PagedListCriteria PagedListCriteria);
+        Task<ManagerBaseResponse<IEnumerable<ProductOwnerResponseModel>>> GetAllProductOwnerFilter(PagedListCriteria PagedListCriteria);
         Task<ManagerBaseResponse<bool>> SaveCompanyData(CompanyRequestModel company);
         Task<ManagerBaseResponse<bool>> RemoveCompanyData(string CompanyId);
-        Task<ManagerBaseResponse<IEnumerable<Company>>> GetAllCompanyDataFilter(PagedListCriteria PagedListCriteria);
+        Task<ManagerBaseResponse<IEnumerable<CompanyResponseModel>>> GetAllCompanyDataFilter(PagedListCriteria PagedListCriteria);
         Task<ManagerBaseResponse<List<SubscriptionPlanResponseModel>>> GetSubscriptionPlans();
-        Task<ManagerBaseResponse<IEnumerable<SubscriptionPlan>>> GetSubscriptionPlansByFilter(PagedListCriteria PagedListCriteria);
+        Task<ManagerBaseResponse<IEnumerable<SubscriptionPlanResponseModel>>> GetSubscriptionPlansByFilter(PagedListCriteria PagedListCriteria);
         Task<ManagerBaseResponse<List<SubscriptionPlan>>> GetSubscriptionPlanFilter(SubscriptionPlansFilterRequest request);
         Task<ManagerBaseResponse<bool>> SaveUserSubscriptionData(ProductOwnerSubscription ProductOwnerSubscriptions);
         Task<ManagerBaseResponse<List<ProductOwnerSubscriptionDto>>> GetUserSubscriptionPlansDetails(ProductOwnerSubscriptionDto ProductOwnerSubscriptionDto);
@@ -35,19 +35,19 @@ namespace ComplyX_Businesss.Services
         Task<ManagerBaseResponse<bool>> RemoveSubcontractorData(string SubcontractorsID);
         Task<ManagerBaseResponse<List<SubcontractorResponseModel>>> GetSubcontractors(int CompanyID);
 
-        Task<ManagerBaseResponse<IEnumerable<Subcontractor>>> GetSubcontractorsFilter(PagedListCriteria PagedListCriteria);
+        Task<ManagerBaseResponse<IEnumerable<SubcontractorResponseModel>>> GetSubcontractorsFilter(PagedListCriteria PagedListCriteria);
 
         Task<ManagerBaseResponse<List<SubcontractorResponseModel>>> GetProductOwnerSubcontractorsDetails(int ProductOwnerId);
         Task<ManagerBaseResponse<bool>> SavePlansData(PlanRequestModel Plans);
         Task<ManagerBaseResponse<bool>> RemovePlansData(string PlanID);
         Task<ManagerBaseResponse<List<PlanResponseModel>>> GetAllPlansData();
         Task<ManagerBaseResponse<List<PlanResponseModel>>> GetAllPlansDataByID(string PlanID);
-        Task<ManagerBaseResponse<IEnumerable<Plan>>> GetAllPlansDataFilter(PagedListCriteria PagedListCriteria);
+        Task<ManagerBaseResponse<IEnumerable<PlanResponseModel>>> GetAllPlansDataFilter(PagedListCriteria PagedListCriteria);
         Task<ManagerBaseResponse<bool>> SaveSubscriptionInvoicesData(SubscriptionInvoicesRequestModel subscriptionInvoices);
         Task<ManagerBaseResponse<bool>> RemoveSubscriptionInvoicesData(string InvoiceID);
         Task<ManagerBaseResponse<List<SubscriptionInvoicesResponseModel>>> GetAllSubscriptionInvoicesData();
         Task<ManagerBaseResponse<List<SubscriptionInvoicesResponseModel>>> GetAllSubscriptionInvoicesDataByID(string InvoiceID);
-        Task<ManagerBaseResponse<IEnumerable<SubscriptionInvoice>>> GetAllSubscriptionInvoicesFilter(PagedListCriteria PagedListCriteria);
+        Task<ManagerBaseResponse<IEnumerable<SubscriptionInvoicesResponseModel>>> GetAllSubscriptionInvoicesFilter(PagedListCriteria PagedListCriteria);
         Task<ManagerBaseResponse<bool>> SaveSubscriptionPlansData(SubscriptionPlanRequestModel subscriptionPlans);
 
         Task<ManagerBaseResponse<bool>> RemoveSubscriptionPlansData(string PlanID);
@@ -56,22 +56,22 @@ namespace ComplyX_Businesss.Services
         Task<ManagerBaseResponse<bool>> RemovePaymentTransactionData(string TransactionID);
         Task<ManagerBaseResponse<List<PaymentTransactionRequestModel>>> GetAllPaymentTransactionData();
         Task<ManagerBaseResponse<List<PaymentTransactionRequestModel>>> GetAllPaymentTransactionDataByID(string TransactionID);
-        Task<ManagerBaseResponse<IEnumerable<PaymentTransaction>>> GetAllPaymentTransactionFilter(PagedListCriteria PagedListCriteria);
+        Task<ManagerBaseResponse<IEnumerable<PaymentTransactionRequestModel>>> GetAllPaymentTransactionFilter(PagedListCriteria PagedListCriteria);
         Task<ManagerBaseResponse<bool>> SaveCustomerPaymentsData(CustomerPaymentsRequestModel CustomerPayments);
         Task<ManagerBaseResponse<bool>> RemoveCustomerPaymentsData(string PaymentID);
         Task<ManagerBaseResponse<List<CustomerPaymentsResponseModel>>> GetAllCustomerPaymentsData();
         Task<ManagerBaseResponse<List<CustomerPaymentsResponseModel>>> GetAllCustomerPaymentDataByID(string PaymentID);
-        Task<ManagerBaseResponse<IEnumerable<CustomerPayment>>> GetAllCustomerPaymentFilter(PagedListCriteria PagedListCriteria);
+        Task<ManagerBaseResponse<IEnumerable<CustomerPaymentsResponseModel>>> GetAllCustomerPaymentFilter(PagedListCriteria PagedListCriteria);
         Task<ManagerBaseResponse<bool>> SavePartyMasterData(PartyMasterRequestModel PartyMaster, string UserName);
         Task<ManagerBaseResponse<bool>> RemovePartyMasterData(string PartyID);
         Task<ManagerBaseResponse<List<PartyMasterResponseModel>>> GetAllPartyMasterData();
         Task<ManagerBaseResponse<List<PartyMasterResponseModel>>> GetAllPartyMasterDataByID(string PArtyID);
-        Task<ManagerBaseResponse<IEnumerable<PartyMaster>>> GetAllPartyMasterFilter(PagedListCriteria PagedListCriteria);
+        Task<ManagerBaseResponse<IEnumerable<PartyMasterResponseModel>>> GetAllPartyMasterFilter(PagedListCriteria PagedListCriteria);
         Task<ManagerBaseResponse<bool>> SaveCompanyPartyRoleData(CompanyPartyRoleRequestModel CompanyPartyRole, string UserName);
         Task<ManagerBaseResponse<bool>> RemoveCompanyPartyRoleData(string CompanyPartyRoleID);
         Task<ManagerBaseResponse<List<CompanyPartyRoleResponseModel>>> GetAllCompanyPartyRoleData();
         Task<ManagerBaseResponse<List<CompanyPartyRoleResponseModel>>> GetAllCompanyPartyRoleDataByID(string CompanyPartyRoleID);
-        Task<ManagerBaseResponse<IEnumerable<CompanyPartyRole>>> GetAllCompanyPartyRoleFilter(PagedListCriteria PagedListCriteria);
+        Task<ManagerBaseResponse<IEnumerable<CompanyPartyRoleResponseModel>>> GetAllCompanyPartyRoleFilter(PagedListCriteria PagedListCriteria);
     }
 
 }

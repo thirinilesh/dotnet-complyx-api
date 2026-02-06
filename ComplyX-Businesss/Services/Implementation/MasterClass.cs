@@ -23,6 +23,7 @@ using ComplyX.Repositories.UnitOfWork;
 using ComplyX_Businesss.Models.LicenseKeyMaster;
 using ComplyX_Businesss.Models.ExitTypes;
 using ComplyX_Businesss.Models.FilingStatus;
+using ComplyX_Businesss.Models.CompanyEPFO;
 
 
 namespace ComplyX_Businesss.Services.Implementation
@@ -148,7 +149,7 @@ namespace ComplyX_Businesss.Services.Implementation
                 };
             }
         }
-        public async Task<ManagerBaseResponse<IEnumerable<EmploymentType>>> GetEmploymentTypesFilter(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<EmploymentTypeResponseModel>>> GetEmploymentTypesFilter(PagedListCriteria PagedListCriteria)
         {
             try
             {
@@ -161,10 +162,16 @@ namespace ComplyX_Businesss.Services.Implementation
                 }
 
                 query = query.OrderBy(a => a.EmploymentTypeId);
+                var responseQuery = query.Select(x => new EmploymentTypeResponseModel
+                {
 
-                PageListed<EmploymentType> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+                    EmploymentTypeId = x.EmploymentTypeId,
+                    Name = x.Name
+                });
 
-                return new ManagerBaseResponse<IEnumerable<EmploymentType>>
+                PageListed<EmploymentTypeResponseModel> result = await responseQuery.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+
+                return new ManagerBaseResponse<IEnumerable<EmploymentTypeResponseModel>>
                 {
                     Result = result.Data,
                     Message = "Employment Type Data Retrieved Successfully.",
@@ -181,7 +188,7 @@ namespace ComplyX_Businesss.Services.Implementation
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<IEnumerable<EmploymentType>>
+                return new ManagerBaseResponse<IEnumerable<EmploymentTypeResponseModel>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -292,7 +299,7 @@ namespace ComplyX_Businesss.Services.Implementation
                 };
             }
         }
-        public async Task<ManagerBaseResponse<IEnumerable<ExitType>>> GetExitTypesFilter(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<ExitTypeResponseModel>>> GetExitTypesFilter(PagedListCriteria PagedListCriteria)
         {
             try
             {
@@ -305,10 +312,16 @@ namespace ComplyX_Businesss.Services.Implementation
                 }
 
                 query = query.OrderBy(a => a.ExitTypeId);
+                var responseQuery = query.Select(x => new ExitTypeResponseModel
+                {
 
-                PageListed<ExitType> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
 
-                return new ManagerBaseResponse<IEnumerable<ExitType>>
+                    ExitTypeId = x.ExitTypeId,
+                    Name = x.Name
+                });
+                PageListed<ExitTypeResponseModel> result = await responseQuery.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+
+                return new ManagerBaseResponse<IEnumerable<ExitTypeResponseModel>>
                 {
                     Result = result.Data,
                     Message = "Exit Type Data Retrieved Successfully.",
@@ -325,7 +338,7 @@ namespace ComplyX_Businesss.Services.Implementation
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<IEnumerable<ExitType>>
+                return new ManagerBaseResponse<IEnumerable<ExitTypeResponseModel>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -438,7 +451,7 @@ namespace ComplyX_Businesss.Services.Implementation
                 };
             }
         }
-        public async Task<ManagerBaseResponse<IEnumerable<FilingStatus>>> GetFillingStatusesFilter(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<FilingsStatusResponseModel>>> GetFillingStatusesFilter(PagedListCriteria PagedListCriteria)
         {
             try
             {
@@ -451,10 +464,15 @@ namespace ComplyX_Businesss.Services.Implementation
                 }
 
                 query = query.OrderBy(a => a.FilingStatusId);
+                var responseQuery = query.Select(x => new FilingsStatusResponseModel
+                {
 
-                PageListed<FilingStatus> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+                    FilingStatusId = x.FilingStatusId,
+                    Name = x.Name
+                });
+                PageListed<FilingsStatusResponseModel> result = await responseQuery.ToPagedListAsync(PagedListCriteria, orderByTranslations);
 
-                return new ManagerBaseResponse<IEnumerable<FilingStatus>>
+                return new ManagerBaseResponse<IEnumerable<FilingsStatusResponseModel>>
                 {
                     Result = result.Data,
                     Message = "FilingStatuses Data Retrieved Successfully.",
@@ -471,7 +489,7 @@ namespace ComplyX_Businesss.Services.Implementation
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<IEnumerable<FilingStatus>>
+                return new ManagerBaseResponse<IEnumerable<FilingsStatusResponseModel>>
                 {
                     IsSuccess = false,
                     Result = null,

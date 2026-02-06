@@ -20,6 +20,7 @@ using ComplyX_Businesss.Models.TdsreturnEntry;
 using ComplyX_Businesss.Models.TdschallanAllocation;
 using ComplyX_Businesss.Models.Tdsrate;
 using ComplyX.Data.DbContexts;
+using ComplyX_Businesss.Models.LicenseKeyMaster;
 
 namespace ComplyX_Businesss.Services.Implementation
 {
@@ -162,7 +163,7 @@ namespace ComplyX_Businesss.Services.Implementation
                 };
             }
         }
-        public async Task<ManagerBaseResponse<IEnumerable<Tdsdeductor>>> GetTDSDeductorFilter(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<TdsdeductorResponseModel>>> GetTDSDeductorFilter(PagedListCriteria PagedListCriteria)
         {
             try
             {
@@ -175,10 +176,32 @@ namespace ComplyX_Businesss.Services.Implementation
                 }
 
                 query = query.OrderBy(a => a.DeductorId);
+                var responseQuery = query.Select(x => new TdsdeductorResponseModel
+                {
 
-                PageListed<Tdsdeductor> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+                    DeductorId = x.DeductorId,
+                    CompanyId = x.CompanyId,
+                    DeductorName = x.DeductorName,
+                    Tan = x.Tan,
+                    Pan = x.Pan,
+                    DeductorCategory = x.DeductorCategory,
+                    Address1 = x.Address1,
+                    Address2 = x.Address2,
+                    City = x.City,
+                    State = x.State,
+                    Pincode = x.Pincode,
+                    Phone = x.Phone,
+                    Email = x.Email,
+                    Aocode = x.Aocode,
+                    IsActive = x.IsActive,
+                    CreatedBy = x.CreatedBy,
+                    CreatedAt = x.CreatedAt,
+                    UpdatedBy = x.UpdatedBy,
+                    UpdatedAt = x.UpdatedAt
+                });
+                PageListed<TdsdeductorResponseModel> result = await responseQuery.ToPagedListAsync(PagedListCriteria, orderByTranslations);
 
-                return new ManagerBaseResponse<IEnumerable<Tdsdeductor>>
+                return new ManagerBaseResponse<IEnumerable<TdsdeductorResponseModel>>
                 {
                     Result = result.Data,
                     Message = "TDS Deductor Data Retrieved Successfully.",
@@ -195,7 +218,7 @@ namespace ComplyX_Businesss.Services.Implementation
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<IEnumerable<Tdsdeductor>>
+                return new ManagerBaseResponse<IEnumerable<TdsdeductorResponseModel>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -317,7 +340,7 @@ namespace ComplyX_Businesss.Services.Implementation
                 };
             }
         }
-        public async Task<ManagerBaseResponse<IEnumerable<Tdsdeductee>>> GetTDSDeduteeFilter(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<TdsdeducteeResponseModel>>> GetTDSDeduteeFilter(PagedListCriteria PagedListCriteria)
         {
             try
             {
@@ -330,10 +353,29 @@ namespace ComplyX_Businesss.Services.Implementation
                 }
 
                 query = query.OrderBy(a => a.DeducteeId);
+                var responseQuery = query.Select(x => new TdsdeducteeResponseModel
+                {
 
-                PageListed<Tdsdeductee> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
 
-                return new ManagerBaseResponse<IEnumerable<Tdsdeductee>>
+                    DeducteeId = x.DeducteeId,
+                    CompanyId = x.CompanyId,
+                    DeducteeType = x.DeducteeType,
+                    DeducteeName = x.DeducteeName,
+                    Pan = x.Pan,
+                    Panstatus = x.Panstatus,
+                    AadhaarLinked = x.AadhaarLinked,
+                    ResidentStatus = x.ResidentStatus,
+                    Email = x.Email,
+                    Mobile = x.Mobile,
+                    IsActive = x.IsActive,
+                    CreatedBy = x.CreatedBy,
+                    CreatedAt = x.CreatedAt,
+                    UpdatedBy = x.UpdatedBy,
+                    UpdatedAt = x.UpdatedAt
+                });
+                PageListed<TdsdeducteeResponseModel> result = await responseQuery.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+
+                return new ManagerBaseResponse<IEnumerable<TdsdeducteeResponseModel>>
                 {
                     Result = result.Data,
                     Message = "TDS Dedutee Data Retrieved Successfully.",
@@ -350,7 +392,7 @@ namespace ComplyX_Businesss.Services.Implementation
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<IEnumerable<Tdsdeductee>>
+                return new ManagerBaseResponse<IEnumerable<TdsdeducteeResponseModel>>
                 { 
                     IsSuccess = false,
                     Result = null,
@@ -644,7 +686,7 @@ namespace ComplyX_Businesss.Services.Implementation
                 };
             }
         }
-        public async Task<ManagerBaseResponse<IEnumerable<Tdsreturn>>> GetTDSReturnFilter(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<TdsreturnResponseModel>>> GetTDSReturnFilter(PagedListCriteria PagedListCriteria)
         {
             try
             {
@@ -657,10 +699,27 @@ namespace ComplyX_Businesss.Services.Implementation
                 }
 
                 query = query.OrderBy(a => a.ReturnId);
+                var responseQuery = query.Select(x => new TdsreturnResponseModel
+                {
 
-                PageListed<Tdsreturn> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+                    ReturnId = x.ReturnId,
+                    DeductorId = x.DeductorId,
+                    FormType = x.FormType,
+                    FinancialYear = x.FinancialYear,
+                    Quarter = x.Quarter,
+                    ReturnType = x.ReturnType,
+                    OriginalTokenNo = x.OriginalTokenNo,
+                    Status = x.Status,
+                    Fvuversion = x.Fvuversion,
+                    Rpuversion = x.Rpuversion,
+                    CreatedBy = x.CreatedBy,
+                    CreatedAt = x.CreatedAt,
+                    UpdatedBy = x.UpdatedBy,
+                    UpdatedAt = x.UpdatedAt
+                });
+                PageListed<TdsreturnResponseModel> result = await responseQuery.ToPagedListAsync(PagedListCriteria, orderByTranslations);
 
-                return new ManagerBaseResponse<IEnumerable<Tdsreturn>>
+                return new ManagerBaseResponse<IEnumerable<TdsreturnResponseModel>>
                 {
                     Result = result.Data,
                     Message = "TDS Return Data Retrieved Successfully.",
@@ -677,7 +736,7 @@ namespace ComplyX_Businesss.Services.Implementation
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<IEnumerable<Tdsreturn>>
+                return new ManagerBaseResponse<IEnumerable<TdsreturnResponseModel>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -811,7 +870,7 @@ namespace ComplyX_Businesss.Services.Implementation
                 };
             }
         }
-        public async Task<ManagerBaseResponse<IEnumerable<Tdsentry>>> GetTDSEntryFilter(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<TdsentryResponseModel>>> GetTDSEntryFilter(PagedListCriteria PagedListCriteria)
         {
             try
             {
@@ -824,10 +883,29 @@ namespace ComplyX_Businesss.Services.Implementation
                 }
 
                 query = query.OrderBy(a => a.EntryId);
+                var responseQuery = query.Select(x => new TdsentryResponseModel
+                {
 
-                PageListed<Tdsentry> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+                    EntryId = x.EntryId,
+                    DeductorId = x.DeductorId,
+                    DeducteeId = x.DeducteeId,
+                    SectionCode = x.SectionCode,
+                    PaymentDate = x.PaymentDate,
+                    AmountPaid = x.AmountPaid,
+                    TaxableAmount = x.TaxableAmount,
+                    Tdsrate = x.Tdsrate,
+                    Tdsamount = x.Tdsamount,
+                    Surcharge = x.Surcharge,
+                    Cess = x.Cess,
+                    TotalTds = x.TotalTds,
+                    HigherRateApplied = x.HigherRateApplied,
+                    HigherRateReason = x.HigherRateReason,
+                    IsMappedToReturn = x.IsMappedToReturn,
+                    CreatedAt = x.CreatedAt
+                });
+                PageListed<TdsentryResponseModel> result = await responseQuery.ToPagedListAsync(PagedListCriteria, orderByTranslations);
 
-                return new ManagerBaseResponse<IEnumerable<Tdsentry>>
+                return new ManagerBaseResponse<IEnumerable<TdsentryResponseModel>>
                 {
                     Result = result.Data,
                     Message = "TDS Entry Data Retrieved Successfully.",
@@ -844,7 +922,7 @@ namespace ComplyX_Businesss.Services.Implementation
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<IEnumerable<Tdsentry>>
+                return new ManagerBaseResponse<IEnumerable<TdsentryResponseModel>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -973,7 +1051,7 @@ namespace ComplyX_Businesss.Services.Implementation
                 };
             }
         }
-        public async Task<ManagerBaseResponse<IEnumerable<Tdschallan>>> GetTDSChallanFilter(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<TdschallanResponseModel>>> GetTDSChallanFilter(PagedListCriteria PagedListCriteria)
         {
             try
             {
@@ -986,10 +1064,27 @@ namespace ComplyX_Businesss.Services.Implementation
                 }
 
                 query = query.OrderBy(a => a.ChallanId);
+                var responseQuery = query.Select(x => new TdschallanResponseModel
+                {
 
-                PageListed<Tdschallan> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+                    ChallanId = x.ChallanId,
+                    DeductorId = x.DeductorId,
+                    Bsrcode = x.Bsrcode,
+                    ChallanDate = x.ChallanDate,
+                    ChallanSerialNo = x.ChallanSerialNo,
+                    SectionCode = x.SectionCode,
+                    TaxAmount = x.TaxAmount,
+                    InterestAmount = x.InterestAmount,
+                    LateFeeAmount = x.LateFeeAmount,
+                    OtherAmount = x.OtherAmount,
+                    TotalAmount = x.TotalAmount,
+                    MatchedWithOltas = x.MatchedWithOltas,
+                    IsMappedToReturn = x.IsMappedToReturn,
+                    CreatedAt = x.CreatedAt
+                });
+                PageListed<TdschallanResponseModel> result = await responseQuery.ToPagedListAsync(PagedListCriteria, orderByTranslations);
 
-                return new ManagerBaseResponse<IEnumerable<Tdschallan>>
+                return new ManagerBaseResponse<IEnumerable<TdschallanResponseModel>>
                 {
                     Result = result.Data,
                     Message = "TDS Challan Data Retrieved Successfully.",
@@ -1006,7 +1101,7 @@ namespace ComplyX_Businesss.Services.Implementation
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<IEnumerable<Tdschallan>>
+                return new ManagerBaseResponse<IEnumerable<TdschallanResponseModel>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -1117,7 +1212,7 @@ namespace ComplyX_Businesss.Services.Implementation
                 };
             }
         }
-        public async Task<ManagerBaseResponse<IEnumerable<TdsreturnChallan>>> GetTDSReturnChallanFilter(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<TdsreturnChallanResponseModel>>> GetTDSReturnChallanFilter(PagedListCriteria PagedListCriteria)
         {
             try
             {
@@ -1130,10 +1225,16 @@ namespace ComplyX_Businesss.Services.Implementation
                 //}
 
                 query = query.OrderBy(a => a.ReturnChallanId);
+                var responseQuery = query.Select(x => new TdsreturnChallanResponseModel
+                {
 
-                PageListed<TdsreturnChallan> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+                    ReturnChallanId = x.ReturnChallanId,
+                    ReturnId = x.ReturnId,
+                    ChallanId = x.ChallanId
+                });
+                PageListed<TdsreturnChallanResponseModel> result = await responseQuery.ToPagedListAsync(PagedListCriteria, orderByTranslations);
 
-                return new ManagerBaseResponse<IEnumerable<TdsreturnChallan>>
+                return new ManagerBaseResponse<IEnumerable<TdsreturnChallanResponseModel>>
                 {
                     Result = result.Data,
                     Message = "TDS Return and Challan Data Retrieved Successfully.",
@@ -1150,7 +1251,7 @@ namespace ComplyX_Businesss.Services.Implementation
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<IEnumerable<TdsreturnChallan>>
+                return new ManagerBaseResponse<IEnumerable<TdsreturnChallanResponseModel>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -1260,23 +1361,24 @@ namespace ComplyX_Businesss.Services.Implementation
                 };
             }
         }
-        public async Task<ManagerBaseResponse<IEnumerable<TdsreturnEntry>>> GetTDSReturnEntryFilter(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<TdsreturnEntryResponseModel>>> GetTDSReturnEntryFilter(PagedListCriteria PagedListCriteria)
         {
             try
             {
 
                 var query = _UnitOfWork.TdsreturnEntryRespositories.GetQueryable();
-                //var searchText = PagedListCriteria.SearchText?.Trim().ToLower();
-                //if (!string.IsNullOrWhiteSpace(searchText))
-                //{
-                //    query = query.Where(x => x..ToLower().Contains(searchText.ToLower()));
-                //}
 
                 query = query.OrderBy(a => a.ReturnEntryId);
+                var responseQuery = query.Select(x => new TdsreturnEntryResponseModel
+                {
 
-                PageListed<TdsreturnEntry> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+                    ReturnEntryId = x.ReturnEntryId,
+                    ReturnId = x.ReturnId,
+                    EntryId = x.EntryId
+                });
+                PageListed<TdsreturnEntryResponseModel> result = await responseQuery.ToPagedListAsync(PagedListCriteria, orderByTranslations);
 
-                return new ManagerBaseResponse<IEnumerable<TdsreturnEntry>>
+                return new ManagerBaseResponse<IEnumerable<TdsreturnEntryResponseModel>>
                 {
                     Result = result.Data,
                     Message = "TDS Return and Entry Data Retrieved Successfully.",
@@ -1293,7 +1395,7 @@ namespace ComplyX_Businesss.Services.Implementation
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<IEnumerable<TdsreturnEntry>>
+                return new ManagerBaseResponse<IEnumerable<TdsreturnEntryResponseModel>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -1413,7 +1515,7 @@ namespace ComplyX_Businesss.Services.Implementation
                 };
             }
         }
-        public async Task<ManagerBaseResponse<IEnumerable<TdschallanAllocation>>> GetTDSChallanAllocationFilter(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<TdschallanAllocationResponseModel>>> GetTDSChallanAllocationFilter(PagedListCriteria PagedListCriteria)
         {
             try
             {
@@ -1426,10 +1528,19 @@ namespace ComplyX_Businesss.Services.Implementation
                 //}
 
                 query = query.OrderBy(a => a.AllocationId);
+                var responseQuery = query.Select(x => new TdschallanAllocationResponseModel
+                {
 
-                PageListed<TdschallanAllocation> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+                    AllocationId = x.AllocationId,
+                    ChallanId = x.ChallanId,
+                    EntryId = x.EntryId,
+                    AllocatedTdsamount = x.AllocatedTdsamount,
+                    CreatedAt = x.CreatedAt,
+                    CreatedBy = x.CreatedBy
+                });
+                PageListed<TdschallanAllocationResponseModel> result = await responseQuery.ToPagedListAsync(PagedListCriteria, orderByTranslations);
 
-                return new ManagerBaseResponse<IEnumerable<TdschallanAllocation>>
+                return new ManagerBaseResponse<IEnumerable<TdschallanAllocationResponseModel>>
                 {
                     Result = result.Data,
                     Message = "TDS Challan and Entry Data Retrieved Successfully.",
@@ -1446,7 +1557,7 @@ namespace ComplyX_Businesss.Services.Implementation
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<IEnumerable<TdschallanAllocation>>
+                return new ManagerBaseResponse<IEnumerable<TdschallanAllocationResponseModel>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -1557,7 +1668,7 @@ namespace ComplyX_Businesss.Services.Implementation
                 };
             }
         }
-        public async Task<ManagerBaseResponse<IEnumerable<Tdsrate>>> GetTDSRatesFilter(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<TdsrateResponseModel>>> GetTDSRatesFilter(PagedListCriteria PagedListCriteria)
         {
             try
             {
@@ -1570,10 +1681,22 @@ namespace ComplyX_Businesss.Services.Implementation
                 }
 
                 query = query.OrderBy(a => a.TaxId);
+                var responseQuery = query.Select(x => new TdsrateResponseModel
+                {
 
-                PageListed<Tdsrate> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+                    TaxId = x.TaxId,
+                    TaxName = x.TaxName,
+                    Rate = x.Rate,
+                    TaxType = x.TaxType,
+                    IsActive = x.IsActive,
+                    CreatedAt = x.CreatedAt,
+                    CreatedBy = x.CreatedBy,
+                    UpdatedAt = x.UpdatedAt,
+                    UpdatedBy = x.UpdatedBy
+                });
+                PageListed<TdsrateResponseModel> result = await responseQuery.ToPagedListAsync(PagedListCriteria, orderByTranslations);
 
-                return new ManagerBaseResponse<IEnumerable<Tdsrate>>
+                return new ManagerBaseResponse<IEnumerable<TdsrateResponseModel>>
                 {
                     Result = result.Data,
                     Message = "TDS Rates Data Retrieved Successfully.",
@@ -1590,7 +1713,7 @@ namespace ComplyX_Businesss.Services.Implementation
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<IEnumerable<Tdsrate>>
+                return new ManagerBaseResponse<IEnumerable<TdsrateResponseModel>>
                 {
                     IsSuccess = false,
                     Result = null,

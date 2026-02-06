@@ -16,6 +16,7 @@ using ComplyX_Businesss.Models.LegalDocumentVersion;
 using ComplyX_Businesss.Models.LegalDocumentAcceptance;
 using System.Security.Claims;
 using ComplyX.Data.DbContexts;
+using ComplyX_Businesss.Models.ComplianceSchedule;
 
 namespace ComplyX_Businesss.Services.Implementation
 {
@@ -178,7 +179,7 @@ namespace ComplyX_Businesss.Services.Implementation
                 };
             }
         }
-        public async Task<ManagerBaseResponse<IEnumerable<LegalDocument>>> GetAlllegalDocumentFilter(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<LegalDocumentResponseModel>>> GetAlllegalDocumentFilter(PagedListCriteria PagedListCriteria)
         {
             try
             {
@@ -191,9 +192,18 @@ namespace ComplyX_Businesss.Services.Implementation
                 }
 
                 query = query.OrderBy(a => a.DocumentId);
-
-                PageListed<LegalDocument> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
-                return new ManagerBaseResponse<IEnumerable<LegalDocument>>
+                var responseQuery = query.Select(x => new LegalDocumentResponseModel
+                {
+                    DocumentId = x.DocumentId,
+                    DocumentCode = x.DocumentCode,
+                    DocumentName = x.DocumentName,
+                    ApplicableRegion = x.ApplicableRegion,
+                    Status = x.Status,
+                    CreatedAt = x.CreatedAt,
+                    CreatedBy = x.CreatedBy
+                });
+                PageListed<LegalDocumentResponseModel> result = await responseQuery.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+                return new ManagerBaseResponse<IEnumerable<LegalDocumentResponseModel>>
                 {
                     Result = result.Data,
                     Message = "Legal DOcument Retrieved Successfully.",
@@ -210,7 +220,7 @@ namespace ComplyX_Businesss.Services.Implementation
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<IEnumerable<LegalDocument>>
+                return new ManagerBaseResponse<IEnumerable<LegalDocumentResponseModel>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -390,7 +400,7 @@ namespace ComplyX_Businesss.Services.Implementation
                 };
             }
         }
-        public async Task<ManagerBaseResponse<IEnumerable<LegalDocumentVersion>>> GetAlllegalDocumentVersionFilter(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<LegalDocumentVersionResponseModel>>> GetAlllegalDocumentVersionFilter(PagedListCriteria PagedListCriteria)
         {
             try
             {
@@ -403,9 +413,28 @@ namespace ComplyX_Businesss.Services.Implementation
                 }
 
                 query = query.OrderBy(a => a.VersionId);
-
-                PageListed<LegalDocumentVersion> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
-                return new ManagerBaseResponse<IEnumerable<LegalDocumentVersion>>
+                var responseQuery = query.Select(x => new LegalDocumentVersionResponseModel
+                {
+                    VersionId = x.VersionId,
+                    DocumentId = x.DocumentId,
+                    VersionNumber = x.VersionNumber,
+                    VersionType = x.VersionType,
+                    HtmlContent = x.HtmlContent,
+                    ContentHash = x.ContentHash,
+                    EffectiveFromDate = x.EffectiveFromDate,
+                    ReleaseDate = x.ReleaseDate,
+                    ExpiryDate = x.ExpiryDate,
+                    ChangeSummary = x.ChangeSummary,
+                    LegalBasis = x.LegalBasis,
+                    IsPublished = x.IsPublished,
+                    IsActive = x.IsActive,
+                    CreatedAt = x.CreatedAt,
+                    CreatedBy = x.CreatedBy,
+                    ApprovedAt = x.ApprovedAt,
+                    ApprovedBy = x.ApprovedBy
+                });
+                PageListed<LegalDocumentVersionResponseModel> result = await responseQuery.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+                return new ManagerBaseResponse<IEnumerable<LegalDocumentVersionResponseModel>>
                 {
                     Result = result.Data,
                     Message = "Legal Document version Retrieved Successfully.",
@@ -422,7 +451,7 @@ namespace ComplyX_Businesss.Services.Implementation
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<IEnumerable<LegalDocumentVersion>>
+                return new ManagerBaseResponse<IEnumerable<LegalDocumentVersionResponseModel>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -583,7 +612,7 @@ namespace ComplyX_Businesss.Services.Implementation
                 };
             }
         }
-        public async Task<ManagerBaseResponse<IEnumerable<LegalDocumentAcceptance>>> GetAlllegalDocumentAcceptanceFilter(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<LegalDocumentAcceptanceResponseModel>>> GetAlllegalDocumentAcceptanceFilter(PagedListCriteria PagedListCriteria)
         {
             try
             {
@@ -596,9 +625,20 @@ namespace ComplyX_Businesss.Services.Implementation
                 }
 
                 query = query.OrderBy(a => a.AcceptanceId);
-
-                PageListed<LegalDocumentAcceptance> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
-                return new ManagerBaseResponse<IEnumerable<LegalDocumentAcceptance>>
+                var responseQuery = query.Select(x => new LegalDocumentAcceptanceResponseModel
+                {
+                    AcceptanceId = x.AcceptanceId,
+                    UserId = x.UserId,
+                    DocumentId = x.DocumentId,
+                    VersionId = x.VersionId,
+                    AcceptedAt = x.AcceptedAt,
+                    AcceptedIp = x.AcceptedIp,
+                    AcceptedDevice = x.AcceptedDevice,
+                    AcceptanceMethod = x.AcceptanceMethod,
+                    ConsentProofHash = x.ConsentProofHash
+                });
+                PageListed<LegalDocumentAcceptanceResponseModel> result = await responseQuery.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+                return new ManagerBaseResponse<IEnumerable<LegalDocumentAcceptanceResponseModel>>
                 {
                     Result = result.Data,
                     Message = "Legal Document Acceptance Retrieved Successfully.",
@@ -615,7 +655,7 @@ namespace ComplyX_Businesss.Services.Implementation
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<IEnumerable<LegalDocumentAcceptance>>
+                return new ManagerBaseResponse<IEnumerable<LegalDocumentAcceptanceResponseModel>>
                 {
                     IsSuccess = false,
                     Result = null,

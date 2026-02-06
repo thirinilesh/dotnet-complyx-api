@@ -19,6 +19,7 @@ using ComplyX_Businesss.Models.EmployeeEPFO;
 using ComplyX_Businesss.Models.EPFOECRFile;
 using ComplyX_Businesss.Models.EPFOPeriod;
 using ComplyX_Businesss.Models.EPFOMonthWage;
+using ComplyX_Businesss.Models.GratuityPolicy;
 
 namespace ComplyX_Businesss.BusinessLogic
 {
@@ -132,7 +133,7 @@ namespace ComplyX_Businesss.BusinessLogic
             }
 
         }
-        public async Task<ManagerBaseResponse<IEnumerable<CompanyEpfo>>> GetAllCompanyEPFOFilter(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<CompanyEPFOResponseModel>>> GetAllCompanyEPFOFilter(PagedListCriteria PagedListCriteria)
         {
             try
             {
@@ -145,10 +146,19 @@ namespace ComplyX_Businesss.BusinessLogic
                 }
 
                 query = query.OrderBy(a => a.CompanyEpfoid);
+                var responseQuery = query.Select(x => new CompanyEPFOResponseModel
+                {
 
-                PageListed<CompanyEpfo> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+                    CompanyEpfoid = x.CompanyEpfoid,
+                    CompanyId = x.CompanyId,
+                    EstablishmentCode = x.EstablishmentCode,
+                    Extension = x.Extension,
+                    OfficeCode = x.OfficeCode,
+                    CreatedAt = x.CreatedAt
+                });
+                PageListed<CompanyEPFOResponseModel> result = await responseQuery.ToPagedListAsync(PagedListCriteria, orderByTranslations);
 
-                return new ManagerBaseResponse<IEnumerable<CompanyEpfo>>
+                return new ManagerBaseResponse<IEnumerable<CompanyEPFOResponseModel>>
                 {
                     Result = result.Data,
                     Message = "CompanyEPFO Data Retrieved Successfully.",
@@ -165,7 +175,7 @@ namespace ComplyX_Businesss.BusinessLogic
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<IEnumerable<CompanyEpfo>>
+                return new ManagerBaseResponse<IEnumerable<CompanyEPFOResponseModel>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -266,7 +276,7 @@ namespace ComplyX_Businesss.BusinessLogic
             }
 
         }
-        public async Task<ManagerBaseResponse<IEnumerable<EmployeeEpfo>>> GetAllEmployeeEPFOFilter(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<EmployeeEPFOResponseModel>>> GetAllEmployeeEPFOFilter(PagedListCriteria PagedListCriteria)
         {
             try
             {
@@ -279,10 +289,20 @@ namespace ComplyX_Businesss.BusinessLogic
                 }
 
                 query = query.OrderBy(a => a.EmployeeEpfoid);
+                var responseQuery = query.Select(x => new EmployeeEPFOResponseModel
+                {
 
-                PageListed<EmployeeEpfo> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+                    EmployeeEpfoid = x.EmployeeEpfoid,
+                    EmployeeId = x.EmployeeId,
+                    Uan = x.Uan,
+                    PfaccountNumber = x.PfaccountNumber,
+                    DojEpf = x.DojEpf,
+                    DoeEpf = x.DoeEpf,
+                    CreatedAt = x.CreatedAt
+                });
+                PageListed<EmployeeEPFOResponseModel> result = await responseQuery.ToPagedListAsync(PagedListCriteria, orderByTranslations);
 
-                return new ManagerBaseResponse<IEnumerable<EmployeeEpfo>>
+                return new ManagerBaseResponse<IEnumerable<EmployeeEPFOResponseModel>>
                 {
                     Result = result.Data,
                     Message = "EmployeeEPFO Data Retrieved Successfully.",
@@ -299,7 +319,7 @@ namespace ComplyX_Businesss.BusinessLogic
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<IEnumerable<EmployeeEpfo>>
+                return new ManagerBaseResponse<IEnumerable<EmployeeEPFOResponseModel>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -410,7 +430,7 @@ namespace ComplyX_Businesss.BusinessLogic
             }
 
         }
-        public async Task<ManagerBaseResponse<IEnumerable<Epfoecrfile>>> GetEPFOECRDataFilter(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<EPFOECRFileResponseModel>>> GetEPFOECRDataFilter(PagedListCriteria PagedListCriteria)
         {
             try
             {
@@ -423,10 +443,23 @@ namespace ComplyX_Businesss.BusinessLogic
                 }
 
                 query = query.OrderBy(a => a.EcrfileId);
+                var responseQuery = query.Select(x => new EPFOECRFileResponseModel
+                {
 
-                PageListed<Epfoecrfile> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+                    EcrfileId = x.EcrfileId,
+                    CompanyId = x.CompanyId,
+                    SubcontractorId = x.SubcontractorId,
+                    WageMonth = x.WageMonth,
+                    FileName = x.FileName,
+                    TotalEmployees = x.TotalEmployees,
+                    TotalWages = x.TotalWages,
+                    TotalContribution = x.TotalContribution,
+                    Status = x.Status,
+                    CreatedAt = x.CreatedAt
+                });
+                PageListed<EPFOECRFileResponseModel> result = await responseQuery.ToPagedListAsync(PagedListCriteria, orderByTranslations);
 
-                return new ManagerBaseResponse<IEnumerable<Epfoecrfile>>
+                return new ManagerBaseResponse<IEnumerable<EPFOECRFileResponseModel>>
                 {
                     Result = result.Data,
                     Message = "EPFO ECRFile Data Retrieved Successfully.",
@@ -443,7 +476,7 @@ namespace ComplyX_Businesss.BusinessLogic
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<IEnumerable<Epfoecrfile>>
+                return new ManagerBaseResponse<IEnumerable<EPFOECRFileResponseModel>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -560,7 +593,7 @@ namespace ComplyX_Businesss.BusinessLogic
             }
 
         }
-        public async Task<ManagerBaseResponse<IEnumerable<Epfoperiod>>> GetEPFOPeriodDataFilter(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<EPFOPeriodResponseModel>>> GetEPFOPeriodDataFilter(PagedListCriteria PagedListCriteria)
         {
             try
             {
@@ -573,10 +606,30 @@ namespace ComplyX_Businesss.BusinessLogic
                 }
 
                 query = query.OrderBy(a => a.EpfoperiodId);
+                var responseQuery = query.Select(x => new EPFOPeriodResponseModel
+                {
 
-                PageListed<Epfoperiod> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
 
-                return new ManagerBaseResponse<IEnumerable<Epfoperiod>>
+                    EpfoperiodId = x.EpfoperiodId,
+                    CompanyId = x.CompanyId,
+                    SubcontractorId = x.SubcontractorId,
+                    PeriodYear = x.PeriodYear,
+                    PeriodMonth = x.PeriodMonth,
+                    Status = x.Status,
+                    EcrfilePath = x.EcrfilePath,
+                    Trrn = x.Trrn,
+                    Trrndate = x.Trrndate,
+                    ChallanFilePath = x.ChallanFilePath,
+                    CreatedAt = x.CreatedAt,
+                    UpdatedAt = x.UpdatedAt,
+                    CreatedByUserId = x.CreatedByUserId,
+                    IsLocked = x.IsLocked,
+                    LockedAt = x.LockedAt,
+                    LockedByUserId = x.LockedByUserId
+                });
+                PageListed<EPFOPeriodResponseModel> result = await responseQuery.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+
+                return new ManagerBaseResponse<IEnumerable<EPFOPeriodResponseModel>>
                 {
                     Result = result.Data,
                     Message = "EPFO Period Data Retrieved Successfully.",
@@ -593,7 +646,7 @@ namespace ComplyX_Businesss.BusinessLogic
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<IEnumerable<Epfoperiod>>
+                return new ManagerBaseResponse<IEnumerable<EPFOPeriodResponseModel>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -716,7 +769,7 @@ await _UnitOfWork.ePFOMonthWageRespositories.AddAsync( _model );
             }
 
         }
-        public async Task<ManagerBaseResponse<IEnumerable<EpfomonthlyWage>>> GetAllEPFOMonthlyWageFilter(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<EPFOMonthWageResponseModel>>> GetAllEPFOMonthlyWageFilter(PagedListCriteria PagedListCriteria)
         {
             try
             {
@@ -729,10 +782,28 @@ await _UnitOfWork.ePFOMonthWageRespositories.AddAsync( _model );
                 }
 
                 query = query.OrderBy(a => a.WageId);
+                var responseQuery = query.Select(x => new EPFOMonthWageResponseModel
+                {
 
-                PageListed<EpfomonthlyWage> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+                    WageId = x.WageId,
+                    EmployeeId = x.EmployeeId,
+                    CompanyId = x.CompanyId,
+                    SubcontractorId = x.SubcontractorId,
+                    WageMonth = x.WageMonth,
+                    Wages = x.Wages,
+                    Epfwages = x.Epfwages,
+                    Epswages = x.Epswages,
+                    Edliwages = x.Edliwages,
+                    Contribution = x.Contribution,
+                    EmployerShare = x.EmployerShare,
+                    PensionShare = x.PensionShare,
+                    Ncpdays = x.Ncpdays,
+                    RefundAdvance = x.RefundAdvance,
+                    CreatedAt = x.CreatedAt
+                });
+                PageListed<EPFOMonthWageResponseModel> result = await responseQuery.ToPagedListAsync(PagedListCriteria, orderByTranslations);
 
-                return new ManagerBaseResponse<IEnumerable<EpfomonthlyWage>>
+                return new ManagerBaseResponse<IEnumerable<EPFOMonthWageResponseModel>>
                 {
                     Result = result.Data,
                     Message = "EPFOMonthlyWage Data Retrieved Successfully.",
@@ -749,7 +820,7 @@ await _UnitOfWork.ePFOMonthWageRespositories.AddAsync( _model );
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<IEnumerable<EpfomonthlyWage>>
+                return new ManagerBaseResponse<IEnumerable<EPFOMonthWageResponseModel>>
                 {
                     IsSuccess = false,
                     Result = null,

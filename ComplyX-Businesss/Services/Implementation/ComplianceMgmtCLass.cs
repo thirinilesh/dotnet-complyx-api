@@ -17,6 +17,7 @@ using ComplyX.Repositories.UnitOfWork;
 using ComplyX.Data.Entities;
 using ComplyX_Businesss.Models.ComplianceSchedule;
 using ComplyX_Businesss.Models.ComplianceFiling;
+using ComplyX_Businesss.Models.CustomerPayments;
 
 namespace ComplyX_Businesss.Services.Implementation
 {
@@ -185,7 +186,7 @@ namespace ComplyX_Businesss.Services.Implementation
                 };
             }
         }
-        public async Task<ManagerBaseResponse<IEnumerable<ComplianceDeadline>>> GetComplianceMgmtFilter(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<ComplianceDeadlineResponseModel>>> GetComplianceMgmtFilter(PagedListCriteria PagedListCriteria)
         {
             try
             {
@@ -198,10 +199,24 @@ namespace ComplyX_Businesss.Services.Implementation
                 }
 
                 query = query.OrderBy(a => a.DeadlineId);
+                var responseQuery = query.Select(x => new ComplianceDeadlineResponseModel
+                {
+                    DeadlineId = x.DeadlineId,
+                    CompanyId = x.CompanyId,
+                    ComplianceType = x.ComplianceType,
+                    PeriodStart = x.PeriodStart,
+                    PeriodEnd = x.PeriodEnd,
+                    DueDate = x.DueDate,
+                    Status = x.Status,
+                    AckNumber = x.AckNumber,
+                    CreatedAt = x.CreatedAt,
+                    UpdatedAt = x.UpdatedAt
+                });
 
-                PageListed<ComplianceDeadline> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
 
-                return new ManagerBaseResponse<IEnumerable<ComplianceDeadline>>
+                PageListed<ComplianceDeadlineResponseModel> result = await responseQuery.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+
+                return new ManagerBaseResponse<IEnumerable<ComplianceDeadlineResponseModel>>
                 {
                     Result = result.Data,
                     Message = "Compliance Deadlines Data Retrieved Successfully.",
@@ -218,7 +233,7 @@ namespace ComplyX_Businesss.Services.Implementation
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<IEnumerable<ComplianceDeadline>>
+                return new ManagerBaseResponse<IEnumerable<ComplianceDeadlineResponseModel>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -372,7 +387,7 @@ namespace ComplyX_Businesss.Services.Implementation
                 };
             }
         }
-        public async Task<ManagerBaseResponse<IEnumerable<ComplianceSchedule>>> GetComplianceSchedulesFilter(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<ComplianceScheduleResponseModel>>> GetComplianceSchedulesFilter(PagedListCriteria PagedListCriteria)
         {
             try
             {
@@ -385,10 +400,23 @@ namespace ComplyX_Businesss.Services.Implementation
                 }
 
                 query = query.OrderBy(a => a.ScheduleId);
+                var responseQuery = query.Select(x => new ComplianceScheduleResponseModel
+                {
+                    ScheduleId = x.ScheduleId,
+                    CompanyId = x.CompanyId,
+                    ComplianceType = x.ComplianceType,
+                    Frequency = x.Frequency,
+                    StateCode = x.StateCode,
+                    BaseDay = x.BaseDay,
+                    QuarterMonth = x.QuarterMonth,
+                    OffsetDays = x.OffsetDays,
+                    Active = x.Active,
+                    CreatedAt = x.CreatedAt,
+                    UpdatedAt = x.UpdatedAt
+                });
+                PageListed<ComplianceScheduleResponseModel> result = await responseQuery.ToPagedListAsync(PagedListCriteria, orderByTranslations);
 
-                PageListed<ComplianceSchedule> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
-
-                return new ManagerBaseResponse<IEnumerable<ComplianceSchedule>>
+                return new ManagerBaseResponse<IEnumerable<ComplianceScheduleResponseModel>>
                 {
                     Result = result.Data,
                     Message = "Compliance Schedules Data Retrieved Successfully.",
@@ -405,7 +433,7 @@ namespace ComplyX_Businesss.Services.Implementation
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<IEnumerable<ComplianceSchedule>>
+                return new ManagerBaseResponse<IEnumerable<ComplianceScheduleResponseModel>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -559,7 +587,7 @@ namespace ComplyX_Businesss.Services.Implementation
                 };
             }
         }
-        public async Task<ManagerBaseResponse<IEnumerable<ComplianceFiling>>> GetComplianceFilingsFilter(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<ComplianceFilingResponseModel>>> GetComplianceFilingsFilter(PagedListCriteria PagedListCriteria)
         {
             try
             {
@@ -572,10 +600,22 @@ namespace ComplyX_Businesss.Services.Implementation
                 }
 
                 query = query.OrderBy(a => a.FilingId);
+                var responseQuery = query.Select(x => new ComplianceFilingResponseModel
+                {
+                    FilingId = x.FilingId,
+                    CompanyId = x.CompanyId,
+                    EmployeeId = x.EmployeeId,
+                    Type = x.Type,
+                    FilingMonth = x.FilingMonth,
+                    FilePath = x.FilePath,
+                    Status = x.Status,
+                    Errors = x.Errors,
+                    SubmittedAt = x.SubmittedAt,
+                    CreatedAt = x.CreatedAt
+                });
+                PageListed<ComplianceFilingResponseModel> result = await responseQuery.ToPagedListAsync(PagedListCriteria, orderByTranslations);
 
-                PageListed<ComplianceFiling> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
-
-                return new ManagerBaseResponse<IEnumerable<ComplianceFiling>>
+                return new ManagerBaseResponse<IEnumerable<ComplianceFilingResponseModel>>
                 {
                     Result = result.Data,
                     Message = "Compliance Filings Data Retrieved Successfully.",
@@ -592,7 +632,7 @@ namespace ComplyX_Businesss.Services.Implementation
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<IEnumerable<ComplianceFiling>>
+                return new ManagerBaseResponse<IEnumerable<ComplianceFilingResponseModel>>
                 {
                     IsSuccess = false,
                     Result = null,

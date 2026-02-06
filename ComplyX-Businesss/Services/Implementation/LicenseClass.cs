@@ -19,6 +19,7 @@ using ComplyX.Repositories.UnitOfWork;
 using ComplyX_Businesss.Models.LicenseActivation;
 using ComplyX_Businesss.Models.LicenseAuditLog;
 using ComplyX_Businesss.Models.MachineBinding;
+using ComplyX_Businesss.Models.CompanyEPFO;
 
 namespace ComplyX.BusinessLogic
 {
@@ -97,7 +98,7 @@ namespace ComplyX.BusinessLogic
                 };
             }
         }
-        public async Task<ManagerBaseResponse<IEnumerable<LicenseKeyMaster>>> GetLicenseKeyMasterFilter(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<LicenseKeyMasterResponseModel>>> GetLicenseKeyMasterFilter(PagedListCriteria PagedListCriteria)
         {
             try
             {
@@ -110,10 +111,23 @@ namespace ComplyX.BusinessLogic
                 }
 
                 query = query.OrderBy(a => a.LicenseId);
+                var responseQuery = query.Select(x => new LicenseKeyMasterResponseModel
+                {
 
-                PageListed<LicenseKeyMaster> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+                    LicenseId = x.LicenseId,
+                    ProductOwnerId = x.ProductOwnerId,
+                    LicenseKey = x.LicenseKey,
+                    PlanType = x.PlanType,
+                    MaxActivations = x.MaxActivations,
+                    StartDate = x.StartDate,
+                    EndDate = x.EndDate,
+                    IsActive = x.IsActive,
+                    CreatedAt = x.CreatedAt,
+                    UpdatedAt = x.UpdatedAt
+                });
+                PageListed<LicenseKeyMasterResponseModel> result = await responseQuery.ToPagedListAsync(PagedListCriteria, orderByTranslations);
 
-                return new ManagerBaseResponse<IEnumerable<LicenseKeyMaster>>
+                return new ManagerBaseResponse<IEnumerable<LicenseKeyMasterResponseModel>>
                 {
                     Result = result.Data,
                     Message = "LicenseKey Master Data Retrieved Successfully.",
@@ -130,7 +144,7 @@ namespace ComplyX.BusinessLogic
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<IEnumerable<LicenseKeyMaster>>
+                return new ManagerBaseResponse<IEnumerable<LicenseKeyMasterResponseModel>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -201,7 +215,7 @@ namespace ComplyX.BusinessLogic
                 };
             }
         }
-        public async Task<ManagerBaseResponse<IEnumerable<LicenseActivation>>> GetLicenseActivationFilter(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<LicenseActivationResponseModel>>> GetLicenseActivationFilter(PagedListCriteria PagedListCriteria)
         {
             try
             {
@@ -214,10 +228,23 @@ namespace ComplyX.BusinessLogic
                 }
 
                 query = query.OrderBy(a => a.ActivationId);
+                var responseQuery = query.Select(x => new LicenseActivationResponseModel
+                {
 
-                PageListed<LicenseActivation> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+                    ActivationId = x.ActivationId,
+                    LicenseId = x.LicenseId,
+                    MachineHash = x.MachineHash,
+                    MachineName = x.MachineName,
+                    OsUser = x.OsUser,
+                    ActivatedAt = x.ActivatedAt,
+                    LastVerifiedAt = x.LastVerifiedAt,
+                    IsRevoked = x.IsRevoked,
+                    GraceExpiryAt = x.GraceExpiryAt,
+                    AppVersion = x.AppVersion
+                });
+                PageListed<LicenseActivationResponseModel> result = await responseQuery.ToPagedListAsync(PagedListCriteria, orderByTranslations);
 
-                return new ManagerBaseResponse<IEnumerable<LicenseActivation>>
+                return new ManagerBaseResponse<IEnumerable<LicenseActivationResponseModel>>
                 {
                     Result = result.Data,
                     Message = "License Activation Data Retrieved Successfully.",
@@ -234,7 +261,7 @@ namespace ComplyX.BusinessLogic
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<IEnumerable<LicenseActivation>>
+                return new ManagerBaseResponse<IEnumerable<LicenseActivationResponseModel>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -292,7 +319,7 @@ namespace ComplyX.BusinessLogic
                 };
             }
         }
-        public async Task<ManagerBaseResponse<IEnumerable<LicenseAuditLog>>> GetLicenseAuditLogsFilter(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<LicenseAuditLogResponseModel>>> GetLicenseAuditLogsFilter(PagedListCriteria PagedListCriteria)
         {
             try
             {
@@ -305,10 +332,21 @@ namespace ComplyX.BusinessLogic
                 }
 
                 query = query.OrderBy(a => a.AuditId);
+                var responseQuery = query.Select(x => new LicenseAuditLogResponseModel
+                {
 
-                PageListed<LicenseAuditLog> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+                    AuditId = x.AuditId,
+                    LicenseId = x.LicenseId,
+                    ActivationId = x.ActivationId,
+                    EventType = x.EventType,
+                    EventMessage = x.EventMessage,
+                    LoggedAt = x.LoggedAt,
+                    MachineHash = x.MachineHash,
+                    Ipaddress = x.Ipaddress
+                });
+                PageListed<LicenseAuditLogResponseModel> result = await responseQuery.ToPagedListAsync(PagedListCriteria, orderByTranslations);
 
-                return new ManagerBaseResponse<IEnumerable<LicenseAuditLog>>
+                return new ManagerBaseResponse<IEnumerable<LicenseAuditLogResponseModel>>
                 {
                     Result = result.Data,
                     Message = "License Activation Logs Data Retrieved Successfully.",
@@ -325,7 +363,7 @@ namespace ComplyX.BusinessLogic
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<IEnumerable<LicenseAuditLog>>
+                return new ManagerBaseResponse<IEnumerable<LicenseAuditLogResponseModel>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -398,7 +436,7 @@ namespace ComplyX.BusinessLogic
                 };
             }
         }
-        public async Task<ManagerBaseResponse<IEnumerable<MachineBinding>>> GetMachineBindingFilter(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<MachineBindingResponseModel>>> GetMachineBindingFilter(PagedListCriteria PagedListCriteria)
         {
             try
             {
@@ -411,10 +449,22 @@ namespace ComplyX.BusinessLogic
                 }
 
                 query = query.OrderBy(a => a.MachineBindingId);
+                var responseQuery = query.Select(x => new MachineBindingResponseModel
+                {
 
-                PageListed<MachineBinding> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+                    MachineBindingId = x.MachineBindingId,
+                    MachineHash = x.MachineHash,
+                    Cpuid = x.Cpuid,
+                    MotherboardSerial = x.MotherboardSerial,
+                    Macaddresses = x.Macaddresses,
+                    WindowsSid = x.WindowsSid,
+                    FirstSeenAt = x.FirstSeenAt,
+                    LastSeenAt = x.LastSeenAt,
+                    LicenseActivationId = x.LicenseActivationId
+                });
+                PageListed<MachineBindingResponseModel> result = await responseQuery.ToPagedListAsync(PagedListCriteria, orderByTranslations);
 
-                return new ManagerBaseResponse<IEnumerable<MachineBinding>>
+                return new ManagerBaseResponse<IEnumerable<MachineBindingResponseModel>>
                 {
                     Result = result.Data,
                     Message = "MachineBinding Data Retrieved Successfully.",
@@ -431,7 +481,7 @@ namespace ComplyX.BusinessLogic
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<IEnumerable<MachineBinding>>
+                return new ManagerBaseResponse<IEnumerable<MachineBindingResponseModel>>
                 {
                     IsSuccess = false,
                     Result = null,

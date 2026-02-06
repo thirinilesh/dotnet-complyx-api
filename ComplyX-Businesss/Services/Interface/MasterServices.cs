@@ -17,14 +17,14 @@ namespace ComplyX_Businesss.Services.Interface
         Task<ManagerBaseResponse<bool>> SaveEmploymentTypesData(EmploymentTypeRequestModel EmploymentTypes);
         Task<ManagerBaseResponse<bool>> RemoveEmploymentTypesData(string EmploymentTypesID);
         Task<ManagerBaseResponse<List<EmploymentTypeResponseModel>>> GetEmploymentTypesData(string EmploymentTypesID);
-        Task<ManagerBaseResponse<IEnumerable<EmploymentType>>> GetEmploymentTypesFilter(PagedListCriteria PagedListCriteria);
+        Task<ManagerBaseResponse<IEnumerable<EmploymentTypeResponseModel>>> GetEmploymentTypesFilter(PagedListCriteria PagedListCriteria);
         Task<ManagerBaseResponse<bool>> SaveExitTypesData(ExitTypeRequestModel ExitTypes);
         Task<ManagerBaseResponse<bool>> RemoveExitTypesData(string ExitTypesID);
         Task<ManagerBaseResponse<List<ExitTypeResponseModel>>> GetExitTypesData(string ExitTypeID);
-        Task<ManagerBaseResponse<IEnumerable<ExitType>>> GetExitTypesFilter(PagedListCriteria PagedListCriteria);
+        Task<ManagerBaseResponse<IEnumerable<ExitTypeResponseModel>>> GetExitTypesFilter(PagedListCriteria PagedListCriteria);
         Task<ManagerBaseResponse<bool>> SaveFillingStatusesData(FilingsStatusRequestModel FilingStatuses);
         Task<ManagerBaseResponse<bool>> RemoveFillingStatusesData(string FilingStatusesID);
         Task<ManagerBaseResponse<List<FilingsStatusResponseModel>>> GetFillingStatusesData(string FilingStatusesID);
-        Task<ManagerBaseResponse<IEnumerable<FilingStatus>>> GetFillingStatusesFilter(PagedListCriteria PagedListCriteria);
+        Task<ManagerBaseResponse<IEnumerable<FilingsStatusResponseModel>>> GetFillingStatusesFilter(PagedListCriteria PagedListCriteria);
     }
 }

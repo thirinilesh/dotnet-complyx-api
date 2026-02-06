@@ -16,6 +16,7 @@ using ComplyX_Businesss.Models.GSTInvoiceSeries;
 using ComplyX_Businesss.Models.GSTPurchase;
 using ComplyX_Businesss.Models.GSTReturns;
 using ComplyX_Businesss.Models.GSTSales;
+using ComplyX_Businesss.Models.CompanyEPFO;
 
 namespace ComplyX_Businesss.Services.Implementation
 {
@@ -134,7 +135,7 @@ namespace ComplyX_Businesss.Services.Implementation
                 };
             }
         }
-        public async Task<ManagerBaseResponse<IEnumerable<GstHsnsac>>> GetGST_HSNSACFilter(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<GSTHSNSACResponseModel>>> GetGST_HSNSACFilter(PagedListCriteria PagedListCriteria)
         {
             try
             {
@@ -147,10 +148,18 @@ namespace ComplyX_Businesss.Services.Implementation
                 }
 
                 query = query.OrderBy(a => a.CodeId);
+                var responseQuery = query.Select(x => new GSTHSNSACResponseModel
+                {
 
-                PageListed<GstHsnsac> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+                    CodeId = x.CodeId,
+                    CodeType = x.CodeType,
+                    Code = x.Code,
+                    Description = x.Description,
+                    GstRate = x.GstRate
+                });
+                PageListed<GSTHSNSACResponseModel> result = await responseQuery.ToPagedListAsync(PagedListCriteria, orderByTranslations);
 
-                return new ManagerBaseResponse<IEnumerable<GstHsnsac>>
+                return new ManagerBaseResponse<IEnumerable<GSTHSNSACResponseModel>>
                 {
                     Result = result.Data,
                     Message = "GST HSNSAC Data Retrieved Successfully.",
@@ -167,7 +176,7 @@ namespace ComplyX_Businesss.Services.Implementation
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<IEnumerable<GstHsnsac>>
+                return new ManagerBaseResponse<IEnumerable<GSTHSNSACResponseModel>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -337,7 +346,7 @@ namespace ComplyX_Businesss.Services.Implementation
                 };
             }
         }
-        public async Task<ManagerBaseResponse<IEnumerable<GstHsnMapping>>> GetGST_HSN_MappingFilter(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<GSTHSNMappingResponseModel>>> GetGST_HSN_MappingFilter(PagedListCriteria PagedListCriteria)
         {
             try
             {
@@ -350,10 +359,19 @@ namespace ComplyX_Businesss.Services.Implementation
                 }
 
                 query = query.OrderBy(a => a.MappingId);
+                var responseQuery = query.Select(x => new GSTHSNMappingResponseModel
+                {
 
-                PageListed<GstHsnMapping> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+                    MappingId = x.MappingId,
+                    CompanyId = x.CompanyId,
+                    ItemId = x.ItemId,
+                    Hsncode = x.Hsncode,
+                    Saccode = x.Saccode,
+                    GstRate = x.GstRate
+                });
+                PageListed<GSTHSNMappingResponseModel> result = await responseQuery.ToPagedListAsync(PagedListCriteria, orderByTranslations);
 
-                return new ManagerBaseResponse<IEnumerable<GstHsnMapping>>
+                return new ManagerBaseResponse<IEnumerable<GSTHSNMappingResponseModel>>
                 {
                     Result = result.Data,
                     Message = "GST HSN Mapping Data Retrieved Successfully.",
@@ -370,7 +388,7 @@ namespace ComplyX_Businesss.Services.Implementation
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<IEnumerable<GstHsnMapping>>
+                return new ManagerBaseResponse<IEnumerable<GSTHSNMappingResponseModel>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -513,7 +531,7 @@ namespace ComplyX_Businesss.Services.Implementation
                 };
             }
         }
-        public async Task<ManagerBaseResponse<IEnumerable<GstInvoiceSeries>>> GetGST_InvoiceSeriesFilter(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<GstInvoiceSeriesResponseModel>>> GetGST_InvoiceSeriesFilter(PagedListCriteria PagedListCriteria)
         {
             try
             {
@@ -526,10 +544,20 @@ namespace ComplyX_Businesss.Services.Implementation
                 }
 
                 query = query.OrderBy(a => a.SeriesId);
+                var responseQuery = query.Select(x => new GstInvoiceSeriesResponseModel
+                {
 
-                PageListed<GstInvoiceSeries> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+                    SeriesId = x.SeriesId,
+                    CompanyId = x.CompanyId,
+                    FinancialYear = x.FinancialYear,
+                    Prefix = x.Prefix,
+                    CurrentNumber = x.CurrentNumber,
+                    Suffix = x.Suffix,
+                    LastUpdated = x.LastUpdated
+                });
+                PageListed<GstInvoiceSeriesResponseModel> result = await responseQuery.ToPagedListAsync(PagedListCriteria, orderByTranslations);
 
-                return new ManagerBaseResponse<IEnumerable<GstInvoiceSeries>>
+                return new ManagerBaseResponse<IEnumerable<GstInvoiceSeriesResponseModel>>
                 {
                     Result = result.Data,
                     Message = "GST InvoiceSeries Data Retrieved Successfully.",
@@ -546,7 +574,7 @@ namespace ComplyX_Businesss.Services.Implementation
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<IEnumerable<GstInvoiceSeries>>
+                return new ManagerBaseResponse<IEnumerable<GstInvoiceSeriesResponseModel>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -746,7 +774,7 @@ namespace ComplyX_Businesss.Services.Implementation
                 };
             }
         }
-        public async Task<ManagerBaseResponse<IEnumerable<GstPurchase>>> GetGST_PurchaseFilter(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<GstPurchaseResponseModel>>> GetGST_PurchaseFilter(PagedListCriteria PagedListCriteria)
         {
             try
             {
@@ -759,10 +787,29 @@ namespace ComplyX_Businesss.Services.Implementation
                 }
 
                 query = query.OrderBy(a => a.PurchaseId);
+                var responseQuery = query.Select(x => new GstPurchaseResponseModel
+                {
 
-                PageListed<GstPurchase> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+                    PurchaseId = x.PurchaseId,
+                    CompanyId = x.CompanyId,
+                    BillNo = x.BillNo,
+                    BillDate = x.BillDate,
+                    SupplierName = x.SupplierName,
+                    SupplierGstin = x.SupplierGstin,
+                    PlaceOfSupply = x.PlaceOfSupply,
+                    Hsncode = x.Hsncode,
+                    Saccode = x.Saccode,
+                    TaxableValue = x.TaxableValue,
+                    Cgst = x.Cgst,
+                    Sgst = x.Sgst,
+                    Igst = x.Igst,
+                    TotalBillValue = x.TotalBillValue,
+                    CreatedOn = x.CreatedOn,
+                    CreatedBy = x.CreatedBy
+                });
+                PageListed<GstPurchaseResponseModel> result = await responseQuery.ToPagedListAsync(PagedListCriteria, orderByTranslations);
 
-                return new ManagerBaseResponse<IEnumerable<GstPurchase>>
+                return new ManagerBaseResponse<IEnumerable<GstPurchaseResponseModel>>
                 {
                     Result = result.Data,
                     Message = "GST Purchase Data Retrieved Successfully.",
@@ -779,7 +826,7 @@ namespace ComplyX_Businesss.Services.Implementation
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<IEnumerable<GstPurchase>>
+                return new ManagerBaseResponse<IEnumerable<GstPurchaseResponseModel>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -934,7 +981,7 @@ namespace ComplyX_Businesss.Services.Implementation
                 };
             }
         }
-        public async Task<ManagerBaseResponse<IEnumerable<GstReturn>>> GetGST_ReturnsFilter(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<GstReturnResponseModel>>> GetGST_ReturnsFilter(PagedListCriteria PagedListCriteria)
         {
             try
             {
@@ -947,10 +994,25 @@ namespace ComplyX_Businesss.Services.Implementation
                 }
 
                 query = query.OrderBy(a => a.ReturnId);
+                var responseQuery = query.Select(x => new GstReturnResponseModel
+                {
 
-                PageListed<GstReturn> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+                    ReturnId = x.ReturnId,
+                    CompanyId = x.CompanyId,
+                    ReturnType = x.ReturnType,
+                    PeriodMonth = x.PeriodMonth,
+                    PeriodYear = x.PeriodYear,
+                    TotalSales = x.TotalSales,
+                    TotalPurchases = x.TotalPurchases,
+                    TotalTaxPayable = x.TotalTaxPayable,
+                    TotalTaxPaid = x.TotalTaxPaid,
+                    FilingDate = x.FilingDate,
+                    Status = x.Status,
+                    CreatedOn = x.CreatedOn
+                });
+                PageListed<GstReturnResponseModel> result = await responseQuery.ToPagedListAsync(PagedListCriteria, orderByTranslations);
 
-                return new ManagerBaseResponse<IEnumerable<GstReturn>>
+                return new ManagerBaseResponse<IEnumerable<GstReturnResponseModel>>
                 {
                     Result = result.Data,
                     Message = "GST Returns Data Retrieved Successfully.",
@@ -967,7 +1029,7 @@ namespace ComplyX_Businesss.Services.Implementation
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<IEnumerable<GstReturn>>
+                return new ManagerBaseResponse<IEnumerable<GstReturnResponseModel>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -1168,7 +1230,7 @@ namespace ComplyX_Businesss.Services.Implementation
                 };
             }
         }
-        public async Task<ManagerBaseResponse<IEnumerable<GstSale>>> GetGST_SalesFilter(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<GstSaleResponseModel>>> GetGST_SalesFilter(PagedListCriteria PagedListCriteria)
         {
             try
             {
@@ -1181,10 +1243,29 @@ namespace ComplyX_Businesss.Services.Implementation
                 }
 
                 query = query.OrderBy(a => a.SaleId);
+                var responseQuery = query.Select(x => new GstSaleResponseModel
+                {
 
-                PageListed<GstSale> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+                    SaleId = x.SaleId,
+                    CompanyId = x.CompanyId,
+                    InvoiceNo = x.InvoiceNo,
+                    InvoiceDate = x.InvoiceDate,
+                    CustomerName = x.CustomerName,
+                    CustomerGstin = x.CustomerGstin,
+                    PlaceOfSupply = x.PlaceOfSupply,
+                    Hsncode = x.Hsncode,
+                    Saccode = x.Saccode,
+                    TaxableValue = x.TaxableValue,
+                    Cgst = x.Cgst,
+                    Sgst = x.Sgst,
+                    Igst = x.Igst,
+                    TotalInvoiceValue = x.TotalInvoiceValue,
+                    CreatedOn = x.CreatedOn,
+                    CreatedBy = x.CreatedBy
+                });
+                PageListed<GstSaleResponseModel> result = await responseQuery.ToPagedListAsync(PagedListCriteria, orderByTranslations);
 
-                return new ManagerBaseResponse<IEnumerable<GstSale>>
+                return new ManagerBaseResponse<IEnumerable<GstSaleResponseModel>>
                 {
                     Result = result.Data,
                     Message = "GST Sales Data Retrieved Successfully.",
@@ -1201,7 +1282,7 @@ namespace ComplyX_Businesss.Services.Implementation
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<IEnumerable<GstSale>>
+                return new ManagerBaseResponse<IEnumerable<GstSaleResponseModel>>
                 {
                     IsSuccess = false,
                     Result = null,

@@ -17,14 +17,14 @@ namespace ComplyX_Businesss.Services.Interface
         Task<ManagerBaseResponse<bool>> SaveComplianceMgmtData(ComplianceDeadlineRequestModel ComplianceDeadlines);
         Task<ManagerBaseResponse<bool>> RemoveComplianceMgmtData(string DeadlineID);
         Task<ManagerBaseResponse<List<ComplianceDeadlineResponseModel>>> GetAllComplianceMgmtData(string DeadlineID);
-        Task<ManagerBaseResponse<IEnumerable<ComplianceDeadline>>> GetComplianceMgmtFilter(PagedListCriteria PagedListCriteria);
+        Task<ManagerBaseResponse<IEnumerable<ComplianceDeadlineResponseModel>>> GetComplianceMgmtFilter(PagedListCriteria PagedListCriteria);
         Task<ManagerBaseResponse<bool>> SaveComplianceSchedulesData(ComplianceScheduleRequestModel ComplianceSchedules);
         Task<ManagerBaseResponse<bool>> RemoveComplianceSchedulesData(string ScheduleID);
         Task<ManagerBaseResponse<List<ComplianceScheduleResponseModel>>> GetAllComplianceSchedulesData(string ScheduleID);
-        Task<ManagerBaseResponse<IEnumerable<ComplianceSchedule>>> GetComplianceSchedulesFilter(PagedListCriteria PagedListCriteria);
+        Task<ManagerBaseResponse<IEnumerable<ComplianceScheduleResponseModel>>> GetComplianceSchedulesFilter(PagedListCriteria PagedListCriteria);
         Task<ManagerBaseResponse<bool>> SaveComplianceFilingsData(ComplianceFilingRequestModel ComplianceFilings);
         Task<ManagerBaseResponse<bool>> RemoveComplianceFilingsData(string FilingID);
         Task<ManagerBaseResponse<List<ComplianceFilingResponseModel>>> GetAllComplianceFilingsData(string FilingID);
-        Task<ManagerBaseResponse<IEnumerable<ComplianceFiling>>> GetComplianceFilingsFilter(PagedListCriteria PagedListCriteria);
+        Task<ManagerBaseResponse<IEnumerable<ComplianceFilingResponseModel>>> GetComplianceFilingsFilter(PagedListCriteria PagedListCriteria);
     }
 }

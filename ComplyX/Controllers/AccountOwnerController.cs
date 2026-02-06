@@ -59,19 +59,19 @@ namespace ComplyX.Controllers
             _IProductOwnere =  IProductOwnere;
         }
 
-        /// <summary>
-        /// Retrieves the list of all account owners.
-        /// </summary>
-        /// <returns>An <see cref="IActionResult"/> containing the list of account owners.</returns>
+        ///// <summary>
+        ///// Retrieves the list of all account owners.
+        ///// </summary>
+        ///// <returns>An <see cref="IActionResult"/> containing the list of account owners.</returns>
 
-        [HttpPost]
-        [ProducesResponseType(StatusCodes.Status403Forbidden, Type = typeof(ErrorResponse))]
-        public async Task<ActionResult> GetAll()
-        {
+        //[HttpPost]
+        //[ProducesResponseType(StatusCodes.Status403Forbidden, Type = typeof(ErrorResponse))]
+        //public async Task<ActionResult> GetAll()
+        //{
              
-            var owners = await _logic.GetAllAsync();
-            return Ok(owners);
-        }
+        //    var owners = await _logic.GetAllAsync();
+        //    return Ok(owners);
+        //}
         /// <summary>
         /// Retrieves the list of all account owners.
         /// </summary>

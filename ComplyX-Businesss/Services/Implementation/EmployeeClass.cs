@@ -23,6 +23,14 @@ using AutoMapper;
 using ComplyX_Businesss.Models.GratuityPolicy;
 using ComplyX_Businesss.Models.GratuityTransaction;
 using ComplyX_Businesss.Models.FnFCalculation;
+using ComplyX_Businesss.Models.ComplianceSchedule;
+using Microsoft.Graph.Models.Security;
+using Microsoft.Graph.Models;
+using Nest;
+using static NHibernate.Engine.Query.CallableParser;
+using System.Diagnostics;
+using System.Net.NetworkInformation;
+using System.Reflection;
 
 namespace ComplyX.BusinessLogic
 {
@@ -327,7 +335,7 @@ namespace ComplyX.BusinessLogic
                 };
             }
         }
-        public async Task<ManagerBaseResponse<IEnumerable<Employee>>> GetEmployeeDataFilter(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<EmployeeResponseModel>>> GetEmployeeDataFilter(PagedListCriteria PagedListCriteria)
         {
             try
             {
@@ -340,9 +348,49 @@ namespace ComplyX.BusinessLogic
                 }
 
                 query = query.OrderBy(a => a.EmployeeId);
-
-                PageListed<Employee> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
-                return new ManagerBaseResponse<IEnumerable<Employee>>
+                var responseQuery = query.Select(x => new EmployeeResponseModel
+                
+                   {
+                        EmployeeId = x.EmployeeId,
+                        CompanyId = x.CompanyId,
+                        SubcontractorId = x.SubcontractorId,
+                        EmployeeCode = x.EmployeeCode,
+                        FirstName = x.FirstName,
+                        LastName = x.LastName,
+                        FatherSpouseName = x.FatherSpouseName,
+                        Dob = x.Dob,
+                        Gender = x.Gender,
+                        MaritalStatus = x.MaritalStatus,
+                        Nationality = x.Nationality,
+                        Pan = x.Pan,
+                        Aadhaar = x.Aadhaar,
+                        Mobile = x.Mobile,
+                        Email = x.Email,
+                        PresentAddress = x.PresentAddress,
+                        PermanentAddress = x.PermanentAddress,
+                        City = x.City,
+                        State = x.State,
+                        Pincode = x.Pincode,
+                        Doj = x.Doj,
+                        ConfirmationDate = x.ConfirmationDate,
+                        Designation = x.Designation,
+                        Department = x.Department,
+                        Grade = x.Grade,
+                        EmploymentType = x.EmploymentType,
+                        WorkLocation = x.WorkLocation,
+                        ReportingManager = x.ReportingManager,
+                        ExitDate = x.ExitDate,
+                        ExitType = x.ExitType,
+                        ExitReason = x.ExitReason,
+                        Uan = x.Uan,
+                        PfaccountNumber = x.PfaccountNumber,
+                        EsicIp = x.EsicIp,
+                        Ptstate = x.Ptstate,
+                        ActiveStatus = x.ActiveStatus,
+                        IsDeleted = x.IsDeleted
+                });
+                PageListed<EmployeeResponseModel> result = await responseQuery.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+                return new ManagerBaseResponse<IEnumerable<EmployeeResponseModel>>
                 {
                     Result = result.Data,
                     Message = "Employee Data Retrieved Successfully.",
@@ -359,7 +407,7 @@ namespace ComplyX.BusinessLogic
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<IEnumerable<Employee>>
+                return new ManagerBaseResponse<IEnumerable<EmployeeResponseModel>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -505,7 +553,7 @@ namespace ComplyX.BusinessLogic
                 };
             }
         }
-        public async Task<ManagerBaseResponse<IEnumerable<GratuityPolicy>>> GetGratuity_PolicyFilter(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<GratuityPolicyResponseModel>>> GetGratuity_PolicyFilter(PagedListCriteria PagedListCriteria)
         {
             try
             {
@@ -518,9 +566,20 @@ namespace ComplyX.BusinessLogic
                 }
 
                 query = query.OrderBy(a => a.PolicyId);
+                var responseQuery = query.Select(x => new GratuityPolicyResponseModel
+                {
 
-                PageListed<GratuityPolicy> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
-                return new ManagerBaseResponse<IEnumerable<GratuityPolicy>>
+                    PolicyId = x.PolicyId,
+                    MinimumServiceYears = x.MinimumServiceYears,
+                    Formula = x.Formula,
+                    MaxGratuityAmount = x.MaxGratuityAmount,
+                    Eligible = x.Eligible,
+                    CreatedAt = x.CreatedAt,
+                    UpdatedAt = x.UpdatedAt,
+                    CompanyId = x.CompanyId
+                });
+                PageListed<GratuityPolicyResponseModel> result = await responseQuery.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+                return new ManagerBaseResponse<IEnumerable<GratuityPolicyResponseModel>>
                 {
                     Result = result.Data,
                     Message = "Gratuity Policy Data Retrieved Successfully.",
@@ -537,7 +596,7 @@ namespace ComplyX.BusinessLogic
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<IEnumerable<GratuityPolicy>>
+                return new ManagerBaseResponse<IEnumerable<GratuityPolicyResponseModel>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -690,7 +749,7 @@ namespace ComplyX.BusinessLogic
                 };
             }
         }
-        public async Task<ManagerBaseResponse<IEnumerable<GratuityTransaction>>> GetGratuity_TransactionsFilter(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<GratuityTransactionResponseModel>>> GetGratuity_TransactionsFilter(PagedListCriteria PagedListCriteria)
         {
             try
             {
@@ -703,9 +762,23 @@ namespace ComplyX.BusinessLogic
                 }
 
                 query = query.OrderBy(a => a.GratuityId);
+                var responseQuery = query.Select(x => new GratuityTransactionResponseModel
+                {
 
-                PageListed<GratuityTransaction> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
-                return new ManagerBaseResponse<IEnumerable<GratuityTransaction>>
+                    GratuityId = x.GratuityId,
+                    LastDrawnSalary = x.LastDrawnSalary,
+                    YearsOfService = x.YearsOfService,
+                    GratuityAmount = x.GratuityAmount,
+                    PaymentStatus = x.PaymentStatus,
+                    PaidDate = x.PaidDate,
+                    ApprovedBy = x.ApprovedBy,
+                    CreatedAt = x.CreatedAt,
+                    UpdatedAt = x.UpdatedAt,
+                    EmployeeId = x.EmployeeId,
+                    CompanyId = x.CompanyId
+                });
+                PageListed<GratuityTransactionResponseModel> result = await responseQuery.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+                return new ManagerBaseResponse<IEnumerable<GratuityTransactionResponseModel>>
                 {
                     Result = result.Data,
                     Message = "Gratuity Transactions Data Retrieved Successfully.",
@@ -722,7 +795,7 @@ namespace ComplyX.BusinessLogic
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<IEnumerable<GratuityTransaction>>
+                return new ManagerBaseResponse<IEnumerable<GratuityTransactionResponseModel>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -897,7 +970,7 @@ namespace ComplyX.BusinessLogic
                 };
             }
         }
-        public async Task<ManagerBaseResponse<IEnumerable<FnFCalculation>>> GetFnF_CalculationsFilter(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<FnFCalculationResponseModel>>> GetFnF_CalculationsFilter(PagedListCriteria PagedListCriteria)
         {
             try
             {
@@ -910,9 +983,30 @@ namespace ComplyX.BusinessLogic
                 }
 
                 query = query.OrderBy(a => a.FnFid);
+                var responseQuery = query.Select(x => new FnFCalculationResponseModel
+                {
 
-                PageListed<FnFCalculation> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
-                return new ManagerBaseResponse<IEnumerable<FnFCalculation>>
+                    FnFid = x.FnFid,
+                    ResignationDate = x.ResignationDate,
+                    LastWorkingDate = x.LastWorkingDate,
+                    NoticePeriodServedDays = x.NoticePeriodServedDays,
+                    SalaryDue = x.SalaryDue,
+                    LeaveEncashmentAmount = x.LeaveEncashmentAmount,
+                    GratuityAmount = x.GratuityAmount,
+                    Bonus = x.Bonus,
+                    Deductions = x.Deductions,
+                    NetPayable = x.NetPayable,
+                    ProcessedBy = x.ProcessedBy,
+                    PaymentStatus = x.PaymentStatus,
+                    ProcessedDate = x.ProcessedDate,
+                    Remarks = x.Remarks,
+                    CreatedAt = x.CreatedAt,
+                    UpdatedAt = x.UpdatedAt,
+                    EmployeeId = x.EmployeeId,
+                    CompanyId = x.CompanyId
+                });
+                PageListed<FnFCalculationResponseModel> result = await responseQuery.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+                return new ManagerBaseResponse<IEnumerable<FnFCalculationResponseModel>>
                 {
                     Result = result.Data,
                     Message = "FnF Calculations Data Retrieved Successfully.",
@@ -929,7 +1023,7 @@ namespace ComplyX.BusinessLogic
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<IEnumerable<FnFCalculation>>
+                return new ManagerBaseResponse<IEnumerable<FnFCalculationResponseModel>>
                 {
                     IsSuccess = false,
                     Result = null,

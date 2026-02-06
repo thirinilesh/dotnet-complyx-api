@@ -18,6 +18,7 @@ using ComplyX_Businesss.Models.PaymentTransaction;
 using ComplyX_Businesss.Models.CustomerPayments;
 using ComplyX_Businesss.Models.PartyMaster;
 using ComplyX_Businesss.Models.CompanyPartyRole;
+using NHibernate.Criterion;
 //using NHibernate.Linq;
 
 
@@ -253,7 +254,7 @@ namespace ComplyX_Businesss.BusinessLogic
                 };
             }
         }
-        public async Task<ManagerBaseResponse<IEnumerable<ProductOwner>>> GetAllProductOwnerFilter(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<ProductOwnerResponseModel>>> GetAllProductOwnerFilter(PagedListCriteria PagedListCriteria)
         {
             try
             {
@@ -267,10 +268,19 @@ namespace ComplyX_Businesss.BusinessLogic
                 }
 
                 query = query.OrderBy(a => a.ProductOwnerId);
+                var responseQuery = query.Select(x => new ProductOwnerResponseModel
+                {
+                    ProductOwnerId = x.ProductOwnerId,
+                    OwnerName = x.OwnerName,
+                    Email = x.Email,
+                    Mobile = x.Mobile,
+                    OrganizationName = x.OrganizationName,
+                    LegalName = x.LegalName,
+                    RegistrationId = x.RegistrationId
+                });
+                PageListed<ProductOwnerResponseModel> result = await responseQuery.ToPagedListAsync(PagedListCriteria, orderByTranslations);
 
-                PageListed<ProductOwner> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
-
-                return new ManagerBaseResponse<IEnumerable<ProductOwner>>
+                return new ManagerBaseResponse<IEnumerable<ProductOwnerResponseModel>>
                 {
                     Result = result.Data,
                     Message = "Product Owner Data Retrieved Successfully.",
@@ -287,7 +297,7 @@ namespace ComplyX_Businesss.BusinessLogic
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<IEnumerable<ProductOwner>>
+                return new ManagerBaseResponse<IEnumerable<ProductOwnerResponseModel>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -407,7 +417,7 @@ namespace ComplyX_Businesss.BusinessLogic
                 };
             }
         }
-        public async Task<ManagerBaseResponse<IEnumerable<Company>>> GetAllCompanyDataFilter(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<CompanyResponseModel>>> GetAllCompanyDataFilter(PagedListCriteria PagedListCriteria)
         {
             try
             {
@@ -420,10 +430,27 @@ namespace ComplyX_Businesss.BusinessLogic
                 }
 
                 query = query.OrderBy(a => a.CompanyId);
+                var responseQuery = query.Select(x => new CompanyResponseModel
+                {
+                    CompanyId = x.CompanyId,
+                    Name = x.Name,
+                    Domain = x.Domain,
+                    ContactEmail = x.ContactEmail,
+                    ContactPhone = x.ContactPhone,
+                    Address = x.Address,
+                    State = x.State,
+                    Gstin = x.Gstin,
+                    Pan = x.Pan,
+                    IsActive = x.IsActive,
+                    CreatedAt = x.CreatedAt,
+                    MaxEmployees = x.MaxEmployees,
+                    ProductOwnerId = x.ProductOwnerId
+                });
 
-                PageListed<Company> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
 
-                return new ManagerBaseResponse<IEnumerable<Company>>
+                PageListed<CompanyResponseModel> result = await responseQuery.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+
+                return new ManagerBaseResponse<IEnumerable<CompanyResponseModel>>
                 {
                     Result = result.Data,
                     Message = "Company Data Retrieved Successfully.",
@@ -440,7 +467,7 @@ namespace ComplyX_Businesss.BusinessLogic
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<IEnumerable<Company>>
+                return new ManagerBaseResponse<IEnumerable<CompanyResponseModel>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -495,7 +522,7 @@ namespace ComplyX_Businesss.BusinessLogic
                 };
             }            
         }
-        public async Task<ManagerBaseResponse<IEnumerable<SubscriptionPlan>>> GetSubscriptionPlansByFilter(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<SubscriptionPlanResponseModel>>> GetSubscriptionPlansByFilter(PagedListCriteria PagedListCriteria)
         {
             try
             {
@@ -508,10 +535,34 @@ namespace ComplyX_Businesss.BusinessLogic
                 }
 
                 query = query.OrderBy(a => a.PlanId);
+                var responseQuery = query.Select(x => new SubscriptionPlanResponseModel
+                {
+                    PlanId = x.PlanId,
+                    PlanCode = x.PlanCode,
+                    PlanName = x.PlanName,
+                    Description = x.Description,
+                    PriceMonthly = x.PriceMonthly,
+                    PriceYearly = x.PriceYearly,
+                    MaxCompanies = x.MaxCompanies,
+                    MaxUsers = x.MaxUsers,
+                    MaxStorageMb = x.MaxStorageMb,
+                    AllowEpfo = x.AllowEpfo,
+                    AllowEsic = x.AllowEsic,
+                    AllowGst = x.AllowGst,
+                    AllowTds = x.AllowTds,
+                    AllowClra = x.AllowClra,
+                    AllowLwf = x.AllowLwf,
+                    AllowPt = x.AllowPt,
+                    AllowPayroll = x.AllowPayroll,
+                    AllowDscsigning = x.AllowDscsigning,
+                    AllowCloudBackup = x.AllowCloudBackup,
+                    IsActive = x.IsActive
+                });
 
-                PageListed<SubscriptionPlan> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
 
-                return new ManagerBaseResponse<IEnumerable<SubscriptionPlan>>
+                PageListed<SubscriptionPlanResponseModel> result = await responseQuery.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+
+                return new ManagerBaseResponse<IEnumerable<SubscriptionPlanResponseModel>>
                 {
                     Result = result.Data,
                     Message = "SubscriptionPlans Data Retrieved Successfully.",
@@ -528,7 +579,7 @@ namespace ComplyX_Businesss.BusinessLogic
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<IEnumerable<SubscriptionPlan>>
+                return new ManagerBaseResponse<IEnumerable<SubscriptionPlanResponseModel>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -932,7 +983,7 @@ namespace ComplyX_Businesss.BusinessLogic
 
             }
         }
-        public async Task<ManagerBaseResponse<IEnumerable<Subcontractor>>> GetSubcontractorsFilter(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<SubcontractorResponseModel>>> GetSubcontractorsFilter(PagedListCriteria PagedListCriteria)
         {
             try
             {
@@ -945,10 +996,23 @@ namespace ComplyX_Businesss.BusinessLogic
                 }
 
                 query = query.OrderBy(a => a.SubcontractorId);
+                var responseQuery = query.Select(x => new SubcontractorResponseModel
+                {
+                    SubcontractorID = x.SubcontractorId,
+                    CompanyID = x.CompanyId,
+                    Name = x.Name,
+                    ContactEmail = x.ContactEmail,
+                    ContactPhone = x.ContactPhone,
+                    Address = x.Address,
+                    GSTIN = x.Gstin,
+                    PAN = x.Pan,
+                    CreatedAt = x.CreatedAt
+                });
 
-                PageListed<Subcontractor> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
 
-                return new ManagerBaseResponse<IEnumerable<Subcontractor>>
+                PageListed<SubcontractorResponseModel> result = await responseQuery.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+
+                return new ManagerBaseResponse<IEnumerable<SubcontractorResponseModel>>
                 {
                     Result = result.Data,
                     Message = "Subcontractors Data Retrieved Successfully.",
@@ -965,7 +1029,7 @@ namespace ComplyX_Businesss.BusinessLogic
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<IEnumerable<Subcontractor>>
+                return new ManagerBaseResponse<IEnumerable<SubcontractorResponseModel>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -1196,7 +1260,7 @@ namespace ComplyX_Businesss.BusinessLogic
                 };
             }
         }
-        public async Task<ManagerBaseResponse<IEnumerable<Plan>>> GetAllPlansDataFilter(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<PlanResponseModel>>> GetAllPlansDataFilter(PagedListCriteria PagedListCriteria)
         {
             try
             {
@@ -1208,11 +1272,22 @@ namespace ComplyX_Businesss.BusinessLogic
                     query = query.Where(x => x.Name.ToLower().Contains(searchText.ToLower()));
                 }
 
-                query = query.OrderBy(a => a.PlanId);
+                query = query.OrderBy(a => a.PlanId); var responseQuery = query.Select(x => new PlanResponseModel
+                {
+                    PlanId = x.PlanId,
+                    Name = x.Name,
+                    Description = x.Description,
+                    MaxEmployees = x.MaxEmployees,
+                    MultiOrg = x.MultiOrg,
+                    Price = x.Price,
+                    BillingCycle = "Monthly",
+                    CreatedAt = x.CreatedAt
+                });
 
-               PageListed<Plan> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
 
-                return new ManagerBaseResponse<IEnumerable<Plan>>
+                PageListed<PlanResponseModel> result = await responseQuery.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+
+                return new ManagerBaseResponse<IEnumerable<PlanResponseModel>>
                 {
                     Result = result.Data,
                     Message = "Plans Data Retrieved Successfully.",
@@ -1229,7 +1304,7 @@ namespace ComplyX_Businesss.BusinessLogic
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse< IEnumerable < Plan>>
+                return new ManagerBaseResponse< IEnumerable <PlanResponseModel>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -1415,7 +1490,7 @@ namespace ComplyX_Businesss.BusinessLogic
                 };
             }
         }
-        public async Task<ManagerBaseResponse<IEnumerable<SubscriptionInvoice>>> GetAllSubscriptionInvoicesFilter(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<SubscriptionInvoicesResponseModel>>> GetAllSubscriptionInvoicesFilter(PagedListCriteria PagedListCriteria)
         {
             try
             {
@@ -1427,9 +1502,22 @@ namespace ComplyX_Businesss.BusinessLogic
                 }
 
                 query = query.OrderBy(a => a.InvoiceId);
+                var responseQuery = query.Select(x => new SubscriptionInvoicesResponseModel
+                {
+                    InvoiceId = x.InvoiceId,
+                    CompanyId = x.CompanyId,
+                    PaymentId = x.PaymentId,
+                    PeriodStart = x.PeriodStart,
+                    PeriodEnd = x.PeriodEnd,
+                    Amount = x.Amount,
+                    Currency = x.Currency,
+                    PaidOn = x.PaidOn,
+                    Status = x.Status,
+                    CreatedAt = x.CreatedAt
+                });
 
-                PageListed<SubscriptionInvoice> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
-                return new ManagerBaseResponse<IEnumerable<SubscriptionInvoice>>
+                PageListed<SubscriptionInvoicesResponseModel> result = await responseQuery.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+                return new ManagerBaseResponse<IEnumerable<SubscriptionInvoicesResponseModel>>
                 {
                     Result = result.Data,
                     Message = "Subscription Invoice Data Retrieved Successfully.",
@@ -1446,7 +1534,7 @@ namespace ComplyX_Businesss.BusinessLogic
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<IEnumerable<SubscriptionInvoice>>
+                return new ManagerBaseResponse<IEnumerable<SubscriptionInvoicesResponseModel>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -1728,7 +1816,7 @@ namespace ComplyX_Businesss.BusinessLogic
                 };
             }
         }
-        public async Task<ManagerBaseResponse<IEnumerable<PaymentTransaction>>> GetAllPaymentTransactionFilter(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<PaymentTransactionRequestModel>>> GetAllPaymentTransactionFilter(PagedListCriteria PagedListCriteria)
         {
             try
             {
@@ -1740,9 +1828,22 @@ namespace ComplyX_Businesss.BusinessLogic
                 }
 
                 query = query.OrderBy(a => a.TransactionId);
+                var responseQuery = query.Select(x => new PaymentTransactionRequestModel
+                {
+                    TransactionId = x.TransactionId,
+                    PaymentId = x.PaymentId,
+                    Gateway = x.Gateway,
+                    GatewayPaymentId = x.GatewayPaymentId,
+                    Amount = x.Amount,
+                    Fees = x.Fees,
+                    Status = x.Status,
+                    ResponsePayload = x.ResponsePayload,
+                    CreatedAt = x.CreatedAt
+                });
 
-                PageListed<PaymentTransaction> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
-                return new ManagerBaseResponse<IEnumerable<PaymentTransaction>>
+
+                PageListed<PaymentTransactionRequestModel> result = await responseQuery.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+                return new ManagerBaseResponse<IEnumerable<PaymentTransactionRequestModel>>
                 {
                     Result = result.Data,
                     Message = "Payment Transactions Data Retrieved Successfully.",
@@ -1759,7 +1860,7 @@ namespace ComplyX_Businesss.BusinessLogic
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<IEnumerable<PaymentTransaction>>
+                return new ManagerBaseResponse<IEnumerable<PaymentTransactionRequestModel>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -1939,7 +2040,7 @@ namespace ComplyX_Businesss.BusinessLogic
                 };
             }
         }
-        public async Task<ManagerBaseResponse<IEnumerable<CustomerPayment>>> GetAllCustomerPaymentFilter(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<CustomerPaymentsResponseModel>>> GetAllCustomerPaymentFilter(PagedListCriteria PagedListCriteria)
         {
             try
             {
@@ -1952,9 +2053,22 @@ namespace ComplyX_Businesss.BusinessLogic
                 }
 
                 query = query.OrderBy(a => a.PaymentId);
+                var responseQuery = query.Select(x => new CustomerPaymentsResponseModel
+                {
+                    PaymentId = x.PaymentId,
+                    CompanyId = x.CompanyId,
+                    CustomerIdentifier = x.CustomerIdentifier,
+                    PlanId = x.PlanId,
+                    Amount = x.Amount,
+                    Currency = x.Currency,
+                    Status = x.Status,
+                    CreatedAt = x.CreatedAt,
+                    UpdatedAt = x.UpdatedAt
+                });
 
-                PageListed<CustomerPayment> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
-                return new ManagerBaseResponse<IEnumerable<CustomerPayment>>
+
+                PageListed<CustomerPaymentsResponseModel> result = await responseQuery.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+                return new ManagerBaseResponse<IEnumerable<CustomerPaymentsResponseModel>>
                 {
                     Result = result.Data,
                     Message = "Customer Payments Retrieved Successfully.",
@@ -1971,7 +2085,7 @@ namespace ComplyX_Businesss.BusinessLogic
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<IEnumerable<CustomerPayment>>
+                return new ManagerBaseResponse<IEnumerable<CustomerPaymentsResponseModel>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -2178,7 +2292,7 @@ namespace ComplyX_Businesss.BusinessLogic
                 };
             }
         }
-        public async Task<ManagerBaseResponse<IEnumerable<PartyMaster>>> GetAllPartyMasterFilter(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<PartyMasterResponseModel>>> GetAllPartyMasterFilter(PagedListCriteria PagedListCriteria)
         {
             try
             {
@@ -2191,9 +2305,28 @@ namespace ComplyX_Businesss.BusinessLogic
                 }
 
                 query = query.OrderBy(a => a.PartyId);
+                var responseQuery = query.Select(x => new PartyMasterResponseModel
+                {
+                    PartyId = x.PartyId,
+                    PartyName = x.PartyName,
+                    Pan = x.Pan,
+                    Gstin = x.Gstin,
+                    PartyType = x.PartyType,
+                    Address1 = x.Address1,
+                    Address2 = x.Address2,
+                    City = x.City,
+                    StateCode = x.StateCode,
+                    Pincode = x.Pincode,
+                    Email = x.Email,
+                    Phone = x.Phone,
+                    IsActive = x.IsActive,
+                    CreatedAt = x.CreatedAt,
+                    CreatedBy = x.CreatedBy
+                });
 
-                PageListed<PartyMaster> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
-                return new ManagerBaseResponse<IEnumerable<PartyMaster>>
+
+                PageListed<PartyMasterResponseModel> result = await responseQuery.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+                return new ManagerBaseResponse<IEnumerable<PartyMasterResponseModel>>
                 {
                     Result = result.Data,
                     Message = "Party Master Retrieved Successfully.",
@@ -2210,7 +2343,7 @@ namespace ComplyX_Businesss.BusinessLogic
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<IEnumerable<PartyMaster>>
+                return new ManagerBaseResponse<IEnumerable<PartyMasterResponseModel>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -2411,7 +2544,7 @@ namespace ComplyX_Businesss.BusinessLogic
                 };
             }
         }
-        public async Task<ManagerBaseResponse<IEnumerable<CompanyPartyRole>>> GetAllCompanyPartyRoleFilter(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<CompanyPartyRoleResponseModel>>> GetAllCompanyPartyRoleFilter(PagedListCriteria PagedListCriteria)
         {
             try
             {
@@ -2424,9 +2557,20 @@ namespace ComplyX_Businesss.BusinessLogic
                 }
 
                 query = query.OrderBy(a => a.CompanyPartyRoleId);
+                var responseQuery = query.Select(x => new CompanyPartyRoleResponseModel
+                {
+                    CompanyPartyRoleID = x.CompanyPartyRoleId,
+                    CompanyID = x.CompanyId,
+                    PartyID = x.PartyId,
+                    RoleType = x.RoleType,
+                    IsActive = x.IsActive,
+                    CreatedAt = x.CreatedAt,
+                    CreatedBy = x.CreatedBy
+                });
 
-                PageListed<CompanyPartyRole> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
-                return new ManagerBaseResponse<IEnumerable<CompanyPartyRole>>
+
+                PageListed<CompanyPartyRoleResponseModel> result = await responseQuery.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+                return new ManagerBaseResponse<IEnumerable<CompanyPartyRoleResponseModel>>
                 {
                     Result = result.Data,
                     Message = "Company Party Role Retrieved Successfully.",
@@ -2443,7 +2587,7 @@ namespace ComplyX_Businesss.BusinessLogic
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<IEnumerable<CompanyPartyRole>>
+                return new ManagerBaseResponse<IEnumerable<CompanyPartyRoleResponseModel>>
                 {
                     IsSuccess = false,
                     Result = null,

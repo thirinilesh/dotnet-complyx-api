@@ -19,6 +19,7 @@ using ComplyX.Data.Entities;
 using ComplyX.Repositories.UnitOfWork;
 using ComplyX_Businesss.Models.LeaveEncashmentPolicy;
 using ComplyX_Businesss.Models.LeaveEncashmentTransaction;
+using ComplyX_Businesss.Models.CompanyEPFO;
 
 namespace ComplyX.BusinessLogic
 {
@@ -299,7 +300,7 @@ namespace ComplyX.BusinessLogic
             }
 
         }
-        public async Task<ManagerBaseResponse<IEnumerable<PayrollDatum>>> GetPayrollDataFilter(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<PayrollDataResponseModel>>> GetPayrollDataFilter(PagedListCriteria PagedListCriteria)
         {
             try
             {
@@ -312,10 +313,28 @@ namespace ComplyX.BusinessLogic
                 }
 
                 query = query.OrderBy(a => a.PayrollId);
+                var responseQuery = query.Select(x => new PayrollDataResponseModel
+                {
 
-                PageListed<PayrollDatum> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+                    PayrollId = x.PayrollId,
+                    EmployeeId = x.EmployeeId,
+                    Month = x.Month,
+                    Basic = x.Basic,
+                    Hra = x.Hra,
+                    SpecialAllowance = x.SpecialAllowance,
+                    VariablePay = x.VariablePay,
+                    GrossSalary = x.GrossSalary,
+                    Pf = x.Pf,
+                    Esi = x.Esi,
+                    ProfessionalTax = x.ProfessionalTax,
+                    Tds = x.Tds,
+                    NetPay = x.NetPay,
+                    BankAccount = x.BankAccount,
+                    Ifsc = x.Ifsc
+                });
+                PageListed<PayrollDataResponseModel> result = await responseQuery.ToPagedListAsync(PagedListCriteria, orderByTranslations);
 
-                return new ManagerBaseResponse<IEnumerable<PayrollDatum>>
+                return new ManagerBaseResponse<IEnumerable<PayrollDataResponseModel>>
                 {
                     Result = result.Data,
                     Message = "Payroll Data Retrieved Successfully.",
@@ -332,7 +351,7 @@ namespace ComplyX.BusinessLogic
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<IEnumerable<PayrollDatum>>
+                return new ManagerBaseResponse<IEnumerable<PayrollDataResponseModel>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -479,7 +498,7 @@ namespace ComplyX.BusinessLogic
                 };
             }
         }
-        public async Task<ManagerBaseResponse<IEnumerable<LeaveEncashmentPolicy>>> GetLeave_Encashment_PolicyFilter(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<LeaveEncashmentPolicyResponseModel>>> GetLeave_Encashment_PolicyFilter(PagedListCriteria PagedListCriteria)
         {
             try
             {
@@ -492,10 +511,22 @@ namespace ComplyX.BusinessLogic
                 }
 
                 query = query.OrderBy(a => a.PolicyId);
+                var responseQuery = query.Select(x => new LeaveEncashmentPolicyResponseModel
+                {
 
-                PageListed<LeaveEncashmentPolicy> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+                    PolicyId = x.PolicyId,
+                    LeaveType = x.LeaveType,
+                    EncashmentAllowed = x.EncashmentAllowed,
+                    MaxEncashableDays = x.MaxEncashableDays,
+                    EncashmentFrequency = x.EncashmentFrequency,
+                    EncashmentFormula = x.EncashmentFormula,
+                    CreatedAt = x.CreatedAt,
+                    UpdatedAt = x.UpdatedAt,
+                    CompanyId = x.CompanyId
+                });
+                PageListed<LeaveEncashmentPolicyResponseModel> result = await responseQuery.ToPagedListAsync(PagedListCriteria, orderByTranslations);
 
-                return new ManagerBaseResponse<IEnumerable<LeaveEncashmentPolicy>>
+                return new ManagerBaseResponse<IEnumerable<LeaveEncashmentPolicyResponseModel>>
                 {
                     Result = result.Data,
                     Message = "LeaveEncashmentPolicy Data Retrieved Successfully.",
@@ -512,7 +543,7 @@ namespace ComplyX.BusinessLogic
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<IEnumerable<LeaveEncashmentPolicy>>
+                return new ManagerBaseResponse<IEnumerable<LeaveEncashmentPolicyResponseModel>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -667,7 +698,7 @@ namespace ComplyX.BusinessLogic
             }
         }
 
-        public async Task<ManagerBaseResponse<IEnumerable<LeaveEncashmentTransaction>>> GetLeave_Encashment_TransactionFilter(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<LeaveEncashmentTransactionResponseModel>>> GetLeave_Encashment_TransactionFilter(PagedListCriteria PagedListCriteria)
         {
             try
             {
@@ -680,10 +711,24 @@ namespace ComplyX.BusinessLogic
                 }
 
                 query = query.OrderBy(a => a.EncashmentId);
+                var responseQuery = query.Select(x => new LeaveEncashmentTransactionResponseModel
+                {
 
-                PageListed<LeaveEncashmentTransaction> result = await query.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+                    EncashmentId = x.EncashmentId,
+                    CompanyId = x.CompanyId,
+                    Employeeid = x.Employeeid,
+                    LeaveType = x.LeaveType,
+                    DaysEncashed = x.DaysEncashed,
+                    EncashmentAmount = x.EncashmentAmount,
+                    PaymentDate = x.PaymentDate,
+                    Status = x.Status,
+                    ApprovedBy = x.ApprovedBy,
+                    CreatedAt = x.CreatedAt,
+                    UpdatedAt = x.UpdatedAt
+                });
+                PageListed<LeaveEncashmentTransactionResponseModel> result = await responseQuery.ToPagedListAsync(PagedListCriteria, orderByTranslations);
 
-                return new ManagerBaseResponse<IEnumerable<LeaveEncashmentTransaction>>
+                return new ManagerBaseResponse<IEnumerable<LeaveEncashmentTransactionResponseModel>>
                 {
                     Result = result.Data,
                     Message = "LeaveEncashmentTransaction Data Retrieved Successfully.",
@@ -700,7 +745,7 @@ namespace ComplyX.BusinessLogic
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<IEnumerable<LeaveEncashmentTransaction>>
+                return new ManagerBaseResponse<IEnumerable<LeaveEncashmentTransactionResponseModel>>
                 {
                     IsSuccess = false,
                     Result = null,

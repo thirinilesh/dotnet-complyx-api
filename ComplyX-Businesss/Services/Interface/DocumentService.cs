@@ -16,14 +16,14 @@ namespace ComplyX_Businesss.Services.Interface
         Task<ManagerBaseResponse<bool>> SavelegalDocumentData(LegalDocumentRequestModel legalDocument, string UserName);
         Task<ManagerBaseResponse<bool>> RemovelegalDocumentData(string document_id);
         Task<ManagerBaseResponse<List<LegalDocumentResponseModel>>> GetAlllegalDocumentData(string document_id);
-        Task<ManagerBaseResponse<IEnumerable<LegalDocument>>> GetAlllegalDocumentFilter(PagedListCriteria PagedListCriteria);
+        Task<ManagerBaseResponse<IEnumerable<LegalDocumentResponseModel>>> GetAlllegalDocumentFilter(PagedListCriteria PagedListCriteria);
         Task<ManagerBaseResponse<bool>> SavelegalDocumentVersionData(LegalDocumentVersionRequestModel legalDocumentVersion, string UserName);
         Task<ManagerBaseResponse<bool>> RemovelegalDocumentVersionData(string version_id);
         Task<ManagerBaseResponse<List<LegalDocumentVersionResponseModel>>> GetAlllegalDocumentVersionData(string version_id);
-        Task<ManagerBaseResponse<IEnumerable<LegalDocumentVersion>>> GetAlllegalDocumentVersionFilter(PagedListCriteria PagedListCriteria);
+        Task<ManagerBaseResponse<IEnumerable<LegalDocumentVersionResponseModel>>> GetAlllegalDocumentVersionFilter(PagedListCriteria PagedListCriteria);
         Task<ManagerBaseResponse<bool>> SavelegalDocumentAcceptanceData(LegalDocumentAcceptanceRequestModel legalDocumentAcceptance, string UserName);
         Task<ManagerBaseResponse<bool>> RemovelegalDocumentAcceptanceData(string acceptance_id);
         Task<ManagerBaseResponse<List<LegalDocumentAcceptanceResponseModel>>> GetAlllegalDocumentAcceptanceData(string acceptance_id);
-        Task<ManagerBaseResponse<IEnumerable<LegalDocumentAcceptance>>> GetAlllegalDocumentAcceptanceFilter(PagedListCriteria PagedListCriteria);
+        Task<ManagerBaseResponse<IEnumerable<LegalDocumentAcceptanceResponseModel>>> GetAlllegalDocumentAcceptanceFilter(PagedListCriteria PagedListCriteria);
     }
 }
