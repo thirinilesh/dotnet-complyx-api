@@ -270,13 +270,37 @@ namespace ComplyX_Businesss.BusinessLogic
                 query = query.OrderBy(a => a.ProductOwnerId);
                 var responseQuery = query.Select(x => new ProductOwnerResponseModel
                 {
+
                     ProductOwnerId = x.ProductOwnerId,
                     OwnerName = x.OwnerName,
                     Email = x.Email,
                     Mobile = x.Mobile,
                     OrganizationName = x.OrganizationName,
                     LegalName = x.LegalName,
-                    RegistrationId = x.RegistrationId
+                    RegistrationId = x.RegistrationId,
+                    OrganizationType = x.OrganizationType,
+                    Address = x.Address,
+                    City = x.City,
+                    Pincode = x.Pincode,
+                    State = x.State,
+                    Country = x.Country,
+                    CreatedBy = x.CreatedBy,
+                    UpdatedBy = x.UpdatedBy,
+                    CreatedAt = x.CreatedAt,
+                    UpdatedAt = x.UpdatedAt,
+                    IsActive = x.IsActive,
+                    SubscriptionPlan = x.SubscriptionPlan,
+                    SubscriptionStart = x.SubscriptionStart,
+                    SubscriptionExpiry = x.SubscriptionExpiry,
+                    MaxCompanies = x.MaxCompanies,
+                    MaxUsers = x.MaxUsers,
+                    MaxStorageMb = x.MaxStorageMb,
+                    AllowCloudBackup = x.AllowCloudBackup,
+                    AllowGstmodule = x.AllowGstmodule,
+                    AllowTdsmodule = x.AllowTdsmodule,
+                    AllowClramodule = x.AllowClramodule,
+                    AllowPayrollModule = x.AllowPayrollModule,
+                    AllowDscsigning = x.AllowDscsigning
                 });
                 PageListed<ProductOwnerResponseModel> result = await responseQuery.ToPagedListAsync(PagedListCriteria, orderByTranslations);
 
