@@ -29,7 +29,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ComplyX-Businesss\ComplyX-Businesss.csproj" />
-    <ProjectReference Include="..\ComplyX\ComplyX.csproj" />
   </ItemGroup>
 
 </Project>

@@ -8,8 +8,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="16.0.0" />
-    <PackageReference Include="CsvHelper" Version="33.1.0" />
+    <Compile Remove="Services\Implementation\ImportClass.cs" />
+    <Compile Remove="Services\Interface\ImportServices.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+     <PackageReference Include="CsvHelper" Version="33.1.0" />
     <PackageReference Include="EFCore.AutomaticMigrations" Version="8.0.0" />
 	  <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
 	  <PackageReference Include="EnumerableAsyncProcessor" Version="3.8.4" />
@@ -37,4 +41,8 @@
 	  <PackageReference Include="X.PagedList" Version="8.0.5" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\ComplyX.Data\ComplyX.Data.csproj" />
+    <ProjectReference Include="..\ComplyX.Repositories\ComplyX.Repositories.csproj" />
+  </ItemGroup>
 </Project>
