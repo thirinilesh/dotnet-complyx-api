@@ -95,6 +95,17 @@ builder.Services.AddControllers()
           options.JsonSerializerOptions.Converters.Add(
               new JsonStringEnumConverter(JsonNamingPolicy.CamelCase, allowIntegerValues: false));
       });
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll",
+        policy =>
+        {
+            policy.AllowAnyOrigin()
+                  .AllowAnyMethod()
+                  .AllowAnyHeader()
+              .WithExposedHeaders("Authorization");
+        });
+});
 
 // Swagger
 
@@ -148,7 +159,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-
+app.UseCors("AllowAll");
 // ✅ Authentication & Authorization
 app.UseAuthentication();
 app.UseAuthorization();

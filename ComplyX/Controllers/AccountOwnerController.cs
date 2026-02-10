@@ -34,7 +34,7 @@ namespace ComplyX.Controllers
     /// </summary>
     [ApiController]
     [Route("[controller]")]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+   // [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class AccountOwnerController : BaseController
     {
         private readonly AppContext  _context;
@@ -254,7 +254,7 @@ namespace ComplyX.Controllers
         /// <response code="200">Returns the filtered list of subscription plans.</response>
         /// <response code="204">If no subscription plans are found.</response>
         /// <response code="400">If there is an error while fetching the subscription plans.</response>
-        [HttpPost("GetSubscriptionPlanFilter")]
+        [HttpGet("GetSubscriptionPlanFilter")]
         public async Task<IActionResult> GetSubscriptionPlanFilter([FromBody] SubscriptionPlansFilterRequest request)
         {
             return ResponseResult(await _IProductOwnere.GetSubscriptionPlanFilter(request));
@@ -378,7 +378,7 @@ namespace ComplyX.Controllers
         /// <response code="200">Returns the list of subcontractors for the specified company.</response>
         /// <response code="204">If no subcontractors are found for the specified company.</response>
         /// <response code="400">If there is an error while fetching the subcontractor data.</response>
-        [HttpPost("GetSubcontractors")]
+        [HttpGet("GetSubcontractors")]
         public async Task<IActionResult> GetSubcontractors(int CompanyId)
         {
             return ResponseResult(await _IProductOwnere.GetSubcontractors(CompanyId));
@@ -418,7 +418,7 @@ namespace ComplyX.Controllers
         /// <response code="200">Returns the list of subcontractors for the specified product owner.</response>
         /// <response code="204">If no subcontractors are found for the specified product owner.</response>
         /// <response code="400">If there is an error while fetching the subcontractor data.</response>
-        [HttpPost("GetProductOwnerSubcontractorsDetails")]
+        [HttpGet("GetProductOwnerSubcontractorsDetails")]
         public async Task<IActionResult> GetProductOwnerSubcontractorsDetails(int ProductOwnerId)
         {
             return ResponseResult(await _IProductOwnere.GetProductOwnerSubcontractorsDetails(ProductOwnerId));
@@ -476,7 +476,7 @@ namespace ComplyX.Controllers
         /// <response code="200">Returns the list of all plans.</response>
         /// <response code="204">If no plans are found.</response>
         /// <response code="400">If there is an error while fetching the plans data.</response>
-        [HttpPost("GetAllPlansData")]
+        [HttpGet("GetAllPlansData")]
         public async Task<IActionResult> GetAllPlansData()
         {
             return ResponseResult(await _IProductOwnere.GetAllPlansData());
@@ -496,7 +496,7 @@ namespace ComplyX.Controllers
         /// <response code="200">Returns the plan details for the specified PlanID.</response>
         /// <response code="204">If no plan is found with the given PlanID.</response>
         /// <response code="400">If there is an error while fetching the plan data.</response>
-        [HttpPost("GetAllPlansDataByID")]
+        [HttpGet("GetAllPlansDataByID")]
         public async Task<IActionResult> GetAllPlansDataByID(string PlanID)
         {
             return ResponseResult(await _IProductOwnere.GetAllPlansDataByID(PlanID));
@@ -573,7 +573,7 @@ namespace ComplyX.Controllers
         /// <response code="200">Returns the list of all subscription invoices.</response>
         /// <response code="204">If no subscription invoices are found.</response>
         /// <response code="400">If there is an error while fetching the subscription invoices data.</response>
-        [HttpPost("GetAllSubscriptionInvoicesData")]
+        [HttpGet("GetAllSubscriptionInvoicesData")]
         public async Task<IActionResult> GetAllSubscriptionInvoicesData()
         {
             return ResponseResult(await _IProductOwnere.GetAllSubscriptionInvoicesData());
@@ -593,7 +593,7 @@ namespace ComplyX.Controllers
         /// <response code="200">Returns the subscription invoice details for the specified InvoiceID.</response>
         /// <response code="204">If no subscription invoice is found with the given InvoiceID.</response>
         /// <response code="400">If there is an error while fetching the subscription invoice data.</response>
-        [HttpPost("GetAllSubscriptionInvoicesDataByID")]
+        [HttpGet("GetAllSubscriptionInvoicesDataByID")]
         public async Task<IActionResult> GetAllSubscriptionInvoicesDataByID(string InvoiceID)
         {
             return ResponseResult(await _IProductOwnere.GetAllSubscriptionInvoicesDataByID(InvoiceID));
@@ -713,7 +713,7 @@ namespace ComplyX.Controllers
         /// <response code="200">Returns the list of all payment transactions.</response>
         /// <response code="204">If no payment transactions are found.</response>
         /// <response code="400">If there is an error while fetching the payment transaction data.</response>
-        [HttpPost("GetAllPaymentTransactionData")]
+        [HttpGet("GetAllPaymentTransactionData")]
         public async Task<IActionResult> GetAllPaymentTransactionData()
         {
             return ResponseResult(await _IProductOwnere.GetAllPaymentTransactionData());
@@ -733,7 +733,7 @@ namespace ComplyX.Controllers
         /// <response code="200">Returns the payment transaction details for the specified TransactionID.</response>
         /// <response code="204">If no payment transaction is found with the given TransactionID.</response>
         /// <response code="400">If there is an error while fetching the payment transaction data.</response>
-        [HttpPost("GetAllPaymentTransactionDataByID")]
+        [HttpGet("GetAllPaymentTransactionDataByID")]
         public async Task<IActionResult> GetAllPaymentTransactionDataByID(string TransactionID)
         {
             return ResponseResult(await _IProductOwnere.GetAllPaymentTransactionDataByID(TransactionID));
@@ -831,7 +831,7 @@ namespace ComplyX.Controllers
         /// <response code="200">Returns the customer payment details for the specified PaymentID.</response>
         /// <response code="204">If no customer payment is found with the given PaymentID.</response>
         /// <response code="400">If there is an error while fetching the customer payment data.</response>
-        [HttpPost("GetAllCustomerPaymentDataByID")]
+        [HttpGet("GetAllCustomerPaymentDataByID")]
         public async Task<IActionResult> GetAllCustomerPaymentDataByID(string PaymentID)
         {
             return ResponseResult(await _IProductOwnere.GetAllCustomerPaymentDataByID(PaymentID));
@@ -930,7 +930,7 @@ namespace ComplyX.Controllers
         /// <response code="200">Returns the party master details for the specified party ID.</response>
         /// <response code="204">No party master data found for the given party ID.</response>
         /// <response code="400">Error occurred while fetching party master data.</response>
-        [HttpPost("GetAllPartyMastertDataByID")]
+        [HttpGet("GetAllPartyMastertDataByID")]
         public async Task<IActionResult> GetAllPartyMastertDataByID(string PartyID)
         {
             return ResponseResult(await _IProductOwnere.GetAllPartyMasterDataByID(PartyID));
@@ -1030,7 +1030,7 @@ namespace ComplyX.Controllers
         /// <response code="200">Returns the company party role details for the specified ID.</response>
         /// <response code="204">No company party role data found for the given ID.</response>
         /// <response code="400">Error occurred while fetching company party role data.</response>
-        [HttpPost("GetAllCompanyPartyRoleDataByID")]
+        [HttpGet("GetAllCompanyPartyRoleDataByID")]
         public async Task<IActionResult> GetAllPartyMastevrtDataByID(string CompanyPartyID)
         {
             return ResponseResult(await _IProductOwnere.GetAllCompanyPartyRoleDataByID(CompanyPartyID));

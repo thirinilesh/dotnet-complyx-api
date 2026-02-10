@@ -54,6 +54,8 @@ namespace ComplyX.BusinessLogic
         }
         public async Task<ManagerBaseResponse<bool>> SaveEmployeeData(EmployeeRequestModel Employee)
         {
+            
+            
             var response = new ManagerBaseResponse<List<Employee>>();
 
             try
@@ -523,7 +525,7 @@ namespace ComplyX.BusinessLogic
         {
             try
             {
-                var Gratuity_Policy = await _UnitOfWork.GratuityPolicyRespositories.GetQueryable().OrderBy(x => x.PolicyId).Select(x => new GratuityPolicyResponseModel
+                var Gratuity_Policy = await _UnitOfWork.GratuityPolicyRespositories.GetQueryable().Where(x => x.PolicyId.ToString() == PolicyID).Select(x => new GratuityPolicyResponseModel
                 {
                     PolicyId = x.PolicyId,
                     MinimumServiceYears = x.MinimumServiceYears,
@@ -535,12 +537,26 @@ namespace ComplyX.BusinessLogic
                     CompanyId = x.CompanyId
                 }).ToListAsync();
 
-                return new ManagerBaseResponse<List<GratuityPolicyResponseModel>>
+                if (Gratuity_Policy.Count == 0)
                 {
-                    IsSuccess = true,
-                    Result = Gratuity_Policy,
-                    Message = "Gratuity Policy Details Retrieved Successfully.",
-                };
+                    return new ManagerBaseResponse<List<GratuityPolicyResponseModel>>
+                    {
+                        IsSuccess = false,
+                        Result = null,
+                        Message = "Gratuity Policy Details Retrieved Successfully.",
+                    };
+                }
+                else
+                {
+
+
+                    return new ManagerBaseResponse<List<GratuityPolicyResponseModel>>
+                    {
+                        IsSuccess = true,
+                        Result = Gratuity_Policy,
+                        Message = "Gratuity Policy Details Retrieved Successfully.",
+                    };
+                }
             }
             catch (Exception ex)
             {
@@ -610,7 +626,7 @@ namespace ComplyX.BusinessLogic
 
             try
             {
-                var Employee = await _UnitOfWork.GratuityTransactionRespositories.GetQueryable().FirstOrDefaultAsync(x => x.EmployeeId == Gratuity_Transactions.EmployeeId && x.CompanyId == Gratuity_Transactions.CompanyId);
+                var Employee = await _UnitOfWork.EmployeeRespositories.GetQueryable().FirstOrDefaultAsync(x => x.EmployeeId == Gratuity_Transactions.EmployeeId && x.CompanyId == Gratuity_Transactions.CompanyId);
 
                 if (Employee == null)
                 {
@@ -628,7 +644,7 @@ namespace ComplyX.BusinessLogic
                         GratuityTransaction _model = new GratuityTransaction();
                         _model.GratuityId = Guid.NewGuid();
                         _model.EmployeeId = Employee.EmployeeId;
-                        _model.CompanyId = Employee.CompanyId;
+                        _model.CompanyId = Gratuity_Transactions.CompanyId;
                         _model.LastDrawnSalary  =  Gratuity_Transactions.LastDrawnSalary;
                         _model.YearsOfService = Gratuity_Transactions.YearsOfService;
                         _model.GratuityAmount = Gratuity_Transactions.GratuityAmount;
@@ -646,7 +662,7 @@ namespace ComplyX.BusinessLogic
                             .Where(x => x.GratuityId == Gratuity_Transactions.GratuityId)
                                 .FirstOrDefault();
                         originalTerm.EmployeeId = Employee.EmployeeId;
-                        originalTerm.CompanyId = Employee.CompanyId;
+                        originalTerm.CompanyId = Gratuity_Transactions.CompanyId;
                         originalTerm.LastDrawnSalary = Gratuity_Transactions.LastDrawnSalary;
                         originalTerm.YearsOfService = Gratuity_Transactions.YearsOfService;
                         originalTerm.GratuityAmount = Gratuity_Transactions.GratuityAmount;
@@ -715,7 +731,7 @@ namespace ComplyX.BusinessLogic
         {
             try
             {
-                var Gratuity_Transactions = await _UnitOfWork.GratuityTransactionRespositories.GetQueryable().OrderBy(x => x.GratuityId)
+                var Gratuity_Transactions = await _UnitOfWork.GratuityTransactionRespositories.GetQueryable().Where(x => x.GratuityId.ToString() == GratuityID)
                      .Select(x => new GratuityTransactionResponseModel
                      {
                          GratuityId = x.GratuityId,
@@ -731,12 +747,26 @@ namespace ComplyX.BusinessLogic
                          CompanyId = x.CompanyId
                      }).ToListAsync();
 
-                return new ManagerBaseResponse<List<GratuityTransactionResponseModel>>
+                if (Gratuity_Transactions.Count == 0)
                 {
-                    IsSuccess = true,
-                    Result = Gratuity_Transactions,
-                    Message = "Gratuity Transactions Details Retrieved Successfully.",
-                };
+                    return new ManagerBaseResponse<List<GratuityTransactionResponseModel>>
+                    {
+                        IsSuccess = false,
+                        Result = null,
+                        Message = "Gratuity Transactions Details not Retrieved.",
+                    };
+                }
+                else
+                {
+
+
+                    return new ManagerBaseResponse<List<GratuityTransactionResponseModel>>
+                    {
+                        IsSuccess = true,
+                        Result = Gratuity_Transactions,
+                        Message = "Gratuity Transactions Details Retrieved Successfully.",
+                    };
+                }
             }
             catch (Exception ex)
             {
@@ -929,7 +959,7 @@ namespace ComplyX.BusinessLogic
         {
             try
             {
-                var FnF_Calculations = await _UnitOfWork.FCalculationRespositories.GetQueryable().OrderBy(x => x.FnFid)
+                var FnF_Calculations = await _UnitOfWork.FCalculationRespositories.GetQueryable().Where(x => x.FnFid.ToString() == FnFID)
                     .Select(x => new FnFCalculationResponseModel
                     {
                         FnFid = x.FnFid,
@@ -952,12 +982,26 @@ namespace ComplyX.BusinessLogic
                         CompanyId = x.CompanyId
                     }).ToListAsync();
 
-                return new ManagerBaseResponse<List<FnFCalculationResponseModel>>
+                if(FnF_Calculations.Count == 0)
                 {
-                    IsSuccess = true,
-                    Result = FnF_Calculations,
-                    Message = "FnF Calculations Details Retrieved Successfully.",
-                };
+                    return new ManagerBaseResponse<List<FnFCalculationResponseModel>>
+                    {
+                        IsSuccess = false ,
+                        Result = null,
+                        Message = "FnF Calculations Details Retrieved Successfully.",
+                    };
+                }
+                else
+                {
+
+               
+                    return new ManagerBaseResponse<List<FnFCalculationResponseModel>>
+                    {
+                        IsSuccess = true,
+                        Result = FnF_Calculations,
+                        Message = "FnF Calculations Details Retrieved Successfully.",
+                    };
+                }
             }
             catch (Exception ex)
             {
@@ -968,6 +1012,7 @@ namespace ComplyX.BusinessLogic
                     Result = null,
                     Message = ex.Message
                 };
+               
             }
         }
         public async Task<ManagerBaseResponse<IEnumerable<FnFCalculationResponseModel>>> GetFnF_CalculationsFilter(PagedListCriteria PagedListCriteria)

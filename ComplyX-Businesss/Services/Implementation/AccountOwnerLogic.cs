@@ -19,6 +19,9 @@ using ComplyX_Businesss.Models.CustomerPayments;
 using ComplyX_Businesss.Models.PartyMaster;
 using ComplyX_Businesss.Models.CompanyPartyRole;
 using NHibernate.Criterion;
+using Nest;
+using ComplyX.Data.DbContexts;
+using Antlr.Runtime.Misc;
 //using NHibernate.Linq;
 
 
@@ -32,12 +35,12 @@ namespace ComplyX_Businesss.BusinessLogic
             { "name", "Name" }
         };
 
-        private readonly AppContext _context;
+        private readonly AppDbContext _context;
         private readonly Nest.Filter _filter;
         private readonly IUnitOfWork _UnitOfWork;
         private readonly ComplyX.Data.DbContexts.AppDbContext _appDbContext;
 
-        public AccountOwnerLogic(AppContext context , Nest.Filter filter, IUnitOfWork UnitOfWork , ComplyX.Data.DbContexts.AppDbContext appDbContext)
+        public AccountOwnerLogic(AppDbContext context , Nest.Filter filter, IUnitOfWork UnitOfWork , ComplyX.Data.DbContexts.AppDbContext appDbContext)
         {
             _context = context;
             _filter = filter;
@@ -335,7 +338,7 @@ namespace ComplyX_Businesss.BusinessLogic
 
             try
             {
-                var accountid = await _UnitOfWork.CompanyRepository.GetQueryable().FirstOrDefaultAsync(x => x.ProductOwnerId == company.ProductOwnerId);
+                var accountid = await _UnitOfWork.ProductOwnerRepositories.GetQueryable().FirstOrDefaultAsync(x => x.ProductOwnerId == company.ProductOwnerId);
 
                 if (accountid == null)
                 {
@@ -661,8 +664,8 @@ namespace ComplyX_Businesss.BusinessLogic
 
             try
             {
-                var plan =_UnitOfWork.ProductOwnerSubscriptions.GetQueryable().Where(x => x.ProductOwnerId == ProductOwnerSubscriptions.ProductOwnerId && x.PlanId == ProductOwnerSubscriptions.PlanId); 
-                if(plan == null)               
+                var plan =_UnitOfWork.ProductOwnerSubscriptions.GetQueryable().Where(x => x.ProductOwnerId == ProductOwnerSubscriptions.ProductOwnerId && x.PlanId == ProductOwnerSubscriptions.PlanId).ToList(); 
+                if(plan != null)               
                 {               
                     if (ProductOwnerSubscriptions.SubscriptionId == 0)
                     {
@@ -757,14 +760,24 @@ namespace ComplyX_Businesss.BusinessLogic
                                             Email = o.Email
                                         }
                                     ).AsQueryable().ToListAsync();
-
-                   return new ManagerBaseResponse<List<ProductOwnerSubscriptionDto>>
+                if (result.Count == 0)
                 {
-                    IsSuccess = true,
-                    Result = result,
-                    Message = "Subscription Plans Fetched Successfully.",
-                };
-
+                    return new ManagerBaseResponse<List<ProductOwnerSubscriptionDto>>
+                    {
+                        IsSuccess = false,
+                        Result = null,
+                        Message = "Subscription Plans not Fetched.",
+                    };
+                }
+                else
+                {
+                    return new ManagerBaseResponse<List<ProductOwnerSubscriptionDto>>
+                    {
+                        IsSuccess = true,
+                        Result = result,
+                        Message = "Subscription Plans Fetched Successfully.",
+                    };
+                }
             }
             catch (Exception ex)
             {
@@ -810,14 +823,26 @@ namespace ComplyX_Businesss.BusinessLogic
                                                 OwnerName = ""
 
                                             }
-                                        ).Where(t => t.ProductOwnerId == ProductOwnerId).ToListAsync();
-
-                    return new ManagerBaseResponse<List<ProductOwnerSubscriptionDto>>
+                                        ).Where(t => t.ProductOwnerId == ProductOwnerId).AsQueryable().ToListAsync();
+                    if (result.Count == 0)
                     {
-                        IsSuccess = true,
-                        Result = result,
-                        Message = "Subscription Plans Fetched Successfully.",
-                    };
+                        return new ManagerBaseResponse<List<ProductOwnerSubscriptionDto>>
+                        {
+                            IsSuccess = false,
+                            Result = null,
+                            Message = "Subscription Plans not fatched.",
+                        };
+                    }
+                    else
+                    {
+                        return new ManagerBaseResponse<List<ProductOwnerSubscriptionDto>>
+                        {
+                            IsSuccess = true,
+                            Result = result,
+                            Message = "Subscription Plans Fetched Successfully.",
+                        };
+                       
+                    }
                 }
                 else
                 {
@@ -977,13 +1002,24 @@ namespace ComplyX_Businesss.BusinessLogic
 
                                             }
                                         ).Where(t => t.CompanyID == CompanyId).ToListAsync();
-
-                    return new ManagerBaseResponse<List<SubcontractorResponseModel>>
+                    if (result.Count == 0)
                     {
-                        IsSuccess = true,
-                        Result = result,
-                        Message = "Subscription Plans Fetched Successfully.",
-                    };
+                        return new ManagerBaseResponse<List<SubcontractorResponseModel>>
+                        {
+                            IsSuccess = false,
+                            Result = null,
+                            Message = "Subscription Plans Data not Fetched.",
+                        };
+                    }
+                    else
+                    {
+                        return new ManagerBaseResponse<List<SubcontractorResponseModel>>
+                        {
+                            IsSuccess = true,
+                            Result = result,
+                            Message = "Subscription Plans Fetched Successfully.",
+                        };
+                    }
                 }
                 else
                 {
@@ -1071,7 +1107,7 @@ namespace ComplyX_Businesss.BusinessLogic
                                             from p in _UnitOfWork.SubcontractorRepository.GetQueryable()
                                             join s in _UnitOfWork.CompanyRepository.GetQueryable()
                                                 on p.CompanyId equals s.CompanyId
-                                            join c in _UnitOfWork.ProductOwnerRepositories.GetQueryable() on  s.ProductOwnerId equals c.ProductOwnerId  
+                                            join c in _UnitOfWork.ProductOwnerRepositories.GetQueryable() on s.ProductOwnerId equals c.ProductOwnerId
 
                                             select new SubcontractorResponseModel
                                             {
@@ -1093,16 +1129,29 @@ namespace ComplyX_Businesss.BusinessLogic
                                                 OwnerPhone = c.Mobile,
                                                 OWnerEmail = c.Email,
                                                 OrganizationName = c.OrganizationName
-                                                
+
                                             }
                                         ).Where(t => t.ProductOwnerId == ProductOwnerId).ToListAsync();
-
-                    return new ManagerBaseResponse<List<SubcontractorResponseModel>>
+                    if (result.Count == 0)
                     {
-                        IsSuccess = true,
-                        Result = result,
-                        Message = "Subscription Plans Fetched Successfully.",
-                    };
+                        return new ManagerBaseResponse<List<SubcontractorResponseModel>>
+                        {
+                            IsSuccess = false,
+                            Result = null,
+                            Message = "Subscription Plans Data not  Fetched.",
+                        };
+                    }
+                    else
+                    {
+
+
+                        return new ManagerBaseResponse<List<SubcontractorResponseModel>>
+                        {
+                            IsSuccess = true,
+                            Result = result,
+                            Message = "Subscription Plans Fetched Successfully.",
+                        };
+                    }
                 }
                 else
                 {
@@ -1266,12 +1315,26 @@ namespace ComplyX_Businesss.BusinessLogic
                     CreatedAt = x.CreatedAt
                 }).ToListAsync();
 
-                return new ManagerBaseResponse<List<PlanResponseModel>>
+                if (plans.Count == 0)
                 {
-                    IsSuccess = true,
-                    Result = plans,
-                    Message = "Plans Data Retrieved Successfully.",
-                };
+
+                    return new ManagerBaseResponse<List<PlanResponseModel>>
+                    {
+                        IsSuccess = false,
+                        Result = null,
+                        Message = "Plans Data not Retrieved.",
+                    };
+                }
+                else
+                { 
+
+                    return new ManagerBaseResponse<List<PlanResponseModel>>
+                    {
+                        IsSuccess = true,
+                        Result = plans,
+                        Message = "Plans Data Retrieved Successfully.",
+                    };
+                }
             }
             catch (Exception ex)
             {
@@ -1496,12 +1559,26 @@ namespace ComplyX_Businesss.BusinessLogic
                     CreatedAt = x.CreatedAt
                 }).ToListAsync();
 
-                return new ManagerBaseResponse<List<SubscriptionInvoicesResponseModel>>
+                if (SubscriptionInvoices.Count == 0)
                 {
-                    IsSuccess = true,
-                    Result = SubscriptionInvoices,
-                    Message = "SubscriptionInvoices Data Retrieved Successfully.",
-                };
+                    return new ManagerBaseResponse<List<SubscriptionInvoicesResponseModel>>
+                    {
+                        IsSuccess = false,
+                        Result = null,
+                        Message = "SubscriptionInvoices Data not Retrieved.",
+                    };
+                }
+                else
+                {
+
+
+                    return new ManagerBaseResponse<List<SubscriptionInvoicesResponseModel>>
+                    {
+                        IsSuccess = true,
+                        Result = SubscriptionInvoices,
+                        Message = "SubscriptionInvoices Data Retrieved Successfully.",
+                    };
+                }
             }
             catch (Exception ex)
             {
@@ -1822,12 +1899,24 @@ namespace ComplyX_Businesss.BusinessLogic
                     CreatedAt = x.CreatedAt
                 }).ToListAsync();
 
-                return new ManagerBaseResponse<List<PaymentTransactionRequestModel>>
+                if (PaymentTransactions.Count == 0)
                 {
-                    IsSuccess = true,
-                    Result = PaymentTransactions,
-                    Message = "Payment Transaction Data Retrieved Successfully.",
-                };
+                    return new ManagerBaseResponse<List<PaymentTransactionRequestModel>>
+                    {
+                        IsSuccess = false,
+                        Result = null,
+                        Message = "Payment Transaction Data Retrieved Successfully.",
+                    };
+                }
+                else
+                {
+                    return new ManagerBaseResponse<List<PaymentTransactionRequestModel>>
+                    {
+                        IsSuccess = true,
+                        Result = PaymentTransactions,
+                        Message = "Payment Transaction Data Retrieved Successfully.",
+                    };
+                }
             }
             catch (Exception ex)
             {
@@ -2046,12 +2135,26 @@ namespace ComplyX_Businesss.BusinessLogic
                     UpdatedAt = x.UpdatedAt
                 }).ToListAsync();
 
-                return new ManagerBaseResponse<List<CustomerPaymentsResponseModel>>
+                if (customerPayments.Count == 0)
                 {
-                    IsSuccess = true,
-                    Result = customerPayments,
-                    Message = "Customer Payments Data Retrieved Successfully.",
-                };
+                    return new ManagerBaseResponse<List<CustomerPaymentsResponseModel>>
+                    {
+                        IsSuccess = false,
+                        Result = null,
+                        Message = "Customer Payments Data Retrieved Successfully.",
+                    };
+                }
+                else
+                {
+
+
+                    return new ManagerBaseResponse<List<CustomerPaymentsResponseModel>>
+                    {
+                        IsSuccess = true,
+                        Result = customerPayments,
+                        Message = "Customer Payments Data Retrieved Successfully.",
+                    };
+                }
             }
             catch (Exception ex)
             {
@@ -2123,7 +2226,7 @@ namespace ComplyX_Businesss.BusinessLogic
 
             try
             {
-                var user = _context.Users.FirstOrDefault(x => x.UserName == UserName);
+                var user = _context.ApplicationUsers.FirstOrDefault(x => x.UserName == UserName);
                 if (user == null)
                 {
                     return new ManagerBaseResponse<bool>
@@ -2298,12 +2401,26 @@ namespace ComplyX_Businesss.BusinessLogic
                     CreatedBy = x.CreatedBy
                 }).ToListAsync();
 
-                return new ManagerBaseResponse<List<PartyMasterResponseModel>>
+                if (PartyMaster.Count == 0)
                 {
-                    IsSuccess = true,
-                    Result = PartyMaster,
-                    Message = "Customer Payments Data Retrieved Successfully.",
-                };
+                    return new ManagerBaseResponse<List<PartyMasterResponseModel>>
+                    {
+                        IsSuccess = false,
+                        Result = null,
+                        Message = "Customer Payments Data Retrieved Successfully.",
+                    };
+                }
+                else
+                {
+
+
+                    return new ManagerBaseResponse<List<PartyMasterResponseModel>>
+                    {
+                        IsSuccess = true,
+                        Result = PartyMaster,
+                        Message = "Customer Payments Data Retrieved Successfully.",
+                    };
+                }
             }
             catch (Exception ex)
             {
@@ -2381,7 +2498,7 @@ namespace ComplyX_Businesss.BusinessLogic
 
             try
             {
-                var user = _context.Users.FirstOrDefault(x => x.UserName == UserName);
+                var user = _context.ApplicationUsers.FirstOrDefault(x => x.UserName == UserName);
                 var Party = _UnitOfWork.PartyMasterRepositories.GetQueryable().FirstOrDefault(x => x.PartyId == CompanyPartyRole.PartyID);
                 var Company = _UnitOfWork.CompanyRepository.GetQueryable().FirstOrDefault(x => x.CompanyId == CompanyPartyRole.CompanyID);
                 if (user == null)
@@ -2550,12 +2667,26 @@ namespace ComplyX_Businesss.BusinessLogic
                     CreatedBy = x.CreatedBy
                 }).ToListAsync();
 
-                return new ManagerBaseResponse<List<CompanyPartyRoleResponseModel>>
+                if (PartyMaster.Count == 0)
                 {
-                    IsSuccess = true,
-                    Result = PartyMaster,
-                    Message = "Company Party Role Data Retrieved Successfully.",
-                };
+                    return new ManagerBaseResponse<List<CompanyPartyRoleResponseModel>>
+                    {
+                        IsSuccess = false,
+                        Result = null,
+                        Message = "Company Party Role Data Retrieved Successfully.",
+                    };
+                }
+                else
+                {
+
+
+                    return new ManagerBaseResponse<List<CompanyPartyRoleResponseModel>>
+                    {
+                        IsSuccess = true,
+                        Result = PartyMaster,
+                        Message = "Company Party Role Data Retrieved Successfully.",
+                    };
+                }
             }
             catch (Exception ex)
             {

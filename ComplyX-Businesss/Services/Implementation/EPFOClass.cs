@@ -20,6 +20,7 @@ using ComplyX_Businesss.Models.EPFOECRFile;
 using ComplyX_Businesss.Models.EPFOPeriod;
 using ComplyX_Businesss.Models.EPFOMonthWage;
 using ComplyX_Businesss.Models.GratuityPolicy;
+using ComplyX.Data.DbContexts;
 
 namespace ComplyX_Businesss.BusinessLogic
 {
@@ -29,11 +30,11 @@ namespace ComplyX_Businesss.BusinessLogic
         {
             { "name", "Name" }
         };
-        private readonly AppContext _context;
+        private readonly AppDbContext _context;
         private readonly UserManager<ApplicationUsers> _usermanager;
         private readonly IUnitOfWork _UnitOfWork;
 
-        public EPFOClass(AppContext context, UserManager<ApplicationUsers> usermanager, IUnitOfWork unitOfWork)
+        public EPFOClass(AppDbContext context, UserManager<ApplicationUsers> usermanager, IUnitOfWork unitOfWork)
         {
             _context = context;
             _usermanager = usermanager;
@@ -490,7 +491,7 @@ namespace ComplyX_Businesss.BusinessLogic
 
             try
             {
-                var user = _context.Users.FirstOrDefault(u => u.UserName == UserID);
+                var user = _context.ApplicationUsers.FirstOrDefault(u => u.UserName == UserID);
                 if (user == null)
                 {
                     return new ManagerBaseResponse<bool>
@@ -720,7 +721,7 @@ await _UnitOfWork.ePFOMonthWageRespositories.AddAsync( _model );
                 return  new ManagerBaseResponse<bool>
                 {
                     Result = true,
-                    Message = "CompanyEPFO Data Saved Successfully."
+                    Message = "EPFOMonthlyWage Data Saved Successfully."
                 } ;
             }
             catch (Exception e)

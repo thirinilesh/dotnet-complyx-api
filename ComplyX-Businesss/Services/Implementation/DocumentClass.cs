@@ -160,13 +160,24 @@ namespace ComplyX_Businesss.Services.Implementation
                     CreatedBy = x.CreatedBy
                 }).ToList();
 
-
-                return new ManagerBaseResponse<List<LegalDocumentResponseModel>>
+                if(plans.Count == 0)
                 {
-                    IsSuccess = true,
-                    Result = plans,
-                    Message = "Legal Document Data Retrieved Successfully.",
-                };
+                    return new ManagerBaseResponse<List<LegalDocumentResponseModel>>
+                    {
+                        IsSuccess = false,
+                        Result = null,
+                        Message = "Legal Document Data not Retrieved.",
+                    };
+                }
+                else { 
+
+                    return new ManagerBaseResponse<List<LegalDocumentResponseModel>>
+                    {
+                        IsSuccess = true,
+                        Result = plans,
+                        Message = "Legal Document Data Retrieved Successfully.",
+                    };
+                }
             }
             catch (Exception ex)
             {
@@ -381,13 +392,26 @@ namespace ComplyX_Businesss.Services.Implementation
                     ApprovedBy = x.ApprovedBy
                 }).ToList();
 
-
-                return new ManagerBaseResponse<List<LegalDocumentVersionResponseModel>>
+                if (plans.Count == 0)
                 {
-                    IsSuccess = true,
-                    Result = plans,
-                    Message = "Legal Document version Data Retrieved Successfully.",
-                };
+                    return new ManagerBaseResponse<List<LegalDocumentVersionResponseModel>>
+                    {
+                        IsSuccess = false,
+                        Result = null,
+                        Message = "Legal Document version Data not Retrieved.",
+                    };
+                }
+                else
+                {
+
+
+                    return new ManagerBaseResponse<List<LegalDocumentVersionResponseModel>>
+                    {
+                        IsSuccess = true,
+                        Result = plans,
+                        Message = "Legal Document version Data Retrieved Successfully.",
+                    };
+                }
             }
             catch (Exception ex)
             {
@@ -593,13 +617,26 @@ namespace ComplyX_Businesss.Services.Implementation
                     ConsentProofHash = x.ConsentProofHash
                 }).ToList();
 
-
-                return new ManagerBaseResponse<List<LegalDocumentAcceptanceResponseModel>>
+                if (plans.Count == 0)
                 {
-                    IsSuccess = true,
-                    Result = plans,
-                    Message = "Legal Document Acceptance Data Retrieved Successfully.",
-                };
+                    return new ManagerBaseResponse<List<LegalDocumentAcceptanceResponseModel>>
+                    {
+                        IsSuccess = false,
+                        Result = null,
+                        Message = "Legal Document Acceptance Data not Retrieved.",
+                    };
+                }
+                else
+                {
+
+
+                    return new ManagerBaseResponse<List<LegalDocumentAcceptanceResponseModel>>
+                    {
+                        IsSuccess = true,
+                        Result = plans,
+                        Message = "Legal Document Acceptance Data Retrieved Successfully.",
+                    };
+                }
             }
             catch (Exception ex)
             {

@@ -168,12 +168,26 @@ namespace ComplyX_Businesss.Services.Implementation
                     UpdatedAt = x.UpdatedAt
                 }).ToListAsync();
 
-                return new ManagerBaseResponse<List<ComplianceDeadlineResponseModel>>
+                if (plans.Count == 0)
                 {
-                    IsSuccess = true,
-                    Result = plans,
-                    Message = "Compliance Deadlines Data Retrieved Successfully.",
-                };
+                    return new ManagerBaseResponse<List<ComplianceDeadlineResponseModel>>
+                    {
+                        IsSuccess = false,
+                        Result = null,
+                        Message = "Compliance Deadlines Data not Retrieved.",
+                    };
+                }
+                else
+                {
+
+
+                    return new ManagerBaseResponse<List<ComplianceDeadlineResponseModel>>
+                    {
+                        IsSuccess = true,
+                        Result = plans,
+                        Message = "Compliance Deadlines Data Retrieved Successfully.",
+                    };
+                }
             }
             catch (Exception ex)
             {
@@ -369,12 +383,25 @@ namespace ComplyX_Businesss.Services.Implementation
                     UpdatedAt = x.UpdatedAt
                 }).ToListAsync();
 
-                return new ManagerBaseResponse<List<ComplianceScheduleResponseModel>>
+                if(plans.Count == 0)
                 {
-                    IsSuccess = true,
-                    Result = plans,
-                    Message = "Compliance Schedules Data Retrieved Successfully.",
-                };
+                    return new ManagerBaseResponse<List<ComplianceScheduleResponseModel>>
+                    {
+                        IsSuccess = false,
+                        Result = null,
+                        Message = "Compliance Schedules Data not Retrieved.",
+                    };
+                }
+                else
+                {
+                    return new ManagerBaseResponse<List<ComplianceScheduleResponseModel>>
+                    {
+                        IsSuccess = true,
+                        Result = plans,
+                        Message = "Compliance Schedules Data Retrieved Successfully.",
+                    };
+                }
+                
             }
             catch (Exception ex)
             {
@@ -569,12 +596,25 @@ namespace ComplyX_Businesss.Services.Implementation
                 })
                     .ToListAsync();
 
-                return new ManagerBaseResponse<List<ComplianceFilingResponseModel>>
+                if(plans.Count == 0)
                 {
-                    IsSuccess = true,
-                    Result = plans,
-                    Message = "Compliance Filings Data Retrieved Successfully.",
-                };
+                    return new ManagerBaseResponse<List<ComplianceFilingResponseModel>>
+                    {
+                        IsSuccess = false,
+                        Result = null,
+                        Message = "Compliance Filings Data not Retrieved.",
+                    };
+                }
+                else 
+                {
+
+                    return new ManagerBaseResponse<List<ComplianceFilingResponseModel>>
+                    {
+                        IsSuccess = true,
+                        Result = plans,
+                        Message = "Compliance Filings Data Retrieved Successfully.",
+                    };
+                }
             }
             catch (Exception ex)
             {
