@@ -46,9 +46,27 @@ namespace ComplyX_Businesss.Services.Implementation
 
             try
             {
-                var baemployee = _mapper.Map<GstHsnsac>(GST_HSNSAC);
 
-                await  _UnitOfWork.GSTHSNSACRespositories.AddAsync(baemployee);
+                if (GST_HSNSAC.CodeId == 0)
+                {
+                    // Insert
+                    GstHsnsac originalTerm = new GstHsnsac();
+                    originalTerm.Code = GST_HSNSAC.Code;
+                    originalTerm.CodeType = GST_HSNSAC.CodeType;
+                    originalTerm.Description = GST_HSNSAC.Description;
+                    originalTerm.GstRate = GST_HSNSAC.GstRate;
+                    await _UnitOfWork.GSTHSNSACRespositories.AddAsync(originalTerm);
+                }
+                else
+                {
+                    var originalTerm = _UnitOfWork.GSTHSNSACRespositories.GetQueryable()
+                       .Where(x => x.CodeId == GST_HSNSAC.CodeId)
+                       .FirstOrDefault();
+                    originalTerm.Code = GST_HSNSAC.Code;
+                    originalTerm.CodeType = GST_HSNSAC.CodeType;
+                    originalTerm.Description = GST_HSNSAC.Description;
+                    originalTerm.GstRate = GST_HSNSAC.GstRate;
+                }
                 await _UnitOfWork.CommitAsync();
                  
 

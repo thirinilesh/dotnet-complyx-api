@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace ComplyX.Data.Entities;
 
@@ -24,8 +25,8 @@ public partial class ProductOwnerSubscription
     public string? TransactionId { get; set; }
 
     public string? Remarks { get; set; }
-
-    public virtual SubscriptionPlan Plan { get; set; } = null!;
-
-    public virtual ProductOwner ProductOwner { get; set; } = null!;
+    [JsonIgnore]
+    public virtual SubscriptionPlan? Plan { get; set; } = null!;
+    [JsonIgnore]
+    public virtual ProductOwner? ProductOwner { get; set; } = null!;
 }

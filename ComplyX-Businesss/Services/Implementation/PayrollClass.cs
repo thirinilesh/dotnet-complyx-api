@@ -20,6 +20,7 @@ using ComplyX.Repositories.UnitOfWork;
 using ComplyX_Businesss.Models.LeaveEncashmentPolicy;
 using ComplyX_Businesss.Models.LeaveEncashmentTransaction;
 using ComplyX_Businesss.Models.CompanyEPFO;
+using System.Diagnostics.Tracing;
 
 namespace ComplyX.BusinessLogic
 {
@@ -480,12 +481,26 @@ namespace ComplyX.BusinessLogic
                           CompanyId = x.CompanyId
                       }).ToListAsync();
 
-                return new ManagerBaseResponse<List<LeaveEncashmentPolicyResponseModel>>
+                if (Policy.Count == 0)
                 {
-                    IsSuccess = true,
-                    Result = Policy,
-                    Message = "Leave Ensachment Policy Plans Retrieved Successfully.",
-                };
+                    return new ManagerBaseResponse<List<LeaveEncashmentPolicyResponseModel>>
+                    {
+                        IsSuccess = false,
+                        Result = null,
+                        Message = "Leave Ensachment Policy Plans not Retrieved.",
+                    };
+                }
+                else
+                {
+
+
+                    return new ManagerBaseResponse<List<LeaveEncashmentPolicyResponseModel>>
+                    {
+                        IsSuccess = true,
+                        Result = Policy,
+                        Message = "Leave Ensachment Policy Plans Retrieved Successfully.",
+                    };
+                }
             }
             catch (Exception ex)
             {
@@ -679,12 +694,26 @@ namespace ComplyX.BusinessLogic
                          UpdatedAt = x.UpdatedAt
                      }).ToListAsync();
 
-                return new ManagerBaseResponse<List<LeaveEncashmentTransactionResponseModel>>
+                if(Transaction.Count == 0)
                 {
-                    IsSuccess = true,
-                    Result = Transaction,
-                    Message = "Leave Ensachment TRansaction Plans Retrieved Successfully.",
-                };
+                    return new ManagerBaseResponse<List<LeaveEncashmentTransactionResponseModel>>
+                    {
+                        IsSuccess = false,
+                        Result = null,
+                        Message = "Leave Ensachment TRansaction Plans not Retrieved.",
+                    };
+                }
+                else
+                {
+
+                
+                    return new ManagerBaseResponse<List<LeaveEncashmentTransactionResponseModel>>
+                    {
+                        IsSuccess = true,
+                        Result = Transaction,
+                        Message = "Leave Ensachment TRansaction Plans Retrieved Successfully.",
+                    };
+                }
             }
             catch (Exception ex)
             {

@@ -30,7 +30,7 @@ namespace ComplyX.Shared.Helper
                 issuer: _configuration["Jwt:Issuer"],
                 audience: _configuration["Jwt:Audience"],
                 claims: claims,
-                expires: DateTime.Now.AddMinutes(Convert.ToDouble(_configuration["Jwt:ExpireMinutes"])),
+                expires: DateTime.Now.AddHours(1),
                 signingCredentials: creds
             );
 

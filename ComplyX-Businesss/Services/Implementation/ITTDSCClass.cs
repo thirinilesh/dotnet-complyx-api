@@ -144,13 +144,26 @@ namespace ComplyX_Businesss.Services.Implementation
                           UpdatedAt = x.UpdatedAt
                       }).ToList();
 
-
-                return new ManagerBaseResponse<List<TdsdeductorResponseModel>>
+                if (plans.Count == 0)
                 {
-                    IsSuccess = true,
-                    Result = plans,
-                    Message = "TDS Deductor Data Retrieved Successfully.",
-                };
+                    return new ManagerBaseResponse<List<TdsdeductorResponseModel>>
+                    {
+                        IsSuccess = false,
+                        Result = null,
+                        Message = "TDS Deductor Data not Retrieved.",
+                    };
+                }
+                else
+                {
+
+
+                    return new ManagerBaseResponse<List<TdsdeductorResponseModel>>
+                    {
+                        IsSuccess = true,
+                        Result = plans,
+                        Message = "TDS Deductor Data Retrieved Successfully.",
+                    };
+                }
             }
             catch (Exception ex)
             {
@@ -322,12 +335,26 @@ namespace ComplyX_Businesss.Services.Implementation
                             UpdatedAt = x.UpdatedAt
                         }).ToList();
 
-                return new ManagerBaseResponse<List<TdsdeducteeResponseModel>>
+                if (plans.Count == 0)
                 {
-                    IsSuccess = true,
-                    Result = plans,
-                    Message = "TDS Dedutee Data Retrieved Successfully.",
-                };
+                    return new ManagerBaseResponse<List<TdsdeducteeResponseModel>>
+                    {
+                        IsSuccess = false,
+                        Result = null,
+                        Message = "TDS Dedutee Data not Retrieved.",
+                    };
+                }
+                else
+                {
+
+
+                    return new ManagerBaseResponse<List<TdsdeducteeResponseModel>>
+                    {
+                        IsSuccess = true,
+                        Result = plans,
+                        Message = "TDS Dedutee Data Retrieved Successfully.",
+                    };
+                }
             }
             catch (Exception ex)
             {
@@ -667,13 +694,26 @@ namespace ComplyX_Businesss.Services.Implementation
                         UpdatedAt = x.UpdatedAt
                     }).ToList();
 
-
-                return new ManagerBaseResponse<List<TdsreturnResponseModel>>
+                if (plans.Count == 0)
                 {
-                    IsSuccess = true,
-                    Result = plans,
-                    Message = "TDS Return Data Retrieved Successfully.",
-                };
+                    return new ManagerBaseResponse<List<TdsreturnResponseModel>>
+                    {
+                        IsSuccess = false,
+                        Result = null,
+                        Message = "TDS Return Data not Retrieved.",
+                    };
+                }
+                else
+                {
+
+
+                    return new ManagerBaseResponse<List<TdsreturnResponseModel>>
+                    {
+                        IsSuccess = true,
+                        Result = plans,
+                        Message = "TDS Return Data Retrieved Successfully.",
+                    };
+                }
             }
             catch (Exception ex)
             {
@@ -851,13 +891,26 @@ namespace ComplyX_Businesss.Services.Implementation
                          CreatedAt = x.CreatedAt
                      }).ToList();
 
-
-                return new ManagerBaseResponse<List<TdsentryResponseModel>>
+                if (plans.Count == 0)
                 {
-                    IsSuccess = true,
-                    Result = plans,
-                    Message = "TDS Entry Data Retrieved Successfully.",
-                };
+                    return new ManagerBaseResponse<List<TdsentryResponseModel>>
+                    {
+                        IsSuccess = false,
+                        Result = null,
+                        Message = "TDS Entry Data not Retrieved.",
+                    };
+                }
+                else
+                {
+
+
+                    return new ManagerBaseResponse<List<TdsentryResponseModel>>
+                    {
+                        IsSuccess = true,
+                        Result = plans,
+                        Message = "TDS Entry Data Retrieved Successfully.",
+                    };
+                }
             }
             catch (Exception ex)
             {
@@ -1032,13 +1085,26 @@ namespace ComplyX_Businesss.Services.Implementation
                         CreatedAt = x.CreatedAt
                     }).ToList();
 
-
-                return new ManagerBaseResponse<List<TdschallanResponseModel>>
+                if(plans.Count == 0)
                 {
-                    IsSuccess = true,
-                    Result = plans,
-                    Message = "TDS Challan Data Retrieved Successfully.",
-                };
+                    return new ManagerBaseResponse<List<TdschallanResponseModel>>
+                    {
+                        IsSuccess = false,
+                        Result = null,
+                        Message = "TDS Challan Data not Retrieved.",
+                    };
+                }
+                else
+                {
+
+                
+                    return new ManagerBaseResponse<List<TdschallanResponseModel>>
+                    {
+                        IsSuccess = true,
+                        Result = plans,
+                        Message = "TDS Challan Data Retrieved Successfully.",
+                    };
+                }
             }
             catch (Exception ex)
             {
@@ -1193,13 +1259,26 @@ namespace ComplyX_Businesss.Services.Implementation
                           ChallanId = x.ChallanId
                       }).ToList();
 
+                if(plans.Count == 0)
+                {
+                    return new ManagerBaseResponse<List<TdsreturnChallanResponseModel>>
+                    {
+                        IsSuccess = false ,
+                        Result = null,
+                        Message = "TDS Return and Challan Data not Retrieved.",
+                    };
+                }
+                else
+                {
 
+               
                 return new ManagerBaseResponse<List<TdsreturnChallanResponseModel>>
                 {
                     IsSuccess = true,
                     Result = plans,
                     Message = "TDS Return and Challan Data Retrieved Successfully.",
                 };
+                }
             }
             catch (Exception ex)
             {
@@ -1342,13 +1421,26 @@ namespace ComplyX_Businesss.Services.Implementation
                           EntryId = x.EntryId
                       }).ToList();
 
-
-                return new ManagerBaseResponse<List<TdsreturnEntryResponseModel>>
+                if (plans.Count == 0)
                 {
-                    IsSuccess = true,
-                    Result = plans,
-                    Message = "TDS Return and Entry Data Retrieved Successfully.",
-                };
+                    return new ManagerBaseResponse<List<TdsreturnEntryResponseModel>>
+                    {
+                        IsSuccess = false,
+                        Result = null,
+                        Message = "TDS Return and Entry Data not Retrieved.",
+                    };
+                }
+                else
+                {
+
+
+                    return new ManagerBaseResponse<List<TdsreturnEntryResponseModel>>
+                    {
+                        IsSuccess = true,
+                        Result = plans,
+                        Message = "TDS Return and Entry Data Retrieved Successfully.",
+                    };
+                }
             }
             catch (Exception ex)
             {
@@ -1496,13 +1588,26 @@ namespace ComplyX_Businesss.Services.Implementation
                           CreatedBy = x.CreatedBy
                       }).ToList();
 
-
-                return new ManagerBaseResponse<List<TdschallanAllocationResponseModel>>
+                if (plans.Count == 0)
                 {
-                    IsSuccess = true,
-                    Result = plans,
-                    Message = "TDS Challan and Entry Data Retrieved Successfully.",
-                };
+                    return new ManagerBaseResponse<List<TdschallanAllocationResponseModel>>
+                    {
+                        IsSuccess = false,
+                        Result = null,
+                        Message = "TDS Challan and Entry Data not Retrieved.",
+                    };
+                }
+                else
+                {
+
+
+                    return new ManagerBaseResponse<List<TdschallanAllocationResponseModel>>
+                    {
+                        IsSuccess = true,
+                        Result = plans,
+                        Message = "TDS Challan and Entry Data Retrieved Successfully.",
+                    };
+                }
             }
             catch (Exception ex)
             {
@@ -1649,13 +1754,26 @@ namespace ComplyX_Businesss.Services.Implementation
                     UpdatedBy = x.UpdatedBy
                 }).ToList();
 
-
-                return new ManagerBaseResponse<List<TdsrateResponseModel>>
+                if(plans.Count == 0)
+                    {
+                    return new ManagerBaseResponse<List<TdsrateResponseModel>>
+                    {
+                        IsSuccess = false,
+                        Result = null,
+                        Message = "TDS Rates Data not Retrieved.",
+                    };
+                }
+                else
                 {
-                    IsSuccess = true,
-                    Result = plans,
-                    Message = "TDS Rates Data Retrieved Successfully.",
-                };
+
+                
+                    return new ManagerBaseResponse<List<TdsrateResponseModel>>
+                    {
+                        IsSuccess = true,
+                        Result = plans,
+                        Message = "TDS Rates Data Retrieved Successfully.",
+                    };
+                }
             }
             catch (Exception ex)
             {

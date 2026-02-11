@@ -131,12 +131,25 @@ namespace ComplyX_Businesss.Services.Implementation
                     Name = x.Name
                 }).ToListAsync();
 
-                return new ManagerBaseResponse<List<EmploymentTypeResponseModel>>
+                if(plans.Count == 0)
                 {
-                    IsSuccess = true,
-                    Result = plans,
-                    Message = "Employment Type Data Retrieved Successfully.",
-                };
+                    return new ManagerBaseResponse<List<EmploymentTypeResponseModel>>
+                    {
+                        IsSuccess = false,
+                        Result = null,
+                        Message = "Employment Type Data not Retrieved.",
+                    };
+                }
+                else
+                {
+                    return new ManagerBaseResponse<List<EmploymentTypeResponseModel>>
+                    {
+                        IsSuccess = true,
+                        Result = plans,
+                        Message = "Employment Type Data Retrieved Successfully.",
+                    };
+                }
+              
             }
             catch (Exception ex)
             {
@@ -281,12 +294,26 @@ namespace ComplyX_Businesss.Services.Implementation
                     Name = x.Name
                 }).ToListAsync();
 
-                return new ManagerBaseResponse<List<ExitTypeResponseModel>>
+                if (plans.Count == 0)
                 {
-                    IsSuccess = true,
-                    Result = plans,
-                    Message = "Exit Type Data Retrieved Successfully.",
-                };
+                    return new ManagerBaseResponse<List<ExitTypeResponseModel>>
+                    {
+                        IsSuccess = false,
+                        Result = null,
+                        Message = "Exit Type Data not Retrieved.",
+                    };
+                }
+                else
+                {
+
+
+                    return new ManagerBaseResponse<List<ExitTypeResponseModel>>
+                    {
+                        IsSuccess = true,
+                        Result = plans,
+                        Message = "Exit Type Data Retrieved Successfully.",
+                    };
+                }
             }
             catch (Exception ex)
             {
@@ -433,12 +460,26 @@ namespace ComplyX_Businesss.Services.Implementation
                     Name = x.Name
                 }).ToListAsync();
 
+                if(plans.Count == 0)
+                {
+                    return new ManagerBaseResponse<List<FilingsStatusResponseModel>>
+                    {
+                        IsSuccess = false,
+                        Result = null,
+                        Message = "Filing Staus Data not Retrieved.",
+                    };
+                }
+                else
+                {
+
+                
                 return new ManagerBaseResponse<List<FilingsStatusResponseModel>>
                 {
                     IsSuccess = true,
                     Result = plans,
                     Message = "Filing Staus Data Retrieved Successfully.",
                 };
+                }
             }
             catch (Exception ex)
             {
