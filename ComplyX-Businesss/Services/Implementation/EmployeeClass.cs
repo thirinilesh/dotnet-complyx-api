@@ -183,6 +183,51 @@ namespace ComplyX.BusinessLogic
                 };
             }
         }
+
+        public async Task<ManagerBaseResponse<List<CommonDropdownModel>>> GetEmployeeData()
+        {
+            try
+            {
+                var Employee = await _UnitOfWork.EmployeeRespositories.GetQueryable().OrderBy(x => x.EmployeeId)
+                      .Select(x => new CommonDropdownModel
+                      {
+                          id = x.EmployeeId,
+                          name = x.FirstName + ' ' + x.LastName
+                         
+                      }).ToListAsync();
+
+                if(Employee.Count == 0)
+                {
+                    return new ManagerBaseResponse<List<CommonDropdownModel>>
+                    {
+                        IsSuccess = false,
+                        Result = null,
+                        Message = "Employee Details not Retrieved.",
+                    };
+                }
+                else
+                {
+
+                return new ManagerBaseResponse<List<CommonDropdownModel>>
+                {
+                    IsSuccess = true,
+                    Result = Employee,
+                    Message = "Employee Details Retrieved Successfully.",
+                };
+
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return new ManagerBaseResponse<List<CommonDropdownModel>>
+                {
+                    IsSuccess = false,
+                    Result = null,
+                    Message = ex.Message
+                };
+            }
+        }
         public async Task<ManagerBaseResponse<List<EmployeeResponseModel>>> GetEmployeesByCompanySubcontractor(string CompanyID, string SubcontractorID)
         {
             try

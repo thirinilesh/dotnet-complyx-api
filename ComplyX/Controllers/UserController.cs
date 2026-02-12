@@ -139,5 +139,39 @@ namespace ComplyX.Controllers
         {
             return ResponseResult(await _IUserService.AssignRoleToUser(request));
         }
+
+        /// <summary>
+        /// Retrieves the list of users.
+        /// </summary>
+        /// <returns>
+        /// An <see cref="IActionResult"/> containing the list of users.
+        /// If no users are found, it returns a 204 No Content response.
+        /// If an error occurs during the retrieval process, it returns a 400 Bad Request response.
+        /// </returns>
+        /// <response code="200">Returns the list of users.</response>
+        /// <response code="204">If no users are found.</response>
+        /// <response code="400">If there is an error while fetching the users.</response>
+        [HttpGet("GetUserList")]
+        public async Task<IActionResult> GetUserList()
+        {
+            return ResponseResult(await _IUserService.GetUserList());
+        }
+
+        /// <summary>
+        /// Retrieves the list of roles.
+        /// </summary>
+        /// <returns>
+        /// An <see cref="IActionResult"/> containing the list of roles.
+        /// If no roles are found, it returns a 204 No Content response.
+        /// If an error occurs during the retrieval process, it returns a 400 Bad Request response.
+        /// </returns>
+        /// <response code="200">Returns the list of roles.</response>
+        /// <response code="204">If no roles are found.</response>
+        /// <response code="400">If there is an error while fetching the roles.</response>
+        [HttpGet("GetRoleList")]
+        public async Task<IActionResult> GetRoleList()
+        {
+            return ResponseResult(await _IUserService.GetRoleList());
+        }
     }
 }

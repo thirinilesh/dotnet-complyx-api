@@ -201,6 +201,15 @@ namespace ComplyX_Businesss.BusinessLogic
                 }
                 else
                 {
+                    var UAN = _UnitOfWork.EmployeeEPFORespositories.GetQueryable().Where(x => x.Uan == EmployeeEPFO.Uan).FirstOrDefault();
+                    if (UAN != null)
+                    {
+                        return new ManagerBaseResponse<bool>
+                        {
+                            Result = false,
+                            Message = "UAN number is already exits."
+                        };
+                    }
                     if (EmployeeEPFO.EmployeeEpfoid == 0)
                     {
                         // Insert
@@ -523,7 +532,7 @@ namespace ComplyX_Businesss.BusinessLogic
                         _model.Trrndate = EPFOPeriod.Trrndate;
                         _model.ChallanFilePath = EPFOPeriod.ChallanFilePath;
                         _model.CreatedAt = Util.GetCurrentCSTDateAndTime();
-                        _model.CreatedByUserId = user.Id;
+                        _model.CreatedByUserId = user.Id.ToString();
                         _model.IsLocked =   EPFOPeriod.IsLocked;      
 
                       await _UnitOfWork.ePFOPeriodRespositories.AddAsync(_model);
@@ -538,7 +547,7 @@ namespace ComplyX_Businesss.BusinessLogic
                         originalTerm.UpdatedAt = Util.GetCurrentCSTDateAndTime();
                         originalTerm.IsLocked = EPFOPeriod .IsLocked;
                         originalTerm.LockedAt = Util.GetCurrentCSTDateAndTime();
-                        originalTerm.LockedByUserId = user.Id;
+                        originalTerm.LockedByUserId = user.Id.ToString();
 
                      
                 }

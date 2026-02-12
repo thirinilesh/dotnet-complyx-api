@@ -93,6 +93,25 @@ namespace ComplyX.Controllers
         {
             return ResponseResult(await _IEmployeeServices.GetEmployeesByCompany(CompanyID));
         }
+        /// <summary>
+        /// Retrieves a filtered and paginated list of employees based on the provided criteria.
+        /// </summary>
+        /// <param name="pagedListCriteria">
+        /// The criteria used to filter, sort, search, and paginate the employee data.
+        /// </param>
+        /// <returns>
+        /// An <see cref="IActionResult"/> containing the filtered list of employees.
+        /// If no employees are found, it returns a 204 No Content response.
+        /// If an error occurs, it returns a 400 Bad Request response.
+        /// </returns>
+        /// <response code="200">Returns the filtered list of employees.</response>
+        /// <response code="204">If no employees are found.</response>
+        /// <response code="400">If there is an error while fetching the employee data.</response>
+        [HttpGet("GetEmployeeData")]
+        public async Task<IActionResult> GetEmployeeData()
+        {
+            return ResponseResult(await _IEmployeeServices.GetEmployeeData());
+        }
 
         /// <summary>
         /// Retrieves a list of employees associated with the specified company and subcontractor.

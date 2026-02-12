@@ -191,7 +191,7 @@ public partial class AppDbContext :IdentityDbContext<ApplicationUsers>
                 .HasForeignKey(d => d.UserId)
                 .HasConstraintName("FK__AuditLog__UserID__5CD6CB2B");
         });
-
+     
         modelBuilder.Entity<Company>(entity =>
         {
             entity.HasKey(e => e.CompanyId).HasName("PK__Companie__2D971C4C24428314");
@@ -1448,9 +1448,12 @@ public partial class AppDbContext :IdentityDbContext<ApplicationUsers>
 
         modelBuilder.Entity<RegisterUser>(entity =>
         {
-            entity
-                 .HasNoKey();
-               // .ToTable("RegisterUser");
+
+            entity.HasKey(x => x.UserID);
+
+            entity.Property(x => x.UserID)
+                .HasDefaultValueSql("NEWID()");
+            // .ToTable("RegisterUser");
 
             entity.Property(e => e.Address).HasMaxLength(50);
             entity.Property(e => e.Domain).HasMaxLength(50);

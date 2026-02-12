@@ -13,6 +13,7 @@ namespace ComplyX.Services
         Task<ManagerBaseResponse<bool>> SaveEmployeeData(EmployeeRequestModel Employees);
         Task<ManagerBaseResponse<bool>> RemoveEmployeeData(string EmployeeID);
         Task<ManagerBaseResponse<List<EmployeeResponseModel>>> GetEmployeesByCompany(string CompanyID);
+        Task<ManagerBaseResponse<List<CommonDropdownModel>>> GetEmployeeData();
         Task<ManagerBaseResponse<List<EmployeeResponseModel>>> GetEmployeesByCompanySubcontractor(string CompanyID, string SubcontractorID);
         Task<ManagerBaseResponse<List<EmployeeResponseModel>>> GetEmployeesByCompanyEmployee(string CompanyID, string EmployeeID);
         Task<ManagerBaseResponse<IEnumerable<EmployeeResponseModel>>> GetEmployeeDataFilter(PagedListCriteria PagedListCriteria);

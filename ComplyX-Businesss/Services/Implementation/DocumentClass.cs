@@ -69,7 +69,7 @@ namespace ComplyX_Businesss.Services.Implementation
                         originalTerm.DocumentCode = legalDocument.DocumentCode;
                         originalTerm.ApplicableRegion = legalDocument.ApplicableRegion;
                         originalTerm.Status = legalDocument.Status;
-                        originalTerm.CreatedBy = user.Id;
+                        originalTerm.CreatedBy = user.Id.ToString();
                         originalTerm.CreatedAt = Util.GetCurrentCSTDateAndTime();
 
                         await _UnitOfWork.LegalDocumentRespositories.AddAsync(originalTerm);
@@ -285,7 +285,7 @@ namespace ComplyX_Businesss.Services.Implementation
                             originalTerm.IsPublished = legalDocumentVersion.IsPublished;
                             originalTerm.IsActive = legalDocumentVersion.IsActive;
                             originalTerm.CreatedAt = Util.GetCurrentCSTDateAndTime();
-                            originalTerm.CreatedBy = user.Id;
+                            originalTerm.CreatedBy = user.Id.ToString();
                             
                             await _UnitOfWork.LegalDocumentVersionRespositories.AddAsync(originalTerm);
                         }
@@ -308,7 +308,7 @@ namespace ComplyX_Businesss.Services.Implementation
                             originalTerm.IsPublished = legalDocumentVersion.IsPublished;
                             originalTerm.IsActive = legalDocumentVersion.IsActive;
                             originalTerm.ApprovedAt = Util.GetCurrentCSTDateAndTime();
-                            originalTerm.ApprovedBy = user.Id;
+                            originalTerm.ApprovedBy = user.Id.ToString()   ;
                             
                         }
                     }
@@ -520,7 +520,7 @@ namespace ComplyX_Businesss.Services.Implementation
                             originalTerm.VersionId = legalDocumentAcceptance.VersionId;
                             originalTerm.DocumentId = legalDocumentAcceptance.DocumentId;
                             originalTerm.AcceptedAt = legalDocumentAcceptance.AcceptedAt;
-                            originalTerm.UserId = user.Id;
+                            originalTerm.UserId = user.Id.ToString();
                             originalTerm.AcceptedDevice = legalDocumentAcceptance.AcceptedDevice;
                             originalTerm.AcceptanceMethod = legalDocumentAcceptance.AcceptanceMethod;
                             originalTerm.ConsentProofHash = legalDocumentAcceptance.ConsentProofHash;
@@ -537,7 +537,7 @@ namespace ComplyX_Businesss.Services.Implementation
                             originalTerm.VersionId = legalDocumentAcceptance.VersionId;
                             originalTerm.DocumentId = legalDocumentAcceptance.DocumentId;
                             originalTerm.AcceptedAt = legalDocumentAcceptance.AcceptedAt;
-                            originalTerm.UserId = user.Id;
+                            originalTerm.UserId = user.Id.ToString();
                             originalTerm.AcceptedDevice = legalDocumentAcceptance.AcceptedDevice;
                             originalTerm.AcceptanceMethod = legalDocumentAcceptance.AcceptanceMethod;
                             originalTerm.ConsentProofHash = legalDocumentAcceptance.ConsentProofHash;

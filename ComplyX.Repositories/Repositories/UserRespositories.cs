@@ -72,26 +72,26 @@ namespace ComplyX.Repositories.Repositories
 
 
 
-        public async Task<Dictionary<string, List<string>>> GetUserRolesByUserIds(IEnumerable<string> userIds)
-        {
-            var pairs = await _context
-                .Set<IdentityUserRole<string>>()
-                .Where(ur => userIds.Contains(ur.UserId))
-                .Join(_roleManager.Roles,
-                      ur => ur.RoleId,
-                      r => r.Id,
-                      (ur, r) => new { ur.UserId, RoleName = r.Name })
-                .ToListAsync();
+        //public async Task<Dictionary<string, List<string>>> GetUserRolesByUserIds(IEnumerable<string> userIds)
+        //{
+        //    var pairs = await _context
+        //        .Set<IdentityUserRole<string>>()
+        //        .Where(ur => userIds.Contains(ur.UserId))
+        //        .Join(_roleManager.Roles,
+        //              ur => ur.RoleId,
+        //              r => r.Id,
+        //              (ur, r) => new { ur.UserId, RoleName = r.Name })
+        //        .ToListAsync();
 
-            return pairs
-                .GroupBy(p => p.UserId)
-                .ToDictionary(
-                    g => g.Key,
-                    g => g.Select(x => x.RoleName ?? string.Empty)
-                          .Where(n => !string.IsNullOrEmpty(n))
-                          .Distinct()
-                          .ToList());
-        }
+        //    return pairs
+        //        .GroupBy(p => p.UserId)
+        //        .ToDictionary(
+        //            g => g.Key,
+        //            g => g.Select(x => x.RoleName ?? string.Empty)
+        //                  .Where(n => !string.IsNullOrEmpty(n))
+        //                  .Distinct()
+        //                  .ToList());
+        //}
 
         public async Task<int> SaveChangesAsync()
         {

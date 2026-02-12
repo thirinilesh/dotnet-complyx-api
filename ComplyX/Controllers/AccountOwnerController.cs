@@ -34,7 +34,7 @@ namespace ComplyX.Controllers
     /// </summary>
     [ApiController]
     [Route("[controller]")]
-   // [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class AccountOwnerController : BaseController
     {
         private readonly AppContext  _context;
@@ -184,6 +184,23 @@ namespace ComplyX.Controllers
         public async Task<IActionResult> RemoveCompanyData(string CompanyaId)
         {
             return ResponseResult(await _IProductOwnere.RemoveCompanyData(CompanyaId));
+        }
+
+        /// <summary>
+        /// Retrieves the list of companies.
+        /// </summary>
+        /// <returns>
+        /// An <see cref="IActionResult"/> containing the list of companies.
+        /// If no companies are found, it returns a 204 No Content response.
+        /// If an error occurs during the retrieval process, it returns a 400 Bad Request response.
+        /// </returns>
+        /// <response code="200">Returns the list of companies.</response>
+        /// <response code="204">If no companies are found.</response>
+        /// <response code="400">If there is an error while fetching the companies.</response>
+        [HttpGet("GetCompanyData")]
+        public async Task<IActionResult> GetCompanyData()
+        {
+            return ResponseResult(await _IProductOwnere.GetCompanyData());
         }
         /// <summary>
         /// Retrieves a filtered and paginated list of companies.
@@ -383,7 +400,22 @@ namespace ComplyX.Controllers
         {
             return ResponseResult(await _IProductOwnere.GetSubcontractors(CompanyId));
         }
-
+        /// <summary>
+        /// Retrieves the list of subcontractors.
+        /// </summary>
+        /// <returns>
+        /// An <see cref="IActionResult"/> containing the list of subcontractors.
+        /// If no subcontractors are found, it returns a 204 No Content response.
+        /// If an error occurs during the retrieval process, it returns a 400 Bad Request response.
+        /// </returns>
+        /// <response code="200">Returns the list of subcontractors.</response>
+        /// <response code="204">If no subcontractors are found.</response>
+        /// <response code="400">If there is an error while fetching the subcontractors.</response>
+        [HttpGet("GetSubcontractorsData")]
+        public async Task<IActionResult> GetSubcontractorsData()
+        {
+            return ResponseResult(await _IProductOwnere.GetSubcontractorsData());
+        }
         /// <summary>
         /// Retrieves a filtered and paginated list of subcontractors.
         /// </summary>

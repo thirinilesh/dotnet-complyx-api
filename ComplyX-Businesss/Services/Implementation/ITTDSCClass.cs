@@ -81,7 +81,7 @@ namespace ComplyX_Businesss.Services.Implementation
                         originalTerm.Phone = TDSDeductor.Phone;
                         originalTerm.Email = TDSDeductor.Email;
                         originalTerm.Aocode = TDSDeductor.Aocode;
-                        originalTerm.CreatedBy = user.Id;
+                        originalTerm.CreatedBy = user.Id.ToString();
                         originalTerm.CreatedAt = Util.GetCurrentCSTDateAndTime();
 
                         await _UnitOfWork.TdsdeductorRespositories.AddAsync(originalTerm);
@@ -94,7 +94,7 @@ namespace ComplyX_Businesss.Services.Implementation
                             .FirstOrDefault();
                         originalTerm.IsActive = TDSDeductor.IsActive;
                         originalTerm.UpdatedAt = Util.GetCurrentCSTDateAndTime();
-                        originalTerm.UpdatedBy = user.Id;
+                        originalTerm.UpdatedBy = user.Id.ToString();
                       
                     }
                 }
@@ -273,7 +273,7 @@ namespace ComplyX_Businesss.Services.Implementation
                         originalTerm.Email = TDSDedutee.Email;
                         originalTerm.ResidentStatus = TDSDedutee.ResidentStatus;
                         originalTerm.IsActive = TDSDedutee.IsActive;
-                        originalTerm.CreatedBy = user.Id;
+                        originalTerm.CreatedBy = user.Id.ToString();
                         originalTerm.CreatedAt = Util.GetCurrentCSTDateAndTime();
 
                      await  _UnitOfWork.TdsdeducteeRespositories.AddAsync(originalTerm);
@@ -290,7 +290,7 @@ namespace ComplyX_Businesss.Services.Implementation
                         originalTerm.DeducteeName = TDSDedutee.DeducteeName;
                         originalTerm.ResidentStatus = TDSDedutee.ResidentStatus;
                         originalTerm.UpdatedAt = Util.GetCurrentCSTDateAndTime();
-                        originalTerm.UpdatedBy = user.Id;
+                        originalTerm.UpdatedBy = user.Id.ToString();
                        
                     }
                 }
@@ -482,7 +482,7 @@ namespace ComplyX_Businesss.Services.Implementation
                             originalTerm.Mobile = item.Employee.Mobile;
                             originalTerm.IsActive = (bool)item.Employee.ActiveStatus;
                             originalTerm.CreatedAt = Util.GetCurrentCSTDateAndTime();
-                            originalTerm.CreatedBy = user.Id;
+                            originalTerm.CreatedBy = user.Id.ToString();
                             
                             await _UnitOfWork.TdsdeducteeRespositories.AddAsync(originalTerm);
 
@@ -572,7 +572,7 @@ namespace ComplyX_Businesss.Services.Implementation
                             originalTerm.Phone = item.product.Mobile;
                             originalTerm.IsActive = (bool)item.product.IsActive;
                             originalTerm.CreatedAt = Util.GetCurrentCSTDateAndTime();
-                            originalTerm.CreatedBy = user.Id;
+                            originalTerm.CreatedBy = user.Id.ToString();
                            await _UnitOfWork.TdsdeductorRespositories.AddAsync(originalTerm);
                         }
                     }
@@ -629,7 +629,7 @@ namespace ComplyX_Businesss.Services.Implementation
                         originalTerm.Status = TDSReturn.Status;
                         originalTerm.Fvuversion = TDSReturn.Fvuversion;
                         originalTerm.Rpuversion = TDSReturn.Rpuversion;
-                        originalTerm.CreatedBy = user.Id;
+                        originalTerm.CreatedBy = user.Id.ToString();
                         originalTerm.CreatedAt = Util.GetCurrentCSTDateAndTime();
 
                        await _UnitOfWork.TDSReturnRespositories.AddAsync(originalTerm);
@@ -650,7 +650,7 @@ namespace ComplyX_Businesss.Services.Implementation
                         originalTerm.Fvuversion = TDSReturn.Fvuversion;
                         originalTerm.Rpuversion = TDSReturn.Rpuversion;
                         originalTerm.UpdatedAt = Util.GetCurrentCSTDateAndTime();
-                        originalTerm.UpdatedBy = user.Id;
+                        originalTerm.UpdatedBy = user.Id.ToString();
                          
                     }
                 }
@@ -1536,7 +1536,7 @@ namespace ComplyX_Businesss.Services.Implementation
                             _model.EntryId = TDSChallanAllocation.EntryId;
                             _model.AllocatedTdsamount = TDSChallanAllocation.AllocatedTdsamount;
                             _model.CreatedAt = Util.GetCurrentCSTDateAndTime();
-                            _model.CreatedBy = user.Id;
+                            _model.CreatedBy = user.Id.ToString();
 
 
                             await _UnitOfWork.TdschallanAllocationRespostories.AddAsync(_model);
@@ -1551,7 +1551,7 @@ namespace ComplyX_Businesss.Services.Implementation
                             originalTerm.EntryId = TDSChallanAllocation.EntryId;
                             originalTerm.AllocatedTdsamount = TDSChallanAllocation.AllocatedTdsamount;
                             originalTerm.CreatedAt = Util.GetCurrentCSTDateAndTime();
-                            originalTerm.CreatedBy = user.Id;
+                            originalTerm.CreatedBy = user.Id.ToString();
                             
                         }
                     }
@@ -1700,7 +1700,7 @@ namespace ComplyX_Businesss.Services.Implementation
                         _model.TaxType = TDSRates.TaxType;
                         _model.IsActive = TDSRates.IsActive;
                             _model.CreatedAt = Util.GetCurrentCSTDateAndTime();
-                            _model.CreatedBy = user.Id;
+                            _model.CreatedBy = user.Id.ToString();
 
                             
                             await _UnitOfWork.TdsrateRespostories.AddAsync(_model);
@@ -1716,7 +1716,7 @@ namespace ComplyX_Businesss.Services.Implementation
                         originalTerm.TaxType = TDSRates.TaxType;
                         originalTerm.IsActive = TDSRates.IsActive;
                         originalTerm.UpdatedAt = Util.GetCurrentCSTDateAndTime();
-                        originalTerm.UpdatedBy = user.Id;
+                        originalTerm.UpdatedBy = user.Id.ToString();
                         
                     }
                     }

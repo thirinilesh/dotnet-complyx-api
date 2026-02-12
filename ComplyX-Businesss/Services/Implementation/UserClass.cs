@@ -64,27 +64,20 @@ namespace ComplyX.BusinessLogic
                 }
                 else
                 {
-                    var findUser = await _userManager.Users.Where(x => x.UserName.ToLower().Trim() == RegisterUser.UserName.ToLower().Trim()).FirstOrDefaultAsync();
-                    var UserName = await _userManager.FindByNameAsync(RegisterUser.Email);
-                    if (UserName != null)
+                   // var findUser = await _userManager.Users.Where(x => x.UserName.ToLower().Trim() == RegisterUser.UserName.ToLower().Trim()).FirstOrDefaultAsync();
+                    var UserName = await _UnitOfWork.RegisterRespositories.GetQueryable().Where(x => x.Email == RegisterUser.Email).ToListAsync();
+               
+                    if (UserName.Any())
                     {
-                        return (new ManagerBaseResponse<RegisterUser>() { Message = "UserName already registered" });
-                    }
-                    if (UserName != null)
-                    {
-                        var message = string.Empty;
-                        if (UserName.UserName.ToLower().Trim() == RegisterUser.UserName.ToLower().Trim())
-                        {
-                            message = $"UserName '{RegisterUser.UserName}' is already taken.";
-                        }
+                        var existingUserName = UserName.First().UserName;
 
-                        return (new ManagerBaseResponse<RegisterUser>()
+                        if (!string.IsNullOrWhiteSpace(existingUserName) &&
+                            existingUserName.Trim().ToLower() == RegisterUser.UserName.Trim().ToLower())
                         {
-                            IsSuccess = false,
-                            Result = null,
-                            Message = message
-                        });
+                            var message = $"UserName '{RegisterUser.UserName}' is already taken.";
+                        }
                     }
+
 
                     bool hasUpper = false;
                     bool hasLower = false;
@@ -187,6 +180,7 @@ namespace ComplyX.BusinessLogic
 
                     var user = new ApplicationUsers()
                     {
+                        Id = Guid.NewGuid(),
                         UserName = RegisterUser.UserName,
                         Email = RegisterUser.Email,
                         EmailConfirmed = true,
@@ -195,6 +189,7 @@ namespace ComplyX.BusinessLogic
                         ApprovedDeniedBy = "",
                         ApprovedDeniedDate = DateTime.UtcNow,
                     };
+                   
                     IdentityResult result = await _userManager.CreateAsync(user, RegisterUser.Password);
                     RegisterUser _model = new RegisterUser();
                     if (_model != null)
@@ -202,7 +197,8 @@ namespace ComplyX.BusinessLogic
                     {
                         //_model.Password = Convert.ToBase64String(Encoding.UTF8.GetBytes(RegisterUser.Password));  
                         string hashed = BCrypt.Net.BCrypt.HashPassword(RegisterUser.Password);
-                       
+
+                        _model.UserID = Guid.NewGuid();
                         _model.UserName = RegisterUser.UserName;
                         _model.Password = hashed;
                         _model.Domain = RegisterUser.Domain;
@@ -681,6 +677,103 @@ namespace ComplyX.BusinessLogic
                 Result = true,
                 Message = "Roles assigned successfully."
             };
+        }
+
+        public async Task<ManagerBaseResponse<List<RegisterUser>>> GetUserList()
+        {
+            try
+            {
+                var plans = await _UnitOfWork.RegisterRespositories.GetQueryable().OrderBy(x => x.UserName)
+                    .Select(x => new RegisterUser
+                    {
+                        UserName = x.UserName,
+                        Password = x.Password,
+                        Domain = x.Domain,
+                        Email = x.Email,
+                        Phone = x.Phone,
+                        Address = x.Address,
+                        State = x.State,
+                        Gstin = x.Gstin,
+                        Pan = x.Pan
+                    }).ToListAsync();
+
+                if (plans.Count == 0)
+                {
+                    return new ManagerBaseResponse<List<RegisterUser>>
+                    {
+                        IsSuccess = true,
+                        Result = plans,
+                        Message = "User Data not Retrieved.",
+                    };
+                }
+                else
+                {
+
+
+                    return new ManagerBaseResponse<List<RegisterUser>>
+                    {
+                        IsSuccess = true,
+                        Result = plans,
+                        Message = "User Data Retrieved Successfully.",
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return new ManagerBaseResponse<List<RegisterUser>>
+                {
+                    IsSuccess = false,
+                    Result = null,
+                    Message = ex.Message
+                };
+            }
+        }
+
+        public async Task<ManagerBaseResponse<List<AspNetRole>>> GetRoleList()
+        {
+            try
+            {
+                var plans = await _roleManager.Roles.AsQueryable().OrderBy(x => x.Name)
+                    .Select(x => new AspNetRole
+                    {
+                     
+                        Id = x.Id.ToString(),
+                        Name = x.Name,
+                        NormalizedName = x.NormalizedName
+                    }).ToListAsync();
+
+                if (plans.Count == 0)
+                {
+                    return new ManagerBaseResponse<List<AspNetRole>>
+                    {
+                        IsSuccess = true,
+                        Result = plans,
+                        Message = "Role Data not Retrieved.",
+                    };
+                }
+                else
+                {
+
+
+                    return new ManagerBaseResponse<List<AspNetRole>>
+                    {
+                        IsSuccess = true,
+                        Result = plans,
+                        Message = "Role Data Retrieved Successfully.",
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return new ManagerBaseResponse<List<AspNetRole>>
+                {
+                    IsSuccess = false,
+                    Result = null,
+                    Message = ex.Message
+                };
+            }
         }
     }
 }

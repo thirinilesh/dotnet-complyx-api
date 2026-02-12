@@ -444,6 +444,50 @@ namespace ComplyX_Businesss.BusinessLogic
                 };
             }
         }
+        public async Task<ManagerBaseResponse<List<CommonDropdownModel>>> GetCompanyData()
+        {
+            try
+            {
+                var plans = await _UnitOfWork.CompanyRepository.GetQueryable().OrderBy(x => x.CompanyId)
+                    .Select(x => new CommonDropdownModel
+                    {
+                        id = x.CompanyId,
+                        name = x.Name,
+                        isActive = x.IsActive
+                    }).ToListAsync();
+
+                if (plans.Count == 0)
+                {
+                    return new ManagerBaseResponse<List<CommonDropdownModel>>
+                    {
+                        IsSuccess = true,
+                        Result = plans,
+                        Message = "Company Data not Retrieved.",
+                    };
+                }
+                else
+                {
+
+
+                    return new ManagerBaseResponse<List<CommonDropdownModel>>
+                    {
+                        IsSuccess = true,
+                        Result = plans,
+                        Message = "Company Data Retrieved Successfully.",
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return new ManagerBaseResponse<List<CommonDropdownModel>>
+                {
+                    IsSuccess = false,
+                    Result = null,
+                    Message = ex.Message
+                };
+            }
+        }
         public async Task<ManagerBaseResponse<IEnumerable<CompanyResponseModel>>> GetAllCompanyDataFilter(PagedListCriteria PagedListCriteria)
         {
             try
@@ -1041,6 +1085,49 @@ namespace ComplyX_Businesss.BusinessLogic
                     Message = ex.Message
                 };
 
+            }
+        }
+        public async Task<ManagerBaseResponse<List<CommonDropdownModel>>> GetSubcontractorsData()
+        {
+            try
+            {
+                var plans = await _UnitOfWork.SubcontractorRepository.GetQueryable().OrderBy(x => x.SubcontractorId)
+                    .Select(x => new CommonDropdownModel
+                    {
+                        id = x.CompanyId,
+                        name = x.Name
+                    }).ToListAsync();
+
+                if (plans.Count == 0)
+                {
+                    return new ManagerBaseResponse<List<CommonDropdownModel>>
+                    {
+                        IsSuccess = true,
+                        Result = plans,
+                        Message = "Subcontractor Data not Retrieved.",
+                    };
+                }
+                else
+                {
+
+
+                    return new ManagerBaseResponse<List<CommonDropdownModel>>
+                    {
+                        IsSuccess = true,
+                        Result = plans,
+                        Message = "Company Data Retrieved Successfully.",
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return new ManagerBaseResponse<List<CommonDropdownModel>>
+                {
+                    IsSuccess = false,
+                    Result = null,
+                    Message = ex.Message
+                };
             }
         }
         public async Task<ManagerBaseResponse<IEnumerable<SubcontractorResponseModel>>> GetSubcontractorsFilter(PagedListCriteria PagedListCriteria)
@@ -2255,7 +2342,7 @@ namespace ComplyX_Businesss.BusinessLogic
                         _model.Phone = PartyMaster.Phone;
                         _model.IsActive = PartyMaster.IsActive; 
                         _model.CreatedAt = Util.GetCurrentCSTDateAndTime();
-                        _model.CreatedBy = user.Id;
+                        _model.CreatedBy = user.Id.ToString();
 
                        
                         await _UnitOfWork.PartyMasterRepositories.AddAsync(_model);
@@ -2279,7 +2366,7 @@ namespace ComplyX_Businesss.BusinessLogic
                         originalTerm.Phone = PartyMaster.Phone;
                         originalTerm.IsActive = PartyMaster.IsActive;
                         originalTerm.CreatedAt = Util.GetCurrentCSTDateAndTime();
-                        originalTerm.CreatedBy = user.Id;
+                        originalTerm.CreatedBy = user.Id.ToString();
 
                        
                     }
@@ -2545,7 +2632,7 @@ namespace ComplyX_Businesss.BusinessLogic
                                 _model.RoleType = CompanyPartyRole.RoleType;
                                 _model.IsActive = CompanyPartyRole.IsActive;
                                 _model.CreatedAt = Util.GetCurrentCSTDateAndTime();
-                                _model.CreatedBy = user.Id;
+                                _model.CreatedBy = user.Id.ToString();
 
                                await _UnitOfWork.CompanyPartyRoleRepositories.AddAsync(_model);
                             }
@@ -2560,7 +2647,7 @@ namespace ComplyX_Businesss.BusinessLogic
                                 originalTerm.RoleType = CompanyPartyRole.RoleType;
                                 originalTerm.IsActive = CompanyPartyRole.IsActive;
                                 originalTerm.CreatedAt = Util.GetCurrentCSTDateAndTime();
-                                originalTerm.CreatedBy = user.Id;
+                                originalTerm.CreatedBy = user.Id.ToString();
 
                                
                             }

@@ -24,6 +24,7 @@ namespace ComplyX_Businesss.Services
         Task<ManagerBaseResponse<IEnumerable<ProductOwnerResponseModel>>> GetAllProductOwnerFilter(PagedListCriteria PagedListCriteria);
         Task<ManagerBaseResponse<bool>> SaveCompanyData(CompanyRequestModel company);
         Task<ManagerBaseResponse<bool>> RemoveCompanyData(string CompanyId);
+        Task<ManagerBaseResponse<List<CommonDropdownModel>>> GetCompanyData();
         Task<ManagerBaseResponse<IEnumerable<CompanyResponseModel>>> GetAllCompanyDataFilter(PagedListCriteria PagedListCriteria);
         Task<ManagerBaseResponse<List<SubscriptionPlanResponseModel>>> GetSubscriptionPlans();
         Task<ManagerBaseResponse<IEnumerable<SubscriptionPlanResponseModel>>> GetSubscriptionPlansByFilter(PagedListCriteria PagedListCriteria);
@@ -34,7 +35,7 @@ namespace ComplyX_Businesss.Services
         Task<ManagerBaseResponse<bool>> SaveSubcontractorData(SubcontractorRequestModel Subcontractors);
         Task<ManagerBaseResponse<bool>> RemoveSubcontractorData(string SubcontractorsID);
         Task<ManagerBaseResponse<List<SubcontractorResponseModel>>> GetSubcontractors(int CompanyID);
-
+        Task<ManagerBaseResponse<List<CommonDropdownModel>>> GetSubcontractorsData();
         Task<ManagerBaseResponse<IEnumerable<SubcontractorResponseModel>>> GetSubcontractorsFilter(PagedListCriteria PagedListCriteria);
 
         Task<ManagerBaseResponse<List<SubcontractorResponseModel>>> GetProductOwnerSubcontractorsDetails(int ProductOwnerId);

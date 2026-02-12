@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace ComplyX.Data.Entities;
 
@@ -8,7 +9,7 @@ public partial class Tdsdeductee
     public int DeducteeId { get; set; }
 
     public int CompanyId { get; set; }
-
+ 
     public string DeducteeType { get; set; } = null!;
 
     public string DeducteeName { get; set; } = null!;
