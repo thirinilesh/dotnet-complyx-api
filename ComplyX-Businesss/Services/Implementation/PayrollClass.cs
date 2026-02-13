@@ -103,7 +103,7 @@ namespace ComplyX.BusinessLogic
                 return  (new ManagerBaseResponse<bool>
                 {
                     Result = true,IsSuccess = true,
-                    IsSuccess= true,
+                    
                     Message = "Payroll Data Saved Successfully."
                 });
             }
@@ -140,7 +140,7 @@ namespace ComplyX.BusinessLogic
 
                 return new ManagerBaseResponse<bool>
                 {
-                    Result = true,IsSuccess = true,
+                    Result = true, 
                     IsSuccess = true,
                     Message = "Payroll Data Removed Successfully.",
                 };
@@ -190,7 +190,7 @@ namespace ComplyX.BusinessLogic
 
                 return new ManagerBaseResponse<bool>
                 {
-                    Result = true,IsSuccess = true,
+                    Result = true, 
                     IsSuccess = true,
                     Message = "Payroll Data Removed Successfully.",
                 };
@@ -232,7 +232,7 @@ namespace ComplyX.BusinessLogic
 
                 return new ManagerBaseResponse<bool>
                 {
-                    Result = true,IsSuccess = true,
+                    Result = true, 
                     IsSuccess = true,
                     Message = "Payroll Data Removed Successfully.",
                 };
@@ -290,7 +290,7 @@ namespace ComplyX.BusinessLogic
 
                 return new ManagerBaseResponse<bool>
                 {
-                    Result = true,IsSuccess = true,
+                    Result = true, 
                     IsSuccess= true,
                     Message = "Payroll Data Updated Successfully.",
                 };
@@ -342,7 +342,7 @@ namespace ComplyX.BusinessLogic
 
                 return new ManagerBaseResponse<IEnumerable<PayrollDataResponseModel>>
                 {
-                    Result = result.Data,IsSuccess = true,
+                    Result = result.Data, 
                     IsSuccess = true,
                     Message = "Payroll Data Retrieved Successfully.",
                     PageDetail = new PageDetailModel()
@@ -418,7 +418,7 @@ namespace ComplyX.BusinessLogic
                 await _UnitOfWork.CommitAsync();
                 return (new ManagerBaseResponse<bool>
                 {
-                    Result = true,IsSuccess = true,
+                    Result = true, 
                     IsSuccess = true,
                     Message = "Leave Encashment Policy Saved Successfully."
                 });
@@ -455,7 +455,7 @@ namespace ComplyX.BusinessLogic
 
                 return new ManagerBaseResponse<bool>
                 {
-                    Result = true,IsSuccess = true,
+                    Result = true, 
                     IsSuccess = true,
                     Message = "LeaveEncashmentPolicy Data Removed Successfully.",
                 };
@@ -551,7 +551,7 @@ namespace ComplyX.BusinessLogic
 
                 return new ManagerBaseResponse<IEnumerable<LeaveEncashmentPolicyResponseModel>>
                 {
-                    Result = result.Data,IsSuccess = true,
+                    Result = result.Data, 
                     IsSuccess = true,
                     Message = "LeaveEncashmentPolicy Data Retrieved Successfully.",
                     PageDetail = new PageDetailModel()
@@ -631,7 +631,7 @@ namespace ComplyX.BusinessLogic
                 await _UnitOfWork.CommitAsync();
                 return (new ManagerBaseResponse<bool>
                 {
-                    Result = true,IsSuccess = true,
+                    Result = true, 
                     IsSuccess = true,
                     Message = "Leave Encashment Transaction Saved Successfully."
                 });
@@ -668,7 +668,7 @@ namespace ComplyX.BusinessLogic
 
                 return new ManagerBaseResponse<bool>
                 {
-                    Result = true,IsSuccess = true,
+                    Result = true, 
                     IsSuccess = true,
                     Message = "LeaveEncashmentPolicy Data Removed Successfully.",
                 };
@@ -770,7 +770,7 @@ namespace ComplyX.BusinessLogic
 
                 return new ManagerBaseResponse<IEnumerable<LeaveEncashmentTransactionResponseModel>>
                 {
-                    Result = result.Data,IsSuccess = true,
+                    Result = result.Data, 
                     IsSuccess = true,
                     Message = "LeaveEncashmentTransaction Data Retrieved Successfully.",
                     PageDetail = new PageDetailModel()

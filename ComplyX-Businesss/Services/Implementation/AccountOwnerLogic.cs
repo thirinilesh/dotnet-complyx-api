@@ -77,7 +77,6 @@ namespace ComplyX_Businesss.BusinessLogic
                             LegalName = x.LegalName,
                             RegistrationId = x.RegistrationId,
                             OrganizationType = x.OrganizationType,
-                            Address = x.Address,
                             City = x.City,
                             Pincode = x.Pincode,
                             State = x.State,
@@ -98,17 +97,33 @@ namespace ComplyX_Businesss.BusinessLogic
                             AllowTdsmodule = x.AllowTdsmodule,
                             AllowClramodule = x.AllowClramodule,
                             AllowPayrollModule = x.AllowPayrollModule,
-                            AllowDscsigning = x.AllowDscsigning
+                            AllowDscsigning = x.AllowDscsigning,
+                            BusinessCategory = x.BusinessCategory,
+                            BusinessAddress = x.BusinessAddress,
+                            IsDiffPaymentAddress = x.IsDiffPaymentAddress,
+                            PaymentAddress = x.PaymentAddress
                         })
                         .ToListAsync();
-
-
-                return new ManagerBaseResponse<IEnumerable<ProductOwnerResponseModel>>
+                if (owners.Count == 0)
                 {
-                    IsSuccess = true,
-                    Result = owners,
-                    Message = "Subscription Plans Retrieved Successfully.",
-                };
+                    return new ManagerBaseResponse<IEnumerable<ProductOwnerResponseModel>>
+                    {
+                        IsSuccess = false,
+                        Result = null,
+                        Message = "Product Owner Data not Retrieved.",
+                    };
+                }
+                else
+                {
+
+
+                    return new ManagerBaseResponse<IEnumerable<ProductOwnerResponseModel>>
+                    {
+                        IsSuccess = true,
+                        Result = owners,
+                        Message = "Product Owner Data Retrieved Successfully.",
+                    };
+                }
             }
             catch (Exception ex)
             {
@@ -138,7 +153,6 @@ namespace ComplyX_Businesss.BusinessLogic
                     _model.LegalName = ProductOwners.LegalName;
                     _model.RegistrationId = ProductOwners.RegistrationId;
                     _model.OrganizationType = ProductOwners.OrganizationType;
-                    _model.Address = ProductOwners.Address;
                     _model.State = ProductOwners.State;
                     _model.City = ProductOwners.City;
                     _model.Pincode = ProductOwners.Pincode;
@@ -160,6 +174,10 @@ namespace ComplyX_Businesss.BusinessLogic
                     _model.AllowClramodule = ProductOwners.AllowClramodule;
                     _model.AllowPayrollModule = ProductOwners.AllowPayrollModule;
                     _model.AllowDscsigning = ProductOwners.AllowDscsigning;
+                    _model.BusinessAddress = ProductOwners.BusinessAddress;
+                    _model.BusinessCategory = ProductOwners.BusinessCategory;
+                    _model.IsDiffPaymentAddress = ProductOwners.IsDiffPaymentAddress;
+                    _model.PaymentAddress = ProductOwners.PaymentAddress;
 
                     //_context.Add(_model);
                     //_context.SaveChanges();
@@ -178,7 +196,6 @@ namespace ComplyX_Businesss.BusinessLogic
                     originalTerm.LegalName = ProductOwners.LegalName;
                     originalTerm.RegistrationId = ProductOwners.RegistrationId;
                     originalTerm.OrganizationType = ProductOwners.OrganizationType;
-                    originalTerm.Address = ProductOwners.Address;
                     originalTerm.State = ProductOwners.State;
                     originalTerm.City = ProductOwners.City;
                     originalTerm.Pincode = ProductOwners.Pincode;
@@ -199,10 +216,14 @@ namespace ComplyX_Businesss.BusinessLogic
                     originalTerm.AllowClramodule = ProductOwners.AllowClramodule;
                     originalTerm.AllowPayrollModule = ProductOwners.AllowPayrollModule;
                     originalTerm.AllowDscsigning = ProductOwners.AllowDscsigning;
+                    originalTerm.BusinessAddress = ProductOwners.BusinessAddress;
+                    originalTerm.BusinessCategory = ProductOwners.BusinessCategory;
+                    originalTerm.IsDiffPaymentAddress = ProductOwners.IsDiffPaymentAddress;
+                    originalTerm.PaymentAddress = ProductOwners.PaymentAddress;
 
                     //_context.Update(originalTerm);
                     //_context.SaveChanges();
-                //  await   _UnitOfWork.ProductOwnerRepositories.UpdateRange(originalTerm);
+                    //  await   _UnitOfWork.ProductOwnerRepositories.UpdateRange(originalTerm);
                 }
                 await  _UnitOfWork.CommitAsync();
                 return new ManagerBaseResponse<bool> 
@@ -282,7 +303,6 @@ namespace ComplyX_Businesss.BusinessLogic
                     LegalName = x.LegalName,
                     RegistrationId = x.RegistrationId,
                     OrganizationType = x.OrganizationType,
-                    Address = x.Address,
                     City = x.City,
                     Pincode = x.Pincode,
                     State = x.State,
@@ -303,7 +323,11 @@ namespace ComplyX_Businesss.BusinessLogic
                     AllowTdsmodule = x.AllowTdsmodule,
                     AllowClramodule = x.AllowClramodule,
                     AllowPayrollModule = x.AllowPayrollModule,
-                    AllowDscsigning = x.AllowDscsigning
+                    AllowDscsigning = x.AllowDscsigning,
+                    BusinessAddress = x.BusinessAddress,
+                    BusinessCategory = x.BusinessCategory,
+                    IsDiffPaymentAddress= x.IsDiffPaymentAddress,
+                    PaymentAddress = x.PaymentAddress
                 });
                 PageListed<ProductOwnerResponseModel> result = await responseQuery.ToPagedListAsync(PagedListCriteria, orderByTranslations);
 

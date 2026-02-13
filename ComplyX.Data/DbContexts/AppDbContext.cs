@@ -1377,7 +1377,6 @@ public partial class AppDbContext :IdentityDbContext<ApplicationUsers>
 
             entity.HasIndex(e => e.Email, "UQ__AccountO__A9D105342D00F240").IsUnique();
 
-            entity.Property(e => e.Address).HasMaxLength(500);
             entity.Property(e => e.AllowCloudBackup).HasDefaultValue(false);
             entity.Property(e => e.AllowClramodule)
                 .HasDefaultValue(false)

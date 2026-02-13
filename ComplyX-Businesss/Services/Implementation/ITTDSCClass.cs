@@ -101,7 +101,7 @@ namespace ComplyX_Businesss.Services.Implementation
                 await _UnitOfWork.CommitAsync();
                 return new ManagerBaseResponse<bool>
                 {
-                    Result = true,IsSuccess = true,
+                    Result = true, 
                     IsSuccess = true,
                     Message = "TDS Deductor Saved Successfully."
                 };
@@ -217,7 +217,7 @@ namespace ComplyX_Businesss.Services.Implementation
 
                 return new ManagerBaseResponse<IEnumerable<TdsdeductorResponseModel>>
                 {
-                    Result = result.Data,IsSuccess = true,
+                    Result = result.Data, 
                     IsSuccess = true,
                     Message = "TDS Deductor Data Retrieved Successfully.",
                     PageDetail = new PageDetailModel()
@@ -299,7 +299,7 @@ namespace ComplyX_Businesss.Services.Implementation
                 await _UnitOfWork.CommitAsync();
                 return new ManagerBaseResponse<bool>
                 {
-                    Result = true,IsSuccess = true,
+                    Result = true, 
                     IsSuccess = true,
                     Message = "TDS Dedutee Saved Successfully."
                 } ;
@@ -407,7 +407,7 @@ namespace ComplyX_Businesss.Services.Implementation
 
                 return new ManagerBaseResponse<IEnumerable<TdsdeducteeResponseModel>>
                 {
-                    Result = result.Data,IsSuccess = true,
+                    Result = result.Data, 
                     IsSuccess = true,
                     Message = "TDS Dedutee Data Retrieved Successfully.",
                     PageDetail = new PageDetailModel()
@@ -497,7 +497,7 @@ namespace ComplyX_Businesss.Services.Implementation
                 return new ManagerBaseResponse<bool>
                 {
                     IsSuccess = true,
-                    Result = true,IsSuccess = true,
+                    Result = true, 
                     Message = "TDS Dedutee Data Retrieved Successfully.",
                 };
             }
@@ -549,8 +549,8 @@ namespace ComplyX_Businesss.Services.Implementation
 
                     foreach (var item in data)
                     {
-                        string address = item.product.Address;
-                        string[] parts = address.Split(',');
+                        //string address = item.product.Address;
+                        //string[] parts = address.Split(',');
 
                         Tdsdeductor originalTerm = new Tdsdeductor();
                         var deducteename = _UnitOfWork.TdsdeductorRespositories.GetQueryable().FirstOrDefault(x => x.DeductorName == item.product.OwnerName);
@@ -567,9 +567,9 @@ namespace ComplyX_Businesss.Services.Implementation
                             originalTerm.Tan = null;
                             originalTerm.Pan = item.Company.Pan;
                             originalTerm.DeductorCategory = "Company";
-                            originalTerm.Address1 = parts[0];
-                            originalTerm.Address2 = parts[1];
-                            originalTerm.City = parts.Length > 1 ? parts[2] : parts[1];
+                            originalTerm.Address1 = item.product.PaymentAddress;
+                            originalTerm.Address2 = item.product.PaymentAddress;
+                            originalTerm.City = item.product.City;
                             originalTerm.State = item.product.State;
                             originalTerm.Pincode = item.product.Pincode;
                             originalTerm.Email = item.product.Email;
@@ -587,7 +587,7 @@ namespace ComplyX_Businesss.Services.Implementation
                 return new ManagerBaseResponse<bool>
                 {
                     IsSuccess = true,
-                    Result = true,IsSuccess = true,
+                    Result = true, 
                     Message = "TDS Dedutee Data Retrieved Successfully.",
                 };
             }
@@ -661,7 +661,7 @@ namespace ComplyX_Businesss.Services.Implementation
                 await _UnitOfWork.CommitAsync();
                 return new ManagerBaseResponse<bool>
                 {
-                    Result = true,IsSuccess = true,
+                    Result = true, 
                     IsSuccess = true,
                     Message = "TDS Return Saved Successfully."
                 };
@@ -766,7 +766,7 @@ namespace ComplyX_Businesss.Services.Implementation
 
                 return new ManagerBaseResponse<IEnumerable<TdsreturnResponseModel>>
                 {
-                    Result = result.Data,IsSuccess = true,
+                    Result = result.Data, 
                     IsSuccess = true,
                     Message = "TDS Return Data Retrieved Successfully.",
                     PageDetail = new PageDetailModel()
@@ -858,7 +858,7 @@ namespace ComplyX_Businesss.Services.Implementation
                 await _UnitOfWork.CommitAsync();
                 return new ManagerBaseResponse<bool>
                 {
-                    Result = true,IsSuccess = true,
+                    Result = true, 
                     IsSuccess = true,
                     Message = "TDS Entry Saved Successfully."
                 };
@@ -967,7 +967,7 @@ namespace ComplyX_Businesss.Services.Implementation
 
                 return new ManagerBaseResponse<IEnumerable<TdsentryResponseModel>>
                 {
-                    Result = result.Data,IsSuccess = true,
+                    Result = result.Data, 
                     IsSuccess = true,
                     Message = "TDS Entry Data Retrieved Successfully.",
                     PageDetail = new PageDetailModel()
@@ -1056,7 +1056,7 @@ namespace ComplyX_Businesss.Services.Implementation
                 await _UnitOfWork.CommitAsync();
                 return new ManagerBaseResponse<bool>
                 {
-                    Result = true,IsSuccess = true,
+                    Result = true, 
                     IsSuccess = true,
                     Message = "TDS Challan Saved Successfully."
                 };
@@ -1161,7 +1161,7 @@ namespace ComplyX_Businesss.Services.Implementation
 
                 return new ManagerBaseResponse<IEnumerable<TdschallanResponseModel>>
                 {
-                    Result = result.Data,IsSuccess = true,
+                    Result = result.Data, 
                     IsSuccess = true,
                     Message = "TDS Challan Data Retrieved Successfully.",
                     PageDetail = new PageDetailModel()
@@ -1243,7 +1243,7 @@ namespace ComplyX_Businesss.Services.Implementation
                 await _UnitOfWork.CommitAsync();
                 return new ManagerBaseResponse<bool>
                 {
-                    Result = true,IsSuccess = true,
+                    Result = true, 
                     IsSuccess = true,
                     Message = "TDS Return and Challan Saved Successfully."
                 };
@@ -1326,7 +1326,7 @@ namespace ComplyX_Businesss.Services.Implementation
 
                 return new ManagerBaseResponse<IEnumerable<TdsreturnChallanResponseModel>>
                 {
-                    Result = result.Data,IsSuccess = true,
+                    Result = result.Data, 
                     IsSuccess = true,
                     Message = "TDS Return and Challan Data Retrieved Successfully.",
                     PageDetail = new PageDetailModel()
@@ -1407,7 +1407,7 @@ namespace ComplyX_Businesss.Services.Implementation
                 await _UnitOfWork.CommitAsync();
                 return new ManagerBaseResponse<bool>
                 {
-                    Result = true,IsSuccess = true,
+                    Result = true, 
                     IsSuccess = true,
                     Message = "TDS Return and Entry Saved Successfully."
                 };
@@ -1485,7 +1485,7 @@ namespace ComplyX_Businesss.Services.Implementation
 
                 return new ManagerBaseResponse<IEnumerable<TdsreturnEntryResponseModel>>
                 {
-                    Result = result.Data,IsSuccess = true,
+                    Result = result.Data, 
                     IsSuccess = true,
                     Message = "TDS Return and Entry Data Retrieved Successfully.",
                     PageDetail = new PageDetailModel()
@@ -1573,7 +1573,7 @@ namespace ComplyX_Businesss.Services.Implementation
                 await _UnitOfWork.CommitAsync();
                 return new ManagerBaseResponse<bool>
                 {
-                    Result = true,IsSuccess = true,
+                    Result = true, 
                     IsSuccess = true,
                     Message = "TDS Challan and Entry Saved Successfully."
                 };
@@ -1662,7 +1662,7 @@ namespace ComplyX_Businesss.Services.Implementation
 
                 return new ManagerBaseResponse<IEnumerable<TdschallanAllocationResponseModel>>
                 {
-                    Result = result.Data,IsSuccess = true,
+                    Result = result.Data, 
                     IsSuccess = true,
                     Message = "TDS Challan and Entry Data Retrieved Successfully.",
                     PageDetail = new PageDetailModel()
@@ -1739,7 +1739,7 @@ namespace ComplyX_Businesss.Services.Implementation
                     await _UnitOfWork.CommitAsync();
                 return new ManagerBaseResponse<bool>
                 {
-                    Result = true,IsSuccess = true,
+                    Result = true, 
                     IsSuccess = true,
                     Message = "TDS Rates Saved Successfully."
                 };
@@ -1833,7 +1833,7 @@ namespace ComplyX_Businesss.Services.Implementation
 
                 return new ManagerBaseResponse<IEnumerable<TdsrateResponseModel>>
                 {
-                    Result = result.Data,IsSuccess = true,
+                    Result = result.Data, 
                     IsSuccess = true,
                     Message = "TDS Rates Data Retrieved Successfully.",
                     PageDetail = new PageDetailModel()

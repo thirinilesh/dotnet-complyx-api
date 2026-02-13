@@ -684,7 +684,7 @@ namespace ComplyX.BusinessLogic
             }
             return new ManagerBaseResponse<bool>
             {
-                IsSuccess = true,
+               
                 Result = true,IsSuccess = true,
                 Message = "Roles assigned successfully."
             };

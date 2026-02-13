@@ -25,9 +25,6 @@ namespace ComplyX_Businesss.Models.ProductOwner
         public string? RegistrationId { get; set; }
 
         public string? OrganizationType { get; set; }
-
-        public string? Address { get; set; }
-
         public string? City { get; set; }
 
         public string? Pincode { get; set; }
@@ -69,6 +66,14 @@ namespace ComplyX_Businesss.Models.ProductOwner
         public bool? AllowPayrollModule { get; set; }
 
         public bool? AllowDscsigning { get; set; }
+        public string? BusinessCategory { get; set; }
+
+        public string? BusinessAddress { get; set; }
+
+        public bool? IsDiffPaymentAddress { get; set; }
+
+        public string? PaymentAddress { get; set; }
+
 
     }
 }

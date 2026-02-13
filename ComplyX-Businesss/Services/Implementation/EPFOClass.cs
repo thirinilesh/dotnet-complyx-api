@@ -164,7 +164,7 @@ namespace ComplyX_Businesss.BusinessLogic
                 return new ManagerBaseResponse<IEnumerable<CompanyEPFOResponseModel>>
                 {
                     Result = result.Data,IsSuccess = true,
-                    IsSuccess = true,
+                   
                     Message = "CompanyEPFO Data Retrieved Successfully.",
                     PageDetail = new PageDetailModel()
                     {

@@ -85,7 +85,7 @@ namespace ComplyX.BusinessLogic
                 await _UnitOfWork.CommitAsync();
                 return new ManagerBaseResponse<bool>
                 {
-                    Result = true,IsSuccess = true,
+                    Result = true, 
                     IsSuccess = true,
                     Message = "LicenseKeyMaster Data Saved Successfully."
                 };
@@ -130,7 +130,7 @@ namespace ComplyX.BusinessLogic
 
                 return new ManagerBaseResponse<IEnumerable<LicenseKeyMasterResponseModel>>
                 {
-                    Result = result.Data,IsSuccess = true,
+                    Result = result.Data, 
                     IsSuccess = true,
                     Message = "LicenseKey Master Data Retrieved Successfully.",
                     PageDetail = new PageDetailModel()
@@ -204,7 +204,7 @@ namespace ComplyX.BusinessLogic
                 await _UnitOfWork.CommitAsync();
                 return  new ManagerBaseResponse<bool>
                 {
-                    Result = true,IsSuccess = true,
+                    Result = true, 
                     IsSuccess = true,
                     Message = "LicenseKey Activation Data Saved Successfully."
                 };
@@ -249,7 +249,7 @@ namespace ComplyX.BusinessLogic
 
                 return new ManagerBaseResponse<IEnumerable<LicenseActivationResponseModel>>
                 {
-                    Result = result.Data,IsSuccess = true,
+                    Result = result.Data, 
                     IsSuccess = true,
                     Message = "License Activation Data Retrieved Successfully.",
                     PageDetail = new PageDetailModel()
@@ -310,7 +310,7 @@ namespace ComplyX.BusinessLogic
                 await _UnitOfWork.CommitAsync();
                 return new ManagerBaseResponse<bool>
                 {
-                    Result = true,IsSuccess = true,
+                    Result = true, 
                     IsSuccess = true,
                     Message = "License Activation log Saved Successfully."
                 };
@@ -353,7 +353,7 @@ namespace ComplyX.BusinessLogic
 
                 return new ManagerBaseResponse<IEnumerable<LicenseAuditLogResponseModel>>
                 {
-                    Result = result.Data,IsSuccess = true,
+                    Result = result.Data, 
                     IsSuccess = true,
                     Message = "License Activation Logs Data Retrieved Successfully.",
                     PageDetail = new PageDetailModel()
@@ -429,7 +429,7 @@ namespace ComplyX.BusinessLogic
                 await _UnitOfWork.CommitAsync();
                 return  new ManagerBaseResponse<bool>
                 {
-                    Result = true,IsSuccess = true,
+                    Result = true, 
                     IsSuccess = true,
                     Message = "MachineBindings Data Saved Successfully."
                 };
@@ -473,7 +473,7 @@ namespace ComplyX.BusinessLogic
 
                 return new ManagerBaseResponse<IEnumerable<MachineBindingResponseModel>>
                 {
-                    Result = result.Data,IsSuccess = true,
+                    Result = result.Data, 
                     IsSuccess = true,
                     Message = "MachineBinding Data Retrieved Successfully.",
                     PageDetail = new PageDetailModel()
