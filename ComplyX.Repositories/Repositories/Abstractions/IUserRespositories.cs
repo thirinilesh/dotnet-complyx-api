@@ -18,7 +18,7 @@ namespace ComplyX.Repositories.Repositories.Abstractions
         Task<IdentityResult> AddRoles(ApplicationUsers user, List<string> roleNames);
         Task<bool> RoleExists(string roleName);
         Task<IdentityResult> RemoveRoles(ApplicationUsers user, List<string> roleNames);
-        Task<Dictionary<string, List<string>>> GetUserRolesByUserIds(IEnumerable<string> userIds);
+      //  Task<Dictionary<string, List<string>>> GetUserRolesByUserIds(IEnumerable<string> userIds);
         Task<int> SaveChangesAsync();
          
     }

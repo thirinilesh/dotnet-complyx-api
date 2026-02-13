@@ -29,7 +29,7 @@ using ComplyX_Businesss.Models.PartyMaster;
 namespace ComplyX.Controllers
 {
     /// <summary>
-    /// Controller to manage account owners.
+    /// Controller to manage Account owners.
     /// Provides endpoints to create, update, delete, and retrieve account owner data.
     /// </summary>
     [ApiController]
@@ -69,20 +69,7 @@ namespace ComplyX.Controllers
         //public async Task<ActionResult> GetAll()
         //{
              
-        //    var owners = await _logic.GetAllAsync();
-        //    return Ok(owners);
-        //}
-        /// <summary>
-        /// Retrieves the list of all account owners.
-        /// </summary>
-        /// <returns>An <see cref="IActionResult"/> containing the list of account owners.</returns>
-
-        [HttpGet]
-  
-        public async Task<IActionResult> GetAllProductOwnerData()
-        {
-            return ResponseResult(await _IProductOwnere.GetAllProductOwnerData());
-        }
+      
         /// <summary>
         /// Saves or updates product owner data.
         /// </summary>
@@ -105,6 +92,20 @@ namespace ComplyX.Controllers
             return ResponseResult(await _IProductOwnere.SaveProductOwnerData(ProductOwners));
         }
 
+        //    var owners = await _logic.GetAllAsync();
+        //    return Ok(owners);
+        //}
+        /// <summary>
+        /// Retrieves the list of all account owners.
+        /// </summary>
+        /// <returns>An <see cref="IActionResult"/> containing the list of account owners.</returns>
+
+        [HttpGet]
+
+        public async Task<IActionResult> GetAllProductOwnerData()
+        {
+            return ResponseResult(await _IProductOwnere.GetAllProductOwnerData());
+        }
         /// <summary>
         /// Deletes product owner data based on the specified product owner identifier.
         /// </summary>

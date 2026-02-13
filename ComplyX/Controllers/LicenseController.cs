@@ -18,7 +18,7 @@ using ComplyX_Businesss.Models.LicenseActivation;
 using ComplyX_Businesss.Models.LicenseAuditLog;
 using ComplyX_Businesss.Models.MachineBinding;
 
-namespace ComplyX.Shared.Controllers
+namespace ComplyX.Controllers
 {
     /// <summary>
     /// Controller for managing license operations.
