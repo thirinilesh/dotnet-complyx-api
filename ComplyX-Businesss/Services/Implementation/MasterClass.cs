@@ -71,7 +71,8 @@ namespace ComplyX_Businesss.Services.Implementation
                    await _UnitOfWork.CommitAsync();
                 return  new ManagerBaseResponse<bool>
                 {
-                    Result = true,
+                    Result = true,IsSuccess = true,
+                    IsSuccess = true,
                     Message = "EMployement Types Data Saved Successfully."
                 } ;
             }
@@ -106,7 +107,8 @@ namespace ComplyX_Businesss.Services.Implementation
 
                 return new ManagerBaseResponse<bool>
                 {
-                    Result = true,
+                    Result = true,IsSuccess = true,
+                    IsSuccess = true,
                     Message = "Employement Type Data Removed Successfully.",
                 };
 
@@ -186,7 +188,8 @@ namespace ComplyX_Businesss.Services.Implementation
 
                 return new ManagerBaseResponse<IEnumerable<EmploymentTypeResponseModel>>
                 {
-                    Result = result.Data,
+                    Result = result.Data,IsSuccess = true,
+                    IsSuccess = true,
                     Message = "Employment Type Data Retrieved Successfully.",
                     PageDetail = new PageDetailModel()
                     {
@@ -235,7 +238,8 @@ namespace ComplyX_Businesss.Services.Implementation
                 await _UnitOfWork.CommitAsync();
                 return new ManagerBaseResponse<bool>
                 {
-                    Result = true,
+                    Result = true,IsSuccess = true,
+                    IsSuccess = true,
                     Message = "Exit Types Data Saved Successfully."
                 };
             }
@@ -269,7 +273,8 @@ namespace ComplyX_Businesss.Services.Implementation
                 await _UnitOfWork.CommitAsync();
                 return new ManagerBaseResponse<bool>
                 {
-                    Result = true,
+                    Result = true,IsSuccess = true,
+                    IsSuccess = true,
                     Message = "Exit Type Data Removed Successfully.",
                 };
 
@@ -350,7 +355,8 @@ namespace ComplyX_Businesss.Services.Implementation
 
                 return new ManagerBaseResponse<IEnumerable<ExitTypeResponseModel>>
                 {
-                    Result = result.Data,
+                    Result = result.Data,IsSuccess = true,
+                    IsSuccess = true,
                     Message = "Exit Type Data Retrieved Successfully.",
                     PageDetail = new PageDetailModel()
                     {
@@ -399,7 +405,8 @@ namespace ComplyX_Businesss.Services.Implementation
 
                 return  new ManagerBaseResponse<bool>
                 {
-                    Result = true,
+                    Result = true,IsSuccess = true,
+                    IsSuccess = true,
                     Message = "Filing Status Data Saved Successfully."
                 } ;
             }
@@ -435,7 +442,8 @@ namespace ComplyX_Businesss.Services.Implementation
 
                 return new ManagerBaseResponse<bool>
                 {
-                    Result = true,
+                    Result = true,IsSuccess = true,
+                    IsSuccess = true,
                     Message = "Filing Statuses Data Removed Successfully.",
                 };
 
@@ -515,7 +523,8 @@ namespace ComplyX_Businesss.Services.Implementation
 
                 return new ManagerBaseResponse<IEnumerable<FilingsStatusResponseModel>>
                 {
-                    Result = result.Data,
+                    Result = result.Data,IsSuccess = true,
+                    IsSuccess = true,
                     Message = "FilingStatuses Data Retrieved Successfully.",
                     PageDetail = new PageDetailModel()
                     {

@@ -142,6 +142,7 @@ builder.Services.AddSwaggerGen(o =>
             new List<string>()
         }
     });
+ 
 });
 
 var app = builder.Build();

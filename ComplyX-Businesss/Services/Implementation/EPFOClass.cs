@@ -86,6 +86,7 @@ namespace ComplyX_Businesss.BusinessLogic
                 return  new ManagerBaseResponse<bool>
                 {
                     Result = true,
+                    IsSuccess = true,
                     Message = "CompanyEPFO Data Saved Successfully."
                 } ;
             }
@@ -120,6 +121,7 @@ namespace ComplyX_Businesss.BusinessLogic
                 return new ManagerBaseResponse<bool>
                 {
                     Result = true,
+                    IsSuccess = true,
                     Message = "CompanyEPFO Data Removed Successfully.",
                 };
 
@@ -161,7 +163,8 @@ namespace ComplyX_Businesss.BusinessLogic
 
                 return new ManagerBaseResponse<IEnumerable<CompanyEPFOResponseModel>>
                 {
-                    Result = result.Data,
+                    Result = result.Data,IsSuccess = true,
+                    IsSuccess = true,
                     Message = "CompanyEPFO Data Retrieved Successfully.",
                     PageDetail = new PageDetailModel()
                     {
@@ -237,6 +240,7 @@ namespace ComplyX_Businesss.BusinessLogic
                 return  new ManagerBaseResponse<bool>
                 {
                     Result = true,
+                    IsSuccess = true,
                     Message = "EmployeeEPFO Data Saved Successfully."
                 } ;
             }
@@ -271,7 +275,7 @@ namespace ComplyX_Businesss.BusinessLogic
 
                 return new ManagerBaseResponse<bool>
                 {
-                    Result = true,
+                    Result = true,IsSuccess = true,
                     Message = "EmployeeEPFO Data Removed Successfully.",
                 };
 
@@ -314,7 +318,7 @@ namespace ComplyX_Businesss.BusinessLogic
 
                 return new ManagerBaseResponse<IEnumerable<EmployeeEPFOResponseModel>>
                 {
-                    Result = result.Data,
+                    Result = result.Data,IsSuccess = true,
                     Message = "EmployeeEPFO Data Retrieved Successfully.",
                     PageDetail = new PageDetailModel()
                     {
@@ -390,7 +394,7 @@ namespace ComplyX_Businesss.BusinessLogic
                 await _UnitOfWork.CommitAsync();
                 return  new ManagerBaseResponse<bool>
                 {
-                    Result = true,
+                    Result = true,IsSuccess = true,
                     Message = "EPFOECR File Data Saved Successfully."
                 } ;
             }
@@ -425,7 +429,7 @@ namespace ComplyX_Businesss.BusinessLogic
 
                 return new ManagerBaseResponse<bool>
                 {
-                    Result = true,
+                    Result = true,IsSuccess = true,
                     Message = "EPFOECR File  Data Removed Successfully.",
                 };
 
@@ -471,7 +475,7 @@ namespace ComplyX_Businesss.BusinessLogic
 
                 return new ManagerBaseResponse<IEnumerable<EPFOECRFileResponseModel>>
                 {
-                    Result = result.Data,
+                    Result = result.Data,IsSuccess = true,
                     Message = "EPFO ECRFile Data Retrieved Successfully.",
                     PageDetail = new PageDetailModel()
                     {
@@ -554,7 +558,7 @@ namespace ComplyX_Businesss.BusinessLogic
                 await _UnitOfWork.CommitAsync();
                 return  new ManagerBaseResponse<bool>
                 {
-                    Result = true,
+                    Result = true,IsSuccess = true,
                     Message = "EPFO Peroid Data Saved Successfully."
                 } ;
             }
@@ -588,7 +592,7 @@ namespace ComplyX_Businesss.BusinessLogic
                 await _UnitOfWork.CommitAsync();
                 return new ManagerBaseResponse<bool>
                 {
-                    Result = true,
+                    Result = true,IsSuccess = true,
                     Message = "EPFO Period  Data Removed Successfully.",
                 };
 
@@ -641,7 +645,7 @@ namespace ComplyX_Businesss.BusinessLogic
 
                 return new ManagerBaseResponse<IEnumerable<EPFOPeriodResponseModel>>
                 {
-                    Result = result.Data,
+                    Result = result.Data,IsSuccess = true,
                     Message = "EPFO Period Data Retrieved Successfully.",
                     PageDetail = new PageDetailModel()
                     {
@@ -729,7 +733,7 @@ await _UnitOfWork.ePFOMonthWageRespositories.AddAsync( _model );
                 await _UnitOfWork.CommitAsync();
                 return  new ManagerBaseResponse<bool>
                 {
-                    Result = true,
+                    Result = true,IsSuccess = true,
                     Message = "EPFOMonthlyWage Data Saved Successfully."
                 } ;
             }
@@ -764,7 +768,7 @@ await _UnitOfWork.ePFOMonthWageRespositories.AddAsync( _model );
 
                 return new ManagerBaseResponse<bool>
                 {
-                    Result = true,
+                    Result = true,IsSuccess = true,
                     Message = "EPFOMonthlyWage Data Removed Successfully.",
                 };
 
@@ -815,7 +819,7 @@ await _UnitOfWork.ePFOMonthWageRespositories.AddAsync( _model );
 
                 return new ManagerBaseResponse<IEnumerable<EPFOMonthWageResponseModel>>
                 {
-                    Result = result.Data,
+                    Result = result.Data,IsSuccess = true,
                     Message = "EPFOMonthlyWage Data Retrieved Successfully.",
                     PageDetail = new PageDetailModel()
                     {

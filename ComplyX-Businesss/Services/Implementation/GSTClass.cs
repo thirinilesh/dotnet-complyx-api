@@ -72,7 +72,8 @@ namespace ComplyX_Businesss.Services.Implementation
 
                 return  new ManagerBaseResponse<bool>
                 {
-                    Result = true,
+                    Result = true,IsSuccess = true,
+                    IsSuccess = true,
                     Message = "GST HSNSAC Details Saved Successfully."
                 } ;
             }
@@ -107,7 +108,8 @@ namespace ComplyX_Businesss.Services.Implementation
 
                 return new ManagerBaseResponse<bool>
                 {
-                    Result = true,
+                    Result = true,IsSuccess = true,
+                    IsSuccess = true,
                     Message = "GST HSNSAC Data Removed Successfully.",
                 };
 
@@ -135,12 +137,25 @@ namespace ComplyX_Businesss.Services.Implementation
                          GstRate = x.GstRate
                      }).ToListAsync();
 
-                return new ManagerBaseResponse<List<GSTHSNSACResponseModel>>
+                if(plans.Count == 0)
                 {
-                    IsSuccess = true,
-                    Result = plans,
-                    Message = "GST HSNSACData Retrieved Successfully.",
-                };
+                    return new ManagerBaseResponse<List<GSTHSNSACResponseModel>>
+                    {
+                        IsSuccess = false,
+                        Result = null,
+                        Message = "GST HSNSACData NOT Retrieved.",
+                    };
+                }
+                else
+                {
+                    return new ManagerBaseResponse<List<GSTHSNSACResponseModel>>
+                    {
+                        IsSuccess = true,
+                        Result = plans,
+                        Message = "GST HSNSACData Retrieved Successfully.",
+                    };
+                }
+               
             }
             catch (Exception ex)
             {
@@ -179,7 +194,8 @@ namespace ComplyX_Businesss.Services.Implementation
 
                 return new ManagerBaseResponse<IEnumerable<GSTHSNSACResponseModel>>
                 {
-                    Result = result.Data,
+                    Result = result.Data,IsSuccess = true,
+                    IsSuccess = true,
                     Message = "GST HSNSAC Data Retrieved Successfully.",
                     PageDetail = new PageDetailModel()
                     {
@@ -283,7 +299,8 @@ namespace ComplyX_Businesss.Services.Implementation
                 await _UnitOfWork.CommitAsync();
                 return new ManagerBaseResponse<bool>
                 {
-                    Result = true,
+                    Result = true,IsSuccess = true,
+                    IsSuccess = true,
                     Message = "GST_HSN Mappings Details Saved Successfully."
                 };
             }
@@ -317,7 +334,8 @@ namespace ComplyX_Businesss.Services.Implementation
                 await _UnitOfWork.CommitAsync();
                 return new ManagerBaseResponse<bool>
                 {
-                    Result = true,
+                    Result = true,IsSuccess = true,
+                    IsSuccess = true,
                     Message = "GST_HSN Mappings Data Removed Successfully.",
                 };
 
@@ -346,12 +364,25 @@ namespace ComplyX_Businesss.Services.Implementation
                          GstRate = x.GstRate
                      }).ToListAsync();
 
-                return new ManagerBaseResponse<List<GSTHSNMappingResponseModel>>
+                if(plans.Count == 0)
                 {
-                    IsSuccess = true,
-                    Result = plans,
-                    Message = "GST HSN Mapping Retrieved Successfully.",
-                };
+                    return new ManagerBaseResponse<List<GSTHSNMappingResponseModel>>
+                    {
+                        IsSuccess = false,
+                        Result = null,
+                        Message = "GST HSN Mapping NOT Retrieved.",
+                    };
+                }
+                else
+                {
+                    return new ManagerBaseResponse<List<GSTHSNMappingResponseModel>>
+                    {
+                        IsSuccess = true,
+                        Result = plans,
+                        Message = "GST HSN Mapping Retrieved Successfully.",
+                    };
+                }
+              
             }
             catch (Exception ex)
             {
@@ -391,7 +422,8 @@ namespace ComplyX_Businesss.Services.Implementation
 
                 return new ManagerBaseResponse<IEnumerable<GSTHSNMappingResponseModel>>
                 {
-                    Result = result.Data,
+                    Result = result.Data,IsSuccess = true,
+                    IsSuccess = true,
                     Message = "GST HSN Mapping Data Retrieved Successfully.",
                     PageDetail = new PageDetailModel()
                     {
@@ -464,7 +496,8 @@ namespace ComplyX_Businesss.Services.Implementation
                     await _UnitOfWork.CommitAsync();
                     return new ManagerBaseResponse<bool>
                     {
-                        Result = true,
+                        Result = true,IsSuccess = true,
+                        IsSuccess = true,
                         Message = "GST InvoiceSeries Details Saved Successfully."
                     };
                 }
@@ -501,7 +534,8 @@ namespace ComplyX_Businesss.Services.Implementation
 
                 return new ManagerBaseResponse<bool>
                 {
-                    Result = true,
+                    Result = true,IsSuccess = true,
+                    IsSuccess = true,
                     Message = "GST INvoice Data Removed Successfully.",
                 };
 
@@ -531,12 +565,26 @@ namespace ComplyX_Businesss.Services.Implementation
                          LastUpdated = x.LastUpdated
                      }).ToListAsync();
 
+                if(plans.Count == 0)
+                {
+                    return new ManagerBaseResponse<List<GstInvoiceSeriesResponseModel>>
+                    {
+                        IsSuccess = false,
+                        Result = null,
+                        Message = "GST InvoiceSeries Data NOT Retrieved.",
+                    };
+                }
+                else
+                {
+
+               
                 return new ManagerBaseResponse<List<GstInvoiceSeriesResponseModel>>
                 {
                     IsSuccess = true,
                     Result = plans,
                     Message = "GST InvoiceSeries Data Retrieved Successfully.",
                 };
+                }
             }
             catch (Exception ex)
             {
@@ -577,7 +625,8 @@ namespace ComplyX_Businesss.Services.Implementation
 
                 return new ManagerBaseResponse<IEnumerable<GstInvoiceSeriesResponseModel>>
                 {
-                    Result = result.Data,
+                    Result = result.Data,IsSuccess = true,
+                    IsSuccess = true,
                     Message = "GST InvoiceSeries Data Retrieved Successfully.",
                     PageDetail = new PageDetailModel()
                     {
@@ -700,7 +749,8 @@ namespace ComplyX_Businesss.Services.Implementation
                  await _UnitOfWork.CommitAsync();
                 return  new ManagerBaseResponse<bool>
                 {
-                    Result = true,
+                    Result = true,IsSuccess = true,
+                    IsSuccess = true,
                     Message = "GST Purchase Details Saved Successfully."
                 } ;
             }
@@ -735,7 +785,8 @@ namespace ComplyX_Businesss.Services.Implementation
 
                 return new ManagerBaseResponse<bool>
                 {
-                    Result = true,
+                    Result = true,IsSuccess = true,
+                    IsSuccess = true,
                     Message = "GST Purchase Data Removed Successfully.",
                 };
 
@@ -774,12 +825,26 @@ namespace ComplyX_Businesss.Services.Implementation
                        CreatedBy = x.CreatedBy
                    }).ToListAsync();
 
+                if(plans.Count == 0)
+                {
+                    return new ManagerBaseResponse<List<GstPurchaseResponseModel>>
+                    {
+                        IsSuccess = false,
+                        Result = null,
+                        Message = "GST Purchase Data NOT Retrieved.",
+                    };
+                }
+                else
+                {
+
+               
                 return new ManagerBaseResponse<List<GstPurchaseResponseModel>>
                 {
                     IsSuccess = true,
                     Result = plans,
                     Message = "GST Purchase Data Retrieved Successfully.",
                 };
+                     }
             }
             catch (Exception ex)
             {
@@ -829,7 +894,8 @@ namespace ComplyX_Businesss.Services.Implementation
 
                 return new ManagerBaseResponse<IEnumerable<GstPurchaseResponseModel>>
                 {
-                    Result = result.Data,
+                    Result = result.Data,IsSuccess = true,
+                    IsSuccess = true,
                     Message = "GST Purchase Data Retrieved Successfully.",
                     PageDetail = new PageDetailModel()
                     {
@@ -910,7 +976,8 @@ namespace ComplyX_Businesss.Services.Implementation
                 await _UnitOfWork.CommitAsync();
                 return new ManagerBaseResponse<bool>
                 {
-                    Result = true,
+                    Result = true,IsSuccess = true,
+                    IsSuccess = true,
                     Message = "GST Return Details Saved Successfully."
 
                 };
@@ -946,7 +1013,8 @@ namespace ComplyX_Businesss.Services.Implementation
 
                 return new ManagerBaseResponse<bool>
                 {
-                    Result = true,
+                    Result = true,IsSuccess = true,
+                    IsSuccess = true,
                     Message = "GST Return Data Removed Successfully.",
                 };
 
@@ -981,12 +1049,26 @@ namespace ComplyX_Businesss.Services.Implementation
                           CreatedOn = x.CreatedOn
                       }).ToListAsync();
 
+                if(plans.Count == 0)
+                {
+                    return new ManagerBaseResponse<List<GstReturnResponseModel>>
+                    {
+                        IsSuccess = false,
+                        Result = null,
+                        Message = "GST Returns Data not Retrieved.",
+                    };
+                }
+                else
+                {
+
+               
                 return new ManagerBaseResponse<List<GstReturnResponseModel>>
                 {
                     IsSuccess = true,
                     Result = plans,
                     Message = "GST Returns Data Retrieved Successfully.",
                 };
+                }
             }
             catch (Exception ex)
             {
@@ -1032,7 +1114,8 @@ namespace ComplyX_Businesss.Services.Implementation
 
                 return new ManagerBaseResponse<IEnumerable<GstReturnResponseModel>>
                 {
-                    Result = result.Data,
+                    Result = result.Data,IsSuccess = true,
+                    IsSuccess = true,
                     Message = "GST Returns Data Retrieved Successfully.",
                     PageDetail = new PageDetailModel()
                     {
@@ -1156,7 +1239,8 @@ namespace ComplyX_Businesss.Services.Implementation
                 await _UnitOfWork.CommitAsync();
                 return  new ManagerBaseResponse<bool>
                 {
-                    Result = true,
+                    Result = true,IsSuccess = true,
+                    IsSuccess = true,
                     Message = "GST Sales Details Saved Successfully."
                 };
             }
@@ -1191,7 +1275,8 @@ namespace ComplyX_Businesss.Services.Implementation
 
                 return new ManagerBaseResponse<bool>
                 {
-                    Result = true,
+                    Result = true,IsSuccess = true,
+                    IsSuccess = true,
                     Message = "GST Sales Data Removed Successfully.",
                 };
 
@@ -1230,12 +1315,26 @@ namespace ComplyX_Businesss.Services.Implementation
                          CreatedBy = x.CreatedBy
                      }).ToListAsync();
 
+                if(plans.Count == 0)
+                {
+                    return new ManagerBaseResponse<List<GstSaleResponseModel>>
+                    {
+                        IsSuccess = false,
+                        Result = null,
+                        Message = "GST Sales Data not Retrieved .",
+                    };
+                }
+                else
+                {
+
+                
                 return new ManagerBaseResponse<List<GstSaleResponseModel>>
                 {
                     IsSuccess = true,
                     Result = plans,
                     Message = "GST Sales Data Retrieved Successfully.",
                 };
+                }
             }
             catch (Exception ex)
             {
@@ -1285,7 +1384,8 @@ namespace ComplyX_Businesss.Services.Implementation
 
                 return new ManagerBaseResponse<IEnumerable<GstSaleResponseModel>>
                 {
-                    Result = result.Data,
+                    Result = result.Data,IsSuccess = true,
+                    IsSuccess = true,
                     Message = "GST Sales Data Retrieved Successfully.",
                     PageDetail = new PageDetailModel()
                     {

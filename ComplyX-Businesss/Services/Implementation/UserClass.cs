@@ -59,7 +59,7 @@ namespace ComplyX.BusinessLogic
                     {
                         Result = null,
                         Message = "Requested model is not valid.",
-                        StatusCode = 500
+                        StatusCode = 400
                     });
                 }
                 else
@@ -75,6 +75,14 @@ namespace ComplyX.BusinessLogic
                             existingUserName.Trim().ToLower() == RegisterUser.UserName.Trim().ToLower())
                         {
                             var message = $"UserName '{RegisterUser.UserName}' is already taken.";
+                             return (new ManagerBaseResponse<RegisterUser>()
+                                {
+                                    Result = null,
+                                    IsSuccess = false,
+                                    Message = "User Name already exits.",
+                                    StatusCode = 400
+
+                                });
                         }
                     }
 
@@ -248,7 +256,8 @@ namespace ComplyX.BusinessLogic
                 {
                     Result = null,
                     Message = "Invalid Username or Password.",
-                    StatusCode = 401
+                    StatusCode = 401,
+                    IsSuccess = false
                 };
             }
             bool inputpass = BCrypt.Net.BCrypt.Verify(Login.Password, user.Password);
@@ -267,7 +276,8 @@ namespace ComplyX.BusinessLogic
                 {
                     Result =  response,
                     Message = "Username and Password is vaild.",
-                    StatusCode = 200
+                    StatusCode = 200,
+                    IsSuccess = true
                 } ;
             }
             else
@@ -375,7 +385,7 @@ namespace ComplyX.BusinessLogic
                 return new ManagerBaseResponse<ForgotPasswordVerifyModel>()
                 {
                     Result = response,
-                    IsSuccess = false,
+                    IsSuccess = true,
                     Message = "Password reset token generated successfully.",
                 };
 
@@ -457,7 +467,7 @@ namespace ComplyX.BusinessLogic
                 return new ManagerBaseResponse<ResetPasswordRequestModel>()
                 {
                     Result = response.Result,
-                    IsSuccess = false,
+                    IsSuccess = true,
                     Message = "Password reset successfully.",
                 };
             }
@@ -555,6 +565,7 @@ namespace ComplyX.BusinessLogic
             return (new ManagerBaseResponse<ChangePasswordModel>
             {
                 Result = response,
+                IsSuccess = true,
                 Message = "Your password has been changed successfully."
             });
         }
@@ -674,7 +685,7 @@ namespace ComplyX.BusinessLogic
             return new ManagerBaseResponse<bool>
             {
                 IsSuccess = true,
-                Result = true,
+                Result = true,IsSuccess = true,
                 Message = "Roles assigned successfully."
             };
         }
@@ -686,8 +697,8 @@ namespace ComplyX.BusinessLogic
                 var plans = await _UnitOfWork.RegisterRespositories.GetQueryable().OrderBy(x => x.UserName)
                     .Select(x => new RegisterUser
                     {
+                        UserID = x.UserID,
                         UserName = x.UserName,
-                        Password = x.Password,
                         Domain = x.Domain,
                         Email = x.Email,
                         Phone = x.Phone,
@@ -701,8 +712,8 @@ namespace ComplyX.BusinessLogic
                 {
                     return new ManagerBaseResponse<List<RegisterUser>>
                     {
-                        IsSuccess = true,
-                        Result = plans,
+                        IsSuccess = false,
+                        Result = null,
                         Message = "User Data not Retrieved.",
                     };
                 }
@@ -747,8 +758,8 @@ namespace ComplyX.BusinessLogic
                 {
                     return new ManagerBaseResponse<List<AspNetRole>>
                     {
-                        IsSuccess = true,
-                        Result = plans,
+                        IsSuccess = false,
+                        Result = null,
                         Message = "Role Data not Retrieved.",
                     };
                 }

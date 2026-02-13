@@ -98,7 +98,7 @@ namespace ComplyX_Businesss.Services.Implementation
                 await _UnitOfWork.CommitAsync();
                 return  new ManagerBaseResponse<bool>
                 {
-                    Result = true,
+                    Result = true,IsSuccess = true,
                     Message = "Compliance Deadlines Saved Successfully."
                 };
             }
@@ -136,7 +136,7 @@ namespace ComplyX_Businesss.Services.Implementation
 
                 return new ManagerBaseResponse<bool>
                 {
-                    Result = true,
+                    Result = true,IsSuccess = true,
                     Message = "Compliance Deadlines Data Removed Successfully.",
                 };
 
@@ -232,7 +232,7 @@ namespace ComplyX_Businesss.Services.Implementation
 
                 return new ManagerBaseResponse<IEnumerable<ComplianceDeadlineResponseModel>>
                 {
-                    Result = result.Data,
+                    Result = result.Data,IsSuccess = true,
                     Message = "Compliance Deadlines Data Retrieved Successfully.",
                     PageDetail = new PageDetailModel()
                     {
@@ -314,7 +314,7 @@ namespace ComplyX_Businesss.Services.Implementation
                 await _UnitOfWork.CommitAsync();
                 return  new ManagerBaseResponse<bool>
                 {
-                    Result = true,
+                    Result = true,IsSuccess = true,
                     Message = "Compliance Schedules Saved Successfully."
                 };
             }
@@ -350,7 +350,7 @@ namespace ComplyX_Businesss.Services.Implementation
 
                 return new ManagerBaseResponse<bool>
                 {
-                    Result = true,
+                    Result = true,IsSuccess = true,
                     Message = "Compliance Schedules Data Removed Successfully.",
                 };
 
@@ -445,7 +445,7 @@ namespace ComplyX_Businesss.Services.Implementation
 
                 return new ManagerBaseResponse<IEnumerable<ComplianceScheduleResponseModel>>
                 {
-                    Result = result.Data,
+                    Result = result.Data,IsSuccess = true,
                     Message = "Compliance Schedules Data Retrieved Successfully.",
                     PageDetail = new PageDetailModel()
                     {
@@ -528,7 +528,7 @@ namespace ComplyX_Businesss.Services.Implementation
                 await _UnitOfWork.CommitAsync();
                 return new ManagerBaseResponse<bool>
                 {
-                    Result = true,
+                    Result = true,IsSuccess = true,
                     Message = "Compliance Filings Saved Successfully."
                 };
             }
@@ -563,7 +563,7 @@ namespace ComplyX_Businesss.Services.Implementation
 
                 return new ManagerBaseResponse<bool>
                 {
-                    Result = true,
+                    Result = true,IsSuccess = true,
                     Message = "Complaine Filings Data Removed Successfully.",
                 };
 
@@ -657,7 +657,7 @@ namespace ComplyX_Businesss.Services.Implementation
 
                 return new ManagerBaseResponse<IEnumerable<ComplianceFilingResponseModel>>
                 {
-                    Result = result.Data,
+                    Result = result.Data,IsSuccess = true,
                     Message = "Compliance Filings Data Retrieved Successfully.",
                     PageDetail = new PageDetailModel()
                     {

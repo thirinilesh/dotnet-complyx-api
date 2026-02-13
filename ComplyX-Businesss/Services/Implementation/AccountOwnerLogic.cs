@@ -207,7 +207,7 @@ namespace ComplyX_Businesss.BusinessLogic
                 await  _UnitOfWork.CommitAsync();
                 return new ManagerBaseResponse<bool> 
                 {
-                    Result = true,
+                    Result = true,IsSuccess = true,
                     Message = "Product Details Saved Successfully."
                 } ;
             }
@@ -243,7 +243,7 @@ namespace ComplyX_Businesss.BusinessLogic
 
                 return new ManagerBaseResponse<bool>
                 {
-                    Result = true,
+                    Result = true,IsSuccess = true,
                     Message = "Product Data Removed Successfully."      , 
                     };
 
@@ -309,7 +309,7 @@ namespace ComplyX_Businesss.BusinessLogic
 
                 return new ManagerBaseResponse<IEnumerable<ProductOwnerResponseModel>>
                 {
-                    Result = result.Data,
+                    Result = result.Data,IsSuccess = true,
                     Message = "Product Owner Data Retrieved Successfully.",
                     PageDetail = new PageDetailModel()
                     {
@@ -393,7 +393,7 @@ namespace ComplyX_Businesss.BusinessLogic
                 await _UnitOfWork.CommitAsync();
                 return   new ManagerBaseResponse<bool>
                 {
-                    Result = true,
+                    Result = true,IsSuccess = true,
                     Message = "Company Details Saved Successfully."
                 };
             }
@@ -430,7 +430,7 @@ namespace ComplyX_Businesss.BusinessLogic
                 await _UnitOfWork.CommitAsync();
                 return new ManagerBaseResponse<bool>
                 {
-                    Result = true,
+                    Result = true,IsSuccess = true,
                     Message = "Product Data Removed Successfully.",
                 };
 
@@ -523,7 +523,7 @@ namespace ComplyX_Businesss.BusinessLogic
 
                 return new ManagerBaseResponse<IEnumerable<CompanyResponseModel>>
                 {
-                    Result = result.Data,
+                    Result = result.Data,IsSuccess = true,
                     Message = "Company Data Retrieved Successfully.",
                     PageDetail = new PageDetailModel()
                     {
@@ -575,12 +575,25 @@ namespace ComplyX_Businesss.BusinessLogic
                         IsActive = x.IsActive
                     }).ToListAsync();
 
-                return new ManagerBaseResponse<List<SubscriptionPlanResponseModel>>
+                if(plans.Count == 0)
                 {
-                    IsSuccess = true,
-                    Result = plans,
-                    Message = "Subscription Plans Retrieved Successfully.",
-                };
+                    return new ManagerBaseResponse<List<SubscriptionPlanResponseModel>>
+                    {
+                        IsSuccess = false,
+                        Result = null,
+                        Message = "Subscription Plans not Retrieved.",
+                    };
+                }
+                else
+                {
+                    return new ManagerBaseResponse<List<SubscriptionPlanResponseModel>>
+                    {
+                        IsSuccess = true,
+                        Result = plans,
+                        Message = "Subscription Plans Retrieved Successfully.",
+                    };
+                }
+                
             }
             catch (Exception ex)
             {
@@ -635,7 +648,7 @@ namespace ComplyX_Businesss.BusinessLogic
 
                 return new ManagerBaseResponse<IEnumerable<SubscriptionPlanResponseModel>>
                 {
-                    Result = result.Data,
+                    Result = result.Data,IsSuccess = true,
                     Message = "SubscriptionPlans Data Retrieved Successfully.",
                     PageDetail = new PageDetailModel()
                     {
@@ -750,7 +763,7 @@ namespace ComplyX_Businesss.BusinessLogic
                     await _UnitOfWork.CommitAsync();
                     return new ManagerBaseResponse<bool>
                     {
-                        Result = true,
+                        Result = true,IsSuccess = true,
                         Message = "User Subscription Plans Saved Successfully."
                     };
 
@@ -759,7 +772,7 @@ namespace ComplyX_Businesss.BusinessLogic
                 {
                     return new ManagerBaseResponse<bool>
                     {
-                        Result = true,
+                        Result = true,IsSuccess = true,
                         Message = "User Subscription Plans already Successfully."
                     };
                 }
@@ -964,7 +977,7 @@ namespace ComplyX_Businesss.BusinessLogic
                 await _UnitOfWork.CommitAsync();
                 return new ManagerBaseResponse<bool>
                 {
-                    Result = true,
+                    Result = true,IsSuccess = true,
                     Message = "Subcontractors Details Saved Successfully."
                 };
             }
@@ -1002,7 +1015,7 @@ namespace ComplyX_Businesss.BusinessLogic
                 await _UnitOfWork.CommitAsync();
                 return new ManagerBaseResponse<bool>
                 {
-                    Result = true,
+                    Result = true,IsSuccess = true,
                     Message = "Subcontractors Data Removed Successfully.",
                 };
 
@@ -1102,8 +1115,8 @@ namespace ComplyX_Businesss.BusinessLogic
                 {
                     return new ManagerBaseResponse<List<CommonDropdownModel>>
                     {
-                        IsSuccess = true,
-                        Result = plans,
+                        IsSuccess = false,
+                        Result = null,
                         Message = "Subcontractor Data not Retrieved.",
                     };
                 }
@@ -1161,7 +1174,7 @@ namespace ComplyX_Businesss.BusinessLogic
 
                 return new ManagerBaseResponse<IEnumerable<SubcontractorResponseModel>>
                 {
-                    Result = result.Data,
+                    Result = result.Data,IsSuccess = true,
                     Message = "Subcontractors Data Retrieved Successfully.",
                     PageDetail = new PageDetailModel()
                     {
@@ -1302,7 +1315,7 @@ namespace ComplyX_Businesss.BusinessLogic
 
                 return new ManagerBaseResponse<bool>
                 {
-                    Result = true,
+                    Result = true,IsSuccess = true,
                     Message = "Plans Data Saved Successfully."
                 };
             }
@@ -1338,7 +1351,7 @@ namespace ComplyX_Businesss.BusinessLogic
 
                 return new ManagerBaseResponse<bool>
                 {
-                    Result = true,
+                    Result = true,IsSuccess = true,
                     Message = "Plans Data Removed Successfully.",
                 };
 
@@ -1368,12 +1381,26 @@ namespace ComplyX_Businesss.BusinessLogic
                     CreatedAt = x.CreatedAt
                 }).ToListAsync();
 
-                return new ManagerBaseResponse<List<PlanResponseModel>>
+                if(plans.Count == 0)
                 {
-                    IsSuccess = true,
-                    Result = plans,
-                    Message = "Plans Data Retrieved Successfully.",
-                };
+                    return new ManagerBaseResponse<List<PlanResponseModel>>
+                    {
+                        IsSuccess = false,
+                        Result = null,
+                        Message = "Plans Data not Retrieved.",
+                    };
+                }
+                else
+                {
+
+                
+                    return new ManagerBaseResponse<List<PlanResponseModel>>
+                    {
+                        IsSuccess = true,
+                        Result = plans,
+                        Message = "Plans Data Retrieved Successfully.",
+                    };
+                }
             }
             catch (Exception ex)
             {
@@ -1463,7 +1490,7 @@ namespace ComplyX_Businesss.BusinessLogic
 
                 return new ManagerBaseResponse<IEnumerable<PlanResponseModel>>
                 {
-                    Result = result.Data,
+                    Result = result.Data,IsSuccess = true,
                     Message = "Plans Data Retrieved Successfully.",
                     PageDetail = new PageDetailModel()
                     {                      
@@ -1543,7 +1570,7 @@ namespace ComplyX_Businesss.BusinessLogic
                 }
                 return new ManagerBaseResponse<bool>
                 {
-                    Result = true,
+                    Result = true,IsSuccess = true,
                     Message = "SubscriptionInvoices Data Saved Successfully."
                 };
             }
@@ -1578,7 +1605,7 @@ namespace ComplyX_Businesss.BusinessLogic
 
                 return new ManagerBaseResponse<bool>
                 {
-                    Result = true,
+                    Result = true,IsSuccess = true,
                     Message = "SubscriptionInvoices Data Removed Successfully.",
                 };
 
@@ -1610,12 +1637,25 @@ namespace ComplyX_Businesss.BusinessLogic
                     CreatedAt = x.CreatedAt
                 }).ToListAsync();
 
-                return new ManagerBaseResponse<List<SubscriptionInvoicesResponseModel>>
+                if (SubscriptionInvoices.Count == 0)
                 {
-                    IsSuccess = true,
-                    Result = SubscriptionInvoices,
-                    Message = "SubscriptionInvoices Data Retrieved Successfully.",
-                };
+                    return new ManagerBaseResponse<List<SubscriptionInvoicesResponseModel>>
+                    {
+                        IsSuccess = false,
+                        Result = null,
+                        Message = "SubscriptionInvoices Data not Retrieved.",
+                    };
+                }
+                else
+                {
+                    return new ManagerBaseResponse<List<SubscriptionInvoicesResponseModel>>
+                    {
+                        IsSuccess = true,
+                        Result = SubscriptionInvoices,
+                        Message = "SubscriptionInvoices Data Retrieved Successfully.",
+                    };
+                }
+                
             }
             catch (Exception ex)
             {
@@ -1707,7 +1747,7 @@ namespace ComplyX_Businesss.BusinessLogic
                 PageListed<SubscriptionInvoicesResponseModel> result = await responseQuery.ToPagedListAsync(PagedListCriteria, orderByTranslations);
                 return new ManagerBaseResponse<IEnumerable<SubscriptionInvoicesResponseModel>>
                 {
-                    Result = result.Data,
+                    Result = result.Data,IsSuccess = true,
                     Message = "Subscription Invoice Data Retrieved Successfully.",
                     PageDetail = new PageDetailModel()
                     {
@@ -1794,7 +1834,7 @@ namespace ComplyX_Businesss.BusinessLogic
 
                 return new ManagerBaseResponse<bool>
                 {
-                    Result = true,
+                    Result = true,IsSuccess = true,
                     Message = "SubscriptionPlans Data Saved Successfully."
                 };
             }
@@ -1829,7 +1869,7 @@ namespace ComplyX_Businesss.BusinessLogic
 
                 return new ManagerBaseResponse<bool>
                 {
-                    Result = true,
+                    Result = true,IsSuccess = true,
                     Message = "SubscriptionPlans Data Removed Successfully.",
                 };
 
@@ -1885,7 +1925,7 @@ namespace ComplyX_Businesss.BusinessLogic
                 await _UnitOfWork.CommitAsync();
                 return new ManagerBaseResponse<bool>
                 {
-                    Result = true,
+                    Result = true,IsSuccess = true,
                     Message = "Payment Transaction Data Saved Successfully."
                 };
             }
@@ -1920,7 +1960,7 @@ namespace ComplyX_Businesss.BusinessLogic
 
                 return new ManagerBaseResponse<bool>
                 {
-                    Result = true,
+                    Result = true,IsSuccess = true,
                     Message = "PaymentTransactions Data Removed Successfully.",
                 };
 
@@ -1951,12 +1991,25 @@ namespace ComplyX_Businesss.BusinessLogic
                     CreatedAt = x.CreatedAt
                 }).ToListAsync();
 
-                return new ManagerBaseResponse<List<PaymentTransactionRequestModel>>
+                if(PaymentTransactions.Count == 0)
                 {
-                    IsSuccess = true,
-                    Result = PaymentTransactions,
-                    Message = "Payment Transaction Data Retrieved Successfully.",
-                };
+                    return new ManagerBaseResponse<List<PaymentTransactionRequestModel>>
+                    {
+                        IsSuccess = false,
+                        Result = null,
+                        Message = "Payment Transaction Data not Retrieved.",
+                    };
+                }
+                else
+                {
+                    return new ManagerBaseResponse<List<PaymentTransactionRequestModel>>
+                    {
+                        IsSuccess = true,
+                        Result = PaymentTransactions,
+                        Message = "Payment Transaction Data Retrieved Successfully.",
+                    };
+                }
+                
             }
             catch (Exception ex)
             {
@@ -2045,7 +2098,7 @@ namespace ComplyX_Businesss.BusinessLogic
                 PageListed<PaymentTransactionRequestModel> result = await responseQuery.ToPagedListAsync(PagedListCriteria, orderByTranslations);
                 return new ManagerBaseResponse<IEnumerable<PaymentTransactionRequestModel>>
                 {
-                    Result = result.Data,
+                    Result = result.Data,IsSuccess = true,
                     Message = "Payment Transactions Data Retrieved Successfully.",
                     PageDetail = new PageDetailModel()
                     {
@@ -2121,7 +2174,7 @@ namespace ComplyX_Businesss.BusinessLogic
                 await _UnitOfWork.CommitAsync();
                 return new ManagerBaseResponse<bool>
                 {
-                    Result = true,
+                    Result = true,IsSuccess = true,
                     Message = "Customer Payment Data Saved Successfully."
                 };
             }
@@ -2156,7 +2209,7 @@ namespace ComplyX_Businesss.BusinessLogic
 
                 return new ManagerBaseResponse<bool>
                 {
-                    Result = true,
+                    Result = true,IsSuccess = true,
                     Message = "CustomerPayment Data Removed Successfully.",
                 };
 
@@ -2187,12 +2240,26 @@ namespace ComplyX_Businesss.BusinessLogic
                     UpdatedAt = x.UpdatedAt
                 }).ToListAsync();
 
+                if(CustomerPayments.Count == 0)
+                {
+                    return new ManagerBaseResponse<List<CustomerPaymentsResponseModel>>
+                    {
+                        IsSuccess = false,
+                        Result = null,
+                        Message = "Customer Payments Data not Retrieved.",
+                    };
+                }
+                else
+                {
+
+                
                 return new ManagerBaseResponse<List<CustomerPaymentsResponseModel>>
                 {
                     IsSuccess = true,
                     Result = CustomerPayments,
                     Message = "Customer Payments Data Retrieved Successfully.",
                 };
+                }
             }
             catch (Exception ex)
             {
@@ -2284,7 +2351,7 @@ namespace ComplyX_Businesss.BusinessLogic
                 PageListed<CustomerPaymentsResponseModel> result = await responseQuery.ToPagedListAsync(PagedListCriteria, orderByTranslations);
                 return new ManagerBaseResponse<IEnumerable<CustomerPaymentsResponseModel>>
                 {
-                    Result = result.Data,
+                    Result = result.Data,IsSuccess = true,
                     Message = "Customer Payments Retrieved Successfully.",
                     PageDetail = new PageDetailModel()
                     {
@@ -2374,7 +2441,7 @@ namespace ComplyX_Businesss.BusinessLogic
                 await _UnitOfWork.CommitAsync();
                 return new ManagerBaseResponse<bool>
                 {
-                    Result = true,
+                    Result = true,IsSuccess = true,
                     Message = "Party Master Data Saved Successfully."
                 };
             }
@@ -2410,7 +2477,7 @@ namespace ComplyX_Businesss.BusinessLogic
 
                 return new ManagerBaseResponse<bool>
                 {
-                    Result = true,
+                    Result = true,IsSuccess = true,
                     Message = "Party Master Data Removed Successfully.",
                 };
 
@@ -2447,12 +2514,25 @@ namespace ComplyX_Businesss.BusinessLogic
                     CreatedBy = x.CreatedBy
                 }).ToListAsync();
 
-                return new ManagerBaseResponse<List<PartyMasterResponseModel>>
+                if(Party.Count == 0)
                 {
-                    IsSuccess = true,
-                    Result = Party,
-                    Message = "Party Master Data Retrieved Successfully.",
-                };
+                    return new ManagerBaseResponse<List<PartyMasterResponseModel>>
+                    {
+                        IsSuccess = false,
+                        Result = null,
+                        Message = "Party Master Data not Retrieved.",
+                    };
+                }
+                else
+                {
+                    return new ManagerBaseResponse<List<PartyMasterResponseModel>>
+                    {
+                        IsSuccess = true,
+                        Result = Party,
+                        Message = "Party Master Data Retrieved Successfully.",
+                    };
+                }
+                
             }
             catch (Exception ex)
             {
@@ -2556,7 +2636,7 @@ namespace ComplyX_Businesss.BusinessLogic
                 PageListed<PartyMasterResponseModel> result = await responseQuery.ToPagedListAsync(PagedListCriteria, orderByTranslations);
                 return new ManagerBaseResponse<IEnumerable<PartyMasterResponseModel>>
                 {
-                    Result = result.Data,
+                    Result = result.Data,IsSuccess = true,
                     Message = "Party Master Retrieved Successfully.",
                     PageDetail = new PageDetailModel()
                     {
@@ -2657,7 +2737,7 @@ namespace ComplyX_Businesss.BusinessLogic
                 await _UnitOfWork.CommitAsync();
                 return new ManagerBaseResponse<bool>
                 {
-                    Result = true,
+                    Result = true,IsSuccess = true,
                     Message = "Company Party Role Data Saved Successfully."
                 };
             }
@@ -2692,7 +2772,7 @@ namespace ComplyX_Businesss.BusinessLogic
                 await _UnitOfWork.CommitAsync();
                 return new ManagerBaseResponse<bool>
                 {
-                    Result = true,
+                    Result = true,IsSuccess = true,
                     Message = "Company Party Role Data Removed Successfully.",
                 };
 
@@ -2721,12 +2801,26 @@ namespace ComplyX_Businesss.BusinessLogic
                     CreatedBy = x.CreatedBy
                 }).ToListAsync();
 
+                if(Party.Count == 0)
+                {
+                    return new ManagerBaseResponse<List<CompanyPartyRoleResponseModel>>
+                    {
+                        IsSuccess = false,
+                        Result = null,
+                        Message = "Company Party  Role Data  not Retrieved.",
+                    };
+                }
+                else
+                {
+
+               
                 return new ManagerBaseResponse<List<CompanyPartyRoleResponseModel>>
                 {
                     IsSuccess = true,
                     Result = Party,
                     Message = "Company Party  Role Data Retrieved Successfully.",
                 };
+                }
             }
             catch (Exception ex)
             {
@@ -2814,7 +2908,7 @@ namespace ComplyX_Businesss.BusinessLogic
                 PageListed<CompanyPartyRoleResponseModel> result = await responseQuery.ToPagedListAsync(PagedListCriteria, orderByTranslations);
                 return new ManagerBaseResponse<IEnumerable<CompanyPartyRoleResponseModel>>
                 {
-                    Result = result.Data,
+                    Result = result.Data,IsSuccess = true,
                     Message = "Company Party Role Retrieved Successfully.",
                     PageDetail = new PageDetailModel()
                     {

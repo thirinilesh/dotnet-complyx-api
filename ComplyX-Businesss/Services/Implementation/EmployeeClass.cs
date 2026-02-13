@@ -68,7 +68,7 @@ namespace ComplyX.BusinessLogic
                 var responses = _mapper.Map<EmployeeResponseModel>(baemployee);
                 return new ManagerBaseResponse<bool>
                 {
-                    Result = true,
+                    Result = true,IsSuccess = true,
                     Message = "Employee Data Saved Successfully."
                 } ;
 
@@ -104,7 +104,7 @@ namespace ComplyX.BusinessLogic
 
                 return new ManagerBaseResponse<bool>
                 {
-                    Result = true,
+                    Result = true,IsSuccess = true,
                     Message = "Employee Data Removed Successfully.",
                 };
 
@@ -165,12 +165,26 @@ namespace ComplyX.BusinessLogic
                           IsDeleted = x.IsDeleted
                       }).ToListAsync();
 
-                return new ManagerBaseResponse<List<EmployeeResponseModel>>
+                if(Employee.Count == 0)
                 {
-                    IsSuccess = true,
-                    Result = Employee,
-                    Message = "Employee Details Retrieved Successfully.",
-                };
+                    return new ManagerBaseResponse<List<EmployeeResponseModel>>
+                    {
+                        IsSuccess = false,
+                        Result = null,
+                        Message = "Employee Details not Retrieved.",
+                    };
+                }
+                else
+                {
+
+                
+                    return new ManagerBaseResponse<List<EmployeeResponseModel>>
+                    {
+                        IsSuccess = true,
+                        Result = Employee,
+                        Message = "Employee Details Retrieved Successfully.",
+                    };
+                }
             }
             catch (Exception ex)
             {
@@ -439,7 +453,7 @@ namespace ComplyX.BusinessLogic
                 PageListed<EmployeeResponseModel> result = await responseQuery.ToPagedListAsync(PagedListCriteria, orderByTranslations);
                 return new ManagerBaseResponse<IEnumerable<EmployeeResponseModel>>
                 {
-                    Result = result.Data,
+                    Result = result.Data,IsSuccess = true,
                     Message = "Employee Data Retrieved Successfully.",
                     PageDetail = new PageDetailModel()
                     {
@@ -516,7 +530,7 @@ namespace ComplyX.BusinessLogic
                 await _UnitOfWork.CommitAsync();
                 return new ManagerBaseResponse<bool>
                 {
-                    Result = true,
+                    Result = true,IsSuccess = true,
                     Message = "Gratuity Policy Data Saved Successfully."
                 };
             }
@@ -551,7 +565,7 @@ namespace ComplyX.BusinessLogic
 
                 return new ManagerBaseResponse<bool>
                 {
-                    Result = true,
+                    Result = true,IsSuccess = true,
                     Message = "Gratuity Policy Data Removed Successfully.",
                 };
 
@@ -642,7 +656,7 @@ namespace ComplyX.BusinessLogic
                 PageListed<GratuityPolicyResponseModel> result = await responseQuery.ToPagedListAsync(PagedListCriteria, orderByTranslations);
                 return new ManagerBaseResponse<IEnumerable<GratuityPolicyResponseModel>>
                 {
-                    Result = result.Data,
+                    Result = result.Data,IsSuccess = true,
                     Message = "Gratuity Policy Data Retrieved Successfully.",
                     PageDetail = new PageDetailModel()
                     {
@@ -722,7 +736,7 @@ namespace ComplyX.BusinessLogic
                 await _UnitOfWork.CommitAsync();
                 return new ManagerBaseResponse<bool>
                 {
-                    Result = true,
+                    Result = true,IsSuccess = true,
                     Message = "Gratuity Transactions Data Saved Successfully."
                 };
             }
@@ -757,7 +771,7 @@ namespace ComplyX.BusinessLogic
            await _UnitOfWork.CommitAsync();
                 return new ManagerBaseResponse<bool>
                 {
-                    Result = true,
+                    Result = true,IsSuccess = true,
                     Message = "Gratuity Transactions Data Removed Successfully.",
                 };
 
@@ -855,7 +869,7 @@ namespace ComplyX.BusinessLogic
                 PageListed<GratuityTransactionResponseModel> result = await responseQuery.ToPagedListAsync(PagedListCriteria, orderByTranslations);
                 return new ManagerBaseResponse<IEnumerable<GratuityTransactionResponseModel>>
                 {
-                    Result = result.Data,
+                    Result = result.Data,IsSuccess = true,
                     Message = "Gratuity Transactions Data Retrieved Successfully.",
                     PageDetail = new PageDetailModel()
                     {
@@ -949,7 +963,7 @@ namespace ComplyX.BusinessLogic
                 await _UnitOfWork.CommitAsync();
                 return new ManagerBaseResponse<bool>
                 {
-                    Result = true,
+                    Result = true,IsSuccess = true,
                     Message = "FnF Calculations Data Saved Successfully."
                 };
             }
@@ -985,7 +999,7 @@ namespace ComplyX.BusinessLogic
 
                 return new ManagerBaseResponse<bool>
                 {
-                    Result = true,
+                    Result = true,IsSuccess = true,
                     Message = "FnF Calculations Data Removed Successfully.",
                 };
 
@@ -1098,7 +1112,7 @@ namespace ComplyX.BusinessLogic
                 PageListed<FnFCalculationResponseModel> result = await responseQuery.ToPagedListAsync(PagedListCriteria, orderByTranslations);
                 return new ManagerBaseResponse<IEnumerable<FnFCalculationResponseModel>>
                 {
-                    Result = result.Data,
+                    Result = result.Data,IsSuccess = true,
                     Message = "FnF Calculations Data Retrieved Successfully.",
                     PageDetail = new PageDetailModel()
                     {

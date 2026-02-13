@@ -54,7 +54,7 @@ namespace ComplyX_Businesss.Services.Implementation
                 {
                     return new ManagerBaseResponse<bool>
                     {
-                        Result = true,
+                        Result = true,IsSuccess = true,
                         Message = "User is not Found."
                     };
                 }
@@ -92,7 +92,7 @@ namespace ComplyX_Businesss.Services.Implementation
                 await _UnitOfWork.CommitAsync();
                 return new ManagerBaseResponse<bool>
                 {
-                    Result = true,
+                    Result = true,IsSuccess = true,
                     Message = "Legal Document Data Saved Successfully."
                 };
             }
@@ -131,7 +131,7 @@ namespace ComplyX_Businesss.Services.Implementation
 
                 return new ManagerBaseResponse<bool>
                 {
-                    Result = true,
+                    Result = true,IsSuccess = true,
                     Message = "Legal Document Data Removed Successfully.",
                 };
 
@@ -216,7 +216,7 @@ namespace ComplyX_Businesss.Services.Implementation
                 PageListed<LegalDocumentResponseModel> result = await responseQuery.ToPagedListAsync(PagedListCriteria, orderByTranslations);
                 return new ManagerBaseResponse<IEnumerable<LegalDocumentResponseModel>>
                 {
-                    Result = result.Data,
+                    Result = result.Data,IsSuccess = true,
                     Message = "Legal DOcument Retrieved Successfully.",
                     PageDetail = new PageDetailModel()
                     {
@@ -251,7 +251,7 @@ namespace ComplyX_Businesss.Services.Implementation
                 {
                     return new ManagerBaseResponse<bool>
                     {
-                        Result = true,
+                        Result = true,IsSuccess = true,
                         Message = "User is not Found."
                     };
                 }
@@ -262,7 +262,7 @@ namespace ComplyX_Businesss.Services.Implementation
                     {
                         return new ManagerBaseResponse<bool>
                         {
-                            Result = true,
+                            Result = true,IsSuccess = true,
                             Message = "Legal Document  is not Found."
                         };
                     }
@@ -316,7 +316,7 @@ namespace ComplyX_Businesss.Services.Implementation
                 await _UnitOfWork.CommitAsync();
                 return new ManagerBaseResponse<bool>
                 {
-                    Result = true,
+                    Result = true,IsSuccess = true,
                     Message = "Legal Document version Data Saved Successfully."
                 };
             }
@@ -353,7 +353,7 @@ namespace ComplyX_Businesss.Services.Implementation
 
                 return new ManagerBaseResponse<bool>
                 {
-                    Result = true,
+                    Result = true,IsSuccess = true,
                     Message = "Legal Document version Data Removed Successfully.",
                 };
 
@@ -460,7 +460,7 @@ namespace ComplyX_Businesss.Services.Implementation
                 PageListed<LegalDocumentVersionResponseModel> result = await responseQuery.ToPagedListAsync(PagedListCriteria, orderByTranslations);
                 return new ManagerBaseResponse<IEnumerable<LegalDocumentVersionResponseModel>>
                 {
-                    Result = result.Data,
+                    Result = result.Data,IsSuccess = true,
                     Message = "Legal Document version Retrieved Successfully.",
                     PageDetail = new PageDetailModel()
                     {
@@ -495,7 +495,7 @@ namespace ComplyX_Businesss.Services.Implementation
                 {
                     return new ManagerBaseResponse<bool>
                     {
-                        Result = true,
+                        Result = true,IsSuccess = true,
                         Message = "User is not Found."
                     };
                 }
@@ -506,7 +506,7 @@ namespace ComplyX_Businesss.Services.Implementation
                     {
                         return new ManagerBaseResponse<bool>
                         {
-                            Result = true,
+                            Result = true,IsSuccess = true,
                             Message = "Legal Document and Legal Document Version is not Found."
                         };
                     }
@@ -549,7 +549,7 @@ namespace ComplyX_Businesss.Services.Implementation
                 await _UnitOfWork.CommitAsync();
                 return new ManagerBaseResponse<bool>
                 {
-                    Result = true,
+                    Result = true,IsSuccess = true,
                     Message = "Legal Document Acceptance Data Saved Successfully."
                 };
             }
@@ -586,7 +586,7 @@ namespace ComplyX_Businesss.Services.Implementation
 
                 return new ManagerBaseResponse<bool>
                 {
-                    Result = true,
+                    Result = true,IsSuccess = true,
                     Message = "Legal Document Acceptance Data Removed Successfully.",
                 };
 
@@ -677,7 +677,7 @@ namespace ComplyX_Businesss.Services.Implementation
                 PageListed<LegalDocumentAcceptanceResponseModel> result = await responseQuery.ToPagedListAsync(PagedListCriteria, orderByTranslations);
                 return new ManagerBaseResponse<IEnumerable<LegalDocumentAcceptanceResponseModel>>
                 {
-                    Result = result.Data,
+                    Result = result.Data,IsSuccess = true,
                     Message = "Legal Document Acceptance Retrieved Successfully.",
                     PageDetail = new PageDetailModel()
                     {
