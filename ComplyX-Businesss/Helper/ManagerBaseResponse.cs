@@ -11,7 +11,7 @@ namespace ComplyX.Shared.Helper
         public PageDetailModel PageDetail { get; set; }
         public ManagerBaseResponse()
         {
-            IsSuccess = true;
+            IsSuccess = false;
         }
        
     }
