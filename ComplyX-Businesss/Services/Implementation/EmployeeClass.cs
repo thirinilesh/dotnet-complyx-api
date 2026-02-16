@@ -61,7 +61,15 @@ namespace ComplyX.BusinessLogic
             try
             {
                 var baemployee = _mapper.Map<Employee>(Employee);
-
+                if(Employee.Aadhaar.Contains(" "))
+                {
+                    return new ManagerBaseResponse<bool>
+                    {
+                        Result = false,
+                        IsSuccess = false,
+                        Message = "Aadhaar number should not contain spaces."
+                    };
+                }
                 await _UnitOfWork.EmployeeRespositories.AddAsync(baemployee);
                 await _UnitOfWork.CommitAsync();
 

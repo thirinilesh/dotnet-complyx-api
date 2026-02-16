@@ -24,6 +24,7 @@ using ComplyX.Data.DbContexts;
 using Antlr.Runtime.Misc;
 using System.Numerics;
 using AutoMapper.Configuration.Annotations;
+using System.ComponentModel.Design;
 //using NHibernate.Linq;
 
 
@@ -586,7 +587,27 @@ namespace ComplyX_Businesss.BusinessLogic
             try
             {
 
-                var query = _UnitOfWork.CompanyRepository.GetQueryable();
+                var query = from company in _UnitOfWork.CompanyRepository.GetQueryable()
+                            join productOwner in _UnitOfWork.ProductOwnerRepositories.GetQueryable()
+                            on company.ProductOwnerId equals productOwner.ProductOwnerId 
+                            select new CompanyResponseModel
+                            {
+                                CompanyId = company.CompanyId,
+                                Name = company.Name,
+                                Domain = company.Domain,
+                                ContactEmail = company.ContactEmail,
+                                ContactPhone = company.ContactPhone,
+                                Address = company.Address,
+                                State = company.State,
+                                Gstin = company.Gstin,
+                                Pan = company.Pan,
+                                IsActive = company.IsActive,
+                                CreatedAt = company.CreatedAt,
+                                MaxEmployees = company.MaxEmployees,
+                                ProductOwnerId = company.ProductOwnerId,
+                                OwnerName = productOwner.OwnerName
+                            };
+
                 var searchText = PagedListCriteria.SearchText?.Trim().ToLower();
                 if (!string.IsNullOrWhiteSpace(searchText))
                 {
@@ -608,7 +629,8 @@ namespace ComplyX_Businesss.BusinessLogic
                     IsActive = x.IsActive,
                     CreatedAt = x.CreatedAt,
                     MaxEmployees = x.MaxEmployees,
-                    ProductOwnerId = x.ProductOwnerId
+                    ProductOwnerId = x.ProductOwnerId,
+                    OwnerName = x.OwnerName
                 });
 
 
@@ -1208,7 +1230,7 @@ namespace ComplyX_Businesss.BusinessLogic
                 var responseQuery = query
                     .Select(x => new CommonDropdownModel
                     {
-                        id = x.CompanyId,
+                        id = x.SubcontractorId,
                         name = x.Name
 
                     });

@@ -33,5 +33,6 @@ namespace ComplyX_Businesss.Models.Company
         public int? MaxEmployees { get; set; }
 
         public int ProductOwnerId { get; set; }
+        public string? OwnerName { get; set; }
     }
 }
