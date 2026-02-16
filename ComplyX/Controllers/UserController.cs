@@ -152,9 +152,9 @@ namespace ComplyX.Controllers
         /// <response code="204">If no users are found.</response>
         /// <response code="400">If there is an error while fetching the users.</response>
         [HttpGet("GetUserList")]
-        public async Task<IActionResult> GetUserList()
+        public async Task<IActionResult> GetUserList([FromQuery] PagedListCriteria PagedListCriteria)
         {
-            return ResponseResult(await _IUserService.GetUserList());
+            return ResponseResult(await _IUserService.GetUserList(PagedListCriteria));
         }
 
         /// <summary>
@@ -169,9 +169,9 @@ namespace ComplyX.Controllers
         /// <response code="204">If no roles are found.</response>
         /// <response code="400">If there is an error while fetching the roles.</response>
         [HttpGet("GetRoleList")]
-        public async Task<IActionResult> GetRoleList()
+        public async Task<IActionResult> GetRoleList([FromQuery] PagedListCriteria PagedListCriteria)
         {
-            return ResponseResult(await _IUserService.GetRoleList());
+            return ResponseResult(await _IUserService.GetRoleList(PagedListCriteria));
         }
 
     }

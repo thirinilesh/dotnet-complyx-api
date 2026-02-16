@@ -108,9 +108,9 @@ namespace ComplyX.Controllers
         /// <response code="204">If no employees are found.</response>
         /// <response code="400">If there is an error while fetching the employee data.</response>
         [HttpGet("GetEmployeeData")]
-        public async Task<IActionResult> GetEmployeeData()
+        public async Task<IActionResult> GetEmployeeData([FromQuery] PagedListCriteria PagedListCriteria)
         {
-            return ResponseResult(await _IEmployeeServices.GetEmployeeData());
+            return ResponseResult(await _IEmployeeServices.GetEmployeeData(PagedListCriteria));
         }
 
         /// <summary>

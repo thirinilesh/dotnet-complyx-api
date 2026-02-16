@@ -26,13 +26,18 @@ using ComplyX.Data.Entities;
 using RegisterUser = ComplyX.Data.Entities.RegisterUser;
 using ComplyX.Repositories.UnitOfWork;
 using ComplyX_Businesss.Models.Logins;
+using ComplyX_Businesss.Models.Employee;
 
 
 namespace ComplyX.BusinessLogic
 {
     public class UserClass : IUserService
     {
- 
+        private readonly Dictionary<string, string> orderByTranslations = new Dictionary<string, string>
+        {
+            { "name", "Name" }
+        };
+
         private readonly UserManager<ApplicationUsers> _userManager;
         private readonly JwtTokenService _tokenService;
         private readonly AppContext _context;
@@ -690,11 +695,22 @@ namespace ComplyX.BusinessLogic
             };
         }
 
-        public async Task<ManagerBaseResponse<List<RegisterUser>>> GetUserList()
+        public async Task<ManagerBaseResponse<IEnumerable<RegisterUser>>> GetUserList(PagedListCriteria PagedListCriteria)
         {
             try
             {
-                var plans = await _UnitOfWork.RegisterRespositories.GetQueryable().OrderBy(x => x.UserName)
+                var query = _UnitOfWork.RegisterRespositories.GetQueryable();
+                var searchText = PagedListCriteria.SearchText?.Trim().ToLower();
+                if (!string.IsNullOrWhiteSpace(searchText))
+                {
+                    query = query.Where(x => x.UserName.ToLower().Contains(searchText.ToLower()));
+                }
+
+                query = query.OrderBy(a => a.UserID);
+                var responseQuery = query 
+
+   
+                
                     .Select(x => new RegisterUser
                     {
                         UserID = x.UserID,
@@ -706,33 +722,42 @@ namespace ComplyX.BusinessLogic
                         State = x.State,
                         Gstin = x.Gstin,
                         Pan = x.Pan
-                    }).ToListAsync();
+                    });
 
-                if (plans.Count == 0)
+                PageListed<RegisterUser> result = await responseQuery.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+
+                if (result.Data.Count > 0)
                 {
-                    return new ManagerBaseResponse<List<RegisterUser>>
+                    return new ManagerBaseResponse<IEnumerable<RegisterUser>>
+                {
+                    Result = result.Data,
+                    IsSuccess = true,
+                    Message = "Employee Data Retrieved Successfully.",
+                    PageDetail = new PageDetailModel()
                     {
-                        IsSuccess = false,
-                        Result = null,
-                        Message = "User Data not Retrieved.",
-                    };
+                        Skip = PagedListCriteria.Skip,
+                        Take = PagedListCriteria.Take,
+                        Count = result.TotalCount,
+                        SearchText = PagedListCriteria.SearchText,
+                        FilterdCount = PagedListCriteria.Filters
+                    }
+                };
                 }
                 else
                 {
-
-
-                    return new ManagerBaseResponse<List<RegisterUser>>
+                    return new ManagerBaseResponse<IEnumerable<RegisterUser>>
                     {
-                        IsSuccess = true,
-                        Result = plans,
-                        Message = "User Data Retrieved Successfully.",
+                        Result = result.Data,
+                        IsSuccess = false,
+                        Message = "User Data not Retrieved.",
+
                     };
                 }
             }
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<List<RegisterUser>>
+                return new ManagerBaseResponse<IEnumerable<RegisterUser>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -741,44 +766,61 @@ namespace ComplyX.BusinessLogic
             }
         }
 
-        public async Task<ManagerBaseResponse<List<AspNetRole>>> GetRoleList()
+        public async Task<ManagerBaseResponse<IEnumerable<AspNetRole>>> GetRoleList(PagedListCriteria PagedListCriteria)
         {
             try
             {
-                var plans = await _roleManager.Roles.AsQueryable().OrderBy(x => x.Name)
+                var query = _roleManager.Roles.AsQueryable();
+                var searchText = PagedListCriteria.SearchText?.Trim().ToLower();
+                if (!string.IsNullOrWhiteSpace(searchText))
+                {
+                    query = query.Where(x => x.Name.ToLower().Contains(searchText.ToLower()));
+                }
+
+                query = query.OrderBy(a => a.Id);
+                var responseQuery = query
                     .Select(x => new AspNetRole
                     {
                      
                         Id = x.Id.ToString(),
                         Name = x.Name,
                         NormalizedName = x.NormalizedName
-                    }).ToListAsync();
+                    });
 
-                if (plans.Count == 0)
+                PageListed<AspNetRole> result = await responseQuery.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+
+                if (result.Data.Count > 0)
                 {
-                    return new ManagerBaseResponse<List<AspNetRole>>
+                    return new ManagerBaseResponse<IEnumerable<AspNetRole>>
+                {
+                    Result = result.Data,
+                    IsSuccess = true,
+                    Message = "Role Data Retrieved Successfully.",
+                    PageDetail = new PageDetailModel()
                     {
-                        IsSuccess = false,
-                        Result = null,
-                        Message = "Role Data not Retrieved.",
-                    };
+                        Skip = PagedListCriteria.Skip,
+                        Take = PagedListCriteria.Take,
+                        Count = result.TotalCount,
+                        SearchText = PagedListCriteria.SearchText,
+                        FilterdCount = PagedListCriteria.Filters
+                    }
+                };
                 }
                 else
                 {
-
-
-                    return new ManagerBaseResponse<List<AspNetRole>>
+                    return new ManagerBaseResponse<IEnumerable<AspNetRole>>
                     {
-                        IsSuccess = true,
-                        Result = plans,
-                        Message = "Role Data Retrieved Successfully.",
+                        Result = result.Data,
+                        IsSuccess = false,
+                        Message = "Role Data not Retrieved.",
+
                     };
                 }
             }
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<List<AspNetRole>>
+                return new ManagerBaseResponse<IEnumerable <AspNetRole>>
                 {
                     IsSuccess = false,
                     Result = null,

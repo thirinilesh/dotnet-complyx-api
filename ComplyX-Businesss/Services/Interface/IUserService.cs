@@ -20,7 +20,7 @@ namespace ComplyX.Services
         Task<ManagerBaseResponse<ChangePasswordModel>> ChangePassword([FromBody] ChangePasswordModel model);
         Task<ManagerBaseResponse<bool>> CreateRoleAsync(string  rolename);
         Task<ManagerBaseResponse<bool>> AssignRoleToUser(AssignRoleToUser request);
-        Task<ManagerBaseResponse<List<RegisterUser>>> GetUserList();
-        Task<ManagerBaseResponse<List<AspNetRole>>> GetRoleList();
+        Task<ManagerBaseResponse<IEnumerable<RegisterUser>>> GetUserList(PagedListCriteria PagedListCriteria);
+        Task<ManagerBaseResponse<IEnumerable<AspNetRole>>> GetRoleList(PagedListCriteria PagedListCriteria);
     }
 }

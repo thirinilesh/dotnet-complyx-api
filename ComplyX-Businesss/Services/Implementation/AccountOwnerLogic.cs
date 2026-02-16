@@ -22,6 +22,8 @@ using NHibernate.Criterion;
 using Nest;
 using ComplyX.Data.DbContexts;
 using Antlr.Runtime.Misc;
+using System.Numerics;
+using AutoMapper.Configuration.Annotations;
 //using NHibernate.Linq;
 
 
@@ -47,88 +49,128 @@ namespace ComplyX_Businesss.BusinessLogic
             _UnitOfWork = UnitOfWork;
             _appDbContext = appDbContext;
         }
-        public async Task<List<ProductOwner>> GetAllAsync()
+        public async Task<ManagerBaseResponse<IEnumerable<CommonDropdownModel>>> GetProductOwnerList(PagedListCriteria PagedListCriteria)
         {
             try
             {
-                var result = await _UnitOfWork.ProductOwnerRepositories.GetQueryable()
-                                     .OrderByDescending(x => x.ProductOwnerId)
-                                     .ToListAsync();
-                return result;
+                    var query = _UnitOfWork.ProductOwnerRepositories.GetQueryable();
+                    var searchText = PagedListCriteria.SearchText?.Trim().ToLower();
+                    if (!string.IsNullOrWhiteSpace(searchText))
+                    {
+                        query = query.Where(x => x.OwnerName.ToLower().Contains(searchText.ToLower()));
+                    }
+
+                    query = query.OrderBy(a => a.ProductOwnerId);
+                    var responseQuery = query
+                        .Select(x => new CommonDropdownModel
+                        {
+                            id = x.ProductOwnerId,
+                            name = x.OwnerName,
+                            isActive = x.IsActive
+                        });
+                    PageListed<CommonDropdownModel> result = await responseQuery.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+
+
+                if (result.Data.Count > 0)
+                {
+                    return new ManagerBaseResponse<IEnumerable<CommonDropdownModel>>
+                    {
+                        Result = result.Data,
+                        IsSuccess = true,
+                        Message = "Product Owner Data Retrieved Successfully.",
+                        PageDetail = new PageDetailModel()
+                        {
+                            Skip = PagedListCriteria.Skip,
+                            Take = PagedListCriteria.Take,
+                            Count = result.TotalCount,
+                            SearchText = PagedListCriteria.SearchText,
+                            FilterdCount = PagedListCriteria.Filters,
+                        }
+                    };
+                }
+                else
+                {
+                    return new ManagerBaseResponse<IEnumerable<CommonDropdownModel>>
+                    {
+                        Result = result.Data,
+                        IsSuccess = false,
+                        Message = "Product Owner Data not Retrieved.",
+
+                    };
+                }
             }
             catch (Exception ex)
             {
                 throw new Exception("Error fetching account owners", ex);
             }
         }
-        public async Task<ManagerBaseResponse<IEnumerable<ProductOwnerResponseModel>>> GetAllProductOwnerData()
+        public async Task<ManagerBaseResponse<List<ProductOwnerResponseModel>>> GetAllProductOwnerByID(string ProductOwnerID)
         {
             try
             {
 
-                var owners = await _UnitOfWork.ProductOwnerRepositories.GetQueryable().AsNoTracking()
-                        .Select(x => new ProductOwnerResponseModel
-                        {
-                            ProductOwnerId = x.ProductOwnerId,
-                            OwnerName = x.OwnerName,
-                            Email = x.Email,
-                            Mobile = x.Mobile,
-                            OrganizationName = x.OrganizationName,
-                            LegalName = x.LegalName,
-                            RegistrationId = x.RegistrationId,
-                            OrganizationType = x.OrganizationType,
-                            City = x.City,
-                            Pincode = x.Pincode,
-                            State = x.State,
-                            Country = x.Country,
-                            CreatedBy = x.CreatedBy,
-                            UpdatedBy = x.UpdatedBy,
-                            CreatedAt = x.CreatedAt,
-                            UpdatedAt = x.UpdatedAt,
-                            IsActive = x.IsActive,
-                            SubscriptionPlan = x.SubscriptionPlan,
-                            SubscriptionStart = x.SubscriptionStart,
-                            SubscriptionExpiry = x.SubscriptionExpiry,
-                            MaxCompanies = x.MaxCompanies,
-                            MaxUsers = x.MaxUsers,
-                            MaxStorageMb = x.MaxStorageMb,
-                            AllowCloudBackup = x.AllowCloudBackup,
-                            AllowGstmodule = x.AllowGstmodule,
-                            AllowTdsmodule = x.AllowTdsmodule,
-                            AllowClramodule = x.AllowClramodule,
-                            AllowPayrollModule = x.AllowPayrollModule,
-                            AllowDscsigning = x.AllowDscsigning,
-                            BusinessCategory = x.BusinessCategory,
-                            BusinessAddress = x.BusinessAddress,
-                            IsDiffPaymentAddress = x.IsDiffPaymentAddress,
-                            PaymentAddress = x.PaymentAddress
-                        })
-                        .ToListAsync();
-                if (owners.Count == 0)
+                var owners = await _UnitOfWork.ProductOwnerRepositories.GetQueryable().Where(x => x.ProductOwnerId.ToString() == ProductOwnerID).Select(x => new ProductOwnerResponseModel
                 {
-                    return new ManagerBaseResponse<IEnumerable<ProductOwnerResponseModel>>
+                    ProductOwnerId = x.ProductOwnerId,
+                    OwnerName = x.OwnerName,
+                    Email = x.Email,
+                    Mobile = x.Mobile,
+                    OrganizationName = x.OrganizationName,
+                    LegalName = x.LegalName,
+                    RegistrationId = x.RegistrationId,
+                    OrganizationType = x.OrganizationType,
+                    City = x.City,
+                    Pincode = x.Pincode,
+                    State = x.State,
+                    Country = x.Country,
+                    CreatedBy = x.CreatedBy,
+                    UpdatedBy = x.UpdatedBy,
+                    CreatedAt = x.CreatedAt,
+                    UpdatedAt = x.UpdatedAt,
+                    IsActive = x.IsActive,
+                    SubscriptionPlan = x.SubscriptionPlan,
+                    SubscriptionStart = x.SubscriptionStart,
+                    SubscriptionExpiry = x.SubscriptionExpiry,
+                    MaxCompanies = x.MaxCompanies,
+                    MaxUsers = x.MaxUsers,
+                    MaxStorageMb = x.MaxStorageMb,
+                    AllowCloudBackup = x.AllowCloudBackup,
+                    AllowGstmodule = x.AllowGstmodule,
+                    AllowTdsmodule = x.AllowTdsmodule,
+                    AllowClramodule = x.AllowClramodule,
+                    AllowPayrollModule = x.AllowPayrollModule,
+                    AllowDscsigning = x.AllowDscsigning,
+                    BusinessAddress = x.BusinessAddress,
+                    BusinessCategory = x.BusinessCategory,
+                    IsDiffPaymentAddress = x.IsDiffPaymentAddress,
+                    PaymentAddress = x.PaymentAddress
+                }).ToListAsync();
+
+                  if (owners.Count == 0)
+                {
+                    return new ManagerBaseResponse<List<ProductOwnerResponseModel>>
                     {
                         IsSuccess = false,
                         Result = null,
-                        Message = "Product Owner Data not Retrieved.",
+                        Message = "Product Owner Id not Retrieved.",
                     };
                 }
                 else
                 {
 
 
-                    return new ManagerBaseResponse<IEnumerable<ProductOwnerResponseModel>>
+                    return new ManagerBaseResponse<List<ProductOwnerResponseModel>>
                     {
                         IsSuccess = true,
                         Result = owners,
-                        Message = "Product Owner Data Retrieved Successfully.",
+                        Message = "Product Owner ID Retrieved Successfully.",
                     };
                 }
             }
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<IEnumerable<ProductOwnerResponseModel>>
+                return new ManagerBaseResponse<List<ProductOwnerResponseModel>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -142,6 +184,16 @@ namespace ComplyX_Businesss.BusinessLogic
 
             try
             {
+                var email = _UnitOfWork.ProductOwnerRepositories.GetQueryable().Where(x => x.Email == ProductOwners.Email).ToList();
+                if(email != null)
+                {
+                    return new ManagerBaseResponse<bool>
+                    {
+                        Result = false,
+                        IsSuccess = false,
+                        Message = "Email is already exits."
+                    };
+                }
                 if (ProductOwners.ProductOwnerId == 0)
                 {
                     // Insert
@@ -468,43 +520,60 @@ namespace ComplyX_Businesss.BusinessLogic
                 };
             }
         }
-        public async Task<ManagerBaseResponse<List<CommonDropdownModel>>> GetCompanyData()
+        public async Task<ManagerBaseResponse<IEnumerable<CommonDropdownModel>>> GetCompanyData(PagedListCriteria PagedListCriteria)
         {
             try
             {
-                var plans = await _UnitOfWork.CompanyRepository.GetQueryable().OrderBy(x => x.CompanyId)
+                var query = _UnitOfWork.CompanyRepository.GetQueryable();
+                var searchText = PagedListCriteria.SearchText?.Trim().ToLower();
+                if (!string.IsNullOrWhiteSpace(searchText))
+                {
+                    query = query.Where(x => x.Name.ToLower().Contains(searchText.ToLower()));
+                }
+
+                query = query.OrderBy(a => a.CompanyId);
+                var responseQuery = query
                     .Select(x => new CommonDropdownModel
                     {
                         id = x.CompanyId,
                         name = x.Name,
                         isActive = x.IsActive
-                    }).ToListAsync();
+                    });
+                PageListed<CommonDropdownModel> result = await responseQuery.ToPagedListAsync(PagedListCriteria, orderByTranslations);
 
-                if (plans.Count == 0)
+
+                if (result.Data.Count > 0)
                 {
-                    return new ManagerBaseResponse<List<CommonDropdownModel>>
+                    return new ManagerBaseResponse<IEnumerable<CommonDropdownModel>>
+                {
+                    Result = result.Data,
+                    IsSuccess = true,
+                    Message = "Company Data Retrieved Successfully.",
+                    PageDetail = new PageDetailModel()
                     {
-                        IsSuccess = true,
-                        Result = plans,
-                        Message = "Company Data not Retrieved.",
+                        Skip = PagedListCriteria.Skip,
+                        Take = PagedListCriteria.Take,
+                        Count = result.TotalCount,
+                        SearchText = PagedListCriteria.SearchText,
+                        FilterdCount = PagedListCriteria.Filters,
+                    }
                     };
                 }
                 else
                 {
-
-
-                    return new ManagerBaseResponse<List<CommonDropdownModel>>
+                    return new ManagerBaseResponse<IEnumerable<CommonDropdownModel>>
                     {
-                        IsSuccess = true,
-                        Result = plans,
-                        Message = "Company Data Retrieved Successfully.",
+                        Result = result.Data,
+                        IsSuccess = false,
+                        Message = "Company Data not Retrieved.",
+
                     };
                 }
             }
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<List<CommonDropdownModel>>
+                return new ManagerBaseResponse<IEnumerable<CommonDropdownModel>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -1124,42 +1193,59 @@ namespace ComplyX_Businesss.BusinessLogic
 
             }
         }
-        public async Task<ManagerBaseResponse<List<CommonDropdownModel>>> GetSubcontractorsData()
+        public async Task<ManagerBaseResponse<IEnumerable<CommonDropdownModel>>> GetSubcontractorsData(PagedListCriteria PagedListCriteria)
         {
             try
             {
-                var plans = await _UnitOfWork.SubcontractorRepository.GetQueryable().OrderBy(x => x.SubcontractorId)
+                var query = _UnitOfWork.SubcontractorRepository.GetQueryable();
+                var searchText = PagedListCriteria.SearchText?.Trim().ToLower();
+                if (!string.IsNullOrWhiteSpace(searchText))
+                {
+                    query = query.Where(x => x.Name.ToLower().Contains(searchText.ToLower()));
+                }
+
+                query = query.OrderBy(a => a.SubcontractorId);
+                var responseQuery = query
                     .Select(x => new CommonDropdownModel
                     {
                         id = x.CompanyId,
                         name = x.Name
-                    }).ToListAsync();
 
-                if (plans.Count == 0)
+                    });
+                PageListed<CommonDropdownModel> result = await responseQuery.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+
+                if (result.Data.Count > 0)
                 {
-                    return new ManagerBaseResponse<List<CommonDropdownModel>>
+                    return new ManagerBaseResponse<IEnumerable<CommonDropdownModel>>
                     {
-                        IsSuccess = false,
-                        Result = null,
-                        Message = "Subcontractor Data not Retrieved.",
+                        Result = result.Data,
+                        IsSuccess = true,
+                        Message = "Subcontractors Data Retrieved Successfully.",
+                        PageDetail = new PageDetailModel()
+                        {
+                            Skip = PagedListCriteria.Skip,
+                            Take = PagedListCriteria.Take,
+                            Count = result.TotalCount,
+                            SearchText = PagedListCriteria.SearchText,
+                            FilterdCount = PagedListCriteria.Filters,
+                        }
                     };
                 }
                 else
                 {
-
-
-                    return new ManagerBaseResponse<List<CommonDropdownModel>>
+                    return new ManagerBaseResponse<IEnumerable<CommonDropdownModel>>
                     {
-                        IsSuccess = true,
-                        Result = plans,
-                        Message = "Company Data Retrieved Successfully.",
+                        Result = result.Data,
+                        IsSuccess = false,
+                        Message = "Subcontractors Data not Retrieved.",
+
                     };
                 }
             }
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<List<CommonDropdownModel>>
+                return new ManagerBaseResponse<IEnumerable<CommonDropdownModel>>
                 {
                     IsSuccess = false,
                     Result = null,

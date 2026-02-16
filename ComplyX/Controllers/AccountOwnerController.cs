@@ -59,17 +59,21 @@ namespace ComplyX.Controllers
             _IProductOwnere =  IProductOwnere;
         }
 
-        ///// <summary>
-        ///// Retrieves the list of all account owners.
-        ///// </summary>
-        ///// <returns>An <see cref="IActionResult"/> containing the list of account owners.</returns>
 
-        //[HttpPost]
-        //[ProducesResponseType(StatusCodes.Status403Forbidden, Type = typeof(ErrorResponse))]
-        //public async Task<ActionResult> GetAll()
-        //{
-             
-      
+        /// <summary>
+        /// Retrieves the paginated list of all product owners.
+        /// </summary>
+        /// <param name="PagedListCriteria">Pagination and filter criteria.</param>
+        /// <returns>An IActionResult containing the list of product owners.</returns>
+
+        [HttpGet]
+
+        public async Task<IActionResult> GetProductOwnerList([FromQuery] PagedListCriteria PagedListCriteria)
+        {
+            return ResponseResult(await _IProductOwnere.GetProductOwnerList(PagedListCriteria));
+        }
+
+
         /// <summary>
         /// Saves or updates product owner data.
         /// </summary>
@@ -92,19 +96,17 @@ namespace ComplyX.Controllers
             return ResponseResult(await _IProductOwnere.SaveProductOwnerData(ProductOwners));
         }
 
-        //    var owners = await _logic.GetAllAsync();
-        //    return Ok(owners);
-        //}
+
         /// <summary>
-        /// Retrieves the list of all account owners.
+        /// Retrieves a product owner by Product Owner ID.
         /// </summary>
-        /// <returns>An <see cref="IActionResult"/> containing the list of account owners.</returns>
+        /// <param name="productOwnerId">The unique Product Owner ID.</param>
+        /// <returns>An IActionResult containing the product owner details.</returns>
+        [HttpGet("{ProductOwnerId}")]
 
-        [HttpGet]
-
-        public async Task<IActionResult> GetAllProductOwnerData()
+        public async Task<IActionResult> GetAllProductOwnerByID(string ProductOwnerId)
         {
-            return ResponseResult(await _IProductOwnere.GetAllProductOwnerData());
+            return ResponseResult(await _IProductOwnere.GetAllProductOwnerByID(ProductOwnerId));
         }
         /// <summary>
         /// Deletes product owner data based on the specified product owner identifier.
@@ -199,9 +201,9 @@ namespace ComplyX.Controllers
         /// <response code="204">If no companies are found.</response>
         /// <response code="400">If there is an error while fetching the companies.</response>
         [HttpGet("GetCompanyData")]
-        public async Task<IActionResult> GetCompanyData()
+        public async Task<IActionResult> GetCompanyData([FromQuery] PagedListCriteria PagedListCriteria)
         {
-            return ResponseResult(await _IProductOwnere.GetCompanyData());
+            return ResponseResult(await _IProductOwnere.GetCompanyData(PagedListCriteria));
         }
         /// <summary>
         /// Retrieves a filtered and paginated list of companies.
@@ -413,9 +415,9 @@ namespace ComplyX.Controllers
         /// <response code="204">If no subcontractors are found.</response>
         /// <response code="400">If there is an error while fetching the subcontractors.</response>
         [HttpGet("GetSubcontractorsData")]
-        public async Task<IActionResult> GetSubcontractorsData()
+        public async Task<IActionResult> GetSubcontractorsData([FromQuery] PagedListCriteria PagedListCriteria)
         {
-            return ResponseResult(await _IProductOwnere.GetSubcontractorsData());
+            return ResponseResult(await _IProductOwnere.GetSubcontractorsData(PagedListCriteria));
         }
         /// <summary>
         /// Retrieves a filtered and paginated list of subcontractors.

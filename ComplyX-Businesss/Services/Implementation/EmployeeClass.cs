@@ -198,43 +198,62 @@ namespace ComplyX.BusinessLogic
             }
         }
 
-        public async Task<ManagerBaseResponse<List<CommonDropdownModel>>> GetEmployeeData()
+        public async Task<ManagerBaseResponse<IEnumerable<CommonDropdownModel>>> GetEmployeeData(PagedListCriteria PagedListCriteria)
         {
             try
             {
-                var Employee = await _UnitOfWork.EmployeeRespositories.GetQueryable().OrderBy(x => x.EmployeeId)
+                var query = _UnitOfWork.EmployeeRespositories.GetQueryable();
+                var searchText = PagedListCriteria.SearchText?.Trim().ToLower();
+                if (!string.IsNullOrWhiteSpace(searchText))
+                {
+                    query = query.Where(x => x.FirstName.ToLower().Contains(searchText.ToLower()));
+                }
+
+                query = query.OrderBy(a => a.EmployeeId);
+                var responseQuery = query 
+               
                       .Select(x => new CommonDropdownModel
                       {
                           id = x.EmployeeId,
                           name = x.FirstName + ' ' + x.LastName
                          
-                      }).ToListAsync();
+                      });
+                PageListed<CommonDropdownModel> result = await responseQuery.ToPagedListAsync(PagedListCriteria, orderByTranslations);
 
-                if(Employee.Count == 0)
+
+                if (result.Data.Count > 0)
                 {
-                    return new ManagerBaseResponse<List<CommonDropdownModel>>
+                    return new ManagerBaseResponse<IEnumerable<CommonDropdownModel>>
+                {
+                    Result = result.Data,
+                    IsSuccess = true,
+                    Message = "Employee Data Retrieved Successfully.",
+                    PageDetail = new PageDetailModel()
                     {
-                        IsSuccess = false,
-                        Result = null,
-                        Message = "Employee Details not Retrieved.",
-                    };
+                        Skip = PagedListCriteria.Skip,
+                        Take = PagedListCriteria.Take,
+                        Count = result.TotalCount,
+                        SearchText = PagedListCriteria.SearchText,
+                        FilterdCount = PagedListCriteria.Filters
+                    }
+                };
                 }
                 else
                 {
+                    return new ManagerBaseResponse<IEnumerable<CommonDropdownModel>>
+                    {
+                        Result = result.Data,
+                        IsSuccess = false,
+                        Message = "Employee Data not Retrieved.",
 
-                return new ManagerBaseResponse<List<CommonDropdownModel>>
-                {
-                    IsSuccess = true,
-                    Result = Employee,
-                    Message = "Employee Details Retrieved Successfully.",
-                };
-
+                    };
                 }
+
             }
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<List<CommonDropdownModel>>
+                return new ManagerBaseResponse<IEnumerable<CommonDropdownModel>>
                 {
                     IsSuccess = false,
                     Result = null,
