@@ -22,6 +22,7 @@ using ComplyX_Businesss.Models.LeaveEncashmentTransaction;
 using ComplyX_Businesss.Models.CompanyEPFO;
 using System.Diagnostics.Tracing;
 using System.Reflection.Metadata.Ecma335;
+using ComplyX_Businesss.Models.Company;
 
 namespace ComplyX.BusinessLogic
 {
@@ -340,7 +341,31 @@ namespace ComplyX.BusinessLogic
             try
             {
 
-                var query = _UnitOfWork.PayrollDataRespositories.GetQueryable();
+                var query = from payroll in _UnitOfWork.PayrollDataRespositories.GetQueryable()
+
+                            join employee in _UnitOfWork.EmployeeRespositories.GetQueryable()
+                            on payroll.EmployeeId equals employee.EmployeeId
+                            select new PayrollDataResponseModel
+                            {
+                                PayrollId = payroll.PayrollId,
+                                EmployeeId = payroll.EmployeeId,
+                                Month = payroll.Month,
+                                Basic = payroll.Basic,
+                                Hra = payroll.Hra,
+                                SpecialAllowance = payroll.SpecialAllowance,
+                                VariablePay = payroll.VariablePay,
+                                GrossSalary = payroll.GrossSalary,
+                                Pf = payroll.Pf,
+                                Esi = payroll.Esi,
+                                ProfessionalTax = payroll.ProfessionalTax,
+                                Tds = payroll.Tds,
+                                NetPay = payroll.NetPay,
+                                BankAccount = payroll.BankAccount,
+                                Ifsc = payroll.Ifsc,
+                                TaxYear = payroll.TaxYear,
+                                EmployeeName = employee.FirstName + ' ' + employee.LastName
+                            };
+
                 var searchText = PagedListCriteria.SearchText?.Trim().ToLower();
                 if (!string.IsNullOrWhiteSpace(searchText))
                 {
@@ -366,7 +391,8 @@ namespace ComplyX.BusinessLogic
                     NetPay = x.NetPay,
                     BankAccount = x.BankAccount,
                     Ifsc = x.Ifsc,
-                    TaxYear = x.TaxYear
+                    TaxYear = x.TaxYear,
+                    EmployeeName = x.EmployeeName
                 });
                 PageListed<PayrollDataResponseModel> result = await responseQuery.ToPagedListAsync(PagedListCriteria, orderByTranslations);
 

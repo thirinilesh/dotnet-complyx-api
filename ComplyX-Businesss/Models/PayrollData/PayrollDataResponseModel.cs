@@ -38,6 +38,6 @@ namespace ComplyX_Businesss.Models.PayrollData
 
         public string? Ifsc { get; set; }
         public string? TaxYear { get; set; }
-
+        public string EmployeeName { get; set; }
     }
 }
