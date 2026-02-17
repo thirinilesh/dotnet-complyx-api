@@ -34,6 +34,7 @@ public partial class PayrollDatum
     public string? BankAccount { get; set; }
 
     public string? Ifsc { get; set; }
+    public string? TaxYear { get; set; }
 
     public virtual Employee? Employee { get; set; }
 }

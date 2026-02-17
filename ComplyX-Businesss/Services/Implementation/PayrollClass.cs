@@ -21,6 +21,7 @@ using ComplyX_Businesss.Models.LeaveEncashmentPolicy;
 using ComplyX_Businesss.Models.LeaveEncashmentTransaction;
 using ComplyX_Businesss.Models.CompanyEPFO;
 using System.Diagnostics.Tracing;
+using System.Reflection.Metadata.Ecma335;
 
 namespace ComplyX.BusinessLogic
 {
@@ -56,60 +57,87 @@ namespace ComplyX.BusinessLogic
                 }
                 else
                 {
-                    if (Payrolls.PayrollId == 0)
+                    var BankAccount = await _UnitOfWork.PayrollDataRespositories.GetQueryable().FirstOrDefaultAsync(x => x.BankAccount == Payrolls.BankAccount || x.Ifsc == Payrolls.Ifsc);
+                    if (BankAccount != null)
                     {
-                        // Insert
-                        PayrollDatum _model = new PayrollDatum();
-                        _model.EmployeeId = Payrolls.EmployeeId;
-                        _model.Month = Payrolls.Month;
-                        _model.Basic = Payrolls.Basic;
-                        _model.Hra = Payrolls.Hra;
-                        _model.SpecialAllowance = Payrolls.SpecialAllowance;
-                        _model.VariablePay = Payrolls.VariablePay;
-                        _model.GrossSalary = Payrolls.GrossSalary;
-                        _model.Pf = Payrolls.Pf;
-                        _model.Esi = Payrolls.Esi;
-                        _model.ProfessionalTax = Payrolls.ProfessionalTax;
-                        _model.Tds = Payrolls.Tds;
-                        _model.NetPay = Payrolls.NetPay;
-                        _model.BankAccount = Payrolls.BankAccount;
-                        _model.Ifsc = Payrolls.Ifsc;
+                       if(BankAccount.BankAccount == Payrolls.BankAccount)
+    {
+                            return new ManagerBaseResponse<bool>
+                            {
+                                Result = false,
+                                Message = "Bank Account number must be unique."
+                            };
+                        }
 
-                        await _UnitOfWork.PayrollDataRespositories.AddAsync( _model );
+                        if (BankAccount.Ifsc == Payrolls.Ifsc)
+                        {
+                            return new ManagerBaseResponse<bool>
+                            {
+                                Result = false,
+                                Message = "IFSC code must be unique."
+                            };
+                        }
                     }
                     else
                     {
-                        // Update
-                        var originalTerm = _UnitOfWork.PayrollDataRespositories.GetQueryable()
-                            .Where(x => x.PayrollId == Payrolls.PayrollId).FirstOrDefault();
-                        originalTerm.EmployeeId = Payrolls.EmployeeId;
-                        originalTerm.Month = Payrolls.Month;
-                        originalTerm.Basic = Payrolls.Basic;
-                        originalTerm.Hra = Payrolls.Hra;
-                        originalTerm.SpecialAllowance = Payrolls.SpecialAllowance;
-                        originalTerm.VariablePay = Payrolls.VariablePay;
-                        originalTerm.GrossSalary = Payrolls.GrossSalary;
-                        originalTerm.Pf = Payrolls.Pf;
-                        originalTerm.Esi = Payrolls.Esi;
-                        originalTerm.ProfessionalTax = Payrolls.ProfessionalTax;
-                        originalTerm.Tds = Payrolls.Tds;
-                        originalTerm.NetPay = Payrolls.NetPay;
-                        originalTerm.BankAccount = Payrolls.BankAccount;
-                        originalTerm.Ifsc = Payrolls.Ifsc;
- 
+                        if (Payrolls.PayrollId == 0)
+                        {
+                            // Insert
+                            PayrollDatum _model = new PayrollDatum();
+                            _model.EmployeeId = Payrolls.EmployeeId;
+                            _model.Month = Payrolls.Month;
+                            _model.Basic = Payrolls.Basic;
+                            _model.Hra = Payrolls.Hra;
+                            _model.SpecialAllowance = Payrolls.SpecialAllowance;
+                            _model.VariablePay = Payrolls.VariablePay;
+                            _model.GrossSalary = Payrolls.GrossSalary;
+                            _model.Pf = Payrolls.Pf;
+                            _model.Esi = Payrolls.Esi;
+                            _model.ProfessionalTax = Payrolls.ProfessionalTax;
+                            _model.Tds = Payrolls.Tds;
+                            _model.NetPay = Payrolls.NetPay;
+                            _model.BankAccount = Payrolls.BankAccount;
+                            _model.Ifsc = Payrolls.Ifsc;
+                            _model.TaxYear = Payrolls.TaxYear;
+
+                            await _UnitOfWork.PayrollDataRespositories.AddAsync(_model);
+                        }
+                        else
+                        {
+                            // Update
+                            var originalTerm = _UnitOfWork.PayrollDataRespositories.GetQueryable()
+                                .Where(x => x.PayrollId == Payrolls.PayrollId).FirstOrDefault();
+                            originalTerm.EmployeeId = Payrolls.EmployeeId;
+                            originalTerm.Month = Payrolls.Month;
+                            originalTerm.Basic = Payrolls.Basic;
+                            originalTerm.Hra = Payrolls.Hra;
+                            originalTerm.SpecialAllowance = Payrolls.SpecialAllowance;
+                            originalTerm.VariablePay = Payrolls.VariablePay;
+                            originalTerm.GrossSalary = Payrolls.GrossSalary;
+                            originalTerm.Pf = Payrolls.Pf;
+                            originalTerm.Esi = Payrolls.Esi;
+                            originalTerm.ProfessionalTax = Payrolls.ProfessionalTax;
+                            originalTerm.Tds = Payrolls.Tds;
+                            originalTerm.NetPay = Payrolls.NetPay;
+                            originalTerm.BankAccount = Payrolls.BankAccount;
+                            originalTerm.Ifsc = Payrolls.Ifsc;
+                            originalTerm.TaxYear = Payrolls.TaxYear;
+
+                        }
                     }
+                    await _UnitOfWork.CommitAsync();
+                    return (new ManagerBaseResponse<bool>
+                    {
+                        Result = true,
+                        IsSuccess = true,
+
+                        Message = "Payroll Data Saved Successfully."
+                    });
                 }
-                await _UnitOfWork.CommitAsync();
-                return  (new ManagerBaseResponse<bool>
-                {
-                    Result = true,IsSuccess = true,
-                    
-                    Message = "Payroll Data Saved Successfully."
-                });
             }
             catch (Exception e)
             {
-                return  (new ManagerBaseResponse<bool>
+                return (new ManagerBaseResponse<bool>
                 {
                     Result = false,
                     Message = e.Message
@@ -284,6 +312,7 @@ namespace ComplyX.BusinessLogic
                     payroll.NetPay = data.NetPay;
                     payroll.BankAccount = data.BankAccount;
                     payroll.Ifsc = data.Ifsc;
+                    payroll.TaxYear = data.TaxYear;
                 }
 
                 await _UnitOfWork.CommitAsync();
@@ -336,7 +365,8 @@ namespace ComplyX.BusinessLogic
                     Tds = x.Tds,
                     NetPay = x.NetPay,
                     BankAccount = x.BankAccount,
-                    Ifsc = x.Ifsc
+                    Ifsc = x.Ifsc,
+                    TaxYear = x.TaxYear
                 });
                 PageListed<PayrollDataResponseModel> result = await responseQuery.ToPagedListAsync(PagedListCriteria, orderByTranslations);
 

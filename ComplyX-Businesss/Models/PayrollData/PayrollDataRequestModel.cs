@@ -37,6 +37,6 @@ namespace ComplyX_Businesss.Models.PayrollData
         public string? BankAccount { get; set; }
 
         public string? Ifsc { get; set; }
-
+        public string? TaxYear { get; set; }
     }
 }
