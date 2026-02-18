@@ -25,6 +25,7 @@ using ComplyX_Businesss.Models.PaymentTransaction;
 using ComplyX_Businesss.Models.CustomerPayments;
 using ComplyX_Businesss.Models.CompanyPartyRole;
 using ComplyX_Businesss.Models.PartyMaster;
+using NHibernate.Type;
 
 namespace ComplyX.Controllers
 {
@@ -1090,6 +1091,24 @@ namespace ComplyX.Controllers
         public async Task<IActionResult> GetAllCompanyPartyRoleFilter([FromQuery] PagedListCriteria PagedListCriteria)
         {
             return ResponseResult(await _IProductOwnere.GetAllCompanyPartyRoleFilter(PagedListCriteria));
+        }
+
+        /// <summary>
+        /// Retrieves the total count of companies.
+        /// </summary>
+        /// <returns>
+        /// An <see cref="IActionResult"/> containing the total number of companies.
+        /// Returns 200 OK when the count is retrieved successfully.
+        /// Returns 204 No Content when no companies exist.
+        /// Returns 400 Bad Request if an error occurs during retrieval.
+        /// </returns>
+        /// <response code="200">Returns the total company count.</response>
+        /// <response code="204">No companies found.</response>
+        /// <response code="400">Error occurred while fetching company count.</response>
+        [HttpGet("GetTotalCompanyCount")]
+        public async Task<IActionResult> GetDataCompanyCount(int ProductOwnerId)
+        {
+            return ResponseResult(await _IProductOwnere.GetDataCompanyCount(ProductOwnerId));
         }
 
     }

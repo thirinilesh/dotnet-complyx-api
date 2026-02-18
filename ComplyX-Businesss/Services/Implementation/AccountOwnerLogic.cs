@@ -595,7 +595,7 @@ namespace ComplyX_Businesss.BusinessLogic
                                 CompanyId = company.CompanyId,
                                 Name = company.Name,
                                 Domain = company.Domain,
-                                ContactEmail = company.ContactEmail,
+                                ContactEmail = company.ContactEmail,                                                      
                                 ContactPhone = company.ContactPhone,
                                 Address = company.Address,
                                 State = company.State,
@@ -1279,25 +1279,42 @@ namespace ComplyX_Businesss.BusinessLogic
         {
             try
             {
+               
+                var query = from Subcontractors in _UnitOfWork.SubcontractorRepository.GetQueryable()
+                            join company in _UnitOfWork.CompanyRepository.GetQueryable()
+                            on Subcontractors.CompanyId equals company.CompanyId                         
+                select(new SubcontractorResponseModel
+                {
+                    SubcontractorID = Subcontractors.SubcontractorId,
+                    CompanyID = Subcontractors.CompanyId,
+                    CompanyName = company.Name,
+                    Name = Subcontractors.Name,
+                    ContactEmail = Subcontractors.ContactEmail,
+                    ContactPhone = Subcontractors.ContactPhone,
+                    Address = Subcontractors.Address,
+                    GSTIN = Subcontractors.Gstin,
+                    PAN = Subcontractors.Pan,
+                    CreatedAt = Subcontractors.CreatedAt
+                });
 
-                var query = _UnitOfWork.SubcontractorRepository.GetQueryable();
                 var searchText = PagedListCriteria.SearchText?.Trim().ToLower();
                 if (!string.IsNullOrWhiteSpace(searchText))
                 {
                     query = query.Where(x => x.Name.ToLower().Contains(searchText.ToLower()));
                 }
 
-                query = query.OrderBy(a => a.SubcontractorId);
+                query = query.OrderBy(a => a.SubcontractorID);
                 var responseQuery = query.Select(x => new SubcontractorResponseModel
                 {
-                    SubcontractorID = x.SubcontractorId,
-                    CompanyID = x.CompanyId,
+                    SubcontractorID = x.SubcontractorID,
+                    CompanyID = x.CompanyID,
+                    CompanyName = x.CompanyName,
                     Name = x.Name,
                     ContactEmail = x.ContactEmail,
                     ContactPhone = x.ContactPhone,
                     Address = x.Address,
-                    GSTIN = x.Gstin,
-                    PAN = x.Pan,
+                    GSTIN = x.GSTIN,
+                    PAN = x.PAN,
                     CreatedAt = x.CreatedAt
                 });
 
@@ -3059,6 +3076,61 @@ namespace ComplyX_Businesss.BusinessLogic
                 {
                     IsSuccess = false,
                     Result = null,
+                    Message = ex.Message
+                };
+            }
+        }
+
+        public async Task<ManagerBaseResponse<object>> GetDataCompanyCount(int ProductOwnerId)
+        {
+            try
+            {
+                var TotalCompany = await _UnitOfWork.CompanyRepository.GetQueryable().Where(x => x.ProductOwnerId == ProductOwnerId).CountAsync();
+
+                var employee = await (from company in _UnitOfWork.CompanyRepository.GetQueryable()
+                               join emp in _UnitOfWork.EmployeeRespositories.GetQueryable()
+                                   on company.CompanyId equals emp.CompanyId where (company.ProductOwnerId == ProductOwnerId) select emp).ToListAsync();
+                var employeecount = employee.Count;
+
+                var TotalActiveCompany = await _UnitOfWork.CompanyRepository.GetQueryable().Where(x => x.ProductOwnerId == ProductOwnerId && x.IsActive == true).CountAsync();
+                var TotalInActiveCompany = await _UnitOfWork.CompanyRepository.GetQueryable().Where(x => x.ProductOwnerId == ProductOwnerId && x.IsActive == false).CountAsync();
+
+                var result = new
+                {
+                    TotalCompany = TotalCompany,
+                    TotalEmployee = employeecount,
+                    TotalActiveCompany = TotalActiveCompany,
+                    TotalInActiveCompany = TotalInActiveCompany
+                };
+
+                if (result == null)
+                {
+                    return new ManagerBaseResponse<object>
+                    {
+                        IsSuccess = false,
+                        Result = 0,
+                        Message = "Company Count Data not Retrieved.",
+                    };
+                }
+                else
+                {
+
+
+                    return new ManagerBaseResponse<object>
+                    {
+                        IsSuccess = true,
+                        Result = result,
+                        Message = "Company Party Role Data Retrieved Successfully.",
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return new ManagerBaseResponse<object>
+                {
+                    IsSuccess = false,
+                    Result = 0,
                     Message = ex.Message
                 };
             }
