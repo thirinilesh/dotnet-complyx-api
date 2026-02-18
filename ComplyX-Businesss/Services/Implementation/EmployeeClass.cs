@@ -427,8 +427,55 @@ namespace ComplyX.BusinessLogic
         {
             try
             {
+                 
+                var query = from employee in  _UnitOfWork.EmployeeRespositories.GetQueryable()
+                    join company in _UnitOfWork.CompanyRepository.GetQueryable()
+                    on employee.CompanyId equals company.CompanyId
+                            join Subcontractor in _UnitOfWork.SubcontractorRepository.GetQueryable()
+                            on employee.SubcontractorId equals Subcontractor.SubcontractorId
+                            select( new EmployeeResponseModel
 
-                var query = _UnitOfWork.EmployeeRespositories.GetQueryable();
+                            {
+                                EmployeeId = employee.EmployeeId,
+                                CompanyId = employee.CompanyId,
+                                CompanyName = company.Name,
+                                SubcontractorId = employee.SubcontractorId,
+                                SubcontractorName = Subcontractor.Name,
+                                EmployeeCode = employee.EmployeeCode,
+                                FirstName = employee.FirstName,
+                                LastName = employee.LastName,
+                                FatherSpouseName = employee.FatherSpouseName,
+                                Dob = employee.Dob,
+                                Gender = employee.Gender,
+                                MaritalStatus = employee.MaritalStatus,
+                                Nationality = employee.Nationality,
+                                Pan = employee.Pan,
+                                Aadhaar = employee.Aadhaar,
+                                Mobile = employee.Mobile,
+                                Email = employee.Email,
+                                PresentAddress = employee.PresentAddress,
+                                PermanentAddress = employee.PermanentAddress,
+                                City = employee.City,
+                                State = employee.State,
+                                Pincode = employee.Pincode,
+                                Doj = employee.Doj,
+                                ConfirmationDate = employee.ConfirmationDate,
+                                Designation = employee.Designation,
+                                Department = employee.Department,
+                                Grade = employee.Grade,
+                                EmploymentType = employee.EmploymentType,
+                                WorkLocation = employee.WorkLocation,
+                                ReportingManager = employee.ReportingManager,
+                                ExitDate = employee.ExitDate,
+                                ExitType = employee.ExitType,
+                                ExitReason = employee.ExitReason,
+                                Uan = employee.Uan,
+                                PfaccountNumber = employee.PfaccountNumber,
+                                EsicIp = employee.EsicIp,
+                                Ptstate = employee.Ptstate,
+                                ActiveStatus = employee.ActiveStatus,
+                                IsDeleted = employee.IsDeleted
+                            });
                 var searchText = PagedListCriteria.SearchText?.Trim().ToLower();
                 if (!string.IsNullOrWhiteSpace(searchText))
                 {
@@ -441,7 +488,9 @@ namespace ComplyX.BusinessLogic
                    {
                         EmployeeId = x.EmployeeId,
                         CompanyId = x.CompanyId,
+                        CompanyName = x.CompanyName,
                         SubcontractorId = x.SubcontractorId,
+                        SubcontractorName = x.SubcontractorName,
                         EmployeeCode = x.EmployeeCode,
                         FirstName = x.FirstName,
                         LastName = x.LastName,

@@ -11,8 +11,10 @@ namespace ComplyX_Businesss.Models.Employee
         public int EmployeeId { get; set; }
 
         public int? CompanyId { get; set; }
+        public string? CompanyName { get; set; }
 
         public int? SubcontractorId { get; set; }
+        public string? SubcontractorName { get; set; }
 
         public string? EmployeeCode { get; set; }
 
