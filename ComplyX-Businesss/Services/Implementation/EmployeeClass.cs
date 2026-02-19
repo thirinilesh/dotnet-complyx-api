@@ -60,34 +60,65 @@ namespace ComplyX.BusinessLogic
 
             try
             {
-                var baemployee = _mapper.Map<Employee>(Employee);
-                if(Employee.Aadhaar.Contains(" "))
+                if (Employee.EmployeeId == 0)
                 {
+                    var baemployee = _mapper.Map<Employee>(Employee);
+                    if (Employee.Aadhaar.Contains(" "))
+                    {
+                        return new ManagerBaseResponse<bool>
+                        {
+                            Result = false,
+                            IsSuccess = false,
+                            Message = "Aadhaar number should not contain spaces."
+                        };
+                    }
+                    await _UnitOfWork.EmployeeRespositories.AddAsync(baemployee);
+                    await _UnitOfWork.CommitAsync();
+
+                    var responses = _mapper.Map<EmployeeResponseModel>(baemployee);
                     return new ManagerBaseResponse<bool>
                     {
-                        Result = false,
-                        IsSuccess = false,
-                        Message = "Aadhaar number should not contain spaces."
+                        Result = true,
+                        IsSuccess = true,
+                        Message = "Employee Data Saved Successfully."
                     };
                 }
-                await _UnitOfWork.EmployeeRespositories.AddAsync(baemployee);
-                await _UnitOfWork.CommitAsync();
-
-                var responses = _mapper.Map<EmployeeResponseModel>(baemployee);
-                return new ManagerBaseResponse<bool>
+                else
                 {
-                    Result = true,IsSuccess = true,
-                    Message = "Employee Data Saved Successfully."
-                } ;
+                    var existingEmployee = await _UnitOfWork.EmployeeRespositories
+                         .GetQueryable().Where(x => x.EmployeeId == Employee.EmployeeId).FirstOrDefaultAsync();
+                   
+                    if (Employee.Aadhaar.Contains(" "))
+                    {
+                        return new ManagerBaseResponse<bool>
+                        {
+                            Result = false,
+                            IsSuccess = false,
+                            Message = "Aadhaar number should not contain spaces."
+                        };
+                    }
+                    _mapper.Map(Employee, existingEmployee);
+                    _UnitOfWork.EmployeeRespositories.Update(existingEmployee);
+                    await _UnitOfWork.CommitAsync();
+
+                    var responses = _mapper.Map<EmployeeResponseModel>(existingEmployee);
+                    return new ManagerBaseResponse<bool>
+                    {
+                        Result = true,
+                        IsSuccess = true,
+                        Message = "Employee Data Updated Successfully."
+                    };
+                }
+               
 
             }
             catch (Exception e)
             {
-                return  new ManagerBaseResponse<bool>
+                return new ManagerBaseResponse<bool>
                 {
                     Result = false,
                     Message = e.Message
-                } ;
+                };
             }
         }
         public async Task<ManagerBaseResponse<bool>> RemoveEmployeeData(string EmployeeID)
