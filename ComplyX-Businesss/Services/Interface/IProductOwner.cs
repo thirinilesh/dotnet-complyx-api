@@ -75,6 +75,8 @@ namespace ComplyX_Businesss.Services
         Task<ManagerBaseResponse<List<CompanyPartyRoleResponseModel>>> GetAllCompanyPartyRoleDataByID(string CompanyPartyRoleID);
         Task<ManagerBaseResponse<IEnumerable<CompanyPartyRoleResponseModel>>> GetAllCompanyPartyRoleFilter(PagedListCriteria PagedListCriteria);
         Task<ManagerBaseResponse<object>> GetDataCompanyCount(int ProductOwnerId);
+
+        Task<ManagerBaseResponse<object>> GetProductOwnerExpireList();
     }
 
 }

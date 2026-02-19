@@ -1105,11 +1105,28 @@ namespace ComplyX.Controllers
         /// <response code="200">Returns the total company count.</response>
         /// <response code="204">No companies found.</response>
         /// <response code="400">Error occurred while fetching company count.</response>
-        [HttpGet("GetTotalCompanyCount")]
+        [HttpGet("GetDataCompanyCount")]
         public async Task<IActionResult> GetDataCompanyCount(int ProductOwnerId)
         {
             return ResponseResult(await _IProductOwnere.GetDataCompanyCount(ProductOwnerId));
         }
 
+        /// <summary>
+        /// Retrieves the list of expired product owner subscriptions.
+        /// </summary>
+        /// <returns>
+        /// An <see cref="IActionResult"/> containing the expired product owner list.
+        /// Returns 200 OK when data is retrieved successfully.
+        /// Returns 204 No Content when no expired subscriptions exist.
+        /// Returns 400 Bad Request if an error occurs during retrieval.
+        /// </returns>
+        /// <response code="200">Returns the expired product owner subscription list.</response>
+        /// <response code="204">No expired subscriptions found.</response>
+        /// <response code="400">Error occurred while fetching expired subscriptions.</response>
+        [HttpGet("GetProductOwnerExpireList")]
+        public async Task<IActionResult> GetProductOwnerExpireList()
+        {
+            return ResponseResult(await _IProductOwnere.GetProductOwnerExpireList());
+        }
     }
 }

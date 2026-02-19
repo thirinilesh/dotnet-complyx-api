@@ -25,6 +25,7 @@ using Antlr.Runtime.Misc;
 using System.Numerics;
 using AutoMapper.Configuration.Annotations;
 using System.ComponentModel.Design;
+using Microsoft.Graph.Models;
 //using NHibernate.Linq;
 
 
@@ -3095,12 +3096,18 @@ namespace ComplyX_Businesss.BusinessLogic
                 var TotalActiveCompany = await _UnitOfWork.CompanyRepository.GetQueryable().Where(x => x.ProductOwnerId == ProductOwnerId && x.IsActive == true).CountAsync();
                 var TotalInActiveCompany = await _UnitOfWork.CompanyRepository.GetQueryable().Where(x => x.ProductOwnerId == ProductOwnerId && x.IsActive == false).CountAsync();
 
+                var productdata = await (from product in _UnitOfWork.ProductOwnerRepositories.GetQueryable()
+                                         join subscription in _UnitOfWork.ProductOwnerSubscriptions.GetQueryable()
+                                         on product.ProductOwnerId equals subscription.ProductOwnerId where (subscription.EndDate <= DateOnly.FromDateTime(DateTime.Now)) select subscription).ToListAsync();
+                var productcount = productdata.Count;
+
                 var result = new
                 {
                     TotalCompany = TotalCompany,
                     TotalEmployee = employeecount,
                     TotalActiveCompany = TotalActiveCompany,
-                    TotalInActiveCompany = TotalInActiveCompany
+                    TotalInActiveCompany = TotalInActiveCompany,
+                    TotalExpiringCompany  = productcount
                 };
 
                 if (result == null)
@@ -3120,7 +3127,76 @@ namespace ComplyX_Businesss.BusinessLogic
                     {
                         IsSuccess = true,
                         Result = result,
-                        Message = "Company Party Role Data Retrieved Successfully.",
+                        Message = "Company Count Data Retrieved Successfully.",
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return new ManagerBaseResponse<object>
+                {
+                    IsSuccess = false,
+                    Result = 0,
+                    Message = ex.Message
+                };
+            }
+        }
+
+        public async Task<ManagerBaseResponse<object>> GetProductOwnerExpireList()
+        {
+            try
+            { 
+                var result = await (from product in _UnitOfWork.ProductOwnerRepositories.GetQueryable()
+                                         join subscription in _UnitOfWork.ProductOwnerSubscriptions.GetQueryable()
+                                         on product.ProductOwnerId equals subscription.ProductOwnerId
+                                         where (subscription.EndDate <= DateOnly.FromDateTime(DateTime.Now))
+                                         select  new
+                                         {
+                                             
+                                             product.ProductOwnerId,
+                                             product.OwnerName,
+                                             product.Email,
+                                             product.Mobile,
+                                             product.PaymentAddress,
+
+                                             
+                                             subscription.SubscriptionId,
+                                             subscription.PlanId,
+                                             subscription.StartDate,
+                                             subscription.EndDate,
+                                             subscription.IsTrial,
+                                             subscription.PaymentMode,
+                                             subscription.TransactionId,
+                                             subscription.Remarks
+
+                                         }).ToListAsync();
+              
+
+                //var result = new
+                //{
+                     
+                //    TotalExpiringCompany = productdata
+                //};
+
+                if (result == null)
+                {
+                    return new ManagerBaseResponse<object>
+                    {
+                        IsSuccess = false,
+                        Result = 0,
+                        Message = "ProductOwner Expire Data not Retrieved.",
+                    };
+                }
+                else
+                {
+
+
+                    return new ManagerBaseResponse<object>
+                    {
+                        IsSuccess = true,
+                        Result = result,
+                        Message = "ProductOwner Expire Data Retrieved Successfully.",
                     };
                 }
             }
