@@ -3098,7 +3098,7 @@ namespace ComplyX_Businesss.BusinessLogic
 
                 var productdata = await (from product in _UnitOfWork.ProductOwnerRepositories.GetQueryable()
                                          join subscription in _UnitOfWork.ProductOwnerSubscriptions.GetQueryable()
-                                         on product.ProductOwnerId equals subscription.ProductOwnerId where (subscription.EndDate <= DateOnly.FromDateTime(DateTime.Now)) select subscription).ToListAsync();
+                                         on product.ProductOwnerId equals subscription.ProductOwnerId where (subscription.StartDate == subscription.EndDate.AddDays(-30) && subscription.EndDate <= DateOnly.FromDateTime(DateTime.Now)) select subscription).ToListAsync();
                 var productcount = productdata.Count;
 
                 var result = new
@@ -3150,7 +3150,7 @@ namespace ComplyX_Businesss.BusinessLogic
                 var result = await (from product in _UnitOfWork.ProductOwnerRepositories.GetQueryable()
                                          join subscription in _UnitOfWork.ProductOwnerSubscriptions.GetQueryable()
                                          on product.ProductOwnerId equals subscription.ProductOwnerId
-                                         where (subscription.EndDate <= DateOnly.FromDateTime(DateTime.Now))
+                                         where (subscription.StartDate == subscription.EndDate.AddDays(-30) && subscription.EndDate <= DateOnly.FromDateTime(DateTime.Now))
                                          select  new
                                          {
                                              
