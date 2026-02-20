@@ -23,6 +23,7 @@ using ComplyX_Businesss.Models.CompanyEPFO;
 using System.Diagnostics.Tracing;
 using System.Reflection.Metadata.Ecma335;
 using ComplyX_Businesss.Models.Company;
+using Microsoft.Extensions.Logging;
 
 namespace ComplyX.BusinessLogic
 {
@@ -58,30 +59,31 @@ namespace ComplyX.BusinessLogic
                 }
                 else
                 {
-                    var BankAccount = await _UnitOfWork.PayrollDataRespositories.GetQueryable().FirstOrDefaultAsync(x => x.BankAccount == Payrolls.BankAccount || x.Ifsc == Payrolls.Ifsc);
-                    if (BankAccount != null)
-                    {
-                       if(BankAccount.BankAccount == Payrolls.BankAccount)
-    {
-                            return new ManagerBaseResponse<bool>
-                            {
-                                Result = false,
-                                Message = "Bank Account number must be unique."
-                            };
-                        }
 
-                        if (BankAccount.Ifsc == Payrolls.Ifsc)
-                        {
-                            return new ManagerBaseResponse<bool>
-                            {
-                                Result = false,
-                                Message = "IFSC code must be unique."
-                            };
-                        }
-                    }
-                    else
+                    if (Payrolls.PayrollId == 0)
                     {
-                        if (Payrolls.PayrollId == 0)
+                        var BankAccount = await _UnitOfWork.PayrollDataRespositories.GetQueryable().FirstOrDefaultAsync(x => x.BankAccount == Payrolls.BankAccount || x.Ifsc == Payrolls.Ifsc);
+                        if (BankAccount != null)
+                        {
+                            if (BankAccount.BankAccount != Payrolls.BankAccount)
+                            {
+                                return new ManagerBaseResponse<bool>
+                                {
+                                    Result = false,
+                                    Message = "Bank Account number must be unique."
+                                };
+                            }
+
+                            if (BankAccount.Ifsc != Payrolls.Ifsc)
+                            {
+                                return new ManagerBaseResponse<bool>
+                                {
+                                    Result = false,
+                                    Message = "IFSC code must be unique."
+                                };
+                            }
+                        }
+                        else
                         {
                             // Insert
                             PayrollDatum _model = new PayrollDatum();
@@ -103,11 +105,35 @@ namespace ComplyX.BusinessLogic
 
                             await _UnitOfWork.PayrollDataRespositories.AddAsync(_model);
                         }
-                        else
+                    }
+                    else
+                    {
+                        var BankAccount = await _UnitOfWork.PayrollDataRespositories.GetQueryable().FirstOrDefaultAsync(x => x.PayrollId == Payrolls.PayrollId);
+                        if (BankAccount != null)
                         {
+                            if (BankAccount.BankAccount != Payrolls.BankAccount)
+                            {
+                                return new ManagerBaseResponse<bool>
+                                {
+                                    Result = false,
+                                    Message = "Please Enter valid bank account number."
+                                };
+                            }
+
+                            if (BankAccount.Ifsc != Payrolls.Ifsc)
+                            {
+                                return new ManagerBaseResponse<bool>
+                                {
+                                    Result = false,
+                                    Message = "Please Enter valid IFSC Code."
+                                };
+                            }
+                     
+
+
                             // Update
                             var originalTerm = _UnitOfWork.PayrollDataRespositories.GetQueryable()
-                                .Where(x => x.PayrollId == Payrolls.PayrollId).FirstOrDefault();
+                                    .Where(x => x.PayrollId == Payrolls.PayrollId).FirstOrDefault();
                             originalTerm.EmployeeId = Payrolls.EmployeeId;
                             originalTerm.Month = Payrolls.Month;
                             originalTerm.Basic = Payrolls.Basic;
