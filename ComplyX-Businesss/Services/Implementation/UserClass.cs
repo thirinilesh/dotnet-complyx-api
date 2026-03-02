@@ -29,6 +29,7 @@ using ComplyX_Businesss.Models.Logins;
 using ComplyX_Businesss.Models.Employee;
 using ComplyX_Businesss.Models.Company;
 using System.Data;
+using ComplyX.Data.DbContexts;
 
 
 namespace ComplyX.BusinessLogic
@@ -43,10 +44,11 @@ namespace ComplyX.BusinessLogic
         private readonly UserManager<ApplicationUsers> _userManager;
         private readonly JwtTokenService _tokenService;
         private readonly AppContext _context;
+        private readonly AppDbContext appDbContext1;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IUnitOfWork _UnitOfWork;
 
-        public UserClass(AppContext context, UserManager<ApplicationUsers> userManager, 
+        public UserClass(AppContext context, UserManager<ApplicationUsers> userManager, AppDbContext appDbContext, 
             IUnitOfWork unitOfWork ,JwtTokenService tokenservice, RoleManager<IdentityRole> roleManager)
         {
             _context = context;
@@ -54,6 +56,7 @@ namespace ComplyX.BusinessLogic
             _tokenService = tokenservice;
             _roleManager = roleManager;
             _UnitOfWork = unitOfWork;
+            appDbContext1 = appDbContext;
         }
 
         public async Task<ManagerBaseResponse<RegisterUser>> Register(RegisterUser RegisterUser)
@@ -195,7 +198,7 @@ namespace ComplyX.BusinessLogic
 
                     var user = new ApplicationUsers()
                     {
-                        Id = Guid.NewGuid(),
+                         
                         UserName = RegisterUser.UserName,
                         Email = RegisterUser.Email,
                         EmailConfirmed = true,
@@ -204,8 +207,11 @@ namespace ComplyX.BusinessLogic
                         ApprovedDeniedBy = "",
                         ApprovedDeniedDate = DateTime.UtcNow,
                     };
+
+
                    
                     IdentityResult result = await _userManager.CreateAsync(user, RegisterUser.Password);
+                    var userid = _context.Users.FirstOrDefault(x => x.UserName == RegisterUser.UserName);
                     RegisterUser _model = new RegisterUser();
                     if (_model != null)
 
@@ -213,7 +219,7 @@ namespace ComplyX.BusinessLogic
                         //_model.Password = Convert.ToBase64String(Encoding.UTF8.GetBytes(RegisterUser.Password));  
                         string hashed = BCrypt.Net.BCrypt.HashPassword(RegisterUser.Password);
 
-                        _model.UserID = Guid.NewGuid();
+                        _model.UserID =   userid.Id.ToString();
                         _model.UserName = RegisterUser.UserName;
                         _model.Password = hashed;
                         _model.Domain = RegisterUser.Domain;
@@ -275,7 +281,8 @@ namespace ComplyX.BusinessLogic
                 var token = _tokenService.GenerateToken(Login.Username);
                 var response = new LoginResponseModel
                 {
-
+                     UserId = user.UserID.ToString(),
+                    Username = Login.Username,
                     token = token
                 };
 

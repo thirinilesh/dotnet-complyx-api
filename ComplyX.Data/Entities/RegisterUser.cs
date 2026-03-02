@@ -10,7 +10,7 @@ public partial class RegisterUser
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public Guid UserID { get; set; }
+    public string UserID { get; set; }
     public string? UserName { get; set; }
 
     public string Password { get; set; } = null!;
