@@ -178,7 +178,7 @@ namespace ComplyX_Businesss.Services.Implementation
             }
         }
 
-        public async Task<ManagerBaseResponse<IEnumerable<CommonDropdownModel>>> GetTDSDeductorData(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<CommonDropdownModel>>> GetTDSDeductorSelectList(PagedListCriteria PagedListCriteria)
         {
             try
             {

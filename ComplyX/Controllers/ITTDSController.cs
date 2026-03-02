@@ -127,10 +127,10 @@ namespace ComplyX.Controllers
         /// - 204 No Content if no records exist.
         /// - 400 Bad Request if an error occurs during retrieval.
         /// </returns>
-        [HttpGet("GetTDSDeductorData")]
-        public async Task<IActionResult> GetTDSDeductorData([FromQuery] PagedListCriteria PagedListCriteria)
+        [HttpGet("GetTDSDeductorSelectList")]
+        public async Task<IActionResult> GetTDSDeductorSelectList([FromQuery] PagedListCriteria PagedListCriteria)
         {
-            return ResponseResult(await _ITTDSServices.GetTDSDeductorData(PagedListCriteria));
+            return ResponseResult(await _ITTDSServices.GetTDSDeductorSelectList(PagedListCriteria));
         }
 
         /// <summary>

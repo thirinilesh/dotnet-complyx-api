@@ -51,7 +51,7 @@ namespace ComplyX_Businesss.BusinessLogic
             _UnitOfWork = UnitOfWork;
             _appDbContext = appDbContext;
         }
-        public async Task<ManagerBaseResponse<IEnumerable<CommonDropdownModel>>> GetProductOwnerList(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<CommonDropdownModel>>> GetProductOwnerSelectList(PagedListCriteria PagedListCriteria)
         {
             try
             {
@@ -523,7 +523,7 @@ namespace ComplyX_Businesss.BusinessLogic
                 };
             }
         }
-        public async Task<ManagerBaseResponse<IEnumerable<CommonDropdownModel>>> GetCompanyData(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<CommonDropdownModel>>> GetCompanySelectList(PagedListCriteria PagedListCriteria)
         {
             try
             {
@@ -1219,7 +1219,7 @@ namespace ComplyX_Businesss.BusinessLogic
 
             }
         }
-        public async Task<ManagerBaseResponse<IEnumerable<CommonDropdownModel>>> GetSubcontractorsData(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<CommonDropdownModel>>> GetSubcontractorsSelectList(PagedListCriteria PagedListCriteria)
         {
             try
             {

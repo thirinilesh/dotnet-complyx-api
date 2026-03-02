@@ -67,11 +67,11 @@ namespace ComplyX.Controllers
         /// <param name="PagedListCriteria">Pagination and filter criteria.</param>
         /// <returns>An IActionResult containing the list of product owners.</returns>
 
-        [HttpGet]
+        [HttpGet("GetProductOwnerSelectList")]
 
-        public async Task<IActionResult> GetProductOwnerList([FromQuery] PagedListCriteria PagedListCriteria)
+        public async Task<IActionResult> GetProductOwnerSelectList([FromQuery] PagedListCriteria PagedListCriteria)
         {
-            return ResponseResult(await _IProductOwnere.GetProductOwnerList(PagedListCriteria));
+            return ResponseResult(await _IProductOwnere.GetProductOwnerSelectList(PagedListCriteria));
         }
 
 
@@ -201,10 +201,10 @@ namespace ComplyX.Controllers
         /// <response code="200">Returns the list of companies.</response>
         /// <response code="204">If no companies are found.</response>
         /// <response code="400">If there is an error while fetching the companies.</response>
-        [HttpGet("GetCompanyData")]
-        public async Task<IActionResult> GetCompanyData([FromQuery] PagedListCriteria PagedListCriteria)
+        [HttpGet("GetCompanySelectList")]
+        public async Task<IActionResult> GetCompanySelectList([FromQuery] PagedListCriteria PagedListCriteria)
         {
-            return ResponseResult(await _IProductOwnere.GetCompanyData(PagedListCriteria));
+            return ResponseResult(await _IProductOwnere.GetCompanySelectList(PagedListCriteria));
         }
         /// <summary>
         /// Retrieves a filtered and paginated list of companies.
@@ -416,9 +416,9 @@ namespace ComplyX.Controllers
         /// <response code="204">If no subcontractors are found.</response>
         /// <response code="400">If there is an error while fetching the subcontractors.</response>
         [HttpGet("GetSubcontractorsData")]
-        public async Task<IActionResult> GetSubcontractorsData([FromQuery] PagedListCriteria PagedListCriteria)
+        public async Task<IActionResult> GetSubcontractorsSelectList([FromQuery] PagedListCriteria PagedListCriteria)
         {
-            return ResponseResult(await _IProductOwnere.GetSubcontractorsData(PagedListCriteria));
+            return ResponseResult(await _IProductOwnere.GetSubcontractorsSelectList(PagedListCriteria));
         }
         /// <summary>
         /// Retrieves a filtered and paginated list of subcontractors.

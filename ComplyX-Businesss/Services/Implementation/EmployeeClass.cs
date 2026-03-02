@@ -237,7 +237,7 @@ namespace ComplyX.BusinessLogic
             }
         }
 
-        public async Task<ManagerBaseResponse<IEnumerable<CommonDropdownModel>>> GetEmployeeData(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<CommonDropdownModel>>> GetEmployeeSelectList(PagedListCriteria PagedListCriteria)
         {
             try
             {

@@ -96,7 +96,7 @@ namespace ComplyX.Controllers
         /// <summary>
         /// Retrieves a filtered and paginated list of employees based on the provided criteria.
         /// </summary>
-        /// <param name="pagedListCriteria">
+        /// <param name="PagedListCriteria">
         /// The criteria used to filter, sort, search, and paginate the employee data.
         /// </param>
         /// <returns>
@@ -107,10 +107,10 @@ namespace ComplyX.Controllers
         /// <response code="200">Returns the filtered list of employees.</response>
         /// <response code="204">If no employees are found.</response>
         /// <response code="400">If there is an error while fetching the employee data.</response>
-        [HttpGet("GetEmployeeData")]
-        public async Task<IActionResult> GetEmployeeData([FromQuery] PagedListCriteria PagedListCriteria)
+        [HttpGet("GetEmployeeSelectList")]
+        public async Task<IActionResult> GetEmployeeSelectList([FromQuery] PagedListCriteria PagedListCriteria)
         {
-            return ResponseResult(await _IEmployeeServices.GetEmployeeData(PagedListCriteria));
+            return ResponseResult(await _IEmployeeServices.GetEmployeeSelectList(PagedListCriteria));
         }
 
         /// <summary>
