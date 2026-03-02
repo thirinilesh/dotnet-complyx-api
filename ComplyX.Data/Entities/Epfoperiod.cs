@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ComplyX.Data.Entities;
 
@@ -34,13 +35,13 @@ public partial class Epfoperiod
     public bool IsLocked { get; set; }
 
     public DateTime? LockedAt { get; set; }
-
+    [NotMapped]
     public string? LockedByUserId { get; set; }
 
     public virtual Company Company { get; set; } = null!;
-
-    public virtual AspNetUser? CreatedByUser { get; set; } 
-
+    [NotMapped]
+    public virtual AspNetUser? CreatedByUser { get; set; }
+    [NotMapped]
     public virtual AspNetUser? LockedByUser { get; set; }
 
     public virtual Subcontractor? Subcontractor { get; set; }

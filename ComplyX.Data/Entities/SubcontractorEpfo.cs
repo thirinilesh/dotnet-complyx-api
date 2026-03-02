@@ -17,5 +17,5 @@ public partial class SubcontractorEpfo
 
     public DateTime? CreatedAt { get; set; }
 
-    public virtual Subcontractor Subcontractor { get; set; } = null!;
+    public virtual Subcontractor? Subcontractor { get; set; } = null!;
 }

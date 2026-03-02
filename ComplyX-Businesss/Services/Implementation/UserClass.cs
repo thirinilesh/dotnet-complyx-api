@@ -27,6 +27,8 @@ using RegisterUser = ComplyX.Data.Entities.RegisterUser;
 using ComplyX.Repositories.UnitOfWork;
 using ComplyX_Businesss.Models.Logins;
 using ComplyX_Businesss.Models.Employee;
+using ComplyX_Businesss.Models.Company;
+using System.Data;
 
 
 namespace ComplyX.BusinessLogic
@@ -516,19 +518,19 @@ namespace ComplyX.BusinessLogic
                 });
             }
 
-            if (!await _userManager.CheckPasswordAsync(user, model.OldPassword))
-            {
+            //if (!await _userManager.CheckPasswordAsync(user, model.OldPassword))
+            //{
                  
 
-                return (new ManagerBaseResponse<ChangePasswordModel>()
-                {
-                    Result = null,
-                    IsSuccess = false,
-                    Message = "Please enter valid current password.",
-                    StatusCode = 400
+            //    return (new ManagerBaseResponse<ChangePasswordModel>()
+            //    {
+            //        Result = null,
+            //        IsSuccess = false,
+            //        Message = "Please enter valid current password.",
+            //        StatusCode = 400
 
-                });
-            }
+            //    });
+            //}
 
             if (model.OldPassword == model.NewPassword)
             {
@@ -540,7 +542,21 @@ namespace ComplyX.BusinessLogic
                 });
             }
 
-            var result = await _userManager.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
+            // var result = await _userManager.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
+
+            //if (!result.Succeeded)
+            //{
+            //    var message = string.Join(" | ", result.Errors.Select(x => x.Description));
+            //    return (new ManagerBaseResponse<ChangePasswordModel>
+            //    {
+            //        Result = null,
+            //        Message = message,
+            //        StatusCode = 400
+            //    });
+            //}
+            await _userManager.RemovePasswordAsync(user);
+            // Add new password
+            var result = await _userManager.AddPasswordAsync(user, model.NewPassword);
 
             if (!result.Succeeded)
             {
@@ -552,6 +568,8 @@ namespace ComplyX.BusinessLogic
                     StatusCode = 400
                 });
             }
+
+
 
             user.LastPasswordChangeDate = DateTime.UtcNow;
             await _userManager.UpdateAsync(user);
@@ -695,11 +713,33 @@ namespace ComplyX.BusinessLogic
             };
         }
 
-        public async Task<ManagerBaseResponse<IEnumerable<RegisterUser>>> GetUserList(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<object>> GetUserList(PagedListCriteria PagedListCriteria)
         {
             try
             {
-                var query = _UnitOfWork.RegisterRespositories.GetQueryable();
+                // First, convert UserId to string so EF can compare in SQL
+                var query = from register in _context.RegisterUser
+                            join roles in _context.UserRoles
+                                on register.UserID.ToString() equals roles.UserId
+                            join role in _context.Roles
+                                on roles.RoleId equals role.Id
+                            join user in _context.Users
+                                on register.UserID.ToString() equals user.Id
+                            select new  
+                            {
+                                register.UserID,
+                                user.UserName,
+                                register.Domain,
+                                register.Email,
+                                register.Phone,
+                                register.Address,
+                                register.State,
+                                register.Gstin,
+                                register.Pan,
+                                user.IsApproved,
+                                user.LockoutEnabled,
+                                RoleName = role.Name
+                            };
                 var searchText = PagedListCriteria.SearchText?.Trim().ToLower();
                 if (!string.IsNullOrWhiteSpace(searchText))
                 {
@@ -707,47 +747,65 @@ namespace ComplyX.BusinessLogic
                 }
 
                 query = query.OrderBy(a => a.UserID);
-                var responseQuery = query 
+                var responseQuery = query
+   .AsEnumerable() // bring into memory to group
+   .GroupBy(x => x.UserID)
+   .Select(g => new RegisterUserResponse
+   {
+       UserID = g.Key,
+       UserName = g.First().UserName,
+       Domain = g.First().Domain,
+       Email = g.First().Email,
+       Phone = g.First().Phone,
+       Address = g.First().Address,
+       State = g.First().State,
+       Gstin = g.First().Gstin,
+       Pan = g.First().Pan,
+       IsApproved = g.First().IsApproved,
+       LockoutEnabled = g.First().LockoutEnabled,
+       Roles = g.Select(r => r.RoleName).ToList()  // ✅ Combine all roles
+   })
+   .ToList();
+                //var responseQuery = query 
 
-   
-                
-                    .Select(x => new RegisterUser
-                    {
-                        UserID = x.UserID,
-                        UserName = x.UserName,
-                        Domain = x.Domain,
-                        Email = x.Email,
-                        Phone = x.Phone,
-                        Address = x.Address,
-                        State = x.State,
-                        Gstin = x.Gstin,
-                        Pan = x.Pan
-                    });
 
-                PageListed<RegisterUser> result = await responseQuery.ToPagedListAsync(PagedListCriteria, orderByTranslations);
 
-                if (result.Data.Count > 0)
+                //    .Select(x => new RegisterUserResponse
+                //    {
+                //        UserID = x.UserID,
+                //        UserName = x.UserName,
+                //        Roles = x.Roles,
+                //        Domain = x.Domain,
+                //        Email = x.Email,
+                //        Phone = x.Phone,
+                //        Address = x.Address,
+                //        State = x.State,
+                //        Gstin = x.Gstin,
+                //        Pan = x.Pan,
+                //        IsApproved = x.IsApproved,
+                //        LockoutEnabled = x.LockoutEnabled
+                //    });
+
+
+                var results = new
                 {
-                    return new ManagerBaseResponse<IEnumerable<RegisterUser>>
-                {
-                    Result = result.Data,
-                    IsSuccess = true,
-                    Message = "Employee Data Retrieved Successfully.",
-                    PageDetail = new PageDetailModel()
-                    {
-                        Skip = PagedListCriteria.Skip,
-                        Take = PagedListCriteria.Take,
-                        Count = result.TotalCount,
-                        SearchText = PagedListCriteria.SearchText,
-                        FilterdCount = PagedListCriteria.Filters
-                    }
+                    results = responseQuery,
                 };
+
+                if (results  != null)
+                {
+                    return new ManagerBaseResponse<object>
+                    {
+                        IsSuccess = true,
+                        Result = results,
+                        Message = "Company Count Data Retrieved Successfully.",
+                    };
                 }
                 else
                 {
-                    return new ManagerBaseResponse<IEnumerable<RegisterUser>>
+                    return new ManagerBaseResponse<object>
                     {
-                        Result = result.Data,
+                        Result = false,
                         IsSuccess = false,
                         Message = "User Data not Retrieved.",
 
@@ -757,7 +815,7 @@ namespace ComplyX.BusinessLogic
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<IEnumerable<RegisterUser>>
+                return new ManagerBaseResponse<object>
                 {
                     IsSuccess = false,
                     Result = null,

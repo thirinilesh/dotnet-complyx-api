@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace ComplyX.Data.Entities;
 
 public partial class GratuityTransaction
 {
+    [Key]
     public Guid GratuityId { get; set; }
 
     public decimal? LastDrawnSalary { get; set; }

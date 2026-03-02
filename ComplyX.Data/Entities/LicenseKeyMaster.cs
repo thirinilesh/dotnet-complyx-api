@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace ComplyX.Data.Entities;
 
 public partial class LicenseKeyMaster
 {
+    [Key]
     public int LicenseId { get; set; }
 
     public int ProductOwnerId { get; set; }

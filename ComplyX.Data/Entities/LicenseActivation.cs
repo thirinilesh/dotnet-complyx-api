@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace ComplyX.Data.Entities;
 
 public partial class LicenseActivation
 {
+    [Key]
     public int ActivationId { get; set; }
 
     public int LicenseId { get; set; }

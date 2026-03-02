@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace ComplyX.Data.Entities;
 
 public partial class LeaveEncashmentPolicy
 {
+    [Key]
     public Guid PolicyId { get; set; }
 
     public string LeaveType { get; set; } = null!;

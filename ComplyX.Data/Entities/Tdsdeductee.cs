@@ -6,6 +6,7 @@ namespace ComplyX.Data.Entities;
 
 public partial class Tdsdeductee
 {
+    [Key]
     public int DeducteeId { get; set; }
 
     public int CompanyId { get; set; }

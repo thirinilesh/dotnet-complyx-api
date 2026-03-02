@@ -1907,6 +1907,9 @@ public partial class AppDbContext :IdentityDbContext<ApplicationUsers>
                 .HasForeignKey(d => d.DeductorId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_TDSEntry_Deductor");
+             entity.HasOne(e => e.TdschallanAllocation) // Tdsentry has one TdschallanAllocation
+        .WithOne(e => e.Entry)               // TdschallanAllocation has one Tdsentry
+        .HasForeignKey<TdschallanAllocation>(e => e.EntryId);
         });
 
         modelBuilder.Entity<Tdsrate>(entity =>

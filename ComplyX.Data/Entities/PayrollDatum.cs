@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace ComplyX.Data.Entities;
 
 public partial class PayrollDatum
 {
+    [Key]
     public int PayrollId { get; set; }
 
     public int? EmployeeId { get; set; }

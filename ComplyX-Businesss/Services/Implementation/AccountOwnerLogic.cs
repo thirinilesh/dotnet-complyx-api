@@ -416,6 +416,7 @@ namespace ComplyX_Businesss.BusinessLogic
 
             try
             {
+                
                 var accountid = await _UnitOfWork.ProductOwnerRepositories.GetQueryable().FirstOrDefaultAsync(x => x.ProductOwnerId == company.ProductOwnerId);
 
                 if (accountid == null)
@@ -1045,6 +1046,7 @@ namespace ComplyX_Businesss.BusinessLogic
 
             try
             {
+                
                 var accountid = await _UnitOfWork.CompanyRepository.GetQueryable().FirstOrDefaultAsync(x => x.CompanyId == Subcontractors.CompanyID);
 
                 if (accountid == null)
@@ -1055,6 +1057,7 @@ namespace ComplyX_Businesss.BusinessLogic
                         Message = "Company is not found.",
                     };
                 }
+               
                 else
                 {
                     if (Subcontractors.SubcontractorID == 0)
@@ -2530,6 +2533,7 @@ namespace ComplyX_Businesss.BusinessLogic
 
             try
             {
+                 
                 var user = _context.ApplicationUsers.FirstOrDefault(x => x.UserName == UserName);
                 if (user == null)
                 {
@@ -3190,8 +3194,6 @@ namespace ComplyX_Businesss.BusinessLogic
                 }
                 else
                 {
-
-
                     return new ManagerBaseResponse<object>
                     {
                         IsSuccess = true,

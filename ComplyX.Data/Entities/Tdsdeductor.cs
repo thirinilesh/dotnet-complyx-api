@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace ComplyX.Data.Entities;
 
 public partial class Tdsdeductor
 {
+    [Key]
     public int DeductorId { get; set; }
 
     public int CompanyId { get; set; }

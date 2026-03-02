@@ -16,7 +16,7 @@ namespace ComplyX_Businesss.Helper
         }
 
  
-        public virtual DbSet<RegisterUser> RegisterUser { get; set; }
+        public virtual DbSet<RegisterUserResponse> RegisterUser { get; set; }
      
 
  
@@ -41,7 +41,7 @@ namespace ComplyX_Businesss.Helper
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            modelBuilder.Entity<RegisterUser>().HasKey(e =>e.UserName);
+            modelBuilder.Entity<RegisterUserResponse>().HasKey(e =>e.UserName);
 
 
             //modelBuilder.Entity<Company>(entity =>

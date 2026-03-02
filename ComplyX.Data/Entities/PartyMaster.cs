@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace ComplyX.Data.Entities;
 
 public partial class PartyMaster
 {
+    [Key]
     public int PartyId { get; set; }
 
     public string PartyName { get; set; } = null!;

@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace ComplyX.Data.Entities;
 
 public partial class Epfoecrfile
 {
+    [Key]
     public int EcrfileId { get; set; }
 
     public int CompanyId { get; set; }

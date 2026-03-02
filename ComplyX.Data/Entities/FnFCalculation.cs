@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace ComplyX.Data.Entities;
 
 public partial class FnFCalculation
 {
+    [Key]
     public Guid FnFid { get; set; }
 
     public DateOnly? ResignationDate { get; set; }

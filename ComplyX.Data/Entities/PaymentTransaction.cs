@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace ComplyX.Data.Entities;
 
 public partial class PaymentTransaction
 {
+    [Key]
     public int TransactionId { get; set; }
 
     public int PaymentId { get; set; }

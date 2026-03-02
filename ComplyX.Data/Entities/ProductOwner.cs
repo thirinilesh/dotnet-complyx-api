@@ -1,14 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace ComplyX.Data.Entities;
 
 public partial class ProductOwner
 {
+    [Required]
     public int ProductOwnerId { get; set; }
-
+    [Required]
     public string OwnerName { get; set; } = null!;
-
+    [Required]
     public string Email { get; set; } = null!;
 
     public string? Mobile { get; set; }
@@ -38,15 +40,15 @@ public partial class ProductOwner
     public DateTime? UpdatedAt { get; set; }
 
     public bool? IsActive { get; set; }
-
+    [Required]
     public string SubscriptionPlan { get; set; } = null!;
-
+    [Required]
     public DateOnly SubscriptionStart { get; set; }
-
+    [Required]
     public DateOnly SubscriptionExpiry { get; set; }
-
+    [Required]
     public int MaxCompanies { get; set; }
-
+    [Required]
     public int MaxUsers { get; set; }
 
     public int MaxStorageMb { get; set; }

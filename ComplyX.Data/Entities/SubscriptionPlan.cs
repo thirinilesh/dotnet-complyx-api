@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace ComplyX.Data.Entities;
 
 public partial class SubscriptionPlan
 {
+    [Key]
     public int PlanId { get; set; }
 
     public string PlanCode { get; set; } = null!;

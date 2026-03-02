@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace ComplyX.Data.Entities;
 
 public partial class AuditLog
 {
+    [Key]                  // 👈 Mark as primary key
+ 
     public int LogId { get; set; }
 
     public int? UserId { get; set; }

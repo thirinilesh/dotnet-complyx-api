@@ -27,9 +27,9 @@ public partial class Subcontractor
 
     public virtual ICollection<CompanySubcontractor> CompanySubcontractors { get; set; } = new List<CompanySubcontractor>();
 
-    public virtual ICollection<Employee> Employees { get; set; } = new List<Employee>();
+    public virtual ICollection<Employee>? Employees { get; set; } = new List<Employee>();
 
-    public virtual ICollection<Epfoecrfile> Epfoecrfiles { get; set; } = new List<Epfoecrfile>();
+    public virtual ICollection<Epfoecrfile>? Epfoecrfiles { get; set; } = new List<Epfoecrfile>();
 
     public virtual ICollection<EpfomonthlyWage> EpfomonthlyWages { get; set; } = new List<EpfomonthlyWage>();
 

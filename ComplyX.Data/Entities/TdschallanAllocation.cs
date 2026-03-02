@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ComplyX.Data.Entities;
 
 public partial class TdschallanAllocation
 {
+    [Key]
+    [ForeignKey("Entry")]
     public int AllocationId { get; set; }
 
     public int ChallanId { get; set; }
