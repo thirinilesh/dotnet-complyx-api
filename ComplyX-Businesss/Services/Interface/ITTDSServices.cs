@@ -22,6 +22,7 @@ namespace ComplyX_Businesss.Services.Interface
     {
         Task<ManagerBaseResponse<bool>> SaveTDSDeductorData(TdsdeductorRequestModel TDSDeductor , string UserName);
         Task<ManagerBaseResponse<List<TdsdeductorResponseModel>>> GetAllTDSDeductorData(string DeductorID);
+        Task<ManagerBaseResponse<IEnumerable<CommonDropdownModel>>> GetTDSDeductorData(PagedListCriteria PagedListCriteria);
         Task<ManagerBaseResponse<IEnumerable<TdsdeductorResponseModel>>> GetTDSDeductorFilter(PagedListCriteria PagedListCriteria);
         Task<ManagerBaseResponse<bool>> SaveTDSDeduteeData(TdsdeducteeRequestModel TDSDedutee, string UserName);
         Task<ManagerBaseResponse<List<TdsdeducteeResponseModel>>> GetAllTDSDeduteeData(string DeducteeID);

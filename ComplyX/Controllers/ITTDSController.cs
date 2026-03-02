@@ -115,6 +115,25 @@ namespace ComplyX.Controllers
         }
 
         /// <summary>
+        /// Retrieves the list of TDS deductors based on the specified pagination and filter criteria.
+        /// </summary>
+        /// <param name="PagedListCriteria">
+        /// The pagination and filtering criteria for retrieving TDS deductor data.
+        /// </param>
+        /// <returns>
+        /// An <see cref="IActionResult"/> containing the list of TDS deductor data.
+        /// Returns:
+        /// - 200 OK with data if records are found.
+        /// - 204 No Content if no records exist.
+        /// - 400 Bad Request if an error occurs during retrieval.
+        /// </returns>
+        [HttpGet("GetTDSDeductorData")]
+        public async Task<IActionResult> GetTDSDeductorData([FromQuery] PagedListCriteria PagedListCriteria)
+        {
+            return ResponseResult(await _ITTDSServices.GetTDSDeductorData(PagedListCriteria));
+        }
+
+        /// <summary>
         /// Saves or updates TDS deductor data.
         /// </summary>
         /// <param name="TDSDeductee">

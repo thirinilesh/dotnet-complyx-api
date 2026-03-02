@@ -177,6 +177,67 @@ namespace ComplyX_Businesss.Services.Implementation
                 };
             }
         }
+
+        public async Task<ManagerBaseResponse<IEnumerable<CommonDropdownModel>>> GetTDSDeductorData(PagedListCriteria PagedListCriteria)
+        {
+            try
+            {
+                var query = _UnitOfWork.TdsdeductorRespositories.GetQueryable();
+                var searchText = PagedListCriteria.SearchText?.Trim().ToLower();
+                if (!string.IsNullOrWhiteSpace(searchText))
+                {
+                    query = query.Where(x => x.DeductorName.ToLower().Contains(searchText.ToLower()));
+                }
+
+                query = query.OrderBy(a => a.DeductorId);
+                var responseQuery = query
+                    .Select(x => new CommonDropdownModel
+                    {
+                        id = x.DeductorId,
+                        name = x.DeductorName
+
+                    });
+                PageListed<CommonDropdownModel> result = await responseQuery.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+
+                if (result.Data.Count > 0)
+                {
+                    return new ManagerBaseResponse<IEnumerable<CommonDropdownModel>>
+                    {
+                        Result = result.Data,
+                        IsSuccess = true,
+                        Message = "Deductor Data Retrieved Successfully.",
+                        PageDetail = new PageDetailModel()
+                        {
+                            Skip = PagedListCriteria.Skip,
+                            Take = PagedListCriteria.Take,
+                            Count = result.TotalCount,
+                            SearchText = PagedListCriteria.SearchText,
+                            FilterdCount = PagedListCriteria.Filters,
+                        }
+                    };
+                }
+                else
+                {
+                    return new ManagerBaseResponse<IEnumerable<CommonDropdownModel>>
+                    {
+                        Result = result.Data,
+                        IsSuccess = false,
+                        Message = "Deductor Data not Retrieved.",
+
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return new ManagerBaseResponse<IEnumerable<CommonDropdownModel>>
+                {
+                    IsSuccess = false,
+                    Result = null,
+                    Message = ex.Message
+                };
+            }
+        }
         public async Task<ManagerBaseResponse<IEnumerable<TdsdeductorResponseModel>>> GetTDSDeductorFilter(PagedListCriteria PagedListCriteria)
         {
             try
