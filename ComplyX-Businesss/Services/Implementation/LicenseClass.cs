@@ -20,6 +20,8 @@ using ComplyX_Businesss.Models.LicenseActivation;
 using ComplyX_Businesss.Models.LicenseAuditLog;
 using ComplyX_Businesss.Models.MachineBinding;
 using ComplyX_Businesss.Models.CompanyEPFO;
+using AutoMapper.Configuration.Annotations;
+using Microsoft.Extensions.Logging;
 
 namespace ComplyX.BusinessLogic
 {
@@ -383,60 +385,77 @@ namespace ComplyX.BusinessLogic
 
             try
             {
-                var LicenseActive = _UnitOfWork.LicenseActivationRespositories.GetQueryable().Where(x => x.ActivationId == MachineBinding.LicenseActivationId).FirstOrDefault();
-                if (LicenseActive == null)
+                var duplicateExists = await _UnitOfWork.MachineBindingRespositories
+                    .GetQueryable()
+                    .AnyAsync(x =>
+                        x.MachineHash == MachineBinding.MachineHash &&
+                        x.MachineBindingId != MachineBinding.MachineBindingId);
+                // Excludes current record during update
+
+                if (duplicateExists)
                 {
                     return new ManagerBaseResponse<bool>
                     {
                         Result = false,
-                        Message = "License Active Data not found."
+                        Message = "Machine hash already exists. Duplicate values are not allowed."
                     };
                 }
-                else
-                {
-                    if (MachineBinding.MachineBindingId == 0)
-                    {
-                        // Insert
-                        MachineBinding _model = new MachineBinding();
-                         _model.MachineHash = MachineBinding.MachineHash;
-                        _model.Cpuid = MachineBinding.Cpuid;
-                        _model.MotherboardSerial = MachineBinding.MotherboardSerial;
-                        _model.Macaddresses = MachineBinding.Macaddresses;
-                        _model.WindowsSid = MachineBinding.WindowsSid;
-                        _model.FirstSeenAt = MachineBinding.FirstSeenAt;
-                        _model.LastSeenAt = MachineBinding.LastSeenAt;
-                        _model.LicenseActivationId = MachineBinding.LicenseActivationId;
 
-                       await _UnitOfWork.MachineBindingRespositories.AddAsync(_model);
+                var LicenseActive = _UnitOfWork.LicenseActivationRespositories.GetQueryable().Where(x => x.ActivationId == MachineBinding.LicenseActivationId).FirstOrDefault();
+                    if (LicenseActive == null)
+                    {
+                        return new ManagerBaseResponse<bool>
+                        {
+                            Result = false,
+                            Message = "License Active Data not found."
+                        };
                     }
                     else
                     {
-                        // Update
-                        var originalTerm = _UnitOfWork.MachineBindingRespositories.GetQueryable()
-                            .Where(x => x.MachineBindingId == MachineBinding.MachineBindingId).FirstOrDefault();
-                        originalTerm.MachineHash = MachineBinding.MachineHash;
-                        originalTerm.Cpuid = MachineBinding.Cpuid;
-                        originalTerm.MotherboardSerial = MachineBinding.MotherboardSerial ;
-                        originalTerm.Macaddresses = MachineBinding.Macaddresses ;
-                        originalTerm.WindowsSid = MachineBinding.WindowsSid ;
-                        originalTerm.FirstSeenAt = MachineBinding.FirstSeenAt ;
-                        originalTerm.LastSeenAt = MachineBinding.LastSeenAt ;
-                        originalTerm .LicenseActivationId = MachineBinding.LicenseActivationId ;
+                        if (MachineBinding.MachineBindingId == 0)
+                        {
+                            // Insert
+                            MachineBinding _model = new MachineBinding();                                             
+                            _model.MachineHash = MachineBinding.MachineHash;                                               
+                            _model.Cpuid = MachineBinding.Cpuid;
+                            _model.MotherboardSerial = MachineBinding.MotherboardSerial;
+                            _model.Macaddresses = MachineBinding.Macaddresses;
+                            _model.WindowsSid = MachineBinding.WindowsSid;
+                            _model.FirstSeenAt = MachineBinding.FirstSeenAt;
+                            _model.LastSeenAt = MachineBinding.LastSeenAt;
+                            _model.LicenseActivationId = MachineBinding.LicenseActivationId;
 
-                        
+                            await _UnitOfWork.MachineBindingRespositories.AddAsync(_model);
+                        }
+                        else
+                        {
+                            // Update
+                            var originalTerm = _UnitOfWork.MachineBindingRespositories.GetQueryable()
+                                .Where(x => x.MachineBindingId == MachineBinding.MachineBindingId).FirstOrDefault();
+                            originalTerm.MachineHash = MachineBinding.MachineHash;
+                            originalTerm.Cpuid = MachineBinding.Cpuid;
+                            originalTerm.MotherboardSerial = MachineBinding.MotherboardSerial;
+                            originalTerm.Macaddresses = MachineBinding.Macaddresses;
+                            originalTerm.WindowsSid = MachineBinding.WindowsSid;
+                            originalTerm.FirstSeenAt = MachineBinding.FirstSeenAt;
+                            originalTerm.LastSeenAt = MachineBinding.LastSeenAt;
+                            originalTerm.LicenseActivationId = MachineBinding.LicenseActivationId;
+
+
+                        }
                     }
-                }
-                await _UnitOfWork.CommitAsync();
-                return  new ManagerBaseResponse<bool>
-                {
-                    Result = true, 
-                    IsSuccess = true,
-                    Message = "MachineBindings Data Saved Successfully."
-                };
+                    await _UnitOfWork.CommitAsync();
+                    return new ManagerBaseResponse<bool>
+                    {
+                        Result = true,
+                        IsSuccess = true,
+                        Message = "MachineBindings Data Saved Successfully."
+                    };
+                
             }
             catch (Exception e)
             {
-                return  new ManagerBaseResponse<bool>
+                return new ManagerBaseResponse<bool>
                 {
                     Result = false,
                     Message = e.Message
