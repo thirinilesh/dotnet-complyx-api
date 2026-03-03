@@ -7,6 +7,7 @@ using ComplyX_Businesss.Models.EmployeeEPFO;
 using ComplyX_Businesss.Models.EPFOECRFile;
 using ComplyX_Businesss.Models.EPFOPeriod;
 using ComplyX_Businesss.Models.EPFOMonthWage;
+using ComplyX_Businesss.Models.CompanyBranches;
 
 
 namespace ComplyX_Businesss.Services
@@ -34,5 +35,10 @@ namespace ComplyX_Businesss.Services
 
         Task<ManagerBaseResponse<bool>> RemoveEPFOMonthlyWageData(string WageId);
         Task<ManagerBaseResponse<IEnumerable<EPFOMonthWageResponseModel>>> GetAllEPFOMonthlyWageFilter(PagedListCriteria PagedListCriteria);
+
+        Task<ManagerBaseResponse<bool>> SaveCompanyBranchesData(CompanyBranchesRequestModel companyBranches);
+
+        Task<ManagerBaseResponse<bool>> RemoveCompanyBranchesData(string BranchId);
+        Task<ManagerBaseResponse<IEnumerable<CompanyBranchesResponseModel>>> GetAllCompanyBranchesFilter(PagedListCriteria PagedListCriteria);
     }
 }

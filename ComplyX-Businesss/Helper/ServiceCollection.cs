@@ -67,6 +67,7 @@ namespace ComplyX_Businesss.Helper
             services.AddScoped<IEPFOPeriodRespositories, EPFOPeriodRespositories>();
             services.AddScoped<IUserRespositories, UserRespositories>();
             services.AddScoped<IRegisterRespositories, RegisterRespositories>();
+            services.AddScoped<ICompanyBranchesRespositories, CompanyBranchesRespositories>();
             return services;
         }
         public static IServiceCollection AddAcaBusinessAutoMapper(this IServiceCollection services, ServiceLifetime lifetime) => 

@@ -21,6 +21,7 @@ using ComplyX_Businesss.Models.EPFOPeriod;
 using ComplyX_Businesss.Models.EPFOMonthWage;
 using ComplyX_Businesss.Models.GratuityPolicy;
 using ComplyX.Data.DbContexts;
+using ComplyX_Businesss.Models.CompanyBranches;
 
 namespace ComplyX_Businesss.BusinessLogic
 {
@@ -844,5 +845,171 @@ await _UnitOfWork.ePFOMonthWageRespositories.AddAsync( _model );
                 };
             }
         }
+
+        public async Task<ManagerBaseResponse<bool>> SaveCompanyBranchesData(CompanyBranchesRequestModel CompanyBranch)
+        {
+            var response = new ManagerBaseResponse<List<CompanyBranches>>();
+
+            try
+            {
+                var companyid = _UnitOfWork.CompanyRepository.GetQueryable().Where(x => x.CompanyId == CompanyBranch.CompanyId).FirstOrDefault();
+                if (companyid == null)
+                {
+                    return new ManagerBaseResponse<bool>
+                    {
+                        Result = false,
+                        Message = "Company Data not found."
+                    };
+                }
+                else
+                {
+                    if (CompanyBranch.BranchId == 0)
+                    {
+                        // Insert
+                        CompanyBranches _model = new CompanyBranches();
+                        _model.CompanyId = (int)companyid.CompanyId;
+                       _model.BranchName = CompanyBranch.BranchName;
+                        _model.BranchCode = CompanyBranch.BranchCode;
+                        _model.Address = CompanyBranch.Address;
+                        _model.State = CompanyBranch.State;
+                        _model.GSTIN = CompanyBranch.GSTIN;
+                        _model.IsHeadOffice = CompanyBranch.IsHeadOffice;
+                        _model.IsActive = CompanyBranch.IsActive;
+                        _model.CreatedAt = Util.GetCurrentCSTDateAndTime();
+                        await _UnitOfWork.CompanyBranchesRespositories.AddAsync(_model);
+                    }
+                    else
+                    {
+                        // Update
+                        var originalTerm = _UnitOfWork.CompanyBranchesRespositories.GetQueryable()
+                            .Where(x => x.BranchId == CompanyBranch.BranchId).FirstOrDefault();
+                        originalTerm.CompanyId = (int)companyid.CompanyId;
+                        originalTerm.BranchName = CompanyBranch.BranchName;
+                        originalTerm.BranchCode = CompanyBranch.BranchCode;
+                        originalTerm.Address = CompanyBranch.Address;
+                        originalTerm.State = CompanyBranch.State;
+                        originalTerm.GSTIN = CompanyBranch.GSTIN;
+                        originalTerm.IsHeadOffice = CompanyBranch.IsHeadOffice;
+                        originalTerm.IsActive = CompanyBranch.IsActive;
+                        originalTerm.CreatedAt = Util.GetCurrentCSTDateAndTime();
+
+
+
+                    }
+                }
+                await _UnitOfWork.CommitAsync();
+                return new ManagerBaseResponse<bool>
+                {
+                    Result = true,
+                    IsSuccess = true,
+                    Message = "CompanyBranches Data Saved Successfully."
+                };
+            }
+            catch (Exception e)
+            {
+                return new ManagerBaseResponse<bool>
+                {
+                    Result = false,
+                    Message = e.Message
+                };
+            }
+        }
+
+        public async Task<ManagerBaseResponse<bool>> RemoveCompanyBranchesData(string BranchId)
+        {
+            try
+            {
+                // Get all report detail definitions for the given report name
+                var Company = await _UnitOfWork.CompanyBranchesRespositories.GetQueryable().Where(x => x.BranchId.ToString() == BranchId).ToListAsync();
+
+                if (string.IsNullOrEmpty(Company.ToString()))
+                {
+                    return new ManagerBaseResponse<bool>
+                    {
+                        Result = false,
+                        Message = "Branch Id is not Vaild",
+                    };
+                }
+
+                // Remove all related report details
+                _UnitOfWork.CompanyBranchesRespositories.RemoveRange(Company);
+                await _UnitOfWork.CommitAsync();
+
+                return new ManagerBaseResponse<bool>
+                {
+                    Result = true,
+                    IsSuccess = true,
+                    Message = "Comapany Branch Data Removed Successfully.",
+                };
+
+            }
+            catch (Exception ex)
+            {
+                return new ManagerBaseResponse<bool>
+                {
+                    Result = false,
+                    Message = ex.Message
+                };
+            }
+
+        }
+
+        public async Task<ManagerBaseResponse<IEnumerable<CompanyBranchesResponseModel>>> GetAllCompanyBranchesFilter(PagedListCriteria PagedListCriteria)
+        {
+            try
+            {
+
+                var query = _UnitOfWork.CompanyBranchesRespositories.GetQueryable();
+                var searchText = PagedListCriteria.SearchText?.Trim().ToLower();
+                if (!string.IsNullOrWhiteSpace(searchText))
+                {
+                    query = query.Where(x => x.BranchName.ToLower().Contains(searchText.ToLower()));
+                }
+
+                query = query.OrderBy(a => a.BranchId);
+                var responseQuery = query.Select(x => new CompanyBranchesResponseModel
+                {
+
+                    BranchId = x.BranchId,
+                    CompanyId = x.CompanyId,
+                    BranchName = x.BranchName,
+                    BranchCode = x.BranchCode,
+                    Address = x.Address,
+                    State = x.State,
+                    GSTIN = x.GSTIN,
+                    IsHeadOffice = x.IsHeadOffice,
+                    IsActive = x.IsActive,
+                    CreatedAt = x.CreatedAt
+                });
+                PageListed<CompanyBranchesResponseModel> result = await responseQuery.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+
+                return new ManagerBaseResponse<IEnumerable<CompanyBranchesResponseModel>>
+                {
+                    Result = result.Data,
+                    IsSuccess = true,
+                    Message = "Company Branch Data Retrieved Successfully.",
+                    PageDetail = new PageDetailModel()
+                    {
+                        Skip = PagedListCriteria.Skip,
+                        Take = PagedListCriteria.Take,
+                        Count = result.TotalCount,
+                        SearchText = PagedListCriteria.SearchText,
+                        FilterdCount = PagedListCriteria.Filters,
+                    }
+                };
+            }
+            catch (Exception ex)
+            {
+
+                return new ManagerBaseResponse<IEnumerable<CompanyBranchesResponseModel>>
+                {
+                    IsSuccess = false,
+                    Result = null,
+                    Message = ex.Message
+                };
+            }
+        }
+
+
     }
 }

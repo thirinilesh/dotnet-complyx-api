@@ -16,6 +16,8 @@ using ComplyX_Businesss.Models.EmployeeEPFO;
 using ComplyX_Businesss.Models.EPFOECRFile;
 using ComplyX_Businesss.Models.EPFOPeriod;
 using ComplyX_Businesss.Models.EPFOMonthWage;
+using ComplyX.Data.Entities;
+using ComplyX_Businesss.Models.CompanyBranches;
 
 namespace ComplyX.Controllers
 {
@@ -319,5 +321,60 @@ namespace ComplyX.Controllers
             return ResponseResult(await _EPFOServices.GetAllEPFOMonthlyWageFilter(PagedListCriteria));
         }
 
+        /// <summary>
+        /// Saves or updates company branch details.
+        /// If the branch already exists, the existing record will be updated.
+        /// </summary>
+        /// <param name="companyBranch">
+        /// The company branch details to be saved or updated.
+        /// </param>
+        /// <returns>
+        /// Returns 200 OK if successful; otherwise 400 BadRequest.
+        /// </returns>
+        /// <response code="200">Company branch data saved or updated successfully.</response>
+        /// <response code="400">Error occurred while saving or updating company branch data.</response>
+        [HttpPost("SaveCompanyBranchesData")]
+        public async Task<IActionResult> SaveCompanyBranchesData([FromBody] CompanyBranchesRequestModel companyBranches)
+        {
+            return ResponseResult(await _EPFOServices.SaveCompanyBranchesData(companyBranches));
+        }
+        /// <summary>
+        /// Deletes a company's branch EPFO data based on the provided branch ID.
+        /// </summary>
+        /// <param name="BranchId">
+        /// The unique identifier of the company branch EPFO data to be deleted.
+        /// </param>
+        /// <returns>
+        /// Returns 200 OK if deleted successfully, 400 BadRequest if an error occurs,
+        /// or 404 NotFound if no data with the given branchId is found.
+        /// </returns>
+        /// <response code="200">The company branch EPFO data was successfully deleted.</response>
+        /// <response code="400">Error occurred while deleting the company branch EPFO data.</response>
+        /// <response code="404">No company branch EPFO data found with the given branchId.</response>
+        [HttpPut("RemoveCompanyBranchesData")]
+        public async Task<IActionResult> RemoveCompanyBranchesData(string BranchId)
+        {
+            return ResponseResult(await _EPFOServices.RemoveCompanyBranchesData(BranchId));
+        }
+
+
+        /// <summary>
+        /// Retrieves a filtered and paginated list of company branch EPFO data based on the provided criteria.
+        /// </summary>
+        /// <param name="PagedListCriteria">
+        /// The criteria used to filter, sort, search, and paginate the company branch EPFO data.
+        /// </param>
+        /// <returns>
+        /// Returns a filtered list of company branch EPFO data as <see cref="IActionResult"/>.
+        /// Returns 204 No Content if no data is found, or 400 Bad Request if an error occurs.
+        /// </returns>
+        /// <response code="200">Returns the filtered list of company branch EPFO data.</response>
+        /// <response code="204">No company branch EPFO data found.</response>
+        /// <response code="400">Error occurred while fetching the company branch EPFO data.</response>
+        [HttpGet("GetAllCompanyBranchesFilter")]
+        public async Task<IActionResult> GetAllCompanyBranchesFilter([FromQuery] PagedListCriteria PagedListCriteria)
+        {
+            return ResponseResult(await _EPFOServices.GetAllCompanyBranchesFilter(PagedListCriteria));
+        }
     }
 }
