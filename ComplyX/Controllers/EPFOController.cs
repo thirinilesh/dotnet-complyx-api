@@ -43,7 +43,7 @@ namespace ComplyX.Controllers
         /// Saves the details of a company's EPFO information. 
         /// If the EPFO data already exists, updates the existing record.
         /// </summary>
-        /// <param name="CompanyEPFO">
+        /// <param name="EPFOEstablishment">
         /// The company EPFO details to be saved or updated.
         /// </param>
         /// <returns>
@@ -51,10 +51,10 @@ namespace ComplyX.Controllers
         /// </returns>
         /// <response code="200">The company EPFO data was saved or updated successfully.</response>
         /// <response code="400">If there is an error while saving or updating the company EPFO data.</response>
-        [HttpPut("SaveCompanyEPFOData")]
-        public async Task<IActionResult> SaveCompanyEPFOData([FromBody] CompanyEPFORequestModel CompanyEPFO)
+        [HttpPut("SaveEPFOEstablishmentData")]
+        public async Task<IActionResult> SaveEPFOEstablishmentData([FromBody] EPFOEstablishmentRequestModel CompanyEPFO)
         {
-            return ResponseResult(await _EPFOServices.SaveCompanyEPFOData(CompanyEPFO));
+            return ResponseResult(await _EPFOServices.SaveEPFOEstablishmentData(CompanyEPFO));
         }
         /// <summary>
         /// Deletes a company's EPFO data based on the provided CompanyEPFOId.
@@ -68,10 +68,10 @@ namespace ComplyX.Controllers
         /// <response code="200">The company EPFO data was successfully deleted.</response>
         /// <response code="400">If there is an error while deleting the company EPFO data.</response>
         /// <response code="404">If no company EPFO data with the given CompanyEPFOId is found.</response>
-        [HttpPut("RemoveCompanyEPFOData")]
-        public async Task<IActionResult> RemoveCompanyEPFOData(string CompanyEPFOId)
+        [HttpPut("RemoveEPFOEstablishmentData")]
+        public async Task<IActionResult> RemoveEPFOEstablishmentData(string CompanyEPFOId)
         {
-            return ResponseResult(await _EPFOServices.RemoveCompanyEPFOData(CompanyEPFOId));
+            return ResponseResult(await _EPFOServices.RemoveEPFOEstablishmentData(CompanyEPFOId));
         }
         /// <summary>
         /// Retrieves a filtered and paginated list of company EPFO data based on the provided criteria.
@@ -87,10 +87,10 @@ namespace ComplyX.Controllers
         /// <response code="200">Returns the filtered list of company EPFO data.</response>
         /// <response code="204">If no company EPFO data is found.</response>
         /// <response code="400">If there is an error while fetching the company EPFO data.</response>
-        [HttpGet("GetAllCompanyEPFOFilter")]
-        public async Task<IActionResult> GetAllCompanyEPFOFilter([FromQuery] PagedListCriteria PagedListCriteria)
+        [HttpGet("GetAllEPFOEstablishmentFilter")]
+        public async Task<IActionResult> GetAllEPFOEstablishmentFilter([FromQuery] PagedListCriteria PagedListCriteria)
         {
-            return ResponseResult(await _EPFOServices.GetAllCompanyEPFOFilter(PagedListCriteria));
+            return ResponseResult(await _EPFOServices.GetAllEPFOEstablishmentFilter(PagedListCriteria));
         }
 
         /// <summary>

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ComplyX_Businesss.Models.CompanyEPFO
 {
-    public class CompanyEPFOResponseModel
+    public class EPFOEstablishmentResponseModel
     {
         public int CompanyEpfoid { get; set; }
 
@@ -19,5 +19,7 @@ namespace ComplyX_Businesss.Models.CompanyEPFO
         public string? OfficeCode { get; set; }
 
         public DateTime? CreatedAt { get; set; }
+        public int? SubcontractorId { get; set; }
+        public int? BranchId { get; set; }
     }
 }

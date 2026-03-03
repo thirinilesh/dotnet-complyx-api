@@ -56,9 +56,9 @@ public partial class AspNetUser  : IdentityUser
 
     public virtual ICollection<AspNetUserToken> AspNetUserTokens { get; set; } = new List<AspNetUserToken>();
 
-    public virtual ICollection<Epfoperiod> EpfoperiodCreatedByUsers { get; set; } = new List<Epfoperiod>();
+    public virtual ICollection<Epfoperiod> EpfoperiodCreatedByUsers { get; set; } 
 
-    public virtual ICollection<Epfoperiod> EpfoperiodLockedByUsers { get; set; } = new List<Epfoperiod>();
+    public virtual ICollection<Epfoperiod> EpfoperiodLockedByUsers { get; set; } 
     public virtual ICollection<AspNetRole> Roles { get; set; } = new List<AspNetRole>();
     public virtual ICollection<AspNetUserRole> AspNetUserRole { get; set; } = new List<AspNetUserRole>();
 }

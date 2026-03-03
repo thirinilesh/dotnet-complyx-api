@@ -10,9 +10,7 @@ namespace ComplyX_Businesss.Models.EPFOPeriod
     {
         public int EpfoperiodId { get; set; }
 
-        public int CompanyId { get; set; }
-
-        public int? SubcontractorId { get; set; }
+        public int EPFOEstablishmentId { get; set; }
 
         public int PeriodYear { get; set; }
 

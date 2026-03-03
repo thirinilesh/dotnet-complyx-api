@@ -40,9 +40,9 @@ namespace ComplyX_Businesss.BusinessLogic
             _usermanager = usermanager;
             _UnitOfWork = unitOfWork;
         }
-        public   async Task<ManagerBaseResponse<bool>> SaveCompanyEPFOData(CompanyEPFORequestModel CompanyEPFO)
+        public   async Task<ManagerBaseResponse<bool>> SaveEPFOEstablishmentData(EPFOEstablishmentRequestModel CompanyEPFO)
         {
-            var response = new ManagerBaseResponse<List<CompanyEpfo>>();
+            var response = new ManagerBaseResponse<List<EPFOEstablishment>>();
 
             try
             {
@@ -60,8 +60,10 @@ namespace ComplyX_Businesss.BusinessLogic
                     if (CompanyEPFO.CompanyEpfoid == 0)
                     {
                         // Insert
-                        CompanyEpfo _model = new CompanyEpfo();
+                        EPFOEstablishment _model = new EPFOEstablishment();
                         _model.CompanyId = companyid.CompanyId;
+                        _model.SubcontractorId = CompanyEPFO.SubcontractorId;
+                        _model.BranchId = CompanyEPFO.BranchId;
                         _model.EstablishmentCode = CompanyEPFO.EstablishmentCode;
                         _model.Extension = CompanyEPFO.Extension;
                         _model.OfficeCode = CompanyEPFO.OfficeCode;
@@ -75,6 +77,8 @@ namespace ComplyX_Businesss.BusinessLogic
                         var originalTerm = _UnitOfWork.CompanyEPFORespositories.GetQueryable()
                             .Where(x => x.CompanyEpfoid == CompanyEPFO.CompanyEpfoid).FirstOrDefault();
                         originalTerm.CompanyId = companyid.CompanyId;
+                        originalTerm.SubcontractorId = CompanyEPFO.SubcontractorId;
+                        originalTerm.BranchId = CompanyEPFO.BranchId;
                         originalTerm.EstablishmentCode = CompanyEPFO.EstablishmentCode;
                         originalTerm.Extension = CompanyEPFO.Extension;
                         originalTerm.OfficeCode = CompanyEPFO.OfficeCode;
@@ -99,7 +103,7 @@ namespace ComplyX_Businesss.BusinessLogic
                 } ;
             }
         }
-        public async Task<ManagerBaseResponse<bool>> RemoveCompanyEPFOData(string CompanyEPFOId)
+        public async Task<ManagerBaseResponse<bool>> RemoveEPFOEstablishmentData(string CompanyEPFOId)
         {
             try
             {
@@ -136,7 +140,7 @@ namespace ComplyX_Businesss.BusinessLogic
             }
 
         }
-        public async Task<ManagerBaseResponse<IEnumerable<CompanyEPFOResponseModel>>> GetAllCompanyEPFOFilter(PagedListCriteria PagedListCriteria)
+        public async Task<ManagerBaseResponse<IEnumerable<EPFOEstablishmentResponseModel>>> GetAllEPFOEstablishmentFilter(PagedListCriteria PagedListCriteria)
         {
             try
             {
@@ -149,7 +153,7 @@ namespace ComplyX_Businesss.BusinessLogic
                 }
 
                 query = query.OrderBy(a => a.CompanyEpfoid);
-                var responseQuery = query.Select(x => new CompanyEPFOResponseModel
+                var responseQuery = query.Select(x => new EPFOEstablishmentResponseModel
                 {
 
                     CompanyEpfoid = x.CompanyEpfoid,
@@ -159,9 +163,9 @@ namespace ComplyX_Businesss.BusinessLogic
                     OfficeCode = x.OfficeCode,
                     CreatedAt = x.CreatedAt
                 });
-                PageListed<CompanyEPFOResponseModel> result = await responseQuery.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+                PageListed<EPFOEstablishmentResponseModel> result = await responseQuery.ToPagedListAsync(PagedListCriteria, orderByTranslations);
 
-                return new ManagerBaseResponse<IEnumerable<CompanyEPFOResponseModel>>
+                return new ManagerBaseResponse<IEnumerable<EPFOEstablishmentResponseModel>>
                 {
                     Result = result.Data,IsSuccess = true,
                    
@@ -179,7 +183,7 @@ namespace ComplyX_Businesss.BusinessLogic
             catch (Exception ex)
             {
 
-                return new ManagerBaseResponse<IEnumerable<CompanyEPFOResponseModel>>
+                return new ManagerBaseResponse<IEnumerable<EPFOEstablishmentResponseModel>>
                 {
                     IsSuccess = false,
                     Result = null,
@@ -504,7 +508,7 @@ namespace ComplyX_Businesss.BusinessLogic
 
             try
             {
-                var user = _context.ApplicationUsers.FirstOrDefault(u => u.UserName == UserID);
+                var user = _UnitOfWork.RegisterRespositories.GetQueryable().FirstOrDefault(u => u.UserName == UserID);
                 if (user == null)
                 {
                     return new ManagerBaseResponse<bool>
@@ -513,21 +517,20 @@ namespace ComplyX_Businesss.BusinessLogic
                         Message = "User Data not found."
                     };
                 }
-                var companyid = _UnitOfWork.CompanyRepository.GetQueryable().FirstOrDefault(x => x.CompanyId == EPFOPeriod.CompanyId);
+                var companyid = _UnitOfWork.CompanyEPFORespositories.GetQueryable().FirstOrDefault(x => x.CompanyEpfoid == EPFOPeriod.EPFOEstablishmentId);
                 if (companyid == null)
                 {
                     return new ManagerBaseResponse<bool>
                     {
                         Result = false,
-                        Message = "Company Data not found."
+                        Message = "EPFOEstablishment Data not found."
                     };
                 }
                 if (EPFOPeriod.EpfoperiodId == 0)
                     {
                         // Insert
                         Epfoperiod _model = new Epfoperiod();
-                        _model.CompanyId = EPFOPeriod.CompanyId;
-                        _model.SubcontractorId = EPFOPeriod.SubcontractorId;
+                        _model.EPFOEstablishmentId = EPFOPeriod.EPFOEstablishmentId;
                         _model.PeriodMonth = EPFOPeriod.PeriodMonth;
                         _model.PeriodYear = EPFOPeriod.PeriodYear;
                         _model.Status = EPFOPeriod.Status;
@@ -536,7 +539,7 @@ namespace ComplyX_Businesss.BusinessLogic
                         _model.Trrndate = EPFOPeriod.Trrndate;
                         _model.ChallanFilePath = EPFOPeriod.ChallanFilePath;
                         _model.CreatedAt = Util.GetCurrentCSTDateAndTime();
-                        _model.CreatedByUserId = user.Id.ToString();
+                        _model.CreatedByUserId = user.UserID;
                         _model.IsLocked =   EPFOPeriod.IsLocked;      
 
                       await _UnitOfWork.ePFOPeriodRespositories.AddAsync(_model);
@@ -551,7 +554,7 @@ namespace ComplyX_Businesss.BusinessLogic
                         originalTerm.UpdatedAt = Util.GetCurrentCSTDateAndTime();
                         originalTerm.IsLocked = EPFOPeriod .IsLocked;
                         originalTerm.LockedAt = Util.GetCurrentCSTDateAndTime();
-                        originalTerm.LockedByUserId = user.Id.ToString();
+                        originalTerm.LockedByUserId = user.UserID;
 
                      
                 }
@@ -625,8 +628,7 @@ namespace ComplyX_Businesss.BusinessLogic
 
 
                     EpfoperiodId = x.EpfoperiodId,
-                    CompanyId = x.CompanyId,
-                    SubcontractorId = x.SubcontractorId,
+                    EPFOEstablishmentId = x.EPFOEstablishmentId,
                     PeriodYear = x.PeriodYear,
                     PeriodMonth = x.PeriodMonth,
                     Status = x.Status,

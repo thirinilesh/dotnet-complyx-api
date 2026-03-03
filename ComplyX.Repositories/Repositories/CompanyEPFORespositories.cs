@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace ComplyX.Repositories.Repositories
 {
-    public class CompanyEPFORespositories : BaseRespostories<CompanyEpfo, int>, ICompanyEPFORespositories
+    public class CompanyEPFORespositories : BaseRespostories<EPFOEstablishment, int>, ICompanyEPFORespositories
     {
         public CompanyEPFORespositories(AppDbContext dbContext) : base(dbContext)
         {

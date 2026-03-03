@@ -160,7 +160,7 @@ namespace ComplyX.BusinessLogic
 
             try
             {
-                var License = _UnitOfWork.LicenseActivationRespositories.GetQueryable().Where(x => x.LicenseId == LicenseActivation.LicenseId).FirstOrDefault();
+                var License = _UnitOfWork.LegalKeyMasterRepositories.GetQueryable().Where(x => x.LicenseId == LicenseActivation.LicenseId).FirstOrDefault();
                 if (License == null)
                 {
                     return new ManagerBaseResponse<bool>

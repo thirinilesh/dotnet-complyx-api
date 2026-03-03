@@ -35,7 +35,7 @@ public partial class AppDbContext :IdentityDbContext<ApplicationUsers>
 
     public virtual DbSet<Company> Companies { get; set; }
 
-    public virtual DbSet<CompanyEpfo> CompanyEpfos { get; set; }
+    public virtual DbSet<EPFOEstablishment> EPFOEstablishment { get; set; }
 
     public virtual DbSet<CompanyPartyRole> CompanyPartyRoles { get; set; }
 
@@ -232,11 +232,11 @@ public partial class AppDbContext :IdentityDbContext<ApplicationUsers>
                 .HasConstraintName("FK_Companies_ProductOwner");
         });
 
-        modelBuilder.Entity<CompanyEpfo>(entity =>
+        modelBuilder.Entity<EPFOEstablishment>(entity =>
         {
             entity.HasKey(e => e.CompanyEpfoid).HasName("PK__CompanyE__B14AF98729BE1522");
 
-            entity.ToTable("CompanyEPFO");
+            entity.ToTable("EPFOEstablishment");
 
             entity.Property(e => e.CompanyEpfoid).HasColumnName("CompanyEPFOId");
             entity.Property(e => e.CreatedAt)
@@ -246,10 +246,27 @@ public partial class AppDbContext :IdentityDbContext<ApplicationUsers>
             entity.Property(e => e.Extension).HasMaxLength(10);
             entity.Property(e => e.OfficeCode).HasMaxLength(10);
 
-            entity.HasOne(d => d.Company).WithMany(p => p.CompanyEpfos)
+            entity.HasOne(d => d.Company).WithMany(p => p.EPFOEstablishment)
                 .HasForeignKey(d => d.CompanyId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__CompanyEP__Compa__46B27FE2");
+
+            entity.HasOne(d => d.Subcontractor).WithMany(p => p.EPFOEstablishment)
+             .HasForeignKey(d => d.SubcontractorId)
+             .HasConstraintName("FK__SubcontractorSu__Subco__44FF419A");
+
+            entity.HasOne(d => d.CompanyBranches).WithMany(p => p.EPFOEstablishment)
+             .HasForeignKey(d => d.BranchId)
+             .HasConstraintName("FK__CompanyBranches__Subco__44FF419A");
+
+        });
+        modelBuilder.Entity<CompanyBranches>(entity =>
+        {
+            entity.HasKey(e => e.BranchId).HasName("PK__CompanyBranch__BA10304BBFAF0655");
+            entity.ToTable("CompanyBranches");
+            entity.HasOne(d => d.Company).WithMany(p => p.CompanyBranches)
+          .HasForeignKey(d => d.CompanyId)
+          .HasConstraintName("FK__CompanyBranches__Comp__44FF419A");
         });
 
         modelBuilder.Entity<CompanyPartyRole>(entity =>
@@ -642,7 +659,7 @@ public partial class AppDbContext :IdentityDbContext<ApplicationUsers>
 
             entity.ToTable("EPFOPeriod");
 
-            entity.HasIndex(e => new { e.CompanyId, e.SubcontractorId, e.PeriodYear, e.PeriodMonth }, "UQ_Company_Period").IsUnique();
+            entity.HasIndex(e => new { e.EPFOEstablishmentId, e.PeriodYear, e.PeriodMonth }, "UQ_Company_Period").IsUnique();
 
             entity.Property(e => e.EpfoperiodId).HasColumnName("EPFOPeriodId");
             entity.Property(e => e.ChallanFilePath).IsUnicode(false);
@@ -668,25 +685,23 @@ public partial class AppDbContext :IdentityDbContext<ApplicationUsers>
                 .HasColumnName("TRRNDate");
             entity.Property(e => e.UpdatedAt).HasColumnType("datetime");
 
-            entity.HasOne(d => d.Company).WithMany(p => p.Epfoperiods)
-                .HasForeignKey(d => d.CompanyId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_EPFOPeriod_Company");
 
-            entity.HasOne(d => d.CreatedByUser).WithMany(p => p.EpfoperiodCreatedByUsers)
-             .HasForeignKey(d => d.CreatedByUserId)
-                   .HasPrincipalKey(u => u.Id)
-                   .OnDelete(DeleteBehavior.Restrict);
-            //.HasForeignKey(d => d.CreatedByUserId)
-            //.HasConstraintName("FK_EPFOPeriod_AspNetUsers");
+            entity.HasOne(d => d.CreatedByUser)
+                .WithMany(p => p.EpfoperiodCreatedByUsers)
+                .HasForeignKey(d => d.CreatedByUserId)
+                .HasPrincipalKey(u => u.Id)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("FK_EPFOPeriod_CreatedByUserId_AspNetUsers");
 
             entity.HasOne(d => d.LockedByUser).WithMany(p => p.EpfoperiodLockedByUsers)
                 .HasForeignKey(d => d.LockedByUserId)
+                .HasPrincipalKey(u => u.Id)
+                .OnDelete(DeleteBehavior.Restrict)
                 .HasConstraintName("FK_EPFOPeriod_LockedByUserId_AspNetUsers");
 
-            entity.HasOne(d => d.Subcontractor).WithMany(p => p.Epfoperiods)
-                .HasForeignKey(d => d.SubcontractorId)
-                .HasConstraintName("FK_EPFOPeriod_Subcontractor");
+            entity.HasOne(d => d.EPFOEstablishment).WithMany(p => p.Epfoperiod)
+                .HasForeignKey(d => d.EPFOEstablishmentId)
+                .HasConstraintName("FK_EPFOPeriod_EPFOEstablishment");
         });
 
         modelBuilder.Entity<ExitType>(entity =>

@@ -31,8 +31,8 @@ public partial class Company
 
     public int ProductOwnerId { get; set; }
 
-    public virtual ICollection<CompanyEpfo> CompanyEpfos { get; set; } = new List<CompanyEpfo>();
-
+    public virtual ICollection<EPFOEstablishment> EPFOEstablishment { get; set; } = new List<EPFOEstablishment>();
+    public virtual ICollection<CompanyBranches> CompanyBranches { get; set; } = new List<CompanyBranches>();
     public virtual ICollection<CompanyPartyRole> CompanyPartyRoles { get; set; } = new List<CompanyPartyRole>();
 
     public virtual ICollection<CompanySubcontractor> CompanySubcontractors { get; set; } = new List<CompanySubcontractor>();
@@ -46,8 +46,6 @@ public partial class Company
     public virtual ICollection<Epfoecrfile> Epfoecrfiles { get; set; } = new List<Epfoecrfile>();
 
     public virtual ICollection<EpfomonthlyWage> EpfomonthlyWages { get; set; } = new List<EpfomonthlyWage>();
-
-    public virtual ICollection<Epfoperiod> Epfoperiods { get; set; } = new List<Epfoperiod>();
 
     public virtual ICollection<FnFCalculation> FnFCalculations { get; set; } = new List<FnFCalculation>();
 

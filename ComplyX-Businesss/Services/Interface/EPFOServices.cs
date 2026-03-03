@@ -13,10 +13,10 @@ namespace ComplyX_Businesss.Services
 {
     public interface EPFOServices
     {
-        Task<ManagerBaseResponse<bool>> SaveCompanyEPFOData(CompanyEPFORequestModel CompanyEPFO);
+        Task<ManagerBaseResponse<bool>> SaveEPFOEstablishmentData(EPFOEstablishmentRequestModel CompanyEPFO);
 
-        Task<ManagerBaseResponse<bool>> RemoveCompanyEPFOData(string CompanyEPFOId);
-        Task<ManagerBaseResponse<IEnumerable<CompanyEPFOResponseModel>>> GetAllCompanyEPFOFilter(PagedListCriteria PagedListCriteria);
+        Task<ManagerBaseResponse<bool>> RemoveEPFOEstablishmentData(string CompanyEPFOId);
+        Task<ManagerBaseResponse<IEnumerable<EPFOEstablishmentResponseModel>>> GetAllEPFOEstablishmentFilter(PagedListCriteria PagedListCriteria);
         Task<ManagerBaseResponse<bool>> SaveEmployeeEPFOData(EmployeeEPFORequestModel EmployeeEPFO);
 
         Task<ManagerBaseResponse<bool>> RemoveEmployeeEPFOData(string EmployeeEPFOId);

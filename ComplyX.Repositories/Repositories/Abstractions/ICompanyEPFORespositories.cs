@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ComplyX.Repositories.Repositories.Abstractions
 {
-    public interface ICompanyEPFORespositories : IBaseRespostories<CompanyEpfo, int>
+    public interface ICompanyEPFORespositories : IBaseRespostories<EPFOEstablishment, int>
     {
     }
 }

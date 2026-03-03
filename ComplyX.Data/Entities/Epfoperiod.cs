@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Identity;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Security.Principal;
 
 namespace ComplyX.Data.Entities;
 
@@ -8,10 +10,8 @@ public partial class Epfoperiod
 {
     public int EpfoperiodId { get; set; }
 
-    public int CompanyId { get; set; }
-
-    public int? SubcontractorId { get; set; }
-
+    public int EPFOEstablishmentId { get; set; }
+  
     public int PeriodYear { get; set; }
 
     public int PeriodMonth { get; set; }
@@ -35,14 +35,13 @@ public partial class Epfoperiod
     public bool IsLocked { get; set; }
 
     public DateTime? LockedAt { get; set; }
-    [NotMapped]
+ 
     public string? LockedByUserId { get; set; }
 
-    public virtual Company Company { get; set; } = null!;
-    [NotMapped]
+    public virtual EPFOEstablishment EPFOEstablishment { get; set; } = null!;
+   
     public virtual AspNetUser? CreatedByUser { get; set; }
-    [NotMapped]
+ 
     public virtual AspNetUser? LockedByUser { get; set; }
 
-    public virtual Subcontractor? Subcontractor { get; set; }
 }
