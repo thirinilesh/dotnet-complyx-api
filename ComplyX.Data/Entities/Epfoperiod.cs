@@ -39,9 +39,9 @@ public partial class Epfoperiod
     public string? LockedByUserId { get; set; }
 
     public virtual EPFOEstablishment EPFOEstablishment { get; set; } = null!;
-   
+    [NotMapped]
     public virtual AspNetUser? CreatedByUser { get; set; }
- 
+    [NotMapped]
     public virtual AspNetUser? LockedByUser { get; set; }
 
 }

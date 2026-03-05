@@ -325,7 +325,7 @@ namespace ComplyX.Controllers
         /// Saves or updates company branch details.
         /// If the branch already exists, the existing record will be updated.
         /// </summary>
-        /// <param name="companyBranch">
+        /// <param name="CompanyBranches">
         /// The company branch details to be saved or updated.
         /// </param>
         /// <returns>
@@ -334,9 +334,9 @@ namespace ComplyX.Controllers
         /// <response code="200">Company branch data saved or updated successfully.</response>
         /// <response code="400">Error occurred while saving or updating company branch data.</response>
         [HttpPost("SaveCompanyBranchesData")]
-        public async Task<IActionResult> SaveCompanyBranchesData([FromBody] CompanyBranchesRequestModel companyBranches)
+        public async Task<IActionResult> SaveCompanyBranchesData([FromBody] CompanyBranchesRequestModel CompanyBranches)
         {
-            return ResponseResult(await _EPFOServices.SaveCompanyBranchesData(companyBranches));
+            return ResponseResult(await _EPFOServices.SaveCompanyBranchesData(CompanyBranches));
         }
         /// <summary>
         /// Deletes a company's branch EPFO data based on the provided branch ID.
