@@ -581,12 +581,14 @@ namespace ComplyX.BusinessLogic
             user.LastPasswordChangeDate = DateTime.UtcNow;
             await _userManager.UpdateAsync(user);
             string hashed = BCrypt.Net.BCrypt.HashPassword(model.NewPassword);
-            var usersname = await _context.RegisterUser.FirstOrDefaultAsync(x => x.UserName == model.username);
+            var usersname = await _UnitOfWork.RegisterRespositories.GetQueryable().FirstOrDefaultAsync(x => x.UserName == model.username);
              
             usersname.Password = hashed;
-            
-            _context.Update(usersname);
-            _context.SaveChanges();
+
+         
+            _UnitOfWork.CommitAsync();
+          
+            //_context.SaveChanges();
 
             var response = new ChangePasswordModel
             {
