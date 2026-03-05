@@ -40,5 +40,8 @@ namespace ComplyX_Businesss.Services
 
         Task<ManagerBaseResponse<bool>> RemoveCompanyBranchesData(string BranchId);
         Task<ManagerBaseResponse<IEnumerable<CompanyBranchesResponseModel>>> GetAllCompanyBranchesFilter(PagedListCriteria PagedListCriteria);
+
+        Task<ManagerBaseResponse<object>> GetEPFOEstablishmentList(PagedListCriteria PagedListCriteria);
+
     }
 }

@@ -376,5 +376,23 @@ namespace ComplyX.Controllers
         {
             return ResponseResult(await _EPFOServices.GetAllCompanyBranchesFilter(PagedListCriteria));
         }
+
+        /// <summary>
+        /// Retrieves a filtered and paginated list of company branch EPFO establishments.
+        /// </summary>
+        /// <param name="PagedListCriteria">
+        /// Criteria used to filter, search, sort, and paginate the EPFO establishment list.
+        /// </param>
+        /// <returns>
+        /// Returns a filtered list of EPFO establishments.
+        /// </returns>
+        /// <response code="200">Returns the filtered list of EPFO establishments.</response>
+        /// <response code="204">No EPFO establishment data found.</response>
+        /// <response code="400">An error occurred while fetching the EPFO establishment data.</response>
+        [HttpGet("GetEPFOEstablishmentList")]
+        public async Task<IActionResult> GetEPFOEstablishmentList([FromQuery] PagedListCriteria PagedListCriteria)
+        {
+            return ResponseResult(await _EPFOServices.GetEPFOEstablishmentList(PagedListCriteria));
+        }
     }
 }

@@ -1010,6 +1010,77 @@ await _UnitOfWork.ePFOMonthWageRespositories.AddAsync( _model );
             }
         }
 
+        public async Task<ManagerBaseResponse<object>> GetEPFOEstablishmentList(PagedListCriteria PagedListCriteria)
+        {
+            try
+            {
+                // First, convert UserId to string so EF can compare in SQL
+                var query = from establish in _UnitOfWork.CompanyEPFORespositories.GetQueryable()
+                            join company in _UnitOfWork.CompanyRepository.GetQueryable()
+                                on establish.CompanyId equals company.CompanyId
+                            join Subcontractor in _UnitOfWork.SubcontractorRepository.GetQueryable()
+                                on establish.SubcontractorId equals Subcontractor.SubcontractorId into subcontractorGroup
+                            from subcontractor in subcontractorGroup.DefaultIfEmpty()
+                            join CompanyBranches in _UnitOfWork.CompanyBranchesRespositories.GetQueryable()
+                                on establish.BranchId equals CompanyBranches.BranchId into branchGroup
+                            from branch in branchGroup.DefaultIfEmpty()
+                            select new
+                            {
+                                establish.CompanyEpfoid,
+                                establish.EstablishmentCode,
+                                establish.CompanyId,
+                                company.Name,
+                                establish.SubcontractorId,
+                                SubcontractorName = subcontractor.Name ,
+                                establish.BranchId,
+                                branch.BranchName
+                            };
+                var searchText = PagedListCriteria.SearchText?.Trim().ToLower();
+                if (!string.IsNullOrWhiteSpace(searchText))
+                {
+                    query = query.Where(x => x.EstablishmentCode.ToLower().Contains(searchText.ToLower()));
+                }
 
+                var responseQuery = query.OrderBy(a => a.CompanyEpfoid);
+               
+          
+
+
+                var results = new
+                {
+                    results = responseQuery,
+                };
+
+                if (results != null)
+                {
+                    return new ManagerBaseResponse<object>
+                    {
+                        IsSuccess = true,
+                        Result = results,
+                        Message = "Company Count Data Retrieved Successfully.",
+                    };
+                }
+                else
+                {
+                    return new ManagerBaseResponse<object>
+                    {
+                        Result = false,
+                        IsSuccess = false,
+                        Message = "User Data not Retrieved.",
+
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return new ManagerBaseResponse<object>
+                {
+                    IsSuccess = false,
+                    Result = null,
+                    Message = ex.Message
+                };
+            }
+        }
     }
 }
