@@ -1273,6 +1273,16 @@ namespace ComplyX_Businesss.Services.Implementation
                 _UnitOfWork.GgstSaleRespositories.RemoveRange(Sales);
                 await _UnitOfWork.CommitAsync();
 
+               if(Sales.Count == 0)
+                {
+                    return new ManagerBaseResponse<bool>
+                    {
+                        Result = true,
+                        IsSuccess = true,
+                        Message = "No data found.",
+                    };
+                }
+
                 return new ManagerBaseResponse<bool>
                 {
                     Result = true, 
