@@ -1,6 +1,7 @@
 ﻿using ComplyX.Data.Entities;
 using ComplyX.Shared.Helper;
 using ComplyX_Businesss.Models;
+using ComplyX_Businesss.Models.Get_Sales_Items;
 using ComplyX_Businesss.Models.GSTHSNMapping;
 using ComplyX_Businesss.Models.GSTHSNSAC;
 using ComplyX_Businesss.Models.GSTInvoiceSeries;
@@ -41,5 +42,8 @@ namespace ComplyX_Businesss.Services.Interface
         Task<ManagerBaseResponse<bool>> RemoveGST_SalesData(string SaleID);
         Task<ManagerBaseResponse<List<GstSaleResponseModel>>> GetGST_SalesData();
         Task<ManagerBaseResponse<IEnumerable<GstSaleResponseModel>>> GetGST_SalesFilter(PagedListCriteria PagedListCriteria);
+        Task<ManagerBaseResponse<bool>> SaveGST_Sales_ItemsData(GstSalesItemRequestModel GST_Sales_Items);
+        Task<ManagerBaseResponse<bool>> RemoveGST_SalesItemsData(string ItemsID);
+        Task<ManagerBaseResponse<IEnumerable<GstSalesItemsResponseModel>>> GetGST_SalesItemsFilter(PagedListCriteria PagedListCriteria);
     }
 }

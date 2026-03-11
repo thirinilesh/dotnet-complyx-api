@@ -68,6 +68,7 @@ namespace ComplyX_Businesss.Helper
             services.AddScoped<IUserRespositories, UserRespositories>();
             services.AddScoped<IRegisterRespositories, RegisterRespositories>();
             services.AddScoped<ICompanyBranchesRespositories, CompanyBranchesRespositories>();
+            services.AddScoped<IGstSaleItemsRespositories, GstSaleItemsRespositories>();
             return services;
         }
         public static IServiceCollection AddAcaBusinessAutoMapper(this IServiceCollection services, ServiceLifetime lifetime) => 

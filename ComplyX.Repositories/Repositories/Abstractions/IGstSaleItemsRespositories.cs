@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ComplyX.Repositories.Repositories.Abstractions
 {
-    public interface IGstSaleRespositories : IBaseRespostories<GST_Sales_Invoice, int>
+    public  interface IGstSaleItemsRespositories : IBaseRespostories<Gst_Sales_Items, int>
     {
     }
 }

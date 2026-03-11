@@ -81,7 +81,7 @@ public partial class AppDbContext :IdentityDbContext<ApplicationUsers>
 
     public virtual DbSet<GstReturn> GstReturns { get; set; }
 
-    public virtual DbSet<GstSale> GstSales { get; set; }
+    public virtual DbSet<GST_Sales_Invoice> GstSales { get; set; }
 
     public virtual DbSet<LeaveEncashmentPolicy> LeaveEncashmentPolicies { get; set; }
 
@@ -928,17 +928,13 @@ public partial class AppDbContext :IdentityDbContext<ApplicationUsers>
                 .HasColumnType("decimal(18, 2)");
         });
 
-        modelBuilder.Entity<GstSale>(entity =>
+        modelBuilder.Entity<GST_Sales_Invoice>(entity =>
         {
             entity.HasKey(e => e.SaleId).HasName("PK__GST_Sale__1EE3C41F1134DB22");
 
-            entity.ToTable("GST_Sales");
+            entity.ToTable("GST_Sales_Invoice");
 
             entity.Property(e => e.SaleId).HasColumnName("SaleID");
-            entity.Property(e => e.Cgst)
-                .HasDefaultValue(0m)
-                .HasColumnType("decimal(18, 2)")
-                .HasColumnName("CGST");
             entity.Property(e => e.CompanyId).HasColumnName("CompanyID");
             entity.Property(e => e.CreatedOn)
                 .HasDefaultValueSql("(getdate())")
@@ -946,25 +942,20 @@ public partial class AppDbContext :IdentityDbContext<ApplicationUsers>
             entity.Property(e => e.CustomerGstin)
                 .HasMaxLength(15)
                 .HasColumnName("CustomerGSTIN");
-            entity.Property(e => e.CustomerName).HasMaxLength(200);
-            entity.Property(e => e.Hsncode)
-                .HasMaxLength(10)
-                .HasColumnName("HSNCode");
-            entity.Property(e => e.Igst)
-                .HasDefaultValue(0m)
-                .HasColumnType("decimal(18, 2)")
-                .HasColumnName("IGST");
-            entity.Property(e => e.InvoiceNo).HasMaxLength(50);
-            entity.Property(e => e.PlaceOfSupply).HasMaxLength(50);
-            entity.Property(e => e.Saccode)
-                .HasMaxLength(10)
-                .HasColumnName("SACCode");
-            entity.Property(e => e.Sgst)
-                .HasDefaultValue(0m)
-                .HasColumnType("decimal(18, 2)")
-                .HasColumnName("SGST");
-            entity.Property(e => e.TaxableValue).HasColumnType("decimal(18, 2)");
+            entity.Property(e => e.CustomerName).HasMaxLength(200);         
             entity.Property(e => e.TotalInvoiceValue).HasColumnType("decimal(18, 2)");
+        });
+
+        modelBuilder.Entity<Gst_Sales_Items>(entity =>
+        {
+            entity.HasKey(e => e.ItemID);
+
+            entity.ToTable("GST_Sales_Items");
+
+            entity.Property(e => e.ItemID).HasColumnName("ItemID");
+            entity.Property(e => e.InvoiceID).HasColumnName("InvoiceID");         
+            entity.Property(e => e.ItemName).HasMaxLength(200);
+            entity.Property(e => e.TotalItemValue).HasColumnType("decimal(18, 2)");
         });
 
         modelBuilder.Entity<LeaveEncashmentPolicy>(entity =>

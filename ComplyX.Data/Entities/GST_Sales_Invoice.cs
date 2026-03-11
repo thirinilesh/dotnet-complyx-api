@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace ComplyX.Data.Entities;
 
-public partial class GstSale
+public partial class GST_Sales_Invoice
 {
     public int SaleId { get; set; }
 
@@ -18,18 +18,6 @@ public partial class GstSale
     public string? CustomerGstin { get; set; }
 
     public string? PlaceOfSupply { get; set; }
-
-    public string? Hsncode { get; set; }
-
-    public string? Saccode { get; set; }
-
-    public decimal TaxableValue { get; set; }
-
-    public decimal? Cgst { get; set; }
-
-    public decimal? Sgst { get; set; }
-
-    public decimal? Igst { get; set; }
 
     public decimal TotalInvoiceValue { get; set; }
 

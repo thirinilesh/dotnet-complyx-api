@@ -69,6 +69,8 @@ namespace ComplyX.Repositories.UnitOfWork
         public ITdsrateRespostories TdsrateRespostories { get; }
         public IRegisterRespositories RegisterRespositories { get; }
         public IUserRespositories UserRespositories { get; }
+        public ICompanyBranchesRespositories CompanyBranchesRespositories { get; }
+        public IGstSaleItemsRespositories gstSaleItemsRespositories { get; }
         public UnitOfWork (DbContext dbcontext, IProductOwnerRespositories productOwnerRespositories,ICompanyRespositories companyRepositories,
             ISubscriptionPlanRespositories subscriptionPlanRespositories,IProductOwnerSubscriptionsRespostories productOwnerSubscriptionsRespostories, 
             ISubcontractorRespositories subcontractorRespositories, ISubscriptionInvoicesRespostories subscriptionInvoicesRespostories,
@@ -94,6 +96,8 @@ namespace ComplyX.Repositories.UnitOfWork
            ITdsreturnEntryRespositories tdsreturnEntryRespositories,ITdsreturnChallanRespositories tdsreturnChallanRespositories, 
            ITdschallanAllocationRespostories tdschallanAllocationRespostories,ITdsrateRespostories tdsrateRespostories,
            IRegisterRespositories registerRespositories,IUserRespositories userRespositories,
+           ICompanyBranchesRespositories companyBranchesRespositories,
+           IGstSaleItemsRespositories GstSaleItemsRespositories,
            IPlanRespositories planRespositories, AppDbContext appDbContext)
         {
             this.dbcontext = dbcontext;
@@ -151,6 +155,8 @@ namespace ComplyX.Repositories.UnitOfWork
             TdsrateRespostories = tdsrateRespostories;
             RegisterRespositories = registerRespositories;
             UserRespositories = userRespositories;
+            CompanyBranchesRespositories = companyBranchesRespositories;
+            gstSaleItemsRespositories = GstSaleItemsRespositories;
         }
         public async Task CommitAsync() 
         {

@@ -17,6 +17,7 @@ using ComplyX_Businesss.Models.GSTPurchase;
 using ComplyX_Businesss.Models.GSTReturns;
 using ComplyX_Businesss.Models.GSTSales;
 using ComplyX_Businesss.Models.CompanyEPFO;
+using ComplyX_Businesss.Models.Get_Sales_Items;
 
 namespace ComplyX_Businesss.Services.Implementation
 {
@@ -1140,7 +1141,7 @@ namespace ComplyX_Businesss.Services.Implementation
         }
         public async Task<ManagerBaseResponse<bool>> SaveGST_SalesData(GstSaleRequestModel GST_Sales)
         {
-            var response = new ManagerBaseResponse<List<GstSale>>();
+            var response = new ManagerBaseResponse<List<GST_Sales_Invoice>>();
 
             try
             {
@@ -1158,43 +1159,43 @@ namespace ComplyX_Businesss.Services.Implementation
                 }
                 else
                 {
-                    var code = await _UnitOfWork.GSTHSNSACRespositories.GetQueryable().AnyAsync(x => x.Code == GST_Sales.Saccode);
-                    if(GST_Sales.Saccode == "")
-                    {
-                        return new ManagerBaseResponse<bool>
-                        {
-                            IsSuccess = false,
-                            Result = false,
-                            StatusCode = 400,
-                            Message = "SAC Code is not allow blank."
-                        };
-                    }
+                    //var code = await _UnitOfWork.GSTHSNSACRespositories.GetQueryable().AnyAsync(x => x.Code == GST_Sales.Saccode);
+                    //if(GST_Sales.Items[0].Saccode == "")
+                    //{
+                    //    return new ManagerBaseResponse<bool>
+                    //    {
+                    //        IsSuccess = false,
+                    //        Result = false,
+                    //        StatusCode = 400,
+                    //        Message = "SAC Code is not allow blank."
+                    //    };
+                    //}
                     if (GST_Sales.SaleId == 0)
                     {
                         // Insert
-                        GstSale originalTerm = new GstSale();
+                        GST_Sales_Invoice originalTerm = new GST_Sales_Invoice();
                         originalTerm.CompanyId = GST_Sales.CompanyId;
                         originalTerm.InvoiceNo = GST_Sales.InvoiceNo;
                         originalTerm.InvoiceDate = GST_Sales.InvoiceDate;
                         originalTerm.CustomerName = GST_Sales.CustomerName;
                         originalTerm.CustomerGstin =  GST_Sales.CustomerGstin;
                         originalTerm.PlaceOfSupply = GST_Sales.PlaceOfSupply;
-                        originalTerm.Hsncode = GST_Sales.Hsncode;
-                        if (!code && GST_Sales.Saccode != null)
-                        {
-                            return new ManagerBaseResponse<bool>
-                            {
-                                IsSuccess = false,
-                                StatusCode = 400,
-                                Result = false,
-                                Message = "SAC Code is not found in Master Table.",
-                            };
-                        }
-                        originalTerm.Saccode = GST_Sales.Saccode;
-                        originalTerm.TaxableValue = GST_Sales.TaxableValue;
-                        originalTerm.Cgst = GST_Sales.Cgst;
-                        originalTerm.Sgst = GST_Sales.Sgst;
-                        originalTerm.Igst = GST_Sales.Igst;
+                        //originalTerm.Hsncode = GST_Sales.Items[0].Hsncode;
+                        //if (!code && GST_Sales.Items[0].Saccode != null)
+                        //{
+                        //    return new ManagerBaseResponse<bool>
+                        //    {
+                        //        IsSuccess = false,
+                        //        StatusCode = 400,
+                        //        Result = false,
+                        //        Message = "SAC Code is not found in Master Table.",
+                        //    };
+                        //}
+                        //originalTerm.Saccode = GST_Sales.Items[0].Saccode;
+                        //originalTerm.TaxableValue = GST_Sales.Items[0].TaxableValue;
+                        //originalTerm.Cgst = GST_Sales.Items[0].Cgst;
+                        //originalTerm.Sgst = GST_Sales.Items[0].Sgst;
+                        //originalTerm.Igst = GST_Sales.Items[0].Igst;
                         originalTerm.TotalInvoiceValue = GST_Sales.TotalInvoiceValue;
                         originalTerm.CreatedOn = GST_Sales.CreatedOn;
                         originalTerm.CreatedBy = GST_Sales.CreatedBy;
@@ -1213,22 +1214,22 @@ namespace ComplyX_Businesss.Services.Implementation
                         originalTerm.CustomerName = GST_Sales.CustomerName;
                         originalTerm.CustomerGstin = GST_Sales.CustomerGstin;
                         originalTerm.PlaceOfSupply = GST_Sales.PlaceOfSupply;
-                        originalTerm.Hsncode = GST_Sales.Hsncode;
-                        if (!code && GST_Sales.Saccode != null)
-                        {
-                            return new ManagerBaseResponse<bool>
-                            {
-                                IsSuccess = false,
-                                StatusCode = 400,
-                                Result = false,
-                                Message = "SAC Code is not found in Master Table.",
-                            };
-                        }
-                        originalTerm.Saccode =  GST_Sales.Saccode;
-                        originalTerm.TaxableValue = GST_Sales.TaxableValue;
-                        originalTerm.Cgst = GST_Sales.Cgst;
-                        originalTerm.Sgst = GST_Sales.Sgst;
-                        originalTerm.Igst = GST_Sales.Igst;
+                        //originalTerm.Hsncode = GST_Sales.Items[0].Hsncode;
+                        //if (!code && GST_Sales.Items[0].Saccode != null)
+                        //{
+                        //    return new ManagerBaseResponse<bool>
+                        //    {
+                        //        IsSuccess = false,
+                        //        StatusCode = 400,
+                        //        Result = false,
+                        //        Message = "SAC Code is not found in Master Table.",
+                        //    };
+                        //}
+                        //originalTerm.Saccode =  GST_Sales.Items[0].Saccode;
+                        //originalTerm.TaxableValue = GST_Sales.Items[0].TaxableValue;
+                        //originalTerm.Cgst = GST_Sales.Items[0].Cgst;
+                        //originalTerm.Sgst = GST_Sales.Items[0].Sgst;
+                        //originalTerm.Igst = GST_Sales.Items[0].Igst;
                         originalTerm.TotalInvoiceValue = GST_Sales.TotalInvoiceValue;
                         originalTerm.CreatedOn = GST_Sales.CreatedOn;
                         originalTerm.CreatedBy = GST_Sales.CreatedBy;
@@ -1313,13 +1314,7 @@ namespace ComplyX_Businesss.Services.Implementation
                          InvoiceDate = x.InvoiceDate,
                          CustomerName = x.CustomerName,
                          CustomerGstin = x.CustomerGstin,
-                         PlaceOfSupply = x.PlaceOfSupply,
-                         Hsncode = x.Hsncode,
-                         Saccode = x.Saccode,
-                         TaxableValue = x.TaxableValue,
-                         Cgst = x.Cgst,
-                         Sgst = x.Sgst,
-                         Igst = x.Igst,
+                         PlaceOfSupply = x.PlaceOfSupply,                   
                          TotalInvoiceValue = x.TotalInvoiceValue,
                          CreatedOn = x.CreatedOn,
                          CreatedBy = x.CreatedBy
@@ -1380,12 +1375,6 @@ namespace ComplyX_Businesss.Services.Implementation
                     CustomerName = x.CustomerName,
                     CustomerGstin = x.CustomerGstin,
                     PlaceOfSupply = x.PlaceOfSupply,
-                    Hsncode = x.Hsncode,
-                    Saccode = x.Saccode,
-                    TaxableValue = x.TaxableValue,
-                    Cgst = x.Cgst,
-                    Sgst = x.Sgst,
-                    Igst = x.Igst,
                     TotalInvoiceValue = x.TotalInvoiceValue,
                     CreatedOn = x.CreatedOn,
                     CreatedBy = x.CreatedBy
@@ -1419,5 +1408,219 @@ namespace ComplyX_Businesss.Services.Implementation
             }
         }
 
+        public async Task<ManagerBaseResponse<bool>> SaveGST_Sales_ItemsData(GstSalesItemRequestModel GST_Sales_Items)
+        {
+            var response = new ManagerBaseResponse<List<Gst_Sales_Items>>();
+
+            try
+            {
+                var GstSales = await _UnitOfWork.GgstSaleRespositories.GetQueryable().FirstOrDefaultAsync(x => x.SaleId == GST_Sales_Items.InvoiceID);
+
+
+                if (GstSales == null)
+                {
+                    return new ManagerBaseResponse<bool>
+                    {
+                        Result = false,
+                        Message = "Invoice no is not found.",
+                    };
+
+                }
+                else
+                {
+                    var code = await _UnitOfWork.GSTHSNSACRespositories.GetQueryable().AnyAsync(x => x.Code == GST_Sales_Items.SACCode);
+                    if (GST_Sales_Items.SACCode == "")
+                    {
+                        return new ManagerBaseResponse<bool>
+                        {
+                            IsSuccess = false,
+                            Result = false,
+                            StatusCode = 400,
+                            Message = "SAC Code is not allow blank."
+                        };
+                    }
+                    if (GST_Sales_Items.ItemID == 0)
+                    {
+                        // Insert
+                        Gst_Sales_Items originalTerm = new Gst_Sales_Items();
+
+                        originalTerm.HSNCode = GST_Sales_Items.HSNCode;
+                        originalTerm.InvoiceID = GST_Sales_Items.InvoiceID;
+                        if (!code && GST_Sales_Items.SACCode != null)
+                        {
+                            return new ManagerBaseResponse<bool>
+                            {
+                                IsSuccess = false,
+                                StatusCode = 400,
+                                Result = false,
+                                Message = "SAC Code is not found in Master Table.",
+                            };
+                        }
+                        originalTerm.SACCode = GST_Sales_Items.SACCode;
+                        originalTerm.TaxableValue = GST_Sales_Items.TaxableValue;
+                        originalTerm.CGST = GST_Sales_Items.CGST;
+                        originalTerm.SGST = GST_Sales_Items.SGST;
+                        originalTerm.IGST = GST_Sales_Items.IGST;
+                        originalTerm.Rate = GST_Sales_Items.Rate;
+                        originalTerm.GSTRate = GST_Sales_Items.GSTRate;
+                        originalTerm.ItemName = GST_Sales_Items.ItemName;
+                        originalTerm.Quantity = GST_Sales_Items.Quantity;
+                        originalTerm.TotalItemValue = GST_Sales_Items.TotalItemValue;
+
+                        await _UnitOfWork.gstSaleItemsRespositories.AddAsync(originalTerm);
+                    }
+                    else
+                    {
+                        // Update
+                        var originalTerm = _UnitOfWork.gstSaleItemsRespositories.GetQueryable()
+                            .Where(x => x.ItemID == GST_Sales_Items.ItemID)
+                            .FirstOrDefault();
+                        originalTerm.HSNCode = GST_Sales_Items.HSNCode;
+                        if (!code && GST_Sales_Items.SACCode != null)
+                        {
+                            return new ManagerBaseResponse<bool>
+                            {
+                                IsSuccess = false,
+                                StatusCode = 400,
+                                Result = false,
+                                Message = "SAC Code is not found in Master Table.",
+                            };
+                        }
+                        originalTerm.SACCode = GST_Sales_Items.SACCode;
+                        originalTerm.InvoiceID = GST_Sales_Items.InvoiceID;
+                        originalTerm.TaxableValue = GST_Sales_Items.TaxableValue;
+                        originalTerm.CGST = GST_Sales_Items.CGST;
+                        originalTerm.SGST = GST_Sales_Items.SGST;
+                        originalTerm.IGST = GST_Sales_Items.IGST;
+                        originalTerm.Rate = GST_Sales_Items.Rate;
+                        originalTerm.GSTRate = GST_Sales_Items.GSTRate;
+                        originalTerm.ItemName = GST_Sales_Items.ItemName;
+                        originalTerm.Quantity = GST_Sales_Items.Quantity;
+                        originalTerm.TotalItemValue = GST_Sales_Items.TotalItemValue;
+                    }
+                }
+                await _UnitOfWork.CommitAsync();
+                return new ManagerBaseResponse<bool>
+                {
+                    Result = true,
+                    IsSuccess = true,
+                    Message = "GST Sales Items Details Saved Successfully."
+                };
+            }
+            catch (Exception e)
+            {
+                return new ManagerBaseResponse<bool>
+                {
+                    Result = false,
+                    Message = e.Message
+                };
+            }
+        }
+
+        public async Task<ManagerBaseResponse<bool>> RemoveGST_SalesItemsData(string ItemID)
+        {
+            try
+            {
+                // Get all report detail definitions for the given report name
+                var Sales = await _UnitOfWork.gstSaleItemsRespositories.GetQueryable().Where(x => x.ItemID.ToString() == ItemID).ToListAsync();
+
+                if (string.IsNullOrEmpty(Sales.ToString()))
+                {
+                    return new ManagerBaseResponse<bool>
+                    {
+                        Result = false,
+                        Message = "GST Sales Id is not Vaild",
+                    };
+                }
+
+                // Remove all related report details
+                _UnitOfWork.gstSaleItemsRespositories.RemoveRange(Sales);
+                await _UnitOfWork.CommitAsync();
+
+                if (Sales.Count == 0)
+                {
+                    return new ManagerBaseResponse<bool>
+                    {
+                        Result = true,
+                        IsSuccess = true,
+                        Message = "No data found.",
+                    };
+                }
+
+                return new ManagerBaseResponse<bool>
+                {
+                    Result = true,
+                    IsSuccess = true,
+                    Message = "GST Sales Items Data Removed Successfully.",
+                };
+
+            }
+            catch (Exception ex)
+            {
+                return new ManagerBaseResponse<bool>
+                {
+                    Result = false,
+                    Message = ex.Message
+                };
+            }
+        }
+        public async Task<ManagerBaseResponse<IEnumerable<GstSalesItemsResponseModel>>> GetGST_SalesItemsFilter(PagedListCriteria PagedListCriteria)
+        {
+            try
+            {
+
+                var query = _UnitOfWork.gstSaleItemsRespositories.GetQueryable();
+                var searchText = PagedListCriteria.SearchText?.Trim().ToLower();
+                if (!string.IsNullOrWhiteSpace(searchText))
+                {
+                    query = query.Where(x => x.ItemName.ToLower().Contains(searchText.ToLower()));
+                }
+
+                query = query.OrderBy(a => a.ItemID);
+                var responseQuery = query.Select(x => new GstSalesItemsResponseModel
+                {
+
+                    ItemID = x.ItemID,
+                    InvoiceID = x.InvoiceID,
+                    ItemName = x.ItemName,
+                    Quantity = x.Quantity,
+                    Rate = x.Rate,
+                    GSTRate = x.GSTRate,
+                    HSNCode = x.HSNCode,
+                    SACCode = x.SACCode,
+                    CGST = x.CGST,
+                    SGST = x.SGST,
+                    IGST = x.IGST,
+                    TotalItemValue = x.TotalItemValue,
+                    TaxableValue = x.TaxableValue
+                });
+                PageListed<GstSalesItemsResponseModel> result = await responseQuery.ToPagedListAsync(PagedListCriteria, orderByTranslations);
+
+                return new ManagerBaseResponse<IEnumerable<GstSalesItemsResponseModel>>
+                {
+                    Result = result.Data,
+                    IsSuccess = true,
+                    Message = "GST Sales Items Data Retrieved Successfully.",
+                    PageDetail = new PageDetailModel()
+                    {
+                        Skip = PagedListCriteria.Skip,
+                        Take = PagedListCriteria.Take,
+                        Count = result.TotalCount,
+                        SearchText = PagedListCriteria.SearchText,
+                        FilterdCount = PagedListCriteria.Filters,
+                    }
+                };
+            }
+            catch (Exception ex)
+            {
+
+                return new ManagerBaseResponse<IEnumerable<GstSalesItemsResponseModel>>
+                {
+                    IsSuccess = false,
+                    Result = null,
+                    Message = ex.Message
+                };
+            }
+        }
     }
 }

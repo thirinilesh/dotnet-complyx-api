@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace ComplyX.Repositories.Repositories
 {
-    public class GstSaleRespositories : BaseRespostories<GST_Sales_Invoice, int>, IGstSaleRespositories
+    public  class GstSaleItemsRespositories : BaseRespostories<Gst_Sales_Items, int>, IGstSaleItemsRespositories
     {
-        public GstSaleRespositories(AppDbContext dbContext) : base(dbContext)
+        public GstSaleItemsRespositories(AppDbContext dbContext) : base(dbContext)
         {
         }
     }

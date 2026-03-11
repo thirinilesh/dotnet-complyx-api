@@ -64,5 +64,7 @@ namespace ComplyX.Repositories.UnitOfWork
         ITdsrateRespostories TdsrateRespostories { get; }
         IRegisterRespositories RegisterRespositories { get; }
         IUserRespositories UserRespositories { get; }
+        ICompanyBranchesRespositories CompanyBranchesRespositories { get; }
+        IGstSaleItemsRespositories gstSaleItemsRespositories { get; }
     }
 }
