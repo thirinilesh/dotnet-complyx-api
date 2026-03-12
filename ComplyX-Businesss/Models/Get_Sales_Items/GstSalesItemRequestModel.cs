@@ -9,7 +9,8 @@ namespace ComplyX_Businesss.Models.Get_Sales_Items
     public class GstSalesItemRequestModel
     {
         public int ItemID { get; set; }
-        public int InvoiceID { get; set; }
+        public string  InvoiceNo { get; set; }
+        public int CompanyId { get; set; }
         public string? ItemName { get; set; }
         public string? HSNCode { get; set; }
         public string? SACCode { get; set; }

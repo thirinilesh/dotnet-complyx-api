@@ -1,4 +1,5 @@
-﻿using Nest;
+﻿using ComplyX_Businesss.Models.Get_Sales_Items;
+using Nest;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace ComplyX_Businesss.Models.GSTSales
 {
     public class GstSaleRequestModel
     {
-        public int SaleId { get; set; }
+      //  public int SaleId { get; set; }
 
         public int CompanyId { get; set; }
 
@@ -27,7 +28,7 @@ namespace ComplyX_Businesss.Models.GSTSales
         public DateTime? CreatedOn { get; set; }
 
         public int? CreatedBy { get; set; }
-
+        public virtual GstSalesItemRequestModel GstSalesItemRequestModel { get; set; } 
     }
      
 }

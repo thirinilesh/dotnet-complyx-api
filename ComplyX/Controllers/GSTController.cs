@@ -31,7 +31,7 @@ namespace ComplyX.Controllers
     /// </summary>
     [ApiController]
     [Route("[controller]")]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+   // [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class GSTController : BaseController
     {
         private readonly AppContext _context;
@@ -488,60 +488,6 @@ namespace ComplyX.Controllers
         {
             return ResponseResult(await _IGSTServices.GetGST_SalesFilter(PagedListCriteria));
         }
-        /// <summary>
-        /// Saves GST Sales item details. 
-        /// If the sales record already exists, the existing record will be updated.
-        /// </summary>
-        /// <param name="GST_Sales">
-        /// The GST Sales request model containing item details to save or update.
-        /// </param>
-        /// <returns>
-        /// An <see cref="IActionResult"/> representing the result of the save or update operation.
-        /// </returns>
-        /// <response code="200">GST Sales item data saved or updated successfully.</response>
-        /// <response code="400">An error occurred while saving or updating GST Sales item data.</response>
-        [HttpPut("SaveGST_Sales_ItemsData")]
-        public async Task<IActionResult> SaveGST_Sales_ItemsData([FromBody] GstSalesItemRequestModel GST_Sales)
-        {
-            return ResponseResult(await _IGSTServices.SaveGST_Sales_ItemsData(GST_Sales));
-        }
-
-        /// <summary>
-        /// Deletes a GST Sales item record based on the provided ItemsID.
-        /// </summary>
-        /// <param name="ItemsID">
-        /// The unique identifier of the GST Sales item record to be deleted.
-        /// </param>
-        /// <returns>
-        /// An <see cref="IActionResult"/> indicating the result of the delete operation.
-        /// </returns>
-        /// <response code="200">The GST Sales item data was successfully deleted.</response>
-        /// <response code="400">An error occurred while deleting the GST Sales item data.</response>
-        /// <response code="404">No GST Sales item data was found with the given ItemsID.</response>
-        [HttpPut("RemoveGST_SalesItemsData")]
-        public async Task<IActionResult> RemoveGST_SalesItemsData(string ItemsID)
-        {
-            return ResponseResult(await _IGSTServices.RemoveGST_SalesItemsData(ItemsID));
-        }
-
-        /// <summary>
-        /// Retrieves a filtered and paginated list of GST Sales item records based on the provided criteria.
-        /// </summary>
-        /// <param name="PagedListCriteria">
-        /// The criteria used to filter, sort, search, and paginate the GST Sales item data.
-        /// </param>
-        /// <returns>
-        /// An <see cref="IActionResult"/> containing the filtered list of GST Sales item records.
-        /// Returns 204 No Content if no records are found.
-        /// Returns 400 Bad Request if an error occurs.
-        /// </returns>
-        /// <response code="200">Returns the filtered list of GST Sales item records.</response>
-        /// <response code="204">No GST Sales item data found.</response>
-        /// <response code="400">An error occurred while fetching GST Sales item data.</response>
-        [HttpGet("GetGST_SalesItemsFilter")]
-        public async Task<IActionResult> GetGST_SalesItemsFilter([FromQuery] PagedListCriteria PagedListCriteria)
-        {
-            return ResponseResult(await _IGSTServices.GetGST_SalesItemsFilter(PagedListCriteria));
-        }
+     
     }
 }

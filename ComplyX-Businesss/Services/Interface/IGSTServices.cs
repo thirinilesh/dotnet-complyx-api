@@ -40,10 +40,8 @@ namespace ComplyX_Businesss.Services.Interface
         Task<ManagerBaseResponse<IEnumerable<GstReturnResponseModel>>> GetGST_ReturnsFilter(PagedListCriteria PagedListCriteria);
         Task<ManagerBaseResponse<bool>> SaveGST_SalesData(GstSaleRequestModel GST_Sales);
         Task<ManagerBaseResponse<bool>> RemoveGST_SalesData(string SaleID);
-        Task<ManagerBaseResponse<List<GstSaleResponseModel>>> GetGST_SalesData();
+        Task<ManagerBaseResponse<object>> GetGST_SalesData();
         Task<ManagerBaseResponse<IEnumerable<GstSaleResponseModel>>> GetGST_SalesFilter(PagedListCriteria PagedListCriteria);
-        Task<ManagerBaseResponse<bool>> SaveGST_Sales_ItemsData(GstSalesItemRequestModel GST_Sales_Items);
-        Task<ManagerBaseResponse<bool>> RemoveGST_SalesItemsData(string ItemsID);
-        Task<ManagerBaseResponse<IEnumerable<GstSalesItemsResponseModel>>> GetGST_SalesItemsFilter(PagedListCriteria PagedListCriteria);
+      
     }
 }

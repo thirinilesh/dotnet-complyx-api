@@ -1025,7 +1025,7 @@ await _UnitOfWork.ePFOMonthWageRespositories.AddAsync( _model );
                                 on establish.BranchId equals CompanyBranches.BranchId into branchGroup
                             from branch in branchGroup.DefaultIfEmpty()
                             select new
-                            {
+                            {   
                                 establish.CompanyEpfoid,
                                 establish.EstablishmentCode,
                                 establish.CompanyId,
@@ -1042,9 +1042,6 @@ await _UnitOfWork.ePFOMonthWageRespositories.AddAsync( _model );
                 }
 
                 var responseQuery = query.OrderBy(a => a.CompanyEpfoid);
-               
-          
-
 
                 var results = new
                 {

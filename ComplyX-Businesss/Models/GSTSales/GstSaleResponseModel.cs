@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ComplyX_Businesss.Models.Get_Sales_Items;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +9,7 @@ namespace ComplyX_Businesss.Models.GSTSales
 {
     public class GstSaleResponseModel
     {
-        public int SaleId { get; set; }
+      //  public int SaleId { get; set; }
 
         public int CompanyId { get; set; }
 
@@ -28,5 +29,7 @@ namespace ComplyX_Businesss.Models.GSTSales
         public DateTime? CreatedOn { get; set; }
 
         public int? CreatedBy { get; set; }
+
+        public virtual GstSalesItemRequestModel GstSalesItemRequestModel { get; set; }
     }
 }

@@ -82,6 +82,7 @@ public partial class AppDbContext :IdentityDbContext<ApplicationUsers>
     public virtual DbSet<GstReturn> GstReturns { get; set; }
 
     public virtual DbSet<GST_Sales_Invoice> GstSales { get; set; }
+    public virtual DbSet<Gst_Sales_Items> GstSalesItems { get; set; }
 
     public virtual DbSet<LeaveEncashmentPolicy> LeaveEncashmentPolicies { get; set; }
 
@@ -715,8 +716,8 @@ public partial class AppDbContext :IdentityDbContext<ApplicationUsers>
                 .HasMaxLength(50)
                 .IsUnicode(false);
         });
-
-        modelBuilder.Entity<FilingStatus>(entity =>
+      
+            modelBuilder.Entity<FilingStatus>(entity =>
         {
             entity.HasKey(e => e.FilingStatusId).HasName("PK__FilingSt__93F42EE7E95E6711");
 
@@ -930,11 +931,11 @@ public partial class AppDbContext :IdentityDbContext<ApplicationUsers>
 
         modelBuilder.Entity<GST_Sales_Invoice>(entity =>
         {
-            entity.HasKey(e => e.SaleId).HasName("PK__GST_Sale__1EE3C41F1134DB22");
+            entity.HasKey(e => e.InvoiceNo).HasName("PK__GST_Sale__1EE3C41F1134DB22");
 
             entity.ToTable("GST_Sales_Invoice");
 
-            entity.Property(e => e.SaleId).HasColumnName("SaleID");
+            entity.Property(e => e.InvoiceNo).HasColumnName("InvoiceNo");
             entity.Property(e => e.CompanyId).HasColumnName("CompanyID");
             entity.Property(e => e.CreatedOn)
                 .HasDefaultValueSql("(getdate())")
@@ -944,6 +945,10 @@ public partial class AppDbContext :IdentityDbContext<ApplicationUsers>
                 .HasColumnName("CustomerGSTIN");
             entity.Property(e => e.CustomerName).HasMaxLength(200);         
             entity.Property(e => e.TotalInvoiceValue).HasColumnType("decimal(18, 2)");
+            entity.HasOne(d => d.Company).WithMany(p => p.GST_Sales_Invoice)
+        .HasForeignKey(d => d.CompanyId)
+        .OnDelete(DeleteBehavior.ClientSetNull)
+        .HasConstraintName("Gst_Sales_Invioce_Company");
         });
 
         modelBuilder.Entity<Gst_Sales_Items>(entity =>
@@ -953,9 +958,20 @@ public partial class AppDbContext :IdentityDbContext<ApplicationUsers>
             entity.ToTable("GST_Sales_Items");
 
             entity.Property(e => e.ItemID).HasColumnName("ItemID");
-            entity.Property(e => e.InvoiceID).HasColumnName("InvoiceID");         
+            entity.Property(e => e.InvoiceNo).HasColumnName("InvoiceNo");         
             entity.Property(e => e.ItemName).HasMaxLength(200);
             entity.Property(e => e.TotalItemValue).HasColumnType("decimal(18, 2)");
+
+            entity.HasOne(d => d.GST_Sales_Invoice).WithMany(p => p.Gst_Sales_Items)
+            .HasForeignKey(d => d.InvoiceNo)
+            .OnDelete(DeleteBehavior.ClientSetNull)
+            .HasConstraintName("Gst_Sales_Items_Invoice");
+
+            entity.HasOne(d => d.Company).WithMany(p => p.Gst_Sales_Items)
+           .HasForeignKey(d => d.CompanyId)
+           .OnDelete(DeleteBehavior.ClientSetNull)
+           .HasConstraintName("Gst_Sales_Items_Company");
+
         });
 
         modelBuilder.Entity<LeaveEncashmentPolicy>(entity =>

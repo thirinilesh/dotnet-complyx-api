@@ -66,4 +66,6 @@ public partial class Company
     public virtual ICollection<Tdsdeductor> Tdsdeductors { get; set; } = new List<Tdsdeductor>();
 
     public virtual ICollection<User> Users { get; set; } = new List<User>();
+    public virtual ICollection<Gst_Sales_Items> Gst_Sales_Items { get; set; } = new List<Gst_Sales_Items>();
+    public virtual ICollection<GST_Sales_Invoice> GST_Sales_Invoice { get; set; } = new List<GST_Sales_Invoice>();
 }

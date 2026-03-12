@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace ComplyX.Data.Entities;
 
 public partial class MachineBinding
 {
     public int MachineBindingId { get; set; }
-
     public string MachineHash { get; set; } = null!;
 
     public string? Cpuid { get; set; }
