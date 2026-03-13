@@ -18,6 +18,9 @@ using ComplyX_Businesss.Models.GSTReturns;
 using ComplyX_Businesss.Models.GSTSales;
 using ComplyX_Businesss.Models.CompanyEPFO;
 using ComplyX_Businesss.Models.Get_Sales_Items;
+using Microsoft.Graph.Models;
+using Microsoft.Extensions.Logging;
+using System.Linq;
 
 namespace ComplyX_Businesss.Services.Implementation
 {
@@ -1512,6 +1515,275 @@ namespace ComplyX_Businesss.Services.Implementation
                 };
             }
         }
-      
+        public async Task<ManagerBaseResponse<object>> GetDataInvoiceCount(string PeriodType, int CompanyID, int Year, int Month, int Quarter )
+        {
+            try
+            {
+                var Receivables =  _UnitOfWork.GgstSaleRespositories.GetQueryable().Where(x => x.CompanyId == CompanyID);
+                var Payables =  _UnitOfWork.PurchaseRespositories.GetQueryable().Where(x => x.CompanyId == CompanyID);
+                decimal queryReceivables = 0; decimal queryunpaidReceivables = 0; decimal queryoverdueReceivables = 0;
+                decimal  QueryPayables = 0; decimal queryunpaidPayables = 0; decimal queryoverduePayables = 0;
+                var today = DateTime.Today;
+                int currentQuarter = (today.Month - 1) / 3 + 1;
+
+
+
+                if (PeriodType == "this_financial_year")
+                {
+                    queryReceivables = await Receivables.Where(x  => x.InvoiceDate >= DateOnly.Parse($"{today.Year - 1}-04-01") && x.InvoiceDate <= DateOnly.Parse($"{today.Year}-03-31")).SumAsync(x => x.TotalInvoiceValue);
+                    queryunpaidReceivables = await Receivables.Where(x => x.InvoiceDate >= DateOnly.Parse($"{today.Year - 1}-04-01") && x.InvoiceDate <= DateOnly.Parse($"{today.Year}-03-31") && x.InvoiceDate > DateOnly.FromDateTime(DateTime.Today)).SumAsync(x => x.TotalInvoiceValue);
+                    queryoverdueReceivables = await Receivables.Where(x => x.InvoiceDate >= DateOnly.Parse($"{today.Year - 1}-04-01") && x.InvoiceDate <= DateOnly.Parse($"{today.Year}-03-31") && x.InvoiceDate <= DateOnly.FromDateTime(DateTime.Today)).SumAsync(x => x.TotalInvoiceValue);
+
+                    QueryPayables = await Payables.Where(x => x.BillDate >= DateOnly.Parse($"{today.Year - 1}-04-01") && x.BillDate <= DateOnly.Parse($"{today.Year}-03-31")).SumAsync(x => x.TotalBillValue);
+                    queryunpaidPayables = await Payables.Where(x => x.BillDate >= DateOnly.Parse($"{today.Year - 1}-04-01") && x.BillDate <= DateOnly.Parse($"{today.Year}-03-31") && x.BillDate > DateOnly.FromDateTime(DateTime.Today)).SumAsync(x => x.TotalBillValue);
+                    queryoverduePayables = await Payables.Where(x => x.BillDate >= DateOnly.Parse($"{today.Year - 1}-04-01") && x.BillDate <= DateOnly.Parse($"{today.Year}-03-31") && x.BillDate <= DateOnly.FromDateTime(DateTime.Today)).SumAsync(x => x.TotalBillValue);
+
+
+                }
+                else if(PeriodType == "previous_financial_year")
+                {
+                      queryReceivables = await Receivables.Where(x => x.InvoiceDate >= DateOnly.Parse($"{today.Year - 2}-04-01") && x.InvoiceDate <= DateOnly.Parse($"{today.Year - 1}-03-31")).SumAsync(x => x.TotalInvoiceValue);
+                    queryunpaidReceivables = await Receivables.Where(x => x.InvoiceDate >= DateOnly.Parse($"{today.Year - 2}-04-01") && x.InvoiceDate <= DateOnly.Parse($"{today.Year - 1}-03-31") && x.InvoiceDate > DateOnly.FromDateTime(DateTime.Today)).SumAsync(x => x.TotalInvoiceValue);
+                    queryoverdueReceivables = await Receivables.Where(x => x.InvoiceDate >= DateOnly.Parse($"{today.Year - 2}-04-01") && x.InvoiceDate <= DateOnly.Parse($"{today.Year - 1}-03-31") && x.InvoiceDate <= DateOnly.FromDateTime(DateTime.Today)).SumAsync(x => x.TotalInvoiceValue);
+
+
+                    QueryPayables = await Payables.Where(x => x.BillDate >= DateOnly.Parse($"{today.Year - 2}-04-01") && x.BillDate <= DateOnly.Parse($"{today.Year - 1}-03-31")).SumAsync(x => x.TotalBillValue);
+                    queryunpaidPayables = await Payables.Where(x => x.BillDate >= DateOnly.Parse($"{today.Year - 2}-04-01") && x.BillDate <= DateOnly.Parse($"{today.Year - 1}-03-31") && x.BillDate > DateOnly.FromDateTime(DateTime.Today)).SumAsync(x => x.TotalBillValue);
+                    queryoverduePayables = await Payables.Where(x => x.BillDate >= DateOnly.Parse($"{today.Year - 2}-04-01") && x.BillDate <= DateOnly.Parse($"{today.Year - 1}-03-31") && x.BillDate <= DateOnly.FromDateTime(DateTime.Today)).SumAsync(x => x.TotalBillValue);
+
+
+                }
+                else if(PeriodType == "last_12_months")
+                {
+                      queryReceivables = await Receivables.Where(x => x.InvoiceDate >= DateOnly.Parse($"{today.Year - 1}-{today.Month}-{today.Date}") && x.InvoiceDate <= DateOnly.Parse($"{today.Year}-{today.Month }-{today.Date}")).SumAsync(x => x.TotalInvoiceValue);
+                    queryunpaidReceivables = await Receivables.Where(x => x.InvoiceDate >= DateOnly.Parse($"{today.Year - 1}-{today.Month}-{today.Date}") && x.InvoiceDate <= DateOnly.Parse($"{today.Year}-{today.Month}-{today.Date}") && x.InvoiceDate > DateOnly.FromDateTime(DateTime.Today)).SumAsync(x => x.TotalInvoiceValue);
+                    queryoverdueReceivables = await Receivables.Where(x => x.InvoiceDate >= DateOnly.Parse($"{today.Year - 1}-{today.Month}-{today.Date}") && x.InvoiceDate <= DateOnly.Parse($"{today.Year}-{today.Month}-{today.Date}") && x.InvoiceDate <= DateOnly.FromDateTime(DateTime.Today)).SumAsync(x => x.TotalInvoiceValue);
+
+
+                    QueryPayables = await Payables.Where(x => x.BillDate >= DateOnly.Parse($"{today.Year - 1}-{today.Month}-{today.Date}") && x.BillDate <= DateOnly.Parse($"{today.Year}-{today.Month}-{today.Date}")).SumAsync(x => x.TotalBillValue);
+                    queryunpaidPayables = await Payables.Where(x => x.BillDate >= DateOnly.Parse($"{today.Year - 1}-{today.Month}-{today.Date}") && x.BillDate <= DateOnly.Parse($"{today.Year}-{today.Month}-{today.Date}") && x.BillDate > DateOnly.FromDateTime(DateTime.Today)).SumAsync(x => x.TotalBillValue);
+                    queryoverduePayables = await Payables.Where(x => x.BillDate >= DateOnly.Parse($"{today.Year - 1}-{today.Month}-{today.Date}") && x.BillDate <= DateOnly.Parse($"{today.Year}-{today.Month}-{today.Date}") && x.BillDate <= DateOnly.FromDateTime(DateTime.Today)).SumAsync(x => x.TotalBillValue);
+
+                }
+                else if(PeriodType == "last_6_months")
+                {
+                      queryReceivables = await Receivables.Where(x => x.InvoiceDate >= DateOnly.Parse($"{today.Year - 1}-{DateTime.Now.AddMonths(-6)}-{today.Date}") && x.InvoiceDate <= DateOnly.Parse($"{today.Year}-{today.Month}-{today.Date}")).SumAsync(x => x.TotalInvoiceValue);
+                    queryunpaidReceivables = await Receivables.Where(x => x.InvoiceDate >= DateOnly.Parse($"{today.Year - 1}-{DateTime.Now.AddMonths(-6)}-{today.Date}") && x.InvoiceDate <= DateOnly.Parse($"{today.Year}-{today.Month}-{today.Date}") && x.InvoiceDate > DateOnly.FromDateTime(DateTime.Today)).SumAsync(x => x.TotalInvoiceValue);
+                    queryoverdueReceivables = await Receivables.Where(x => x.InvoiceDate >= DateOnly.Parse($"{today.Year - 1}-{DateTime.Now.AddMonths(-6)}-{today.Date}") && x.InvoiceDate <= DateOnly.Parse($"{today.Year}-{today.Month}-{today.Date}") && x.InvoiceDate <= DateOnly.FromDateTime(DateTime.Today)).SumAsync(x => x.TotalInvoiceValue);
+
+
+                    QueryPayables = await Payables.Where(x => x.BillDate >= DateOnly.Parse($"{today.Year - 1}-{DateTime.Now.AddMonths(-6)}-{today.Date}") && x.BillDate <= DateOnly.Parse($"{today.Year}-{today.Month}-{today.Date}")).SumAsync(x => x.TotalBillValue);
+                    queryunpaidPayables = await Payables.Where(x => x.BillDate >= DateOnly.Parse($"{today.Year - 1}-{DateTime.Now.AddMonths(-6)}-{today.Date}") && x.BillDate <= DateOnly.Parse($"{today.Year}-{today.Month}-{today.Date}") && x.BillDate > DateOnly.FromDateTime(DateTime.Today)).SumAsync(x => x.TotalBillValue);
+                    queryoverduePayables = await Payables.Where(x => x.BillDate >= DateOnly.Parse($"{today.Year - 1}-{DateTime.Now.AddMonths(-6)}-{today.Date}") && x.BillDate <= DateOnly.Parse($"{today.Year}-{today.Month}-{today.Date}") && x.BillDate <= DateOnly.FromDateTime(DateTime.Today)).SumAsync(x => x.TotalBillValue);
+
+                }
+                else if(PeriodType == "last_3_months")
+                {
+                     queryReceivables = await Receivables.Where(x => x.InvoiceDate >= DateOnly.Parse($"{today.Year - 1}-{DateTime.Now.AddMonths(-3)}-{today.Date}") && x.InvoiceDate <= DateOnly.Parse($"{today.Year}-{today.Month}-{today.Date}")).SumAsync(x => x.TotalInvoiceValue);
+                    queryunpaidReceivables = await Receivables.Where(x => x.InvoiceDate >= DateOnly.Parse($"{today.Year - 1}-{DateTime.Now.AddMonths(-3)}-{today.Date}") && x.InvoiceDate <= DateOnly.Parse($"{today.Year}-{today.Month}-{today.Date}") && x.InvoiceDate > DateOnly.FromDateTime(DateTime.Today)).SumAsync(x => x.TotalInvoiceValue);
+                    queryoverdueReceivables = await Receivables.Where(x => x.InvoiceDate >= DateOnly.Parse($"{today.Year - 1}-{DateTime.Now.AddMonths(-3)}-{today.Date}") && x.InvoiceDate <= DateOnly.Parse($"{today.Year}-{today.Month}-{today.Date}") && x.InvoiceDate <= DateOnly.FromDateTime(DateTime.Today)).SumAsync(x => x.TotalInvoiceValue);
+
+
+                    QueryPayables = await Payables.Where(x => x.BillDate >= DateOnly.Parse($"{today.Year - 1}-{DateTime.Now.AddMonths(-3)}-{today.Date}") && x.BillDate <= DateOnly.Parse($"{today.Year}-{today.Month}-{today.Date}")).SumAsync(x => x.TotalBillValue);
+                    queryunpaidPayables = await Payables.Where(x => x.BillDate >= DateOnly.Parse($"{today.Year - 1}-{DateTime.Now.AddMonths(-3)}-{today.Date}") && x.BillDate <= DateOnly.Parse($"{today.Year}-{today.Month}-{today.Date}") && x.BillDate > DateOnly.FromDateTime(DateTime.Today)).SumAsync(x => x.TotalBillValue);
+                    queryoverduePayables = await Payables.Where(x => x.BillDate >= DateOnly.Parse($"{today.Year - 1}-{DateTime.Now.AddMonths(-3)}-{today.Date}") && x.BillDate <= DateOnly.Parse($"{today.Year}-{today.Month}-{today.Date}") && x.BillDate <= DateOnly.FromDateTime(DateTime.Today)).SumAsync(x => x.TotalBillValue);
+
+                }
+                else if(PeriodType == "this_month")
+                {
+                     queryReceivables = await Receivables.Where(x => x.InvoiceDate >= DateOnly.Parse($"{today.Year}-{today.Month}-01") && x.InvoiceDate <= DateOnly.Parse($"{today.Year}-{today.Month}-31")).SumAsync(x => x.TotalInvoiceValue);
+                    queryunpaidReceivables = await Receivables.Where(x => x.InvoiceDate >= DateOnly.Parse($"{today.Year}-{today.Month}-01") && x.InvoiceDate <= DateOnly.Parse($"{today.Year}-{today.Month}-31") && x.InvoiceDate > DateOnly.FromDateTime(DateTime.Today)).SumAsync(x => x.TotalInvoiceValue);
+                    queryoverdueReceivables = await Receivables.Where(x => x.InvoiceDate >= DateOnly.Parse($"{today.Year}-{today.Month}-01") && x.InvoiceDate <= DateOnly.Parse($"{today.Year}-{today.Month}-31") && x.InvoiceDate <= DateOnly.FromDateTime(DateTime.Today)).SumAsync(x => x.TotalInvoiceValue);
+
+
+                    QueryPayables = await Payables.Where(x => x.BillDate >= DateOnly.Parse($"{today.Year}-{today.Month}-01") && x.BillDate <= DateOnly.Parse($"{today.Year}-{today.Month}-31")).SumAsync(x => x.TotalBillValue);
+                    queryunpaidPayables = await Payables.Where(x => x.BillDate >= DateOnly.Parse($"{today.Year}-{today.Month}-01") && x.BillDate <= DateOnly.Parse($"{today.Year}-{today.Month}-31") && x.BillDate > DateOnly.FromDateTime(DateTime.Today)).SumAsync(x => x.TotalBillValue);
+                    queryoverduePayables = await Payables.Where(x => x.BillDate >= DateOnly.Parse($"{today.Year}-{today.Month}-01") && x.BillDate <= DateOnly.Parse($"{today.Year}-{today.Month}-31") && x.BillDate <= DateOnly.FromDateTime(DateTime.Today)).SumAsync(x => x.TotalBillValue);
+
+                }
+                else if(PeriodType == "previous_month")
+                {
+                     queryReceivables = await Receivables.Where(x => x.InvoiceDate >= DateOnly.Parse($"{today.Year}-{today.Month -1}-01") && x.InvoiceDate <= DateOnly.Parse($"{today.Year}-{today.Month -1}-28")).SumAsync(x => x.TotalInvoiceValue);
+                    queryunpaidReceivables = await Receivables.Where(x => x.InvoiceDate >= DateOnly.Parse($"{today.Year}-{today.Month - 1}-01") && x.InvoiceDate <= DateOnly.Parse($"{today.Year}-{today.Month - 1}-28") && x.InvoiceDate > DateOnly.FromDateTime(DateTime.Today)).SumAsync(x => x.TotalInvoiceValue);
+                    queryoverdueReceivables = await Receivables.Where(x => x.InvoiceDate >= DateOnly.Parse($"{today.Year}-{today.Month - 1}-01") && x.InvoiceDate <= DateOnly.Parse($"{today.Year}-{today.Month - 1}-28") && x.InvoiceDate <= DateOnly.FromDateTime(DateTime.Today)).SumAsync(x => x.TotalInvoiceValue);
+
+
+                    QueryPayables = await Payables.Where(x => x.BillDate >= DateOnly.Parse($"{today.Year}-{today.Month -1}-01") && x.BillDate <= DateOnly.Parse($"{today.Year}-{today.Month -1}-28")).SumAsync(x => x.TotalBillValue);
+                    queryunpaidPayables = await Payables.Where(x => x.BillDate >= DateOnly.Parse($"{today.Year}-{today.Month - 1}-01") && x.BillDate <= DateOnly.Parse($"{today.Year}-{today.Month - 1}-28") && x.BillDate > DateOnly.FromDateTime(DateTime.Today)).SumAsync(x => x.TotalBillValue);
+                    queryoverduePayables = await Payables.Where(x => x.BillDate >= DateOnly.Parse($"{today.Year}-{today.Month - 1}-01") && x.BillDate <= DateOnly.Parse($"{today.Year}-{today.Month - 1}-28") && x.BillDate <= DateOnly.FromDateTime(DateTime.Today)).SumAsync(x => x.TotalBillValue);
+
+                }
+                else if(PeriodType == "select_month")
+                {
+                    if (Year != 0 && Month != 0)
+                    {
+                        queryReceivables = await Receivables.Where(x => x.InvoiceDate >= DateOnly.Parse($"{Year}-{Month}-01") && x.InvoiceDate <= DateOnly.Parse($"{Year}-{Month}-31")).SumAsync(x => x.TotalInvoiceValue);
+                        queryunpaidReceivables = await Receivables.Where(x => x.InvoiceDate >= DateOnly.Parse($"{Year}-{Month}-01") && x.InvoiceDate <= DateOnly.Parse($"{Year}-{Month}-31") && x.InvoiceDate > DateOnly.FromDateTime(DateTime.Today)).SumAsync(x => x.TotalInvoiceValue);
+                        queryoverdueReceivables = await Receivables.Where(x => x.InvoiceDate >= DateOnly.Parse($"{Year}-{Month}-01") && x.InvoiceDate <= DateOnly.Parse($"{Year}-{Month}-31") && x.InvoiceDate <= DateOnly.FromDateTime(DateTime.Today)).SumAsync(x => x.TotalInvoiceValue);
+
+
+                        QueryPayables = await Payables.Where(x => x.BillDate >= DateOnly.Parse($"{Year}-{Month}-01") && x.BillDate <= DateOnly.Parse($"{Year}-{Month}-31")).SumAsync(x => x.TotalBillValue);
+                        queryunpaidPayables = await Payables.Where(x => x.BillDate >= DateOnly.Parse($"{Year}-{Month}-01") && x.BillDate <= DateOnly.Parse($"{Year}-{Month}-31") && x.BillDate <= DateOnly.Parse($"{today.Year}-{today.Month}-{today.Date}") && x.BillDate > DateOnly.FromDateTime(DateTime.Today)).SumAsync(x => x.TotalBillValue);
+                        queryoverduePayables = await Payables.Where(x => x.BillDate >= DateOnly.Parse($"{Year}-{Month}-01") && x.BillDate <= DateOnly.Parse($"{Year}-{Month}-31") && x.BillDate <= DateOnly.Parse($"{today.Year}-{today.Month}-{today.Date}") && x.BillDate <= DateOnly.FromDateTime(DateTime.Today)).SumAsync(x => x.TotalBillValue);
+
+                    }
+                    else
+                    {
+                        return new ManagerBaseResponse<object>
+                        {
+                            IsSuccess = false,
+                            Result = 0,
+                            Message = "Year and Month must be entered.",
+                        };
+
+                    }
+                }
+                else if(PeriodType == "this_quarter")
+                {
+                     queryReceivables = await Receivables.Where(x => x.InvoiceDate >= DateOnly.Parse($"{today.Year}-{(currentQuarter -1) * 3 + 1}-01") && x.InvoiceDate <= DateOnly.Parse($"{today.Year}-{(currentQuarter * 3)}-{DateTime.DaysInMonth(today.Year, today.Month)}")).SumAsync(x => x.TotalInvoiceValue);
+                    queryunpaidReceivables = await Receivables.Where(x => x.InvoiceDate >= DateOnly.Parse($"{today.Year}-{(currentQuarter - 1) * 3 + 1}-01") && x.InvoiceDate <= DateOnly.Parse($"{today.Year}-{(currentQuarter * 3)}-{DateTime.DaysInMonth(today.Year, today.Month)}") && x.InvoiceDate > DateOnly.FromDateTime(DateTime.Today)).SumAsync(x => x.TotalInvoiceValue);
+                    queryoverdueReceivables = await Receivables.Where(x => x.InvoiceDate >= DateOnly.Parse($"{today.Year}-{(currentQuarter - 1) * 3 + 1}-01") && x.InvoiceDate <= DateOnly.Parse($"{today.Year}-{(currentQuarter * 3)}-{DateTime.DaysInMonth(today.Year, today.Month)}") && x.InvoiceDate <= DateOnly.FromDateTime(DateTime.Today)).SumAsync(x => x.TotalInvoiceValue);
+
+
+                    QueryPayables = await Payables.Where(x => x.BillDate >= DateOnly.Parse($"{today.Year}-{(currentQuarter - 1) * 3 + 1}-01") && x.BillDate <= DateOnly.Parse($"{today.Year}-{(currentQuarter * 3)}-{DateTime.DaysInMonth(today.Year, today.Month)}")).SumAsync(x => x.TotalBillValue);
+                    queryunpaidPayables = await Payables.Where(x => x.BillDate >= DateOnly.Parse($"{today.Year}-{(currentQuarter - 1) * 3 + 1}-01") && x.BillDate <= DateOnly.Parse($"{today.Year}-{(currentQuarter * 3)}-{DateTime.DaysInMonth(today.Year, today.Month)}") && x.BillDate > DateOnly.FromDateTime(DateTime.Today)).SumAsync(x => x.TotalBillValue);
+                    queryoverduePayables = await Payables.Where(x => x.BillDate >= DateOnly.Parse($"{today.Year}-{(currentQuarter - 1) * 3 + 1}-01") && x.BillDate <= DateOnly.Parse($"{today.Year}-{(currentQuarter * 3)}-{DateTime.DaysInMonth(today.Year, today.Month)}") && x.BillDate <= DateOnly.FromDateTime(DateTime.Today)).SumAsync(x => x.TotalBillValue);
+
+                }
+                else if(PeriodType == "previous_quarter")
+                {
+                     queryReceivables = await Receivables.Where(x => x.InvoiceDate >= DateOnly.Parse($"{today.Year}-{((((today.Month - 1) / 3 + 1)-1)-1)*3 + 1}-01") && x.InvoiceDate <= DateOnly.Parse($"{today.Year}-{((((today.Month - 1) / 3 + 1)-1)-1)*3}-{DateTime.DaysInMonth(today.Year, today.Month)}")).SumAsync(x => x.TotalInvoiceValue);
+                    queryunpaidReceivables = await Receivables.Where(x => x.InvoiceDate >= DateOnly.Parse($"{today.Year}-{((((today.Month - 1) / 3 + 1) - 1) - 1) * 3 + 1}-01") && x.InvoiceDate <= DateOnly.Parse($"{today.Year}-{((((today.Month - 1) / 3 + 1) - 1) - 1) * 3}-{DateTime.DaysInMonth(today.Year, today.Month)}") && x.InvoiceDate > DateOnly.FromDateTime(DateTime.Today)).SumAsync(x => x.TotalInvoiceValue);
+                    queryoverdueReceivables = await Receivables.Where(x => x.InvoiceDate >= DateOnly.Parse($"{today.Year}-{((((today.Month - 1) / 3 + 1) - 1) - 1) * 3 + 1}-01") && x.InvoiceDate <= DateOnly.Parse($"{today.Year}-{((((today.Month - 1) / 3 + 1) - 1) - 1) * 3}-{DateTime.DaysInMonth(today.Year, today.Month)}")).SumAsync(x => x.TotalInvoiceValue);
+
+
+                    QueryPayables = await Payables.Where(x => x.BillDate >= DateOnly.Parse($"{today.Year}-{((((today.Month - 1) / 3 + 1) - 1) - 1) * 3 + 1}-01") && x.BillDate <= DateOnly.Parse($"{today.Year}-{((((today.Month - 1) / 3 + 1) - 1) - 1) * 3}-{DateTime.DaysInMonth(today.Year, today.Month)}")).SumAsync(x => x.TotalBillValue);
+                    queryunpaidPayables = await Payables.Where(x => x.BillDate >= DateOnly.Parse($"{today.Year}-{((((today.Month - 1) / 3 + 1) - 1) - 1) * 3 + 1}-01") && x.BillDate <= DateOnly.Parse($"{today.Year}-{((((today.Month - 1) / 3 + 1) - 1) - 1) * 3}-{DateTime.DaysInMonth(today.Year, today.Month)}") && x.BillDate <= DateOnly.FromDateTime(DateTime.Today)).SumAsync(x => x.TotalBillValue);
+                    queryoverduePayables = await Payables.Where(x => x.BillDate >= DateOnly.Parse($"{today.Year}-{((((today.Month - 1) / 3 + 1) - 1) - 1) * 3 + 1}-01") && x.BillDate <= DateOnly.Parse($"{today.Year}-{((((today.Month - 1) / 3 + 1) - 1) - 1) * 3}-{DateTime.DaysInMonth(today.Year, today.Month)}") && x.BillDate <= DateOnly.FromDateTime(DateTime.Today)).SumAsync(x => x.TotalBillValue);
+
+                }
+                else if(PeriodType == "select_quarter")
+                {
+                    if (Quarter != 0)
+                    {
+                        if (Quarter == 1)
+                        {
+                            queryReceivables = await Receivables.Where(x => x.InvoiceDate >= DateOnly.Parse($"{Year}-{(Quarter -1)*3 + 1}-01") && x.InvoiceDate <= DateOnly.Parse($"{Year}-{Quarter * 3}-31")).SumAsync(x => x.TotalInvoiceValue);
+                            queryunpaidReceivables = await Receivables.Where(x => x.InvoiceDate >= DateOnly.Parse($"{Year}-{(Quarter - 1) * 3 + 1}-01") && x.InvoiceDate <= DateOnly.Parse($"{Year}-{Quarter * 3}-31") && x.InvoiceDate > DateOnly.FromDateTime(DateTime.Today)).SumAsync(x => x.TotalInvoiceValue);
+                            queryoverdueReceivables = await Receivables.Where(x => x.InvoiceDate >= DateOnly.Parse($"{Year}-{(Quarter - 1) * 3 + 1}-01") && x.InvoiceDate <= DateOnly.Parse($"{Year}-{Quarter * 3}-31") && x.InvoiceDate <= DateOnly.FromDateTime(DateTime.Today)).SumAsync(x => x.TotalInvoiceValue);
+
+
+                            QueryPayables = await Payables.Where(x => x.BillDate >= DateOnly.Parse($"{Year}-{(Quarter - 1) * 3 + 1}-01") && x.BillDate <= DateOnly.Parse($"{Year}-{Quarter * 3}-31")).SumAsync(x => x.TotalBillValue);
+                            queryunpaidPayables = await Payables.Where(x => x.BillDate >= DateOnly.Parse($"{Year}-{(Quarter - 1) * 3 + 1}-01") && x.BillDate <= DateOnly.Parse($"{Year}-{Quarter * 3}-31") && x.BillDate > DateOnly.FromDateTime(DateTime.Today)).SumAsync(x => x.TotalBillValue);
+                            queryoverduePayables = await Payables.Where(x => x.BillDate >= DateOnly.Parse($"{Year}-{(Quarter - 1) * 3 + 1}-01") && x.BillDate <= DateOnly.Parse($"{Year}-{Quarter * 3}-31") && x.BillDate <= DateOnly.FromDateTime(DateTime.Today)).SumAsync(x => x.TotalBillValue);
+
+                        }
+                        else if (Quarter == 2)
+                        {
+                            queryReceivables = await Receivables.Where(x => x.InvoiceDate >= DateOnly.Parse($"{Year}-{(Quarter - 1) * 3 + 1}-01") && x.InvoiceDate <= DateOnly.Parse($"{Year}-{Quarter * 3}-30")).SumAsync(x => x.TotalInvoiceValue);
+                            queryunpaidReceivables = await Receivables.Where(x => x.InvoiceDate >= DateOnly.Parse($"{Year}-{(Quarter - 1) * 3 + 1}-01") && x.InvoiceDate <= DateOnly.Parse($"{Year}-{Quarter * 3}-30") && x.InvoiceDate <= DateOnly.Parse($"{today.Year}-{today.Month}-{today.Date}") && x.InvoiceDate > DateOnly.FromDateTime(DateTime.Today)).SumAsync(x => x.TotalInvoiceValue);
+                            queryoverdueReceivables = await Receivables.Where(x => x.InvoiceDate >= DateOnly.Parse($"{Year}-{(Quarter - 1) * 3 + 1}-01") && x.InvoiceDate <= DateOnly.Parse($"{Year}-{Quarter * 3}-30") && x.InvoiceDate <= DateOnly.Parse($"{today.Year}-{today.Month}-{today.Date}") && x.InvoiceDate <= DateOnly.FromDateTime(DateTime.Today)).SumAsync(x => x.TotalInvoiceValue);
+
+
+                            QueryPayables = await Payables.Where(x => x.BillDate >= DateOnly.Parse($"{Year}-{(Quarter - 1) * 3 + 1}-01") && x.BillDate <= DateOnly.Parse($"{Year}-{Quarter * 3}-30")).SumAsync(x => x.TotalBillValue);
+                            queryunpaidPayables = await Payables.Where(x => x.BillDate >= DateOnly.Parse($"{Year}-{(Quarter - 1) * 3 + 1}-01") && x.BillDate <= DateOnly.Parse($"{Year}-{Quarter * 3}-30") && x.BillDate <= DateOnly.Parse($"{today.Year}-{today.Month}-{today.Date}") && x.BillDate > DateOnly.FromDateTime(DateTime.Today)).SumAsync(x => x.TotalBillValue);
+                            queryoverduePayables = await Payables.Where(x => x.BillDate >= DateOnly.Parse($"{Year}-{(Quarter - 1) * 3 + 1}-01") && x.BillDate <= DateOnly.Parse($"{Year}-{Quarter * 3}-30") && x.BillDate <= DateOnly.Parse($"{today.Year}-{today.Month}-{today.Date}") && x.BillDate <= DateOnly.FromDateTime(DateTime.Today)).SumAsync(x => x.TotalBillValue);
+
+                        }
+                        else if (Quarter == 3)
+                        {
+                            queryReceivables = await Receivables.Where(x => x.InvoiceDate >= DateOnly.Parse($"{Year}-{(Quarter - 1) * 3 + 1}-01") && x.InvoiceDate <= DateOnly.Parse($"{Year}-{Quarter * 3}-30")).SumAsync(x => x.TotalInvoiceValue);
+                            queryunpaidReceivables = await Receivables.Where(x => x.InvoiceDate >= DateOnly.Parse($"{Year}-{(Quarter - 1) * 3 + 1}-01") && x.InvoiceDate <= DateOnly.Parse($"{Year}-{Quarter * 3}-30") && x.InvoiceDate <= DateOnly.Parse($"{today.Year}-{today.Month}-{today.Date}") && x.InvoiceDate > DateOnly.FromDateTime(DateTime.Today)).SumAsync(x => x.TotalInvoiceValue);
+                            queryoverdueReceivables = await Receivables.Where(x => x.InvoiceDate >= DateOnly.Parse($"{Year}-{(Quarter - 1) * 3 + 1}-01") && x.InvoiceDate <= DateOnly.Parse($"{Year}-{Quarter * 3}-30") && x.InvoiceDate <= DateOnly.Parse($"{today.Year}-{today.Month}-{today.Date}") && x.InvoiceDate <= DateOnly.FromDateTime(DateTime.Today)).SumAsync(x => x.TotalInvoiceValue);
+
+
+                            QueryPayables = await Payables.Where(x => x.BillDate >= DateOnly.Parse($"{Year}-{(Quarter - 1) * 3 + 1}-01") && x.BillDate <= DateOnly.Parse($"{Year}-{Quarter * 3}-30")).SumAsync(x => x.TotalBillValue);
+                            queryunpaidPayables = await Payables.Where(x => x.BillDate >= DateOnly.Parse($"{Year}-{(Quarter - 1) * 3 + 1}-01") && x.BillDate <= DateOnly.Parse($"{Year}-{Quarter * 3}-30") && x.BillDate <= DateOnly.Parse($"{today.Year}-{today.Month}-{today.Date}") && x.BillDate > DateOnly.FromDateTime(DateTime.Today)).SumAsync(x => x.TotalBillValue);
+                            queryoverduePayables = await Payables.Where(x => x.BillDate >= DateOnly.Parse($"{Year}-{(Quarter - 1) * 3 + 1}-01") && x.BillDate <= DateOnly.Parse($"{Year}-{Quarter * 3}-30") && x.BillDate <= DateOnly.Parse($"{today.Year}-{today.Month}-{today.Date}") && x.BillDate <= DateOnly.FromDateTime(DateTime.Today)).SumAsync(x => x.TotalBillValue);
+
+                        }
+                        else
+                        {
+                            queryReceivables = await Receivables.Where(x => x.InvoiceDate >= DateOnly.Parse($"{Year}-{(Quarter - 1) * 3 + 1}-01") && x.InvoiceDate <= DateOnly.Parse($"{Year}-{Quarter * 3}-31")).SumAsync(x => x.TotalInvoiceValue);
+                            queryunpaidReceivables = await Receivables.Where(x => x.InvoiceDate >= DateOnly.Parse($"{Year}-{(Quarter - 1) * 3 + 1}-01") && x.InvoiceDate <= DateOnly.Parse($"{Year}-{Quarter * 3}-31") && x.InvoiceDate <= DateOnly.Parse($"{today.Year}-{today.Month}-{today.Date}") && x.InvoiceDate > DateOnly.FromDateTime(DateTime.Today)).SumAsync(x => x.TotalInvoiceValue);
+                            queryoverdueReceivables = await Receivables.Where(x => x.InvoiceDate >= DateOnly.Parse($"{Year}-{(Quarter - 1) * 3 + 1}-01") && x.InvoiceDate <= DateOnly.Parse($"{Year}-{Quarter * 3}-31") && x.InvoiceDate <= DateOnly.Parse($"{today.Year}-{today.Month}-{today.Date}") && x.InvoiceDate <= DateOnly.FromDateTime(DateTime.Today)).SumAsync(x => x.TotalInvoiceValue);
+
+
+                            QueryPayables = await Payables.Where(x => x.BillDate >= DateOnly.Parse($"{Year}-{(Quarter - 1) * 3 + 1}-01") && x.BillDate <= DateOnly.Parse($"{Year}-{Quarter * 3}-31")).SumAsync(x => x.TotalBillValue);
+                            queryunpaidPayables = await Payables.Where(x => x.BillDate >= DateOnly.Parse($"{Year}-{(Quarter - 1) * 3 + 1}-01") && x.BillDate <= DateOnly.Parse($"{Year}-{Quarter * 3}-31") && x.BillDate <= DateOnly.Parse($"{today.Year}-{today.Month}-{today.Date}") && x.BillDate > DateOnly.FromDateTime(DateTime.Today)).SumAsync(x => x.TotalBillValue);
+                            queryoverduePayables = await Payables.Where(x => x.BillDate >= DateOnly.Parse($"{Year}-{(Quarter - 1) * 3 + 1}-01") && x.BillDate <= DateOnly.Parse($"{Year}-{Quarter * 3}-31") && x.BillDate <= DateOnly.Parse($"{today.Year}-{today.Month}-{today.Date}") && x.BillDate <= DateOnly.FromDateTime(DateTime.Today)).SumAsync(x => x.TotalBillValue);
+
+                        }
+
+                    }
+                    else
+                    {
+                        return new ManagerBaseResponse<object>
+                        {
+                            IsSuccess = false,
+                            Result = 0,
+                            Message = "Quater must be entered.",
+                        };
+                    }
+                }
+                else
+                {
+                    queryReceivables = await Receivables.Where(x => x.InvoiceDate >= DateOnly.Parse($"{today.Year}-{today.Month - 1}-01") && x.InvoiceDate <= DateOnly.Parse($"{today.Year}-{today.Month}-31")).SumAsync(x => x.TotalInvoiceValue);
+                    queryunpaidReceivables = await Receivables.Where(x => x.InvoiceDate >= DateOnly.Parse($"{today.Year}-{today.Month - 1}-01") && x.InvoiceDate <= DateOnly.Parse($"{today.Year}-{today.Month}-31") && x.InvoiceDate > DateOnly.FromDateTime(DateTime.Today)).SumAsync(x => x.TotalInvoiceValue);
+                    queryoverdueReceivables = await Receivables.Where(x => x.InvoiceDate >= DateOnly.Parse($"{today.Year}-{today.Month - 1}-01") && x.InvoiceDate <= DateOnly.Parse($"{today.Year}-{today.Month}-31") && x.InvoiceDate <= DateOnly.FromDateTime(DateTime.Today)).SumAsync(x => x.TotalInvoiceValue);
+
+
+                    QueryPayables = await Payables.Where(x => x.BillDate >= DateOnly.Parse($"{today.Year}-{today.Month - 1}-01") && x.BillDate <= DateOnly.Parse($"{today.Year}-{today.Month}-31")).SumAsync(x => x.TotalBillValue);
+                    queryunpaidPayables = await Payables.Where(x => x.BillDate >= DateOnly.Parse($"{today.Year}-{today.Month - 1}-01") && x.BillDate <= DateOnly.Parse($"{today.Year}-{today.Month}-31") && x.BillDate > DateOnly.FromDateTime(DateTime.Today)).SumAsync(x => x.TotalBillValue);
+                    queryoverduePayables = await Payables.Where(x => x.BillDate >= DateOnly.Parse($"{today.Year}-{today.Month - 1}-01") && x.BillDate <= DateOnly.Parse($"{today.Year}-{today.Month}-31") && x.BillDate <= DateOnly.FromDateTime(DateTime.Today)).SumAsync(x => x.TotalBillValue);
+
+                }
+
+
+
+
+                var result = new
+                {
+                    TotalReceivables = queryReceivables,
+                    UnPaidReceivables  = queryunpaidReceivables,
+                    OverDueReceivalbes = queryoverdueReceivables,
+                    TotalPayables = QueryPayables,
+                    UnpaidPayables = queryunpaidPayables,
+                    OverDuePayables = queryoverduePayables
+                    
+                };
+
+                if (result == null)
+                {
+                    return new ManagerBaseResponse<object>
+                    {
+                        IsSuccess = false,
+                        Result = 0,
+                        Message = "Gst Sales Invoice Count Data not Retrieved.",
+                    };
+                }
+                else
+                {
+
+
+                    return new ManagerBaseResponse<object>
+                    {
+                        IsSuccess = true,
+                        Result = result,
+                        Message = "Gst Sales Invoice Count Data Retrieved Successfully.",
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return new ManagerBaseResponse<object>
+                {
+                    IsSuccess = false,
+                    Result = 0,
+                    Message = ex.Message
+                };
+            }
+        }
     }
 }

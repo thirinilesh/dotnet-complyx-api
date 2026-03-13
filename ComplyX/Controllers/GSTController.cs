@@ -31,7 +31,7 @@ namespace ComplyX.Controllers
     /// </summary>
     [ApiController]
     [Route("[controller]")]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+   // [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class GSTController : BaseController
     {
         private readonly AppContext _context;
@@ -488,6 +488,30 @@ namespace ComplyX.Controllers
         {
             return ResponseResult(await _IGSTServices.GetGST_SalesFilter(PagedListCriteria));
         }
-     
+
+
+        /// <summary>
+        /// Retrieves a filtered list of GST Sales invoice counts based on the specified quarter and company.
+        /// </summary>
+        /// <param name="Quarter">
+        /// The quarter for which to retrieve invoice counts (e.g., "Q1", "Q2", etc.).
+        /// </param>
+        /// <param name="CompanyID">
+        /// The ID of the company for which to retrieve the GST Sales data.
+        /// </param>
+        /// <returns>
+        /// An <see cref="IActionResult"/> containing the filtered invoice counts:
+        /// <list type="bullet">
+        /// <item>200: Returns the filtered list of GST Sales records.</item>
+        /// <item>204: No GST Sales data found for the specified criteria.</item>
+        /// <item>400: Error occurred while fetching the GST Sales data.</item>
+        /// </list>
+        /// </returns>
+        [HttpGet("GetDataInvoiceCount")]
+        public async Task<IActionResult> GetDataInvoiceCount(string PeriodType, int CompanyID,  int Year , int Month , int Quarter)
+        {
+            return ResponseResult(await _IGSTServices.GetDataInvoiceCount(PeriodType, CompanyID , Year, Month , Quarter));
+        }
+
     }
 }

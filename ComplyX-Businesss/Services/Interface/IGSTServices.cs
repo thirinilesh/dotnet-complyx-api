@@ -42,6 +42,7 @@ namespace ComplyX_Businesss.Services.Interface
         Task<ManagerBaseResponse<bool>> RemoveGST_SalesData(string SaleID);
         Task<ManagerBaseResponse<object>> GetGST_SalesData();
         Task<ManagerBaseResponse<IEnumerable<GstSaleResponseModel>>> GetGST_SalesFilter(PagedListCriteria PagedListCriteria);
-      
+        Task<ManagerBaseResponse<object>> GetDataInvoiceCount(string PeriodType, int CompanyID ,int Year , int Month,  int Quarter);
+
     }
 }
